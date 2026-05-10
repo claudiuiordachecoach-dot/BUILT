@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, type ChangeEvent } from "react";
-import { auditProfile, type InstagramAudit } from "./actions";
+import { auditProfile, type InstagramAudit } from "@/app/audit/actions";
 
 const ELEMENT_LABELS: Record<string, string> = {
   profile_picture: "Profile Picture",
