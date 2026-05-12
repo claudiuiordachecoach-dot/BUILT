@@ -15,7 +15,7 @@ begin
   insert into public.profiles (id, role, full_name)
   values (
     new.id,
-    coalesce(new.raw_user_meta_data->>'role', 'client'),
+    'client',
     coalesce(new.raw_user_meta_data->>'full_name', new.email)
   );
   return new;
@@ -209,3 +209,6 @@ alter table public.dm_templates enable row level security;
 create policy "Allow all dm_templates" on public.dm_templates for all using (true) with check (true);
 
 notify pgrst, 'reload schema';
+
+-- NOTE: Admin role must be assigned manually via SQL after user creation:
+-- update public.profiles set role = 'admin' where id = '<user-uuid>';

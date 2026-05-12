@@ -1,5 +1,5 @@
 "use server";
-import { getSupabaseAuth } from "@/lib/supabase/auth-server";
+import { getSupabaseAuth, getUserRole } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
 async function getClientId(): Promise<number | null> {
@@ -137,6 +137,8 @@ export async function sendClientMessage(content: string) {
 // ── ADMIN actions ──
 
 export async function saveWorkoutPlan(clientId: number, days: Record<string, { name: string; sets: number; reps: string; note?: string }[]>, notes?: string) {
+  const role = await getUserRole();
+  if (role !== 'admin') throw new Error('Unauthorized');
   const db = getSupabaseServer();
   const weekStart = new Date();
   weekStart.setDate(weekStart.getDate() - weekStart.getDay() + 1);
@@ -161,6 +163,8 @@ export async function saveNutritionPlan(clientId: number, plan: {
   meals: { name: string; foods: string[]; calories?: number; protein_g?: number }[];
   notes?: string;
 }) {
+  const role = await getUserRole();
+  if (role !== 'admin') throw new Error('Unauthorized');
   const db = getSupabaseServer();
   const { data: existing } = await db.from("nutrition_plans").select("id").eq("client_id", clientId).single();
   if (existing?.id) {
@@ -171,11 +175,15 @@ export async function saveNutritionPlan(clientId: number, plan: {
 }
 
 export async function sendAdminMessage(clientId: number, content: string) {
+  const role = await getUserRole();
+  if (role !== 'admin') throw new Error('Unauthorized');
   const db = getSupabaseServer();
   await db.from("client_messages").insert({ client_id: clientId, sender: "admin", content });
 }
 
 export async function getClientMessages(clientId: number) {
+  const role = await getUserRole();
+  if (role !== 'admin') throw new Error('Unauthorized');
   const db = getSupabaseServer();
   const { data } = await db
     .from("client_messages")
