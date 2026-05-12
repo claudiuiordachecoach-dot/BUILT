@@ -1,6 +1,14 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import {
+  listCompetitors,
+  addCompetitor,
+  removeCompetitor,
+  scrapeCompetitors,
+  getLatestWeeklyPackage,
+  generateWeeklyPackage,
+} from "./actions";
 
 const WEEKLY_TRENDS = [
   "Cortizolul de dimineață ca factor de stocare a grăsimii — pattern în creștere",
@@ -15,7 +23,7 @@ const SCRIPTS = [
     theme: "Talking Head — Cortizol",
     hook: "Dacă faci sport în fiecare dimineață și nu slăbești — nu e metabolismul tău. E cortizolul tău.",
     body:
-      "Antrenamentul intens dimineața crește cortizolul. Cortizolul crescut → insulino-rezistență → corp stochează, nu arde. " +
+      "Antrenamentul intens dimineața crește cortizolul. Cortizol crescut → insulino-rezistență → corp stochează, nu arde. " +
       "Nu trebuie să renunți la sport — trebuie să muți antrenamentul sau să schimbi tipul. Zone 2 dimineața, " +
       "forță după-amiaza. Asta face sistemul BUILT, nu voința.",
     full_script:
@@ -96,32 +104,147 @@ const STATUS_LABEL: Record<string, string> = {
   scheduled: "Programat",
 };
 
+function CompetitorsSection() {
+  const [competitors, setCompetitors] = useState<{ id: number; handle: string }[]>([]);
+  const [handle, setHandle] = useState("");
+  const [scraping, setScraping] = useState(false);
+
+  useEffect(() => { listCompetitors().then(setCompetitors); }, []);
+
+  async function handleAdd() {
+    if (!handle.trim()) return;
+    await addCompetitor(handle);
+    setHandle("");
+    listCompetitors().then(setCompetitors);
+  }
+
+  async function handleScrape() {
+    setScraping(true);
+    await scrapeCompetitors();
+    setScraping(false);
+  }
+
+  return (
+    <div className="border border-white/10 rounded-xl p-5 mb-6">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-semibold text-zinc-200">My Competitors</h3>
+        <button onClick={handleScrape} disabled={scraping}
+          className="text-xs bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 px-3 py-1.5 rounded-lg transition-all disabled:opacity-50">
+          {scraping ? "Scraping..." : "⟳ Scrape Now"}
+        </button>
+      </div>
+      <p className="text-xs text-zinc-500 mb-3">Adaugă conturi Instagram. În fiecare săptămână, AI-ul învață din reels-urile lor performante.</p>
+      <div className="flex gap-2 mb-3">
+        <input value={handle} onChange={e => setHandle(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') handleAdd(); }}
+          placeholder="@username"
+          className="flex-1 bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-sm text-zinc-300 placeholder-zinc-600 focus:outline-none focus:border-built-red/50" />
+        <button onClick={handleAdd}
+          className="bg-built-red/10 hover:bg-built-red/20 border border-built-red/30 text-built-red px-4 py-2 rounded-lg text-sm font-semibold">
+          + Add
+        </button>
+      </div>
+      <div className="flex flex-wrap gap-2">
+        {competitors.map(c => (
+          <span key={c.id} className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-full px-3 py-1 text-xs text-zinc-300">
+            @{c.handle}
+            <button
+              onClick={() => removeCompetitor(c.id).then(() => listCompetitors().then(setCompetitors))}
+              className="text-zinc-600 hover:text-zinc-300 ml-1">×</button>
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function WeeklyScriptsSection() {
+  const [pkg, setPkg] = useState<{
+    intelligence_report?: {
+      whats_popping?: string[];
+      performance_insights?: string[];
+      accounts_to_watch?: string[];
+    };
+    scripts?: { day: string; hook: string; script: string; caption: string }[];
+  } | null>(null);
+  const [generating, setGenerating] = useState(false);
+
+  useEffect(() => { getLatestWeeklyPackage().then(p => setPkg(p as typeof pkg)); }, []);
+
+  async function handleGenerate() {
+    setGenerating(true);
+    const result = await generateWeeklyPackage();
+    setPkg(result);
+    setGenerating(false);
+  }
+
+  return (
+    <div className="border border-white/10 rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-semibold text-zinc-200">This Week&apos;s Scripts</h3>
+        <button onClick={handleGenerate} disabled={generating}
+          className="text-xs bg-built-red text-white px-4 py-2 rounded-lg font-semibold hover:bg-built-red/90 disabled:opacity-50 transition-all">
+          {generating ? "Se generează..." : "⟳ Regenerate This Week"}
+        </button>
+      </div>
+
+      {pkg?.intelligence_report && (
+        <div className="bg-[#0d0d0d] border border-white/5 rounded-lg p-4 mb-5">
+          <p className="text-[11px] font-semibold text-zinc-400 uppercase tracking-widest mb-3">Weekly Intelligence Report</p>
+          {(pkg.intelligence_report.whats_popping?.length ?? 0) > 0 && (
+            <>
+              <p className="text-[11px] font-semibold text-zinc-500 mb-1">Ce explodează săptămâna asta</p>
+              <ul className="space-y-1 mb-3">
+                {pkg.intelligence_report.whats_popping?.map((item, i) => (
+                  <li key={i} className="text-xs text-zinc-300 flex gap-2"><span className="text-built-red shrink-0">++</span>{item}</li>
+                ))}
+              </ul>
+            </>
+          )}
+          {(pkg.intelligence_report.performance_insights?.length ?? 0) > 0 && (
+            <>
+              <p className="text-[11px] font-semibold text-zinc-500 mb-1">Performanța formatelor</p>
+              <ul className="space-y-1">
+                {pkg.intelligence_report.performance_insights?.map((item, i) => (
+                  <li key={i} className="text-xs text-zinc-300 flex gap-2"><span className="text-zinc-600 shrink-0">·</span>{item}</li>
+                ))}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
+
+      <div className="space-y-4">
+        {pkg?.scripts?.map((script, i) => (
+          <div key={i} className="bg-[#0d0d0d] border border-white/5 rounded-lg p-4">
+            <span className="text-[10px] font-semibold text-built-red uppercase">{script.day}</span>
+            <p className="text-sm font-bold text-white mt-2 mb-2">&quot;{script.hook}&quot;</p>
+            <p className="text-xs text-zinc-400 mb-3 whitespace-pre-wrap">{script.script}</p>
+            <div className="border-t border-white/5 pt-3 mb-2">
+              <p className="text-[11px] text-zinc-500 mb-1">Caption</p>
+              <p className="text-xs text-zinc-300">{script.caption}</p>
+            </div>
+            <button
+              onClick={() => navigator.clipboard.writeText(`${script.hook}\n\n${script.script}\n\n${script.caption}`)}
+              className="text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+              ⎘ Copy script
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {!pkg && !generating && (
+        <div className="text-center py-12">
+          <p className="text-sm text-zinc-500">Niciun pachet generat încă.</p>
+          <p className="text-xs text-zinc-600 mt-1">Adaugă competitori și apasă &quot;Regenerate This Week&quot;.</p>
+        </div>
+      )}
+    </div>
+  );
+}
+
 export default function ContentPage() {
   const [openScript, setOpenScript] = useState<number | null>(0);
-  const [competitors, setCompetitors] = useState<string[]>([]);
-  const [newCompetitor, setNewCompetitor] = useState("");
-
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("built_competitors");
-      if (stored) setCompetitors(JSON.parse(stored));
-    } catch { /* ignore */ }
-  }, []);
-
-  const addCompetitor = () => {
-    const handle = newCompetitor.trim().replace(/^@/, "");
-    if (!handle || competitors.includes(handle) || competitors.length >= 10) return;
-    const updated = [...competitors, handle];
-    setCompetitors(updated);
-    localStorage.setItem("built_competitors", JSON.stringify(updated));
-    setNewCompetitor("");
-  };
-
-  const removeCompetitor = (handle: string) => {
-    const updated = competitors.filter((c) => c !== handle);
-    setCompetitors(updated);
-    localStorage.setItem("built_competitors", JSON.stringify(updated));
-  };
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
@@ -195,7 +318,6 @@ export default function ContentPage() {
                       {script.body}
                     </p>
                   </div>
-                  {/* Full Script */}
                   {"full_script" in script && script.full_script && (
                     <div>
                       <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-1.5">
@@ -206,7 +328,6 @@ export default function ContentPage() {
                       </p>
                     </div>
                   )}
-                  {/* Caption + CTA */}
                   {"caption" in script && script.caption && (
                     <div>
                       <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-1.5">
@@ -307,66 +428,10 @@ export default function ContentPage() {
         </div>
       </div>
 
-      {/* MY COMPETITORS */}
-      <div className="mt-8">
-        <div className="flex items-center justify-between mb-4">
-          <div>
-            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono">
-              My Competitors
-            </p>
-            <p className="text-zinc-600 text-[11px] mt-0.5">
-              Adaugă conturi Instagram din nișa ta. În fiecare săptămână, scripturile tale se vor baza pe ce merge la ei.
-            </p>
-          </div>
-          <button className="text-[11px] text-built-red border border-built-red/20 px-3 py-1.5 rounded-lg hover:bg-built-red/10">
-            ⟳ Scrape Now
-          </button>
-        </div>
-
-        <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-          <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">
-            My Competitors — {competitors.length}/10 accounts tracked
-          </p>
-          <div className="flex gap-2 mb-4">
-            <input
-              type="text"
-              value={newCompetitor}
-              onChange={(e) => setNewCompetitor(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && addCompetitor()}
-              placeholder="@username"
-              className="flex-1 bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[12px] px-3 py-2 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600"
-            />
-            <button
-              onClick={addCompetitor}
-              disabled={!newCompetitor.trim() || competitors.length >= 10}
-              className="text-[12px] bg-built-red/10 text-built-red border border-built-red/20 px-4 py-2 rounded-lg hover:bg-built-red/20 disabled:opacity-40"
-            >
-              + Add
-            </button>
-          </div>
-          {competitors.length > 0 ? (
-            <div className="flex flex-wrap gap-2">
-              {competitors.map((handle) => (
-                <span
-                  key={handle}
-                  className="flex items-center gap-1.5 text-[11px] text-zinc-300 bg-white/5 border border-white/10 px-2.5 py-1 rounded-full"
-                >
-                  @{handle}
-                  <button
-                    onClick={() => removeCompetitor(handle)}
-                    className="text-zinc-600 hover:text-zinc-200 text-[10px]"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
-            </div>
-          ) : (
-            <p className="text-zinc-700 text-[11px]">
-              Niciun competitor adăugat. Adaugă conturi din nișa ta (fitness, coaching, mindset).
-            </p>
-          )}
-        </div>
+      {/* Competitors + Weekly Scripts */}
+      <div className="mt-8 space-y-6">
+        <CompetitorsSection />
+        <WeeklyScriptsSection />
       </div>
     </div>
   );

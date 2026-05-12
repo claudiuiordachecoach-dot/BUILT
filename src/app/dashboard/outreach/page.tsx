@@ -43,6 +43,7 @@ const STAGES = [
   { label: "Booking a call", value: "booking_call" },
   { label: "Objection", value: "objection" },
   { label: "Closing", value: "closing" },
+  { label: "Post-apel", value: "post_call" },
 ];
 
 type Tab = "daily" | "templates" | "generator";
