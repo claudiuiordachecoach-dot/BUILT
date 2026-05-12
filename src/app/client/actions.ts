@@ -6,13 +6,31 @@ async function getClientId(): Promise<number | null> {
   const supabase = await getSupabaseAuth();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
+  
   const db = getSupabaseServer();
-  const { data } = await db
+  
+  // Încercăm să găsim clientul legat de acest user
+  const { data: linkedClient } = await db
     .from("clients")
     .select("id")
     .eq("auth_user_id", user.id)
-    .single();
-  return data?.id ?? null;
+    .maybeSingle();
+    
+  if (linkedClient) return linkedClient.id;
+
+  // Dacă nu e client, dar e admin, îi arătăm primul client ca "Demo"
+  const role = await getUserRole();
+  if (role === 'admin') {
+    const { data: firstClient } = await db
+      .from("clients")
+      .select("id")
+      .order("created_at", { ascending: true })
+      .limit(1)
+      .maybeSingle();
+    return firstClient?.id ?? null;
+  }
+
+  return null;
 }
 
 export async function getClientDashboard() {

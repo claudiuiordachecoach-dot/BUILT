@@ -43,6 +43,7 @@ const NAV: NavGroup[] = [
     group: "ADMIN",
     items: [
       { label: "Clients", href: "/clienti", icon: "◈" },
+      { label: "View as Client", href: "/client/dashboard", icon: "👁" },
       { label: "Progress Reports", href: "/analytics", icon: "◈" },
       { label: "Knowledge Base", href: "/creier", icon: "◈" },
     ],

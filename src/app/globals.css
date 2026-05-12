@@ -1,26 +1,69 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* BUILT Brand Colors — sursa: WEBSITE/BUILT - BRAND IDENTITY/dist/index.html */
+  --color-built-black: #0A0A0A;
+  --color-built-gray-1: #1A1A1A;
+  --color-built-gray-2: #2A2A2A;
+  --color-built-gray-text: #888888;
+  --color-built-white: #F5F5F5;
+  --color-built-red: #C0392B;
+  --color-built-red-dark: #8B1A1A;
+
+  /* Fonturi — variabile setate de next/font în layout.tsx */
+  --font-display: var(--font-bebas-neue);
+  --font-condensed: var(--font-barlow-condensed);
+  --font-sans: var(--font-barlow);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  color-scheme: dark;
+}
+
+html, body {
+  background: var(--color-built-black);
+  color: var(--color-built-white);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selection styling — roșu BUILT */
+::selection {
+  background: var(--color-built-red);
+  color: var(--color-built-white);
+}
+
+/* Scrollbar discret pe dark */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-built-black);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-built-gray-2);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-built-red-dark);
+}
+
+/* Display headings — Bebas Neue cu letter-spacing */
+.font-display {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+}
+
+/* UI labels — Barlow Condensed uppercase */
+.font-condensed {
+  font-family: var(--font-condensed);
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
 }

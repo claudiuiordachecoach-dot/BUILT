@@ -45,13 +45,12 @@ export async function middleware(request: NextRequest) {
 
   const role = profile?.role ?? 'client';
 
+  // Clientul este forțat să stea în zona de client
   if (role === 'client' && !pathname.startsWith('/client')) {
     return NextResponse.redirect(new URL('/client/dashboard', request.url));
   }
 
-  if (role === 'admin' && pathname.startsWith('/client')) {
-    return NextResponse.redirect(new URL('/dashboard/analytics', request.url));
-  }
+  // Adminul are acces peste tot (am eliminat redirecționarea forțată de pe /client)
 
   return supabaseResponse;
 }
