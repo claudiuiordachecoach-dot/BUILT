@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
+import { SignOutButton } from "./SignOutButton";
+import { UserDisplay } from "./UserDisplay";
 
 type NavItem = {
   label: string;
@@ -55,17 +57,7 @@ export function Sidebar() {
       {/* Header — logo + profile */}
       <div className="p-5 border-b border-white/10">
         <BrandLogo variant="full" showTagline={false} />
-        <div className="mt-4 flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-full bg-built-red flex items-center justify-center text-[10px] font-bold text-white">
-            IC
-          </div>
-          <div className="min-w-0">
-            <div className="text-[11px] font-semibold text-zinc-200 truncate">
-              Iordache Claudiu
-            </div>
-            <div className="text-[10px] text-zinc-500">Admin</div>
-          </div>
-        </div>
+        <div className="mt-4"><UserDisplay /></div>
       </div>
 
       {/* Navigation groups */}
@@ -105,10 +97,11 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 border-t border-white/10">
-        <div className="flex items-center gap-2 text-zinc-600">
+      <div className="p-3 border-t border-white/10 space-y-1">
+        <SignOutButton />
+        <div className="flex items-center gap-2 text-zinc-600 px-3">
           <span className="w-1.5 h-1.5 rounded-full bg-built-red" />
-          <span className="text-[10px] font-mono">v0.1 · BUILT AI</span>
+          <span className="text-[10px] font-mono">v0.2 · BUILT AI</span>
         </div>
       </div>
     </aside>
