@@ -1,0 +1,12 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install",
+  "outputDirectory": ".next",
+  "crons": [
+    {
+      "path": "/api/cron/weekly-scripts",
+      "schedule": "0 7 * * 1"
+    }
+  ]
+}

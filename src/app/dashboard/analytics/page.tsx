@@ -1,7 +1,22 @@
 "use client";
 
-import { useState } from "react";
-import { analyzeContentLibraryReel, type ContentLibraryAnalysis } from "./actions";
+import { useState, useEffect } from "react";
+import { analyzeContentLibraryReel, getTipOfWeek, type ContentLibraryAnalysis } from "./actions";
+
+function TipOfWeekCard() {
+  const [tip, setTip] = useState<string | null>(null);
+  useEffect(() => { getTipOfWeek().then(setTip); }, []);
+  if (!tip) return null;
+  return (
+    <div className="bg-[#111111] border border-built-red/20 rounded-xl p-5 mb-6">
+      <div className="flex items-center gap-2 mb-2">
+        <span className="w-1.5 h-1.5 rounded-full bg-built-red animate-pulse" />
+        <span className="text-[11px] font-semibold text-built-red tracking-widest uppercase">Sfatul Săptămânii</span>
+      </div>
+      <p className="text-sm text-zinc-200 leading-relaxed">{tip}</p>
+    </div>
+  );
+}
 
 const KPI_CARDS = [
   {
@@ -124,6 +139,8 @@ export default function AnalyticsPage() {
           Performanța contului tău Instagram · ultimele 30 de zile
         </p>
       </div>
+
+      <TipOfWeekCard />
 
       {/* THIS WEEK'S FOCUS */}
       <div className="mb-8 p-5 bg-[#111111] border border-white/10 rounded-xl">
