@@ -22,11 +22,6 @@ export async function getSupabaseAuth() {
   );
 }
 
-export async function getSession() {
-  const supabase = await getSupabaseAuth();
-  const { data: { session } } = await supabase.auth.getSession();
-  return session;
-}
 
 export async function getUserRole(): Promise<'admin' | 'client' | null> {
   const supabase = await getSupabaseAuth();

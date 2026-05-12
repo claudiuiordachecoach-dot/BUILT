@@ -9,16 +9,23 @@ export function UserDisplay() {
 
   useEffect(() => {
     const supabase = getSupabaseClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
-      supabase.from('profiles').select('full_name,role').eq('id', user.id).single()
-        .then(({ data }) => {
-          const n = data?.full_name ?? user.email ?? "User";
-          setName(n);
-          setRole(data?.role === 'admin' ? 'Admin' : 'Client');
-          setInitials(n.split(' ').map((w: string) => w[0]).join('').slice(0,2).toUpperCase());
-        });
-    });
+    (async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+        const { data } = await supabase
+          .from('profiles')
+          .select('full_name,role')
+          .eq('id', user.id)
+          .single();
+        const n = data?.full_name ?? user.email ?? "User";
+        setName(n);
+        setRole(data?.role === 'admin' ? 'Admin' : 'Client');
+        setInitials(n.split(' ').map((w: string) => w[0]).join('').slice(0, 2).toUpperCase());
+      } catch {
+        // Silently keep default state if profile fetch fails
+      }
+    })();
   }, []);
 
   return (
