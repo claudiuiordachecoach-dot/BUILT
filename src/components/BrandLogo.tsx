@@ -7,23 +7,36 @@ interface BrandLogoProps {
 
 export function BrandLogo({ variant = "full" }: BrandLogoProps) {
   return (
-    <Link href="/" className="flex items-center justify-center hover:opacity-80 transition-opacity" aria-label="BUILT — Home">
+    <Link
+      href="/"
+      className="flex items-center justify-center hover:opacity-80 transition-opacity"
+      aria-label="BUILT — Home"
+    >
       {variant === "icon" ? (
-        <Image
-          src="/built-logo.png"
-          alt="BUILT"
-          width={36}
-          height={36}
-          className="object-contain"
-          priority
-        />
+        /* Sidebar icon: 3 piloni SVG roșii, mari și clari */
+        <svg
+          width="32"
+          height="36"
+          viewBox="0 0 32 40"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-hidden="true"
+        >
+          {/* Pilon stânga — mediu */}
+          <rect x="0" y="10" width="8" height="30" rx="1" fill="#C0392B" />
+          {/* Pilon centru — cel mai înalt */}
+          <rect x="12" y="0" width="8" height="40" rx="1" fill="#C0392B" />
+          {/* Pilon dreapta — cel mai scurt */}
+          <rect x="24" y="16" width="8" height="24" rx="1" fill="#C0392B" />
+        </svg>
       ) : (
+        /* Full: PNG logo + wordmark */
         <div className="flex items-center gap-3">
           <Image
             src="/built-logo.png"
             alt="BUILT"
-            width={28}
-            height={28}
+            width={32}
+            height={32}
             className="object-contain"
             priority
           />

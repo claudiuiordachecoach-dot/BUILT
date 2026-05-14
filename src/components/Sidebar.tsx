@@ -153,11 +153,11 @@ export function Sidebar() {
         <BrandLogo variant="icon" />
       </div>
 
-      {/* Nav groups */}
-      <nav className="flex-1 overflow-y-auto py-4 w-full">
+      {/* Nav groups — overflow-x visible pt tooltips */}
+      <nav className="flex-1 py-4 w-full overflow-x-visible">
         {NAV.map((section, sectionIdx) => (
-          <div key={section.group} className={sectionIdx > 0 ? "mt-4 pt-4 border-t border-white/5" : ""}>
-            <ul className="space-y-1 px-3">
+          <div key={section.group} className={sectionIdx > 0 ? "mt-3" : ""}>
+            <ul className="space-y-0.5 px-3">
               {section.items.map((item) => {
                 const isActive =
                   item.href === "/"
