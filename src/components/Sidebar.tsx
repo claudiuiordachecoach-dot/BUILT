@@ -147,9 +147,9 @@ export function Sidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="w-16 shrink-0 bg-[#111111] border-r border-white/10 flex flex-col h-screen sticky top-0 items-center">
+    <aside className="w-16 shrink-0 flex flex-col h-screen sticky top-0 items-center">
       {/* Logo — doar icon, fără wordmark */}
-      <div className="h-16 flex items-center justify-center border-b border-white/10 w-full">
+      <div className="h-16 flex items-center justify-center w-full">
         <BrandLogo variant="icon" />
       </div>
 
@@ -179,7 +179,7 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="pb-4 pt-3 border-t border-white/10 w-full flex flex-col items-center gap-2">
+      <div className="pb-4 pt-3 w-full flex flex-col items-center gap-2">
         <SignOutButton iconOnly />
         <span className="w-1.5 h-1.5 rounded-full bg-built-red" title="v0.2 · BUILT AI" />
       </div>
