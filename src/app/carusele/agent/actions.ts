@@ -131,6 +131,8 @@ export async function generateFromAngle(
       design_brief: String(s.design_brief ?? ""),
     }));
 
+    if (slides.length === 0) return { ok: false, error: "AI nu a generat niciun slide." };
+
     const pillar: Pillar = (["B", "U", "I", "L", "T", "mix"] as Pillar[]).includes(parsed.pillar) ? parsed.pillar : "mix";
 
     const body: CaruselBody = {
@@ -220,15 +222,18 @@ export async function iterateSlide(
       .eq("id", caruselId)
       .single();
 
-    if (existing) {
-      const body = existing.body as CaruselBody;
-      const updatedSlides = body.slides.map((s) => s.position === position ? updatedSlide : s);
-      await supabase
-        .from("generated_outputs")
-        .update({ body: { ...body, slides: updatedSlides }, updated_at: new Date().toISOString() })
-        .eq("id", caruselId);
-    }
+    if (!existing) return { ok: false, error: `Carusel ID ${caruselId} negăsit.` };
 
+    const body = existing.body as CaruselBody;
+    const updatedSlides = body.slides.map((s) => s.position === position ? updatedSlide : s);
+    const { error: updateError } = await supabase
+      .from("generated_outputs")
+      .update({ body: { ...body, slides: updatedSlides }, updated_at: new Date().toISOString() })
+      .eq("id", caruselId);
+
+    if (updateError) return { ok: false, error: `Supabase update: ${updateError.message}` };
+
+    revalidatePath("/carusele");
     return { ok: true, slide: updatedSlide };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Eroare necunoscută." };
