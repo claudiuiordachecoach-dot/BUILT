@@ -9,6 +9,7 @@ const NAV = [
   { label: "Dashboard", href: "/client/dashboard", icon: "◈" },
   { label: "Antrenamente", href: "/client/antrenamente", icon: "⚡" },
   { label: "Nutriție", href: "/client/nutritie", icon: "◉" },
+  { label: "Academia BUILT", href: "/client/module", icon: "📚" },
   { label: "Check-in", href: "/client/checkin", icon: "✓" },
   { label: "Mesaje", href: "/client/mesaje", icon: "◎" },
 ];
@@ -18,7 +19,7 @@ export function ClientNav() {
   return (
     <aside className="w-56 shrink-0 bg-[#111111] border-r border-white/10 flex flex-col h-screen sticky top-0">
       <div className="p-5 border-b border-white/10">
-        <BrandLogo variant="full" showTagline={false} />
+        <BrandLogo variant="full" />
         <div className="mt-4"><UserDisplay /></div>
       </div>
       <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">

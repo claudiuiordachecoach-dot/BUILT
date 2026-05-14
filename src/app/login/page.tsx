@@ -21,7 +21,7 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="mb-8 flex justify-center">
-          <BrandLogo variant="full" showTagline={false} />
+          <BrandLogo variant="full" />
         </div>
         <div className="bg-[#111111] border border-white/10 rounded-xl p-8">
           <h1 className="text-xl font-bold text-white mb-1">Intră în cont</h1>
