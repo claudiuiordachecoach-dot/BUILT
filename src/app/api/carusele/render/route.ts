@@ -20,6 +20,12 @@ export async function POST(req: NextRequest) {
   }
 
   const supabase = getSupabaseServer();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    return NextResponse.json({ error: "Autentificare necesară." }, { status: 401 });
+  }
+
   const { data: record, error: dbError } = await supabase
     .from("generated_outputs")
     .select("body")
@@ -39,9 +45,10 @@ export async function POST(req: NextRequest) {
 
   let browser;
   try {
-    const executablePath = process.env.NODE_ENV === "production"
-      ? await chromium.executablePath()
-      : undefined;
+    const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH
+      ?? (process.env.NODE_ENV === "production"
+        ? await chromium.executablePath()
+        : "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome");
 
     browser = await puppeteer.launch({
       args: chromium.args,

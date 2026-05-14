@@ -2,7 +2,7 @@
 "use client";
 
 import { useRef, useEffect } from "react";
-import type { AgentMessage, Angle } from "@/lib/carusele/agent-types";
+import type { AgentMessage, Angle, AgentPhase } from "@/lib/carusele/agent-types";
 
 interface AgentChatProps {
   messages: AgentMessage[];
@@ -11,7 +11,7 @@ interface AgentChatProps {
   isLoading: boolean;
   inputValue: string;
   onInputChange: (v: string) => void;
-  phase: string;
+  phase: AgentPhase;
 }
 
 export function AgentChat({ messages, onSend, onSelectAngle, isLoading, inputValue, onInputChange, phase }: AgentChatProps) {
@@ -52,7 +52,8 @@ export function AgentChat({ messages, onSend, onSelectAngle, isLoading, inputVal
                 <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wider">3 unghiuri propuse — alege unul:</p>
                 {msg.angles.map((angle) => (
                   <button key={angle.id} type="button" onClick={() => onSelectAngle(angle)}
-                    className="w-full text-left p-3 border border-built-gray-2 hover:border-built-red transition-colors group">
+                    disabled={isLoading}
+                    className="w-full text-left p-3 border border-built-gray-2 hover:border-built-red transition-colors group disabled:opacity-50 disabled:cursor-not-allowed">
                     <span className="font-display text-built-red text-lg mr-2">{angle.id}</span>
                     <span className="font-display text-base tracking-wider text-built-white group-hover:text-built-white">{angle.hook}</span>
                     <p className="font-condensed text-[10px] text-built-gray-text mt-1">{angle.direction}</p>

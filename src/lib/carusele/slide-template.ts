@@ -16,7 +16,8 @@ export function buildSlideHtml(slide: CaruselSlide, totalSlides: number): string
 <head>
 <meta charset="UTF-8">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600&display=swap');
+  /* Bebas Neue not available as system font — using Impact as closest match */
+  /* Barlow approximated with system sans-serif */
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
     width: 1080px;
@@ -26,7 +27,7 @@ export function buildSlideHtml(slide: CaruselSlide, totalSlides: number): string
     flex-direction: column;
     justify-content: space-between;
     padding: 80px 90px;
-    font-family: 'Barlow', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     overflow: hidden;
   }
   .top-bar {
@@ -35,7 +36,7 @@ export function buildSlideHtml(slide: CaruselSlide, totalSlides: number): string
     gap: 12px;
   }
   .logo {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Narrow', Arial, sans-serif;
     font-size: 28px;
     color: ${isCta ? "#F5F5F5" : "#C0392B"};
     letter-spacing: 4px;
@@ -48,7 +49,7 @@ export function buildSlideHtml(slide: CaruselSlide, totalSlides: number): string
     gap: 40px;
   }
   .title {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Narrow', Arial, sans-serif;
     font-size: ${titleSize};
     color: ${titleColor};
     line-height: 1.0;
@@ -66,6 +67,7 @@ export function buildSlideHtml(slide: CaruselSlide, totalSlides: number): string
     line-height: 1.5;
     font-weight: 400;
     max-width: 900px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
   }
   .bottom-bar {
     display: flex;
@@ -73,13 +75,13 @@ export function buildSlideHtml(slide: CaruselSlide, totalSlides: number): string
     justify-content: space-between;
   }
   .slide-number {
-    font-family: 'Bebas Neue', sans-serif;
+    font-family: Impact, 'Arial Narrow', Arial, sans-serif;
     font-size: 22px;
     color: rgba(245,245,245,0.3);
     letter-spacing: 3px;
   }
   .handle {
-    font-family: 'Barlow', sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
     font-size: 22px;
     color: rgba(245,245,245,0.4);
     font-weight: 500;
