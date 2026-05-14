@@ -1,260 +1,301 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
-interface OnboardingData {
-  full_name: string;
-  age: string;
-  location: string;
-  experience_years: string;
-  revenue_90_days: string;
-  revenue_12_months: string;
-  followers_goal_90_days: string;
-  content_formats: string;
-  posting_frequency: string;
-  best_performing_content: string;
-  biggest_challenge: string;
-  what_tried: string;
-  ideal_outcome: string;
-  ideal_client: string;
-  philosophy: string;
-  differentiator: string;
-  things_disagree_with: string;
-  origin_story: string;
-  biggest_transformation: string;
-  credibility: string;
-}
+import { useState, useEffect, useTransition } from "react";
+import {
+  saveOnboarding,
+  loadOnboarding,
+  generateAiSummary,
+  type OnboardingData,
+  type AiSummary,
+} from "./actions";
 
 const EMPTY: OnboardingData = {
   full_name: "", age: "", location: "", experience_years: "",
-  revenue_90_days: "", revenue_12_months: "", followers_goal_90_days: "",
+  coaching_since: "", instagram_handle: "", current_monthly_revenue: "",
+  revenue_goal_90_days: "", revenue_goal_12_months: "", followers_now: "",
+  followers_goal_90_days: "", niche: "", transformation_promise: "",
   content_formats: "", posting_frequency: "", best_performing_content: "",
-  biggest_challenge: "", what_tried: "",
-  ideal_outcome: "", ideal_client: "",
+  content_topics: "", tone_of_voice: "", content_that_failed: "",
+  biggest_challenge: "", what_tried: "", bottleneck: "",
+  fear_about_content: "", why_not_growing: "", biggest_frustration: "",
+  ideal_outcome_90_days: "", ideal_client: "", dream_day: "",
+  income_goal_why: "", what_success_looks_like: "",
   philosophy: "", differentiator: "", things_disagree_with: "",
+  controversial_take: "",
   origin_story: "", biggest_transformation: "", credibility: "",
+  defining_moment: "", failure_story: "", why_this_niche: "",
 };
 
-const STORAGE_KEY = "built_onboarding_data";
+type FieldDef = {
+  key: keyof OnboardingData;
+  label: string;
+  placeholder: string;
+  textarea?: boolean;
+};
 
-const SECTIONS = [
+type SectionDef = {
+  id: string;
+  num: number;
+  title: string;
+  description: string;
+  fields: FieldDef[];
+};
+
+const SECTIONS: SectionDef[] = [
   {
-    id: "who_you_are",
+    id: "who_you_are", num: 1,
     title: "Who You Are",
     description: "Bazele. Spune-ne despre tine ca persoană, nu doar ca coach.",
     fields: [
       { key: "full_name", label: "Nume complet", placeholder: "Iordache Claudiu" },
       { key: "age", label: "Vârstă", placeholder: "25" },
       { key: "location", label: "Unde ești bazat", placeholder: "Botoșani, România" },
-      { key: "experience_years", label: "Ani de experiență în fitness/coaching", placeholder: "7" },
-    ],
-  },
-  {
-    id: "revenue_goals",
-    title: "Revenue & Growth Goals",
-    description: "Obiective concrete pentru AI.",
-    fields: [
-      { key: "revenue_90_days", label: "Revenue goal în 90 zile (EUR/lună)", placeholder: "2500" },
-      { key: "revenue_12_months", label: "Revenue goal în 12 luni (EUR/lună)", placeholder: "5000" },
+      { key: "experience_years", label: "Ani de experiență în fitness", placeholder: "7" },
+      { key: "coaching_since", label: "De când faci coaching online", placeholder: "2023" },
+      { key: "instagram_handle", label: "Handle Instagram", placeholder: "@iordacheclaudiu_" },
+      { key: "current_monthly_revenue", label: "Revenue actual/lună (EUR)", placeholder: "900" },
+      { key: "revenue_goal_90_days", label: "Revenue goal în 90 zile (EUR/lună)", placeholder: "2500" },
+      { key: "revenue_goal_12_months", label: "Revenue goal în 12 luni (EUR/lună)", placeholder: "5000" },
+      { key: "followers_now", label: "Followeri actuali", placeholder: "2780" },
       { key: "followers_goal_90_days", label: "Followeri goal în 90 zile", placeholder: "5000" },
+      { key: "niche", label: "Nișa ta în 1 propoziție", placeholder: "Reconstrucție corporală pentru bărbați ocupați 28-42 ani" },
+      { key: "transformation_promise", label: "Promisiunea ta de transformare", placeholder: "90 zile. Corp reconstruit. Sistem predictibil.", textarea: true },
     ],
   },
   {
-    id: "your_content",
+    id: "your_content", num: 2,
     title: "Your Content",
-    description: "Ce tipuri de conținut creezi, cât de des, ce merge.",
+    description: "Cum creezi acum și ce a funcționat.",
     fields: [
       { key: "content_formats", label: "Formate principale", placeholder: "Talking Head, Rant, Tutorial" },
       { key: "posting_frequency", label: "Frecvența postărilor actuale", placeholder: "4-5 reels/săptămână" },
       { key: "best_performing_content", label: "Cel mai bun conținut de până acum (descrie)", placeholder: "Reelul despre cortizol — 14k views", textarea: true },
+      { key: "content_topics", label: "Topicele principale despre care postezi", placeholder: "Cortizol, nutriție simplă, mindset, dovezi clienți", textarea: true },
+      { key: "tone_of_voice", label: "Tonul tău — cum ești tu autentic", placeholder: "Direct, matur, fără clișee, empatic cu situația dar tăios cu scuzele" },
+      { key: "content_that_failed", label: "Ce tip de conținut nu a funcționat", placeholder: "Reels cu animații și CapCut templates — prea fabricat", textarea: true },
     ],
   },
   {
-    id: "where_stuck",
+    id: "where_stuck", num: 3,
     title: "Where You're Stuck",
-    description: "Sincer. Sistemul îți poate ajuta doar dacă știe blocajele reale.",
+    description: "Fii sincer. Cu cât mai mult detaliu, cu atât mai bine te pot ajuta.",
     fields: [
       { key: "biggest_challenge", label: "Cel mai mare obstacol acum", placeholder: "Conversie din DM în call", textarea: true },
-      { key: "what_tried", label: "Ce ai încercat și nu a funcționat", placeholder: "Cold DM, reduceri de preț", textarea: true },
+      { key: "what_tried", label: "Ce ai încercat și nu a funcționat", placeholder: "Cold DM, reduceri de preț, postare zilnică fără strategie", textarea: true },
+      { key: "bottleneck", label: "Unde se blochează lucrurile", placeholder: "Oamenii comentează dar nu intră în DM" },
+      { key: "fear_about_content", label: "Ce te blochează cel mai mult la conținut", placeholder: "Frica de cameră, nu știu dacă am ceva valoros de spus" },
+      { key: "why_not_growing", label: "De ce crezi că nu crești mai repede", placeholder: "Nu am sistem, postez random, nu calific audiența", textarea: true },
+      { key: "biggest_frustration", label: "Cea mai mare frustrare a ta acum", placeholder: "Mă compar cu alții care au mai puțini ani dar mai mulți clienți", textarea: true },
     ],
   },
   {
-    id: "what_you_want",
+    id: "what_you_want", num: 4,
     title: "What You Want",
-    description: "Specific. Ce înseamnă succesul pentru tine?",
+    description: "Fii specific. Obiectivele vagi produc rezultate vagi.",
     fields: [
-      { key: "ideal_outcome", label: "Cum arată ziua ta ideală în 90 de zile", placeholder: "10 clienți activi la 500 EUR, 2 ore de muncă/zi pe sistem", textarea: true },
-      { key: "ideal_client", label: "Descrie clientul ideal", placeholder: "Bărbat 30-40 ani, IT sau antreprenor, familie, 15+ kg de dat jos, bani dar fără timp, a mai eșuat", textarea: true },
+      { key: "ideal_outcome_90_days", label: "Cum arată ziua ta ideală în 90 de zile", placeholder: "10 clienți activi la 500 EUR, 2 ore de muncă/zi, sistem care rulează fără mine", textarea: true },
+      { key: "ideal_client", label: "Descrie clientul ideal", placeholder: "Bărbat 30-40 ani, IT, familie, 15+ kg de dat jos, bani dar fără timp", textarea: true },
+      { key: "dream_day", label: "Cum arată ziua ta perfectă (viitor)", placeholder: "Mă trezesc la 7, antrenament 1h, 3 ore pe sistemul BUILT, după-amiaza liberă" },
+      { key: "income_goal_why", label: "De ce vrei acel revenue goal", placeholder: "Înseamnă libertate. Să nu depind de nimeni." },
+      { key: "what_success_looks_like", label: "Cum știi că ai reușit — indicator concret", placeholder: "Când primul client mă sună și îmi zice că și-a schimbat viața", textarea: true },
     ],
   },
   {
-    id: "mindset_opinions",
+    id: "mindset_opinions", num: 5,
     title: "Mindset & Opinions",
-    description: "Credințele tale. Ce face conținutul tău diferit.",
+    description: "Perspectivele tale. Ce crezi tu. Asta diferențiază conținutul tău.",
     fields: [
       { key: "philosophy", label: "Filozofia ta despre fitness (2-3 propoziții)", placeholder: "Eșecul nu vine din lipsă de voință — vine din lipsă de sistem.", textarea: true },
       { key: "differentiator", label: "Ce face BUILT diferit de orice alt program", placeholder: "Nu vindem motivație. Vindem arhitectură.", textarea: true },
       { key: "things_disagree_with", label: "Cu ce nu ești de acord în industria fitness", placeholder: "Cardio excesiv, deficit agresiv, motivație fără sistem", textarea: true },
+      { key: "controversial_take", label: "Cea mai controversată opinie a ta", placeholder: "Dacă mai dai o dietă unui om fără să-i schimbi identitatea, îl faci rău", textarea: true },
     ],
   },
   {
-    id: "your_story",
+    id: "your_story", num: 6,
     title: "Your Story",
-    description: "Credibilitatea ta. Ce ai trăit tu însuți.",
+    description: "Originea ta, dovezile tale, credibilitatea ta. Alimentează fiecare script.",
     fields: [
-      { key: "origin_story", label: "Povestea ta de origine — de unde ai pornit", placeholder: "Am ajuns la 120kg, bâlbâit, fără identitate...", textarea: true },
+      { key: "origin_story", label: "Povestea ta de origine", placeholder: "Am ajuns la 120kg, bâlbâit, fără identitate. Sportul m-a reconstruit.", textarea: true },
       { key: "biggest_transformation", label: "Cea mai mare transformare a ta", placeholder: "Am slăbit 40kg și am ajuns vicecampion național la atletism", textarea: true },
-      { key: "credibility", label: "Dovezi de credibilitate (titluri, ani, clienți, rezultate)", placeholder: "7 ani experiență, hibrid athlete, clienți cu -8kg în 11 săptămâni", textarea: true },
+      { key: "credibility", label: "Dovezi de credibilitate (titluri, ani, clienți, rezultate)", placeholder: "7 ani experiență, hibrid athlete, Alex -8kg în 11 săptămâni", textarea: true },
+      { key: "defining_moment", label: "Momentul care te-a definit ca coach", placeholder: "Prima dată când un client m-a sunat plângând că și-a schimbat viața" },
+      { key: "failure_story", label: "O eșuare majoră din care ai învățat", placeholder: "Am pierdut primul client pentru că nu aveam sistem de retenție.", textarea: true },
+      { key: "why_this_niche", label: "De ce bărbați 28-42 ani și nu altă nișă", placeholder: "Sunt eu acum 5 ani. Știu exact ce doare. Știu exact ce funcționează.", textarea: true },
     ],
   },
 ];
 
-function countFilled(data: OnboardingData): number {
-  return Object.values(data).filter((v) => v.trim().length > 0).length;
-}
-
-const TOTAL_FIELDS = Object.keys(EMPTY).length;
+const TOTAL_FIELDS = SECTIONS.reduce((sum, s) => sum + s.fields.length, 0);
 
 export default function OnboardingPage() {
   const [data, setData] = useState<OnboardingData>(EMPTY);
   const [openSection, setOpenSection] = useState<string>("who_you_are");
-  const [saved, setSaved] = useState(false);
+  const [aiSummary, setAiSummary] = useState<AiSummary | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [, startTransition] = useTransition();
 
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) setData(JSON.parse(stored));
-    } catch {
-      // ignore
-    }
+    loadOnboarding().then((saved) => {
+      if (saved && Object.keys(saved).length > 0) {
+        setData((prev) => ({ ...prev, ...saved }));
+        const rec = saved as Record<string, string>;
+        if (rec.ai_niche_summary) {
+          setAiSummary({
+            niche: rec.ai_niche_summary ?? "",
+            ideal_client: rec.ai_ideal_client_summary ?? "",
+          });
+        }
+      }
+    });
   }, []);
 
-  const update = (key: keyof OnboardingData, value: string) => {
+  const filledCount = Object.values(data).filter((v) => v?.trim().length > 0).length;
+  const progressPct = Math.round((filledCount / TOTAL_FIELDS) * 100);
+
+  const handleField = (key: keyof OnboardingData, value: string) => {
     setData((prev) => ({ ...prev, [key]: value }));
-    setSaved(false);
   };
 
   const handleSave = () => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-      setSaved(true);
-      setTimeout(() => setSaved(false), 3000);
-    } catch {
-      // ignore
-    }
+    setSaveStatus("saving");
+    startTransition(async () => {
+      const result = await saveOnboarding(data);
+      setSaveStatus(result.error ? "error" : "saved");
+      setTimeout(() => setSaveStatus("idle"), 3000);
+    });
   };
 
-  const filled = countFilled(data);
-  const pct = Math.round((filled / TOTAL_FIELDS) * 100);
-
-  const aiPreview = {
-    niche: data.philosophy || "Te ajut profesioniștii ocupați să-și reconstruiască corpul în 90 de zile fără să sacrifice cariera.",
-    idealClient: data.ideal_client || "Bărbați 28-42 ani, profesioniști/antreprenori cu corp uitat pe drum. Au burtă, frustrări, au mai eșuat. Au nevoie de sistem, nu motivație.",
+  const handleGenerateSummary = async () => {
+    setSummaryLoading(true);
+    const result = await generateAiSummary(data);
+    if (result.ok) setAiSummary(result.summary);
+    setSummaryLoading(false);
   };
+
+  const saveBtnLabel =
+    saveStatus === "saving" ? "Se salvează..." :
+    saveStatus === "saved" ? "✓ Salvat cu succes" :
+    saveStatus === "error" ? "Eroare — încearcă din nou" :
+    "Save & Update My AI";
 
   return (
-    <div className="p-8 max-w-[900px] mx-auto">
-      <div className="mb-6">
-        <p className="text-[11px] text-built-red font-mono uppercase tracking-widest mb-1">
-          Admin · My Profile
-        </p>
-        <h1 className="text-4xl font-display tracking-[0.06em] text-zinc-100">
-          ONBOARDING HUB
-        </h1>
-        <p className="text-zinc-500 text-sm mt-1">
-          Cu cât completezi mai mult, cu atât AI-ul devine mai precis. Revino și actualizează când ceva se schimbă.
-        </p>
+    <div className="max-w-3xl mx-auto px-6 py-10">
+      <div className="mb-8">
+        <p className="text-[11px] text-built-red font-mono uppercase tracking-widest mb-1">My Profile</p>
+        <h1 className="text-4xl font-display tracking-[0.06em] text-zinc-100 mb-1">ONBOARDING HUB</h1>
+        <p className="text-zinc-500 text-sm">Cu cât pui mai mult, cu atât AI-ul tău devine mai bun. Revino și actualizează oricând.</p>
       </div>
 
+      {/* Progress */}
       <div className="mb-6">
-        <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
-          <span>{filled} câmpuri completate</span>
-          <span>{pct}%</span>
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-sm text-zinc-400">{filledCount} câmpuri completate</span>
+          <span className="text-sm font-medium text-zinc-200">{progressPct}%</span>
         </div>
-        <div className="h-1.5 bg-white/5 rounded-full">
-          <div
-            className="h-full bg-built-red rounded-full transition-all"
-            style={{ width: `${pct}%` }}
-          />
+        <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
+          <div className="h-full bg-built-red rounded-full transition-all duration-500" style={{ width: `${progressPct}%` }} />
         </div>
       </div>
 
+      {/* Save button top */}
       <button
         onClick={handleSave}
-        className="w-full bg-zinc-200 text-zinc-900 text-[13px] font-semibold py-3 rounded-xl mb-6 hover:bg-white transition-colors"
+        disabled={saveStatus === "saving"}
+        className="w-full py-3 rounded-xl bg-zinc-100 text-zinc-900 font-semibold text-sm hover:bg-white transition-colors mb-6 disabled:opacity-60 flex items-center justify-center gap-2"
       >
-        {saved ? "✓ Salvat — AI-ul a fost actualizat" : "⟳ Save & Update My AI"}
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+          <polyline points="17 21 17 13 7 13 7 21" />
+          <polyline points="7 3 7 8 15 8" />
+        </svg>
+        {saveBtnLabel}
       </button>
 
-      {(data.philosophy || data.ideal_client) && (
-        <div className="bg-[#111111] border border-built-red/20 rounded-xl p-5 mb-6">
-          <p className="text-[10px] text-built-red font-mono uppercase tracking-widest mb-3">
-            AI Personalised
-          </p>
-          <div className="grid grid-cols-2 gap-4 text-[12px]">
+      {/* AI Personalised Panel */}
+      <div className="bg-built-red/5 border border-built-red/20 rounded-xl p-5 mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 rounded-full bg-built-red animate-pulse" />
+            <span className="text-[11px] font-semibold text-built-red tracking-widest uppercase">AI Personalizat</span>
+          </div>
+          <button
+            onClick={handleGenerateSummary}
+            disabled={summaryLoading}
+            className="text-[11px] text-zinc-400 hover:text-zinc-100 border border-white/10 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40"
+          >
+            {summaryLoading ? "Generez..." : "↺ Regenerează"}
+          </button>
+        </div>
+        {aiSummary ? (
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-zinc-600 uppercase tracking-widest text-[10px] font-mono mb-1">Nișă</p>
-              <p className="text-zinc-300 leading-relaxed">{aiPreview.niche}</p>
+              <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Nișa ta</p>
+              <p className="text-sm text-zinc-300 leading-relaxed">{aiSummary.niche}</p>
             </div>
             <div>
-              <p className="text-zinc-600 uppercase tracking-widest text-[10px] font-mono mb-1">Client Ideal</p>
-              <p className="text-zinc-300 leading-relaxed">{aiPreview.idealClient}</p>
+              <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Clientul tău ideal</p>
+              <p className="text-sm text-zinc-300 leading-relaxed">{aiSummary.ideal_client}</p>
             </div>
           </div>
-        </div>
-      )}
+        ) : (
+          <p className="text-sm text-zinc-600 text-center py-2">
+            Completează câmpurile de mai jos și apasă &quot;Regenerează&quot; pentru a vedea ce știe AI-ul despre tine.
+          </p>
+        )}
+      </div>
 
-      <div className="space-y-2">
+      {/* Sections */}
+      <div className="space-y-3">
         {SECTIONS.map((section) => {
-          const sectionFields = section.fields.map((f) => f.key as keyof OnboardingData);
-          const sectionFilled = sectionFields.filter((k) => data[k]?.trim().length > 0).length;
+          const filled = section.fields.filter((f) => data[f.key]?.trim().length > 0).length;
           const isOpen = openSection === section.id;
-
           return (
             <div key={section.id} className="bg-[#111111] border border-white/10 rounded-xl overflow-hidden">
               <button
-                className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors"
+                className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/5 transition-colors text-left"
                 onClick={() => setOpenSection(isOpen ? "" : section.id)}
               >
-                <div className="flex items-center gap-3">
-                  <span className="text-[11px] text-zinc-600 font-mono w-6 text-right">
-                    {sectionFilled}/{section.fields.length}
-                  </span>
-                  <span className="text-[13px] text-zinc-200 font-medium">{section.title}</span>
+                <span className="w-6 h-6 rounded-full bg-built-red/10 text-built-red text-[11px] font-bold flex items-center justify-center shrink-0">
+                  {section.num}
+                </span>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[13px] text-zinc-200 font-medium">{section.title}</span>
+                    <span className="text-[11px] text-zinc-600">{filled}/{section.fields.length} completate</span>
+                  </div>
+                  <p className="text-[11px] text-zinc-600 mt-0.5">{section.description}</p>
                 </div>
                 <span className={`text-zinc-500 transition-transform ${isOpen ? "rotate-90" : ""}`}>›</span>
               </button>
-
               {isOpen && (
-                <div className="px-5 pb-5 border-t border-white/5 pt-4 space-y-4">
-                  <p className="text-zinc-600 text-[12px]">{section.description}</p>
-                  {section.fields.map((field) => {
-                    const k = field.key as keyof OnboardingData;
-                    return (
+                <div className="px-5 pb-5 space-y-4 border-t border-white/5 pt-4">
+                  {section.fields.map((field) =>
+                    field.textarea ? (
                       <div key={field.key}>
-                        <label className="text-[11px] text-zinc-500 font-mono block mb-1.5">
-                          {field.label}
-                        </label>
-                        {"textarea" in field && field.textarea ? (
-                          <textarea
-                            value={data[k]}
-                            onChange={(e) => update(k, e.target.value)}
-                            placeholder={field.placeholder}
-                            rows={3}
-                            className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[12px] px-3 py-2 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-700 resize-none"
-                          />
-                        ) : (
-                          <input
-                            type="text"
-                            value={data[k]}
-                            onChange={(e) => update(k, e.target.value)}
-                            placeholder={field.placeholder}
-                            className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[12px] px-3 py-2 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-700"
-                          />
-                        )}
+                        <label className="block text-[11px] text-zinc-500 mb-1.5 font-medium">{field.label}</label>
+                        <textarea
+                          value={data[field.key]}
+                          onChange={(e) => handleField(field.key, e.target.value)}
+                          placeholder={field.placeholder}
+                          rows={3}
+                          className="w-full bg-built-black border border-white/10 rounded-lg px-3 py-2.5 text-sm text-zinc-200 placeholder-zinc-700 focus:outline-none focus:border-built-red/40 resize-none transition-colors"
+                        />
                       </div>
-                    );
-                  })}
+                    ) : (
+                      <div key={field.key}>
+                        <label className="block text-[11px] text-zinc-500 mb-1.5 font-medium">{field.label}</label>
+                        <input
+                          type="text"
+                          value={data[field.key]}
+                          onChange={(e) => handleField(field.key, e.target.value)}
+                          placeholder={field.placeholder}
+                          className="w-full bg-built-black border border-white/10 rounded-lg px-3 py-2.5 text-sm text-zinc-200 placeholder-zinc-700 focus:outline-none focus:border-built-red/40 transition-colors"
+                        />
+                      </div>
+                    )
+                  )}
                 </div>
               )}
             </div>
@@ -262,11 +303,13 @@ export default function OnboardingPage() {
         })}
       </div>
 
+      {/* Save button bottom */}
       <button
         onClick={handleSave}
-        className="w-full mt-6 bg-zinc-200 text-zinc-900 text-[13px] font-semibold py-3 rounded-xl hover:bg-white transition-colors"
+        disabled={saveStatus === "saving"}
+        className="w-full py-3 rounded-xl bg-zinc-100 text-zinc-900 font-semibold text-sm hover:bg-white transition-colors mt-8 disabled:opacity-60"
       >
-        {saved ? "✓ Salvat" : "⟳ Save & Update My AI"}
+        {saveBtnLabel}
       </button>
     </div>
   );
