@@ -60,6 +60,7 @@ export default function ClientDashboardPage() {
           { href: "/client/antrenamente", icon: "⚡", title: "Antrenamentul de azi", sub: "Vezi planul săptămânii" },
           { href: "/client/checkin", icon: "✓", title: "Check-in săptămânal", sub: "Trimite raportul săptămânii" },
           { href: "/client/nutritie", icon: "◉", title: "Plan nutrițional", sub: "Macros + mese zilnice" },
+          { href: "/client/module", icon: "📚", title: "Academia BUILT", sub: "Module educaționale" },
         ].map(item => (
           <Link key={item.href} href={item.href}
             className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all group">

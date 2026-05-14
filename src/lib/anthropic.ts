@@ -1,5 +1,7 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
+import { readCreierFromFile } from "@/lib/creier";
+import { getSupabaseServer } from "@/lib/supabase/server";
 
 /**
  * Modele BUILT — alocate pe tipul de task.
@@ -47,29 +49,68 @@ export function getAnthropicClient(): Anthropic {
  * la 1/10 din cost.
  */
 export function buildSystemBlocks(opts: {
-  creierJson: string;
+  creierJson?: string;
+  unifiedContext?: string;
   taskContext?: string;
 }): Anthropic.TextBlockParam[] {
+  const contextText = opts.unifiedContext
+    ? `# Context complet BUILT\n\n${opts.unifiedContext}`
+    : `# Creierul lui Claudiu — sursa de adevăr\n\nAcesta este JSON-ul complet cu identitatea, povestea, filosofia, ICP, vocea, dovezile sociale, obiectivele, oferta, liniile roșii și întrebările de calificare ale lui Claudiu. Folosește-l ca bază pentru orice output. Nu inventa fapte care nu sunt aici.\n\n\`\`\`json\n${opts.creierJson ?? ""}\n\`\`\``;
+
   const blocks: Anthropic.TextBlockParam[] = [
-    {
-      type: "text",
-      text: BUILT_IDENTITY_PROMPT,
-    },
-    {
-      type: "text",
-      text: `# Creierul lui Claudiu — sursa de adevăr\n\nAcesta este JSON-ul complet cu identitatea, povestea, filosofia, ICP, vocea, dovezile sociale, obiectivele, oferta, liniile roșii și întrebările de calificare ale lui Claudiu. Folosește-l ca bază pentru orice output. Nu inventa fapte care nu sunt aici.\n\n\`\`\`json\n${opts.creierJson}\n\`\`\``,
-      cache_control: { type: "ephemeral" },
-    },
+    { type: "text", text: BUILT_IDENTITY_PROMPT },
+    { type: "text", text: contextText, cache_control: { type: "ephemeral" } },
   ];
 
   if (opts.taskContext) {
-    blocks.push({
-      type: "text",
-      text: opts.taskContext,
-    });
+    blocks.push({ type: "text", text: opts.taskContext });
   }
 
   return blocks;
+}
+
+/**
+ * Adună toate sursele de context despre Claudiu într-un singur string.
+ * Ordinea: Creier (fundație) → Onboarding (profil live) → Date recente (context curent)
+ */
+export async function buildUnifiedContext(): Promise<string> {
+  const parts: string[] = [];
+
+  // 1. Creierul lui Claudiu — fundația
+  try {
+    const creier = await readCreierFromFile();
+    parts.push(`# CREIERUL LUI CLAUDIU (fundație filozofică + identitate)\n\`\`\`json\n${JSON.stringify(creier, null, 2)}\n\`\`\``);
+  } catch {}
+
+  // 2. Onboarding — profilul live completat de Claudiu
+  try {
+    const supabase = getSupabaseServer();
+    const { data: onboarding } = await supabase.from("onboarding").select("*").eq("id", 1).single();
+    if (onboarding) {
+      const filtered = Object.fromEntries(Object.entries(onboarding).filter(([k, v]) => v && !["id", "created_at", "updated_at"].includes(k)));
+      parts.push(`# PROFIL ONBOARDING (date completate de Claudiu)\n${Object.entries(filtered).map(([k, v]) => `- **${k}**: ${v}`).join("\n")}`);
+    }
+  } catch {}
+
+  // 3. Clienți activi — context real curent
+  try {
+    const supabase = getSupabaseServer();
+    const { data: clients } = await supabase.from("profiles").select("full_name, role, created_at").eq("role", "client").limit(10);
+    if (clients && clients.length > 0) {
+      parts.push(`# CLIENȚI ACTIVI (${clients.length} clienți)\n${clients.map((c) => `- ${c.full_name}`).join("\n")}`);
+    }
+  } catch {}
+
+  // 4. Conținut recent generat
+  try {
+    const supabase = getSupabaseServer();
+    const { data: reels } = await supabase.from("reels").select("hook, script, created_at").order("created_at", { ascending: false }).limit(5);
+    if (reels && reels.length > 0) {
+      parts.push(`# REELS RECENTE (ultimele ${reels.length} generate)\n${reels.map((r, i) => `${i + 1}. Hook: "${r.hook}"`).join("\n")}`);
+    }
+  } catch {}
+
+  return parts.join("\n\n---\n\n");
 }
 
 const BUILT_IDENTITY_PROMPT = `Ești CMO și arhitect de sisteme pentru "Metoda BUILT" — fondată de Iordache Claudiu.

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
-import { submitCheckin, updateClientStatus, type Client, type CheckIn, type ClientStatus } from "../actions";
+import { submitCheckin, updateClientStatus, type Client, type CheckIn, type ClientStatus, type ClientModule, getClientModules, saveClientModule, deleteClientModule } from "../actions";
 import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages } from "@/app/client/actions";
 
 const STATUS_OPTIONS: { id: ClientStatus; label: string }[] = [
@@ -15,6 +15,7 @@ const TABS = [
   { id: "checkin", label: "Check-in" },
   { id: "workout", label: "Plan Antrenament" },
   { id: "nutrition", label: "Plan Nutrițional" },
+  { id: "modules", label: "Module (Academia)" },
   { id: "messages", label: "Mesaje" },
 ];
 
@@ -154,6 +155,14 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
         <div className="p-6 bg-built-gray-1 border border-built-gray-2 rounded-sm">
           <h3 className="font-display text-xl tracking-wider mb-4">Plan Nutrițional</h3>
           <NutritionPlanEditor clientId={numericClientId} />
+        </div>
+      )}
+
+      {/* Tab: Module */}
+      {activeTab === "modules" && (
+        <div className="p-6 bg-built-gray-1 border border-built-gray-2 rounded-sm">
+          <h3 className="font-display text-xl tracking-wider mb-4">Module Educaționale</h3>
+          <ClientModuleManager clientId={numericClientId} />
         </div>
       )}
 
@@ -321,6 +330,106 @@ function AdminMessagesTab({ clientId }: { clientId: number }) {
           className="flex-1 bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-sm text-zinc-300 focus:outline-none" />
         <button onClick={handleSend} className="bg-built-red text-white px-4 py-2 rounded-lg text-sm font-semibold">→</button>
       </div>
+    </div>
+  );
+}
+
+function ClientModuleManager({ clientId }: { clientId: number }) {
+  const [modules, setModules] = useState<ClientModule[]>([]);
+  const [editing, setEditing] = useState<Partial<ClientModule> | null>(null);
+  const [saving, setSaving] = useState(false);
+
+  const fetchModules = () => getClientModules(clientId).then(setModules);
+  useEffect(() => { fetchModules(); }, [clientId]);
+
+  async function handleSave() {
+    if (!editing?.title || !editing?.content_html) return;
+    setSaving(true);
+    try {
+      const res = (await saveClientModule(clientId, editing)) as any;
+      if (res && res.ok === false) {
+        alert("Eroare la salvare: " + res.error);
+      } else {
+        setEditing(null);
+        await fetchModules();
+      }
+    } catch (e) {
+      alert("Eroare critică: " + (e instanceof Error ? e.message : "Necunoscută"));
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleDelete(id: number) {
+    if (!confirm("Sigur ștergi acest modul?")) return;
+    await deleteClientModule(clientId, id);
+    await fetchModules();
+  }
+
+  return (
+    <div className="space-y-6">
+      {!editing ? (
+        <>
+          <div className="grid grid-cols-1 gap-3">
+            {modules.map((m) => (
+              <div key={m.id} className="flex items-center justify-between p-4 bg-built-black border border-built-gray-2 rounded-sm group">
+                <div className="flex items-center gap-4">
+                  <span className="font-display text-2xl text-built-red opacity-50">M{m.module_number}</span>
+                  <div>
+                    <p className="font-display text-lg text-built-white tracking-wider">{m.title}</p>
+                    <p className="text-[10px] text-built-gray-text uppercase">
+                      {m.is_published ? "🟢 Publicat" : "🟡 Draft"} · {new Date(m.created_at).toLocaleDateString("ro-RO")}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button onClick={() => setEditing(m)} className="text-[10px] font-condensed uppercase text-built-white hover:text-built-red">Editează</button>
+                  <button onClick={() => handleDelete(m.id)} className="text-[10px] font-condensed uppercase text-built-gray-text hover:text-red-600">Șterge</button>
+                </div>
+              </div>
+            ))}
+          </div>
+          <button onClick={() => setEditing({ module_number: (modules[modules.length-1]?.module_number || 0) + 1, title: "", content_html: "", is_published: true })}
+            className="w-full py-4 border border-dashed border-built-gray-2 text-built-gray-text hover:border-built-red hover:text-built-red transition-colors font-condensed text-xs uppercase tracking-widest">
+            + Adaugă Modul Nou
+          </button>
+        </>
+      ) : (
+        <div className="p-6 bg-built-black border border-built-gray-2 rounded-sm space-y-4">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="col-span-1">
+              <label className="block font-condensed text-[10px] text-built-gray-text uppercase mb-1">Nr. Modul</label>
+              <input type="number" value={editing.module_number} onChange={e => setEditing({...editing, module_number: parseInt(e.target.value)})}
+                className="w-full bg-built-gray-1 border border-built-gray-2 p-2 text-sm text-built-white focus:border-built-red outline-none" />
+            </div>
+            <div className="col-span-3">
+              <label className="block font-condensed text-[10px] text-built-gray-text uppercase mb-1">Titlu Modul</label>
+              <input type="text" value={editing.title} onChange={e => setEditing({...editing, title: e.target.value})}
+                className="w-full bg-built-gray-1 border border-built-gray-2 p-2 text-sm text-built-white focus:border-built-red outline-none" placeholder="ex: Arhitectura Mentală" />
+            </div>
+          </div>
+          <div>
+            <label className="block font-condensed text-[10px] text-built-gray-text uppercase mb-1">Conținut HTML (Matteo Style)</label>
+            <textarea value={editing.content_html} onChange={e => setEditing({...editing, content_html: e.target.value})}
+              rows={12} className="w-full bg-built-gray-1 border border-built-gray-2 p-3 text-[11px] font-mono text-emerald-400/80 focus:border-built-red outline-none resize-none"
+              placeholder="Lipeste aici codul HTML complet generat de Claude..." />
+          </div>
+          <div className="flex items-center gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" checked={editing.is_published} onChange={e => setEditing({...editing, is_published: e.target.checked})} className="accent-built-red" />
+              <span className="font-condensed text-[10px] text-built-gray-text uppercase">Publicat</span>
+            </label>
+          </div>
+          <div className="flex gap-3 pt-2">
+            <button onClick={handleSave} disabled={saving} className="flex-1 bg-built-red hover:bg-built-red-dark text-built-white font-condensed text-xs py-2.5 uppercase tracking-wider">
+              {saving ? "Se salvează..." : "Salvează Modul"}
+            </button>
+            <button onClick={() => setEditing(null)} className="flex-1 border border-built-gray-2 text-built-gray-text font-condensed text-xs py-2.5 uppercase tracking-wider hover:bg-built-gray-2">
+              Anulează
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

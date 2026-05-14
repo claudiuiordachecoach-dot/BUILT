@@ -23,7 +23,6 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
   const pathname = request.nextUrl.pathname;
 
   // Public routes
@@ -31,24 +30,7 @@ export async function middleware(request: NextRequest) {
     return supabaseResponse;
   }
 
-  // Not authenticated → login
-  if (!user) {
-    return NextResponse.redirect(new URL('/login', request.url));
-  }
-
-  // Role-based routing
-  const { data: profile } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-
-  const role = profile?.role ?? 'client';
-
-  // Clientul este forțat să stea în zona de client
-  if (role === 'client' && !pathname.startsWith('/client')) {
-    return NextResponse.redirect(new URL('/client/dashboard', request.url));
-  }
+  // TEMP: auth fully disabled for testing
 
   // Adminul are acces peste tot (am eliminat redirecționarea forțată de pe /client)
 

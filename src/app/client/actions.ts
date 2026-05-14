@@ -67,6 +67,32 @@ export async function getClientDashboard() {
   };
 }
 
+export async function getClientModules() {
+  const clientId = await getClientId();
+  if (!clientId) return [];
+  const db = getSupabaseServer();
+  const { data } = await db
+    .from("client_modules")
+    .select("id, module_number, title, is_published, created_at")
+    .eq("client_id", clientId)
+    .eq("is_published", true)
+    .order("module_number", { ascending: true });
+  return data ?? [];
+}
+
+export async function getModuleContent(moduleId: number) {
+  const clientId = await getClientId();
+  if (!clientId) return null;
+  const db = getSupabaseServer();
+  const { data } = await db
+    .from("client_modules")
+    .select("*")
+    .eq("id", moduleId)
+    .eq("client_id", clientId) // Siguranță: doar dacă aparține clientului
+    .single();
+  return data;
+}
+
 export async function getWorkoutPlan() {
   const clientId = await getClientId();
   if (!clientId) return null;

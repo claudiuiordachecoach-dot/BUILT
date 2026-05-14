@@ -1,7 +1,6 @@
 "use server";
 
-import { getAnthropicClient, buildSystemBlocks, MODELS } from "@/lib/anthropic";
-import { readCreierFromFile } from "@/lib/creier";
+import { getAnthropicClient, buildSystemBlocks, buildUnifiedContext, MODELS } from "@/lib/anthropic";
 
 export type ChatMessage = {
   role: "user" | "assistant";
@@ -16,13 +15,11 @@ export async function sendChatMessage(
   messages: ChatMessage[]
 ): Promise<ChatResult> {
   try {
-    const creier = await readCreierFromFile();
-    const creierJson = JSON.stringify(creier, null, 2);
-
+    const unifiedContext = await buildUnifiedContext();
     const client = getAnthropicClient();
     const systemBlocks = buildSystemBlocks({
-      creierJson,
-      taskContext: `Ești Creierul BUILT — AI-ul personal al lui Iordache Claudiu, antrenat pe filozofia, metodologia și vocea lui. Răspunzi la întrebări despre conținut Instagram, DM-uri, clienți, strategie BUILT, apeluri de diagnostic, obiecții. Ești direct, matur, fără clișee. Folosești vocabularul BUILT: sistem, arhitectură, reconstrucție, protocol, piloni, execuție. Scrii în română, paragrafe scurte, bold pe cuvintele de impact.`,
+      unifiedContext,
+      taskContext: `Ești Creierul BUILT — AI-ul personal al lui Iordache Claudiu, antrenat pe filozofia, metodologia, vocea, profilul live și datele reale ale lui. Ai acces la: Creierul lui Claudiu (fundație), profilul de onboarding completat, clienții activi și conținutul recent generat. Răspunzi la întrebări despre conținut Instagram, DM-uri, clienți, strategie BUILT, apeluri de diagnostic, obiecții. Ești direct, matur, fără clișee. Folosești vocabularul BUILT: sistem, arhitectură, reconstrucție, protocol, piloni, execuție. Scrii în română, paragrafe scurte, bold pe cuvintele de impact.`,
     });
 
     const response = await client.messages.create({

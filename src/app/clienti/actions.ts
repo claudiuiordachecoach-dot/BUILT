@@ -13,6 +13,17 @@ export interface Client {
   status: ClientStatus; notes: string | null; created_at: string;
 }
 
+export interface ClientModule {
+  id: number;
+  client_id: number;
+  module_number: number;
+  title: string;
+  content_html: string;
+  is_published: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CheckIn {
   id: number; client_id: number; week_number: number;
   training_adherence: number; nutrition_adherence: number;
@@ -111,4 +122,55 @@ export async function updateClientStatus(id: number, status: ClientStatus) {
   await s.from("clients").update({ status }).eq("id", id);
   revalidatePath("/clienti");
   revalidatePath(`/clienti/${id}`);
+}
+
+// ── MODULE actions ──
+
+export async function getClientModules(clientId: number): Promise<ClientModule[]> {
+  const s = getSupabaseServer();
+  const { data, error } = await s.from("client_modules")
+    .select("*")
+    .eq("client_id", clientId)
+    .order("module_number", { ascending: true });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as ClientModule[];
+}
+
+export async function saveClientModule(clientId: number, moduleData: any) {
+  try {
+    // Folosim clientul standard (anon) deoarece am dezactivat RLS pe tabelă
+    const s = getSupabaseServer();
+    
+    const payload = {
+      title: moduleData.title,
+      module_number: Number(moduleData.module_number),
+      content_html: moduleData.content_html,
+      is_published: !!moduleData.is_published,
+      client_id: Number(clientId)
+    };
+
+    let result;
+    if (moduleData.id) {
+      result = await s.from("client_modules")
+        .update({ ...payload, updated_at: new Date().toISOString() })
+        .eq("id", moduleData.id);
+    } else {
+      result = await s.from("client_modules").insert(payload);
+    }
+
+    if (result.error) {
+      return { ok: false, error: result.error.message };
+    }
+
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare necunoscută la nivel de server" };
+  }
+}
+
+export async function deleteClientModule(clientId: number, moduleId: number) {
+  const s = getSupabaseServer();
+  const { error } = await s.from("client_modules").delete().eq("id", moduleId);
+  if (error) throw new Error(error.message);
+  revalidatePath(`/clienti/${clientId}`);
 }
