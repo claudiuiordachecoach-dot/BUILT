@@ -3,6 +3,8 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { scrapeInstagramReels } from "@/lib/apify";
+import { getAnthropicClient, buildSystemBlocks, MODELS } from "@/lib/anthropic";
+import { readCreierFromFile } from "@/lib/creier";
 
 const anthropic = new Anthropic();
 
@@ -157,4 +159,124 @@ Generează 6 scripturi (Luni-Sâmbătă). Fiecare script trebuie să fie în voc
   }
 
   return parsed;
+}
+
+export interface WeeklyScript {
+  day: string;
+  type: string;
+  hook: string;
+  full_script: string;
+  caption: string;
+  cta: string;
+}
+
+export interface WeeklyIntelligenceReport {
+  whats_popping: string[];
+  performance_last_week: string[];
+  accounts_to_watch: string[];
+}
+
+export interface WeeklyPackage {
+  week_of: string;
+  generated_at: string;
+  intelligence_report: WeeklyIntelligenceReport;
+  scripts: WeeklyScript[];
+}
+
+export async function generateWeeklyPackageAI(): Promise<{ ok: true; pkg: WeeklyPackage } | { ok: false; error: string }> {
+  try {
+    const supabase = getSupabaseServer();
+
+    // Ia reels competitori din ultimele 7 zile
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    const { data: competitorReels } = await supabase
+      .from("competitor_reels")
+      .select("competitor_handle, caption, views, likes, transcript")
+      .gte("posted_at", weekAgo)
+      .order("views", { ascending: false })
+      .limit(20);
+
+    const creier = await readCreierFromFile();
+    const creierJson = JSON.stringify(creier, null, 2);
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({ creierJson });
+
+    const competitorContext = competitorReels?.length
+      ? `REELS COMPETITORI (ultimele 7 zile, ordonate după views):\n${competitorReels.map((r, i) => `${i + 1}. @${r.competitor_handle} — ${r.views} views\nCaption: ${r.caption?.slice(0, 200)}\nTranscript: ${r.transcript?.slice(0, 300) ?? "N/A"}`).join("\n\n")}`
+      : "Nu există date de la competitori pentru această săptămână. Generează pe baza creierului BUILT.";
+
+    const prompt = `${competitorContext}
+
+Ești CMO pentru BUILT — metoda Iordache Claudiu. Generează pachetul săptămânal complet.
+
+Returnează STRICT un JSON cu această structură exactă (fără text în afara JSON-ului):
+
+{
+  "intelligence_report": {
+    "whats_popping": ["observație1", "observație2", "observație3", "observație4"],
+    "performance_last_week": ["format1 — analiză", "format2 — analiză", "format3 — analiză", "format4 — analiză", "format5 — analiză"],
+    "accounts_to_watch": ["@handle — motiv", "@handle — motiv", "@handle — motiv", "@handle — motiv", "@handle — motiv", "@handle — motiv"]
+  },
+  "scripts": [
+    {
+      "day": "Luni",
+      "type": "Talking Head",
+      "hook": "Hook-ul de deschidere — max 12 cuvinte, oprește scrollul",
+      "full_script": "Scriptul complet, 150-250 cuvinte, gata de filmat. Paragrafe scurte. Specific.",
+      "caption": "Caption-ul pentru Instagram, 2-3 propoziții, CTA inclus",
+      "cta": "Acțiunea exactă — ex: Scrie-mi ARHITECTURĂ în DM"
+    },
+    { "day": "Marți", "type": "Comparație", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." },
+    { "day": "Miercuri", "type": "Client Proof", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." },
+    { "day": "Joi", "type": "Lead Magnet", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." },
+    { "day": "Vineri", "type": "Controversă", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." },
+    { "day": "Sâmbătă", "type": "Question Hook", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." },
+    { "day": "Duminică", "type": "Story Time", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." }
+  ]
+}
+
+Reguli:
+- Vocea lui Claudiu: direct, matur, fără clișee fitness, vocabular BUILT
+- Fiecare script adresează un pilon BUILT
+- Hook: cifră specifică, declarație contraintuitivă sau oglindire directă a durerii
+- Full script: paragrafe scurte, propoziții scurte, specific, fără intro lungi
+- CTA: discret, ca un diagnostic nu ca o vânzare`;
+
+    const response = await client.messages.create({
+      model: MODELS.deep,
+      max_tokens: 4096,
+      system: systemBlocks,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("JSON invalid în răspuns AI");
+
+    const parsed = JSON.parse(jsonMatch[0]);
+    const weekOf = new Date().toISOString().slice(0, 10);
+
+    const pkg: WeeklyPackage = {
+      week_of: weekOf,
+      generated_at: new Date().toISOString(),
+      intelligence_report: parsed.intelligence_report,
+      scripts: parsed.scripts,
+    };
+
+    // Salvează în Supabase (best effort)
+    try {
+      await supabase.from("weekly_packages").upsert({
+        week_of: weekOf,
+        package_json: JSON.stringify(pkg),
+        created_at: new Date().toISOString(),
+      }, { onConflict: "week_of" });
+    } catch {
+      // Ignorăm eroarea de save — pachetul e valid chiar dacă salvarea eșuează
+    }
+
+    return { ok: true, pkg };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Eroare necunoscută";
+    return { ok: false, error: message };
+  }
 }
