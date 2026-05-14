@@ -8,12 +8,15 @@ import {
   scrapeCompetitors,
   getLatestWeeklyPackage,
   generateWeeklyPackage,
+  generateWeeklyPackageAI,
+  type WeeklyScript,
+  type WeeklyPackage,
 } from "./actions";
 
 const WEEKLY_TRENDS = [
   "Cortizolul de dimineață ca factor de stocare a grăsimii — pattern în creștere",
   "Conținut \"1 singur obicei\" primește cu 40% mai multe save-uri decât liste lungi",
-  "Hook-urile cu cifre specifice (&lt;10k followeri) funcționează mai bine decât declarațiile",
+  "Hook-urile cu cifre specifice (<10k followeri) funcționează mai bine decât declarațiile",
   "Video-urile de 45-60 secunde domină din nou după update-ul din Mai",
 ];
 
@@ -103,6 +106,73 @@ const STATUS_LABEL: Record<string, string> = {
   draft: "Draft",
   scheduled: "Programat",
 };
+
+function ScriptCard({ script, index }: { script: WeeklyScript; index: number }) {
+  const [open, setOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const DAY_COLORS = [
+    "bg-orange-500", "bg-purple-600", "bg-teal-600",
+    "bg-blue-600", "bg-red-600", "bg-emerald-600", "bg-amber-600",
+  ];
+
+  const copy = () => {
+    navigator.clipboard.writeText(
+      `HOOK:\n${script.hook}\n\nSCRIPT:\n${script.full_script}\n\nCAPTION:\n${script.caption}\n\nCTA: ${script.cta}`
+    );
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="bg-[#111111] border border-white/10 rounded-xl overflow-hidden">
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/5 transition-colors text-left"
+      >
+        <span className={`w-8 h-8 rounded-lg ${DAY_COLORS[index % 7]} flex items-center justify-center text-[10px] font-bold text-white shrink-0`}>
+          {script.day.slice(0, 2).toUpperCase()}
+        </span>
+        <div className="flex-1 min-w-0">
+          <p className="text-[10px] text-zinc-500 uppercase tracking-wider mb-0.5">{script.day} · {script.type}</p>
+          <p className="text-sm text-zinc-300 truncate">&ldquo;{script.hook}&rdquo;</p>
+        </div>
+        <span className={`text-zinc-500 transition-transform shrink-0 ${open ? "rotate-90" : ""}`}>›</span>
+      </button>
+
+      {open && (
+        <div className="px-5 pb-5 border-t border-white/5 space-y-4 pt-4">
+          <div>
+            <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-2">Hook</p>
+            <div className="border-l-2 border-built-red pl-3">
+              <p className="text-sm text-zinc-200 italic">&ldquo;{script.hook}&rdquo;</p>
+            </div>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-2">Full Script</p>
+            <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">{script.full_script}</p>
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-2">Caption</p>
+            <p className="text-sm text-zinc-400 leading-relaxed">{script.caption}</p>
+          </div>
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-1">CTA</p>
+              <p className="text-sm text-built-red font-medium">{script.cta}</p>
+            </div>
+            <button
+              onClick={copy}
+              className="text-[12px] text-zinc-400 hover:text-zinc-100 border border-white/10 px-3 py-1.5 rounded-lg transition-colors"
+            >
+              {copied ? "✓ Copiat" : "Copy"}
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
 
 function CompetitorsSection() {
   const [competitors, setCompetitors] = useState<{ id: number; handle: string }[]>([]);
@@ -245,6 +315,21 @@ function WeeklyScriptsSection() {
 
 export default function ContentPage() {
   const [openScript, setOpenScript] = useState<number | null>(0);
+  const [weeklyPackageAI, setWeeklyPackageAI] = useState<WeeklyPackage | null>(null);
+  const [generatingAI, setGeneratingAI] = useState(false);
+  const [aiError, setAiError] = useState("");
+
+  const handleGenerateAI = async () => {
+    setGeneratingAI(true);
+    setAiError("");
+    const result = await generateWeeklyPackageAI();
+    if (result.ok) {
+      setWeeklyPackageAI(result.pkg);
+    } else {
+      setAiError(result.error);
+    }
+    setGeneratingAI(false);
+  };
 
   return (
     <div className="p-8 max-w-[1400px] mx-auto">
@@ -428,11 +513,97 @@ export default function ContentPage() {
         </div>
       </div>
 
-      {/* Competitors + Weekly Scripts */}
+      {/* Competitors + Weekly Scripts (legacy) */}
       <div className="mt-8 space-y-6">
         <CompetitorsSection />
         <WeeklyScriptsSection />
       </div>
+
+      {/* THIS WEEK'S SCRIPTS — AI Generated */}
+      <section className="mt-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-[11px] font-semibold tracking-widest text-zinc-500 uppercase">
+            This Week&apos;s Scripts
+          </h2>
+          <button
+            onClick={handleGenerateAI}
+            disabled={generatingAI}
+            className="flex items-center gap-2 text-[12px] bg-[#111111] border border-white/10 px-4 py-2 rounded-lg hover:border-white/20 transition-colors disabled:opacity-50"
+          >
+            {generatingAI ? (
+              <>
+                <span className="w-3 h-3 border border-zinc-500 border-t-transparent rounded-full animate-spin" />
+                Generez...
+              </>
+            ) : (
+              <>⚡ Regenerate This Week</>
+            )}
+          </button>
+        </div>
+
+        {aiError && <p className="text-sm text-built-red mb-4">{aiError}</p>}
+
+        {weeklyPackageAI ? (
+          <div className="grid grid-cols-[200px,1fr] gap-6">
+            <div>
+              <p className="text-[10px] text-zinc-600 uppercase tracking-widest mb-3">Past Packages</p>
+              <div className="flex items-center gap-2 px-3 py-2 bg-built-red/10 border border-built-red/20 rounded-lg">
+                <span className="w-1.5 h-1.5 rounded-full bg-built-red" />
+                <span className="text-[12px] text-zinc-200">This week</span>
+              </div>
+            </div>
+            <div className="space-y-4">
+              <details className="bg-[#111111] border border-white/10 rounded-xl">
+                <summary className="px-5 py-4 cursor-pointer text-sm text-zinc-300 font-medium hover:text-zinc-100 flex items-center gap-2 list-none">
+                  <span className="text-built-red">→</span> Weekly Intelligence Report
+                </summary>
+                <div className="px-5 pb-5 border-t border-white/5 pt-4 space-y-4">
+                  <div>
+                    <p className="text-[10px] font-semibold text-built-red uppercase tracking-widest mb-2">Ce prinde săptămâna asta</p>
+                    <ul className="space-y-1.5">
+                      {weeklyPackageAI.intelligence_report.whats_popping.map((item, i) => (
+                        <li key={i} className="text-sm text-zinc-300 flex gap-2"><span className="text-built-red shrink-0">•</span>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Performanță săptămâna trecută</p>
+                    <ul className="space-y-1.5">
+                      {weeklyPackageAI.intelligence_report.performance_last_week.map((item, i) => (
+                        <li key={i} className="text-sm text-zinc-400 flex gap-2"><span className="text-zinc-600 shrink-0">•</span>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">6 Conturi de urmărit</p>
+                    <ul className="space-y-1.5">
+                      {weeklyPackageAI.intelligence_report.accounts_to_watch.map((item, i) => (
+                        <li key={i} className="text-sm text-zinc-400 flex gap-2"><span className="text-zinc-600 shrink-0">{i + 1}.</span>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </details>
+              <div className="space-y-2">
+                {weeklyPackageAI.scripts.map((script, i) => (
+                  <ScriptCard key={i} script={script} index={i} />
+                ))}
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-12 bg-[#111111] border border-white/10 rounded-xl text-zinc-600">
+            <p className="text-sm mb-3">Nu există scripturi AI pentru săptămâna aceasta.</p>
+            <button
+              onClick={handleGenerateAI}
+              disabled={generatingAI}
+              className="text-sm text-built-red hover:opacity-80 transition-opacity"
+            >
+              Generează primul pachet →
+            </button>
+          </div>
+        )}
+      </section>
     </div>
   );
 }
