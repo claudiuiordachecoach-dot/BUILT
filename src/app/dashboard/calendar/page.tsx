@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { generateMonthPlan, type GeneratedIdea } from "./actions";
+import { generateMonthPlan, generateHookForIdea, type GeneratedIdea } from "./actions";
 
 interface CalendarIdea {
   date: string;
@@ -45,6 +45,7 @@ export default function CalendarPage() {
   const [cta, setCta] = useState("DM ARHITECTURĂ");
   const [contentBrief, setContentBrief] = useState("");
   const [contentPillar, setContentPillar] = useState("B — Base Strength");
+  const [hookLoading, setHookLoading] = useState(false);
 
   useEffect(() => {
     try {
@@ -78,6 +79,18 @@ export default function CalendarPage() {
       saveIdeas([...ideas, ...newIdeas]);
     }
     setGenerating(false);
+  };
+
+  const handleGenerateHook = async () => {
+    if (!contentBrief.trim()) return;
+    setHookLoading(true);
+    const result = await generateHookForIdea({
+      format,
+      contentBrief,
+      contentPillar,
+    });
+    if (result.ok) setHook(result.hook);
+    setHookLoading(false);
   };
 
   const handleAddIdea = () => {
@@ -237,7 +250,17 @@ export default function CalendarPage() {
 
             <div className="space-y-3">
               <div>
-                <label className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono block mb-1">Hook *</label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono">Hook *</label>
+                  <button
+                    type="button"
+                    onClick={handleGenerateHook}
+                    disabled={hookLoading || !contentBrief.trim()}
+                    className="shrink-0 px-2.5 py-1 text-[10px] bg-built-red/10 border border-built-red/20 text-built-red rounded-lg hover:bg-built-red/20 transition-colors disabled:opacity-40 whitespace-nowrap"
+                  >
+                    {hookLoading ? "..." : "⚡ Generate"}
+                  </button>
+                </div>
                 <textarea
                   value={hook}
                   onChange={(e) => setHook(e.target.value)}

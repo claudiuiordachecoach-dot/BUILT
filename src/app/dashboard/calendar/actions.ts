@@ -90,3 +90,61 @@ Generează maxim ${Math.min(freeDates.length, 20)} idei.`;
     };
   }
 }
+
+export type HookResult =
+  | { ok: true; hook: string }
+  | { ok: false; error: string };
+
+export async function generateHookForIdea(opts: {
+  format: string;
+  contentBrief: string;
+  contentPillar: string;
+}): Promise<HookResult> {
+  try {
+    const client = getAnthropicClient();
+
+    let creierContext = "";
+    try {
+      const creier = await readCreierFromSupabase();
+      if (creier) {
+        creierContext = JSON.stringify(creier).slice(0, 800);
+      }
+    } catch {
+      // merge fara context
+    }
+
+    const prompt = `Ești CMO pentru BUILT (fitness coaching arhitectural, 90 zile, bărbați 28-42 ani).${
+      creierContext ? `\n\nContextul BUILT:\n${creierContext}` : ""
+    }
+
+Generează UN SINGUR hook pentru un reel Instagram BUILT.
+
+Format video: ${opts.format}
+Brief conținut: ${opts.contentBrief}
+Pilon BUILT: ${opts.contentPillar}
+
+Reguli pentru hook:
+- Max 12 cuvinte
+- Trebuie să oprească scrollul în 0-3 secunde
+- Variantele bune: cifră specifică + durere, declarație contraintuitivă, oglindire directă a situației clientului
+- Fără clișee fitness ("transformare", "journey", "secretul")
+- Vocea lui Claudiu: direct, matur, specific
+
+Returnează DOAR hook-ul, fără ghilimele, fără explicații.`;
+
+    const response = await client.messages.create({
+      model: MODELS.routine,
+      max_tokens: 60,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const hook =
+      response.content[0]?.type === "text"
+        ? response.content[0].text.trim()
+        : "";
+    return { ok: true, hook };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Eroare necunoscută";
+    return { ok: false, error: message };
+  }
+}
