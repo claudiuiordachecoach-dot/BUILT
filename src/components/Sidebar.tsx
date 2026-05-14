@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { usePathname } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
 import { NavItem } from "./NavItem";
@@ -145,9 +146,11 @@ const NAV: NavGroup[] = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const [collapsed, setCollapsed] = useState(false);
+  const [lightMode, setLightMode] = useState(false);
 
   return (
-    <aside className="w-16 shrink-0 flex flex-col h-screen sticky top-0 items-center">
+    <aside className={`${collapsed ? "w-12" : "w-16"} shrink-0 flex flex-col h-screen sticky top-0 items-center transition-all duration-200`}>
       {/* Logo — doar icon, fără wordmark */}
       <div className="h-16 flex items-center justify-center w-full">
         <BrandLogo variant="icon" />
@@ -179,9 +182,49 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="pb-4 pt-3 w-full flex flex-col items-center gap-2">
+      <div className="pb-4 pt-3 w-full flex flex-col items-center gap-1">
+        {/* Collapse toggle */}
+        <div className="relative group">
+          <button
+            onClick={() => setCollapsed(!collapsed)}
+            className="flex items-center justify-center w-10 h-10 rounded-xl text-zinc-600 hover:text-zinc-300 hover:bg-white/5 transition-all"
+            aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              {collapsed ? (
+                <polyline points="13 17 18 12 13 7" />
+              ) : (
+                <polyline points="11 17 6 12 11 7" />
+              )}
+            </svg>
+          </button>
+          <div className="pointer-events-none absolute left-14 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+            <div className="bg-[#1A1A1A] border border-white/10 text-zinc-100 text-xs font-medium px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-xl">
+              {collapsed ? "Expand" : "Collapse"}
+              <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#1A1A1A]" />
+            </div>
+          </div>
+        </div>
+        {/* Light mode toggle */}
+        <div className="relative group">
+          <button
+            onClick={() => setLightMode(!lightMode)}
+            className="flex items-center justify-center w-10 h-10 rounded-xl text-zinc-600 hover:text-zinc-300 hover:bg-white/5 transition-all"
+            aria-label={lightMode ? "Dark mode" : "Light mode"}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+            </svg>
+          </button>
+          <div className="pointer-events-none absolute left-14 top-1/2 -translate-y-1/2 z-50 opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+            <div className="bg-[#1A1A1A] border border-white/10 text-zinc-100 text-xs font-medium px-2.5 py-1.5 rounded-lg whitespace-nowrap shadow-xl">
+              {lightMode ? "Dark mode" : "Light mode"}
+              <span className="absolute right-full top-1/2 -translate-y-1/2 border-4 border-transparent border-r-[#1A1A1A]" />
+            </div>
+          </div>
+        </div>
         <SignOutButton iconOnly />
-        <span className="w-1.5 h-1.5 rounded-full bg-built-red" title="v0.2 · BUILT AI" />
+        <span className="w-1.5 h-1.5 rounded-full bg-built-red mt-1" title="v0.3 · BUILT AI" />
       </div>
     </aside>
   );
