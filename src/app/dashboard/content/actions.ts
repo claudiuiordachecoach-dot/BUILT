@@ -280,3 +280,54 @@ Reguli:
     return { ok: false, error: message };
   }
 }
+
+export async function generateSingleScript(
+  format: string,
+  pilon: string
+): Promise<{ ok: true; script: WeeklyScript } | { ok: false; error: string }> {
+  try {
+    const supabase = getSupabaseServer();
+    const { data: creierSections } = await supabase
+      .from("creier_sections")
+      .select("title, content")
+      .eq("status", "completed")
+      .order("order_index");
+    const creierContext = creierSections?.map((s: { title: string; content: unknown }) => `## ${s.title}\n${JSON.stringify(s.content)}`).join("\n\n") ?? "";
+
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({ creierJson: creierContext });
+
+    const prompt = `Generează un script complet pentru un Reel BUILT.
+
+FORMAT: ${format}
+PILON: ${pilon}
+
+Returnează STRICT un JSON (fără text în afara JSON):
+{
+  "day": "${format}",
+  "type": "${format}",
+  "hook": "Hook-ul de deschidere — max 12 cuvinte, oprește scrollul",
+  "full_script": "Scriptul complet, 150-250 cuvinte, gata de filmat. Paragrafe scurte. Specific.",
+  "caption": "Caption-ul pentru Instagram, 2-3 propoziții, CTA inclus",
+  "cta": "Acțiunea exactă — ex: Scrie-mi ARHITECTURĂ în DM"
+}
+
+Vocea lui Claudiu: direct, matur, fără clișee fitness, vocabular BUILT. Hook: cifră specifică, declarație contraintuitivă sau oglindire durere. Script: paragrafe scurte, propoziții scurte.`;
+
+    const response = await client.messages.create({
+      model: MODELS.routine,
+      max_tokens: 1500,
+      system: systemBlocks,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "";
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error("JSON invalid în răspuns AI");
+
+    const parsed = JSON.parse(jsonMatch[0]) as WeeklyScript;
+    return { ok: true, script: parsed };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Eroare" };
+  }
+}

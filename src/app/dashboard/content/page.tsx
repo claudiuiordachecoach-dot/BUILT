@@ -9,6 +9,7 @@ import {
   getLatestWeeklyPackage,
   generateWeeklyPackage,
   generateWeeklyPackageAI,
+  generateSingleScript,
   type WeeklyScript,
   type WeeklyPackage,
 } from "./actions";
@@ -313,11 +314,27 @@ function WeeklyScriptsSection() {
   );
 }
 
+type LocalScript = {
+  day: string;
+  theme: string;
+  hook: string;
+  body: string;
+  full_script?: string;
+  caption?: string;
+  cta: string;
+  status: string;
+};
+
 export default function ContentPage() {
   const [openScript, setOpenScript] = useState<number | null>(0);
   const [weeklyPackageAI, setWeeklyPackageAI] = useState<WeeklyPackage | null>(null);
   const [generatingAI, setGeneratingAI] = useState(false);
   const [aiError, setAiError] = useState("");
+  const [scripts, setScripts] = useState<LocalScript[]>(SCRIPTS);
+  const [genFormat, setGenFormat] = useState("Talking Head");
+  const [genPilon, setGenPilon] = useState("Pilon B — Base Strength");
+  const [genLoading, setGenLoading] = useState(false);
+  const [savedScripts, setSavedScripts] = useState<Set<number>>(new Set());
 
   const handleGenerateAI = async () => {
     setGeneratingAI(true);
@@ -352,7 +369,7 @@ export default function ContentPage() {
           <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-4">
             Scripturi săptămânale
           </p>
-          {SCRIPTS.map((script, i) => (
+          {scripts.map((script, i) => (
             <div
               key={i}
               className="bg-[#111111] border border-white/10 rounded-xl overflow-hidden"
@@ -435,14 +452,26 @@ export default function ContentPage() {
                     </div>
                   )}
                   <div className="flex gap-2 pt-1">
-                    <button className="text-[11px] bg-built-red/10 text-built-red border border-built-red/20 px-3 py-1.5 rounded-lg hover:bg-built-red/20 transition-colors">
+                    <button
+                      className="text-[11px] bg-built-red/10 text-built-red border border-built-red/20 px-3 py-1.5 rounded-lg hover:bg-built-red/20 transition-colors"
+                      onClick={async () => {
+                        const result = await generateSingleScript(script.theme.split(" — ")[0], "mix");
+                        if (result.ok) setScripts(prev => prev.map((s, idx) => idx === i ? { ...s, hook: result.script.hook, body: result.script.full_script, full_script: result.script.full_script, caption: result.script.caption, cta: result.script.cta } : s));
+                      }}
+                    >
                       ✦ Regenerează
                     </button>
-                    <button className="text-[11px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
+                    <button
+                      className="text-[11px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                      onClick={() => navigator.clipboard.writeText(`HOOK:\n${script.hook}\n\nSCRIPT:\n${script.body}\n\nCAPTION:\n${script.caption ?? ""}\n\nCTA: ${script.cta}`)}
+                    >
                       Copiază
                     </button>
-                    <button className="text-[11px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors">
-                      Salvează
+                    <button
+                      className="text-[11px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                      onClick={() => setSavedScripts(prev => new Set(prev).add(i))}
+                    >
+                      {savedScripts.has(i) ? "✓ Salvat" : "Salvează"}
                     </button>
                   </div>
                 </div>
@@ -471,22 +500,41 @@ export default function ContentPage() {
             <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">
               Generator scripturi noi
             </p>
-            <select className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-300 text-[12px] px-3 py-2 rounded-lg mb-2 focus:outline-none focus:border-built-red/40">
+            <select
+              value={genFormat}
+              onChange={e => setGenFormat(e.target.value)}
+              className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-300 text-[12px] px-3 py-2 rounded-lg mb-2 focus:outline-none focus:border-built-red/40"
+            >
               <option>Talking Head</option>
               <option>Rant</option>
               <option>Tutorial</option>
               <option>Behind the scenes</option>
               <option>Client proof</option>
             </select>
-            <select className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-300 text-[12px] px-3 py-2 rounded-lg mb-3 focus:outline-none focus:border-built-red/40">
+            <select
+              value={genPilon}
+              onChange={e => setGenPilon(e.target.value)}
+              className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-300 text-[12px] px-3 py-2 rounded-lg mb-3 focus:outline-none focus:border-built-red/40"
+            >
               <option>Pilon B — Base Strength</option>
               <option>Pilon U — Unbreakable Capacity</option>
               <option>Pilon I — Intelligent Fueling</option>
               <option>Pilon L — Lifestyle Integration</option>
               <option>Pilon T — Tough Mindset</option>
             </select>
-            <button className="w-full bg-built-red/10 text-built-red border border-built-red/20 text-[12px] py-2 rounded-lg hover:bg-built-red/20 transition-colors">
-              ✦ Generează Script
+            <button
+              disabled={genLoading}
+              onClick={async () => {
+                setGenLoading(true);
+                const result = await generateSingleScript(genFormat, genPilon);
+                if (result.ok) {
+                  setScripts(prev => [...prev, { day: "Nou", theme: `${genFormat} — ${genPilon}`, hook: result.script.hook, body: result.script.full_script, full_script: result.script.full_script, caption: result.script.caption, cta: result.script.cta, status: "draft" }]);
+                }
+                setGenLoading(false);
+              }}
+              className="w-full bg-built-red/10 text-built-red border border-built-red/20 text-[12px] py-2 rounded-lg hover:bg-built-red/20 transition-colors disabled:opacity-50"
+            >
+              {genLoading ? "Generează..." : "✦ Generează Script"}
             </button>
           </div>
 

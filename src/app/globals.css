@@ -10,6 +10,11 @@
   --color-built-red: #C0392B;
   --color-built-red-dark: #8B1A1A;
 
+  /* William-style blue accent pentru UI elements */
+  --color-brand-blue: #3b82f6;
+  --color-brand-blue-dark: #2563eb;
+  --color-brand-blue-muted: rgba(59, 130, 246, 0.1);
+
   /* Fonturi — variabile setate de next/font în layout.tsx */
   --font-display: var(--font-bebas-neue);
   --font-condensed: var(--font-barlow-condensed);

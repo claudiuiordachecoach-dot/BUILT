@@ -3,6 +3,15 @@
 import { useState } from "react";
 import { generateDmReply, saveDmTemplate } from "./actions";
 
+interface DailyEntry {
+  id: number;
+  prospect: string;
+  stage: string;
+  outcome: "pozitiv" | "neutru" | "negativ";
+  notes: string;
+  time: string;
+}
+
 const KPI_STATS = [
   { label: "DMs Trimise", value: "47", sub: "ultimele 7 zile" },
   { label: "Răspunsuri", value: "18", sub: "38.3% response rate" },
@@ -55,6 +64,9 @@ export default function OutreachPage() {
   const [context, setContext] = useState("");
   const [generatedReply, setGeneratedReply] = useState("");
   const [loading, setLoading] = useState(false);
+  const [dailyLog, setDailyLog] = useState<DailyEntry[]>([]);
+  const [showLogForm, setShowLogForm] = useState(false);
+  const [logForm, setLogForm] = useState({ prospect: "", stage: "initial_contact", outcome: "neutru" as DailyEntry["outcome"], notes: "" });
 
   const handleGenerate = async () => {
     if (!theirMessage.trim()) return;
@@ -236,7 +248,10 @@ export default function OutreachPage() {
                 >
                   Folosește
                 </button>
-                <button className="text-[11px] text-zinc-500 border border-white/10 px-2.5 py-1 rounded-lg hover:bg-white/5">
+                <button
+                  onClick={() => navigator.clipboard.writeText(t.preview)}
+                  className="text-[11px] text-zinc-500 border border-white/10 px-2.5 py-1 rounded-lg hover:bg-white/5"
+                >
                   Copiază
                 </button>
               </div>
@@ -246,13 +261,113 @@ export default function OutreachPage() {
       )}
 
       {activeTab === "daily" && (
-        <div className="bg-[#111111] border border-white/10 rounded-xl p-8 text-center">
-          <p className="text-zinc-600 text-sm">
-            Daily Log — adaugă conversațiile de azi pentru a urmări progresul
-          </p>
-          <button className="mt-4 text-[12px] text-built-red border border-built-red/20 px-4 py-2 rounded-lg hover:bg-built-red/10">
-            + Adaugă Conversație
-          </button>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono">
+              {dailyLog.length} conversații azi
+            </p>
+            <button
+              onClick={() => setShowLogForm(!showLogForm)}
+              className="text-[12px] text-built-red border border-built-red/20 px-4 py-2 rounded-lg hover:bg-built-red/10 transition-colors"
+            >
+              {showLogForm ? "Anulează" : "+ Adaugă Conversație"}
+            </button>
+          </div>
+
+          {showLogForm && (
+            <div className="bg-[#111111] border border-white/10 rounded-xl p-5 space-y-3">
+              <div>
+                <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1">Prospect</label>
+                <input
+                  value={logForm.prospect}
+                  onChange={(e) => setLogForm(f => ({ ...f, prospect: e.target.value }))}
+                  placeholder="Nume / @handle"
+                  className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-3 py-2 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600"
+                />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1">Stadiu</label>
+                  <select
+                    value={logForm.stage}
+                    onChange={(e) => setLogForm(f => ({ ...f, stage: e.target.value }))}
+                    className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-3 py-2 rounded-lg focus:outline-none"
+                  >
+                    {STAGES.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1">Outcome</label>
+                  <select
+                    value={logForm.outcome}
+                    onChange={(e) => setLogForm(f => ({ ...f, outcome: e.target.value as DailyEntry["outcome"] }))}
+                    className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-3 py-2 rounded-lg focus:outline-none"
+                  >
+                    <option value="pozitiv">Pozitiv</option>
+                    <option value="neutru">Neutru</option>
+                    <option value="negativ">Negativ</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1">Note</label>
+                <textarea
+                  value={logForm.notes}
+                  onChange={(e) => setLogForm(f => ({ ...f, notes: e.target.value }))}
+                  placeholder="Ce s-a întâmplat în conversație..."
+                  rows={2}
+                  className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-3 py-2 rounded-lg focus:outline-none placeholder:text-zinc-600 resize-none"
+                />
+              </div>
+              <button
+                onClick={() => {
+                  if (!logForm.prospect.trim()) return;
+                  setDailyLog(prev => [...prev, {
+                    id: Date.now(),
+                    prospect: logForm.prospect,
+                    stage: logForm.stage,
+                    outcome: logForm.outcome,
+                    notes: logForm.notes,
+                    time: new Date().toLocaleTimeString("ro-RO", { hour: "2-digit", minute: "2-digit" }),
+                  }]);
+                  setLogForm({ prospect: "", stage: "initial_contact", outcome: "neutru", notes: "" });
+                  setShowLogForm(false);
+                }}
+                disabled={!logForm.prospect.trim()}
+                className="w-full bg-built-red/10 text-built-red border border-built-red/20 py-2 rounded-lg text-[13px] font-medium hover:bg-built-red/20 disabled:opacity-40 transition-colors"
+              >
+                Salvează în Log
+              </button>
+            </div>
+          )}
+
+          {dailyLog.length === 0 && !showLogForm ? (
+            <div className="bg-[#111111] border border-white/10 rounded-xl p-8 text-center">
+              <p className="text-zinc-600 text-[12px]">Nicio conversație logată azi. Apasă &quot;+ Adaugă Conversație&quot;.</p>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {dailyLog.map((entry) => (
+                <div key={entry.id} className="bg-[#111111] border border-white/10 rounded-xl px-4 py-3 flex items-center gap-4">
+                  <span className={`w-2 h-2 rounded-full shrink-0 ${entry.outcome === "pozitiv" ? "bg-emerald-500" : entry.outcome === "negativ" ? "bg-built-red" : "bg-zinc-500"}`} />
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px] text-zinc-200 font-medium">{entry.prospect}</span>
+                      <span className="text-[10px] text-zinc-500 font-mono">{STAGES.find(s => s.value === entry.stage)?.label ?? entry.stage}</span>
+                    </div>
+                    {entry.notes && <p className="text-[11px] text-zinc-500 mt-0.5 truncate">{entry.notes}</p>}
+                  </div>
+                  <span className="text-[10px] text-zinc-600 font-mono shrink-0">{entry.time}</span>
+                  <button
+                    onClick={() => setDailyLog(prev => prev.filter(e => e.id !== entry.id))}
+                    className="text-zinc-700 hover:text-zinc-400 text-[16px] shrink-0"
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

@@ -6,10 +6,10 @@ import { analyzeReelCopy, type ReelCopyAnalysis } from "./actions";
 type Tab = "url" | "transcript" | "audio";
 
 const VERDICT_COLOR: Record<string, string> = {
-  Exceptional: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
-  Strong: "text-blue-400 bg-blue-400/10 border-blue-400/20",
-  Good: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
-  Weak: "text-built-red bg-built-red/10 border-built-red/20",
+  Exceptional: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+  Strong: "text-built-red bg-built-red/10 border-built-red/20",
+  Good: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
+  Weak: "text-red-400 bg-red-500/10 border-red-500/20",
 };
 
 export default function ReelCopyPage() {
@@ -44,7 +44,7 @@ export default function ReelCopyPage() {
   const TAB_STYLE = (t: Tab) =>
     `px-4 py-2 text-[12px] font-medium rounded-lg transition-colors ${
       tab === t
-        ? "bg-built-red/15 text-built-red border border-built-red/20"
+        ? "bg-built-red/10 text-built-red border border-built-red/20"
         : "text-zinc-500 hover:text-zinc-200 border border-transparent"
     }`;
 
@@ -134,13 +134,13 @@ export default function ReelCopyPage() {
           <button
             onClick={handleAnalyse}
             disabled={loading || transcript.trim().length < 30}
-            className="w-full mt-4 bg-built-red/10 text-built-red border border-built-red/20 py-3 rounded-lg text-[13px] font-medium hover:bg-built-red/20 transition-colors disabled:opacity-40"
+            className="w-full mt-4 bg-built-red hover:bg-built-red-dark text-white py-3 rounded-xl text-[13px] font-medium transition-colors disabled:opacity-40"
           >
             {loading ? "Analizez..." : "✦ Analyse Reel"}
           </button>
         )}
 
-        {error && <p className="mt-3 text-built-red text-[12px]">{error}</p>}
+        {error && <p className="mt-3 text-red-400 text-[12px]">{error}</p>}
       </div>
 
       {!analysis && !loading && (
@@ -169,6 +169,7 @@ export default function ReelCopyPage() {
 
       {analysis && (
         <div className="space-y-4">
+          {/* Verdict + Score row */}
           <div className="bg-[#111111] border border-white/10 rounded-xl p-5 flex items-center justify-between">
             <div>
               <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-1">Verdict</p>
@@ -178,52 +179,88 @@ export default function ReelCopyPage() {
             </div>
             <div className="text-right">
               <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-1">Score</p>
-              <p className="text-4xl font-display text-zinc-100">{analysis.score}</p>
+              <p className="text-5xl font-bold text-zinc-100">{analysis.score}</p>
             </div>
             <div className="text-right">
               <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-1">Hook Score</p>
-              <p className="text-4xl font-display text-zinc-100">{analysis.hook_score}</p>
+              <p className="text-5xl font-bold text-zinc-100">{analysis.hook_score}</p>
             </div>
           </div>
 
+          {/* 2 progress bars */}
           <div className="grid grid-cols-2 gap-4">
             <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-2">Performance</p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">Performance</p>
+                <p className="text-[12px] text-zinc-400 font-medium">{analysis.score}/100</p>
+              </div>
+              <div className="w-full bg-white/5 rounded-full h-1.5 mb-3">
+                <div
+                  className="bg-built-red h-1.5 rounded-full transition-all"
+                  style={{ width: `${Math.min(analysis.score, 100)}%` }}
+                />
+              </div>
               <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.performance_summary}</p>
             </div>
             <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-2">Script Quality</p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">Script Quality</p>
+                <p className="text-[12px] text-zinc-400 font-medium">{analysis.hook_score}/100</p>
+              </div>
+              <div className="w-full bg-white/5 rounded-full h-1.5 mb-3">
+                <div
+                  className="bg-built-red h-1.5 rounded-full transition-all"
+                  style={{ width: `${Math.min(analysis.hook_score, 100)}%` }}
+                />
+              </div>
               <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.script_quality}</p>
             </div>
           </div>
 
+          {/* 3 columns: HOOK | FIXING | CTA */}
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
+              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">Hook</p>
+              <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.what_worked?.[0] ?? "—"}</p>
+            </div>
+            <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
+              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">Fixing</p>
+              <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.what_worked?.[1] ?? "—"}</p>
+            </div>
+            <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
+              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">CTA</p>
+              <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.what_worked?.[2] ?? "—"}</p>
+            </div>
+          </div>
+
+          {/* Key Lessons */}
           <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">What Worked</p>
-            <ul className="space-y-2">
+            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">Key Lessons</p>
+            <ol className="space-y-2 list-none">
               {analysis.what_worked.map((item, i) => (
-                <li key={i} className="flex gap-2.5 text-[13px] text-zinc-300">
-                  <span className="text-built-red shrink-0 mt-0.5">▸</span>
+                <li key={i} className="flex gap-3 text-[13px] text-zinc-300">
+                  <span className="text-built-red font-mono shrink-0 mt-0.5">{String(i + 1).padStart(2, "0")}.</span>
                   {item}
                 </li>
               ))}
-            </ul>
+            </ol>
           </div>
 
-          <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-2">Audience Fit</p>
-            <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.audience_fit}</p>
-          </div>
-
-          <div className="bg-[#111111] border border-built-red/20 rounded-xl p-5 border-l-4 border-l-built-red">
+          {/* Adaptation Brief */}
+          <div className="bg-[#111111] border border-white/10 rounded-xl p-5 border-l-4 border-l-built-red">
             <p className="text-[10px] text-built-red font-mono uppercase tracking-widest mb-2">Adaptation Brief</p>
             <p className="text-zinc-200 text-[13px] leading-relaxed">{analysis.adaptation_brief}</p>
           </div>
 
-          <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-6">
+          {/* Suggested Hook */}
+          <div className="bg-built-red/5 border border-built-red/20 rounded-xl p-6">
             <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">Suggested Hook for Your Audience</p>
-            <p className="text-zinc-100 text-lg leading-relaxed font-medium">&ldquo;{analysis.suggested_hook}&rdquo;</p>
+            <p className="text-zinc-100 text-lg leading-relaxed italic">&ldquo;{analysis.suggested_hook}&rdquo;</p>
             <div className="flex gap-2 mt-4">
-              <button onClick={copyHook} className="text-[12px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5">
+              <button
+                onClick={copyHook}
+                className="text-[12px] text-built-red border border-built-red/20 bg-built-red/10 px-3 py-1.5 rounded-lg hover:bg-built-red/20 transition-colors"
+              >
                 {copied ? "✓ Copiat" : "Copy Hook"}
               </button>
               <button className="text-[12px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5">
@@ -232,6 +269,7 @@ export default function ReelCopyPage() {
             </div>
           </div>
 
+          {/* Transcript accordion */}
           <div className="bg-[#111111] border border-white/10 rounded-xl overflow-hidden">
             <button
               className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors"

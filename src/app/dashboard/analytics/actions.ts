@@ -103,16 +103,50 @@ export async function getTipOfWeek(): Promise<string> {
 }
 
 export async function listInstagramMedia(limit = 24) {
-  const supabase = await getSupabaseAuth();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return [];
+  const supabase = getSupabaseServer({ useServiceRole: true });
   const { data } = await supabase
     .from("instagram_media")
-    .select("*")
-    .eq("user_id", user.id)
+    .select("instagram_id, caption, views, likes, comments, posted_at, thumbnail_url, format_type")
     .order("posted_at", { ascending: false })
     .limit(limit);
-  return data ?? [];
+  return (data ?? []).map((m) => ({
+    instagram_id: m.instagram_id,
+    caption: m.caption,
+    views: m.views,
+    likes: m.likes,
+    comments: m.comments,
+    posted_at: m.posted_at,
+    thumbnail_url: m.thumbnail_url,
+    format_type: m.format_type,
+  }));
+}
+
+export async function syncMyReels(): Promise<{ ok: true; synced: number } | { ok: false; error: string }> {
+  try {
+    const reels = await scrapeInstagramReels("iordacheclaudiu_", 30);
+    if (reels.length === 0) return { ok: false, error: "Apify a returnat 0 reels — verifică APIFY_API_KEY." };
+    // Service role bypass-ează RLS — necesar pentru writes fără auth.uid()
+    const supabase = getSupabaseServer({ useServiceRole: true });
+    let synced = 0;
+    let lastError = "";
+    for (const reel of reels) {
+      const { error } = await supabase.from("instagram_media").upsert({
+        instagram_id: reel.id || `apify_${Date.now()}_${synced}`,
+        thumbnail_url: reel.thumbnailUrl,
+        caption: reel.caption,
+        views: reel.viewsCount,
+        likes: reel.likesCount,
+        comments: reel.commentsCount,
+        posted_at: reel.timestamp || new Date().toISOString(),
+      }, { onConflict: "instagram_id" });
+      if (!error) synced++;
+      else lastError = error.message;
+    }
+    if (synced === 0 && lastError) return { ok: false, error: `DB: ${lastError}` };
+    return { ok: true, synced };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Eroare necunoscută" };
+  }
 }
 
 export async function syncReelsFromApify(username: string) {
