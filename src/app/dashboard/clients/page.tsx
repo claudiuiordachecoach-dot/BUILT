@@ -60,7 +60,7 @@ export default async function ClientsDashboardPage() {
             {atRisk.map((c) => (
               <Link
                 key={c.id}
-                href={`/clienti/${c.id}`}
+                href={`/dashboard/clients/${c.id}`}
                 className="flex items-center gap-3 hover:text-orange-300 transition-colors"
               >
                 <span className="text-[13px] text-zinc-200">{c.name}</span>
@@ -91,7 +91,7 @@ export default async function ClientsDashboardPage() {
           {clients.map((c) => (
             <Link
               key={c.id}
-              href={`/clienti/${c.id}`}
+              href={`/dashboard/clients/${c.id}`}
               className="flex items-center justify-between p-4 bg-[#111111] border border-white/[0.08] hover:border-built-red/40 rounded-xl transition-colors"
             >
               <div>
