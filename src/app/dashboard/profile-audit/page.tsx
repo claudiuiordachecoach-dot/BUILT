@@ -34,6 +34,8 @@ export default function ProfileAuditPage() {
   const [error, setError] = useState("");
   const [openSection, setOpenSection] = useState<string | null>(null);
   const [copiedBio, setCopiedBio] = useState(false);
+  const [handle, setHandle] = useState("@iordacheclaudiu_");
+  const [followers, setFollowers] = useState("2780");
   const fileRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -59,8 +61,8 @@ export default function ProfileAuditPage() {
     setAudit(null);
 
     const result = await auditProfile({
-      handle: "@iordacheclaudiu_",
-      followers: "2780",
+      handle,
+      followers,
       screenshot_base64: imageBase64,
       screenshot_media_type: imageType,
       bio: "",
@@ -98,6 +100,35 @@ export default function ProfileAuditPage() {
         <p className="text-zinc-500 text-sm leading-relaxed">
           Take a screenshot of your Instagram profile from your phone and upload it below. Claude will score you out of 10 across 6 elements and tell you exactly what to fix.
         </p>
+      </div>
+
+      {/* Profile Info */}
+      <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-6 mb-4">
+        <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono mb-4">
+          Profile Info
+        </p>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="text-[11px] text-zinc-500 mb-1 block">Instagram Handle</label>
+            <input
+              type="text"
+              value={handle}
+              onChange={e => setHandle(e.target.value)}
+              placeholder="@username"
+              className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-[13px] text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-white/20"
+            />
+          </div>
+          <div>
+            <label className="text-[11px] text-zinc-500 mb-1 block">Followers</label>
+            <input
+              type="text"
+              value={followers}
+              onChange={e => setFollowers(e.target.value)}
+              placeholder="ex: 2780"
+              className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-[13px] text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-white/20"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Upload Section */}

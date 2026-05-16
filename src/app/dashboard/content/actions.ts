@@ -2,7 +2,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
-import { scrapeInstagramReels } from "@/lib/apify";
+import { scrapeInstagramReels, scrapeReelComments, type ApifyComment } from "@/lib/apify";
 import { getAnthropicClient, buildSystemBlocks, MODELS } from "@/lib/anthropic";
 import { readCreierFromFile } from "@/lib/creier";
 
@@ -39,6 +39,11 @@ export async function scrapeCompetitors() {
   for (const comp of competitors) {
     try {
       const reels = await scrapeInstagramReels(comp.handle, 10);
+
+      // Sortează după views și ia top 3 pentru comentarii
+      const sorted = [...reels].sort((a, b) => b.viewsCount - a.viewsCount);
+      const topReelUrls = new Set(sorted.slice(0, 3).map(r => r.url));
+
       for (const reel of reels) {
         let transcript: string | null = null;
         if (reel.videoUrl) {
@@ -46,6 +51,16 @@ export async function scrapeCompetitors() {
             transcript = await transcribeVideoUrl(reel.videoUrl);
           } catch {
             transcript = null;
+          }
+        }
+
+        // Comentarii doar pentru top 3 reeluri (economie de API calls)
+        let comments: ApifyComment[] = [];
+        if (topReelUrls.has(reel.url) && reel.url) {
+          try {
+            comments = await scrapeReelComments(reel.url, 30);
+          } catch {
+            comments = [];
           }
         }
 
@@ -58,6 +73,7 @@ export async function scrapeCompetitors() {
           likes: reel.likesCount,
           posted_at: reel.timestamp,
           transcript,
+          comments,
         }, { onConflict: "instagram_id" });
       }
       total += reels.length;
@@ -217,7 +233,7 @@ export async function generateWeeklyPackageAI(): Promise<{ ok: true; pkg: Weekly
     const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
     const { data: competitorReels } = await supabase
       .from("competitor_reels")
-      .select("competitor_handle, caption, views, likes, transcript")
+      .select("competitor_handle, caption, views, likes, transcript, comments")
       .gte("posted_at", weekAgo)
       .order("views", { ascending: false })
       .limit(20);
@@ -228,7 +244,11 @@ export async function generateWeeklyPackageAI(): Promise<{ ok: true; pkg: Weekly
     const systemBlocks = buildSystemBlocks({ creierJson });
 
     const competitorContext = competitorReels?.length
-      ? `REELS COMPETITORI (ultimele 7 zile, ordonate după views):\n${competitorReels.map((r, i) => `${i + 1}. @${r.competitor_handle} — ${r.views} views\nCaption: ${r.caption?.slice(0, 200)}\nTranscript: ${r.transcript?.slice(0, 300) ?? "N/A"}`).join("\n\n")}`
+      ? `REELS COMPETITORI (ultimele 7 zile, ordonate după views):\n${competitorReels.map((r, i) => {
+          const comments = Array.isArray(r.comments) ? r.comments as ApifyComment[] : [];
+          const topComments = comments.slice(0, 5).map((c: ApifyComment) => `  - "${c.text.slice(0, 120)}"`).join("\n");
+          return `${i + 1}. @${r.competitor_handle} — ${r.views} views\nCaption: ${r.caption?.slice(0, 200)}\nTranscript: ${r.transcript?.slice(0, 300) ?? "N/A"}${topComments ? `\nTop comentarii audiență:\n${topComments}` : ""}`;
+        }).join("\n\n")}`
       : "Nu există date de la competitori pentru această săptămână. Generează pe baza creierului BUILT.";
 
     // Feedback loop: top learnings din reels-urile proprii analizate
