@@ -40,7 +40,7 @@ const MAIN_ITEMS: NavEntry[] = [
   { label: "Content Studio",   href: "/dashboard/content",   icon: <Icons.star /> },
   { label: "Content Calendar", href: "/dashboard/calendar",  icon: <Icons.calendar /> },
   { label: "DM Sales",         href: "/dashboard/outreach",  icon: <Icons.message /> },
-  { label: "Ask BUILT AI",     href: "/dashboard/ai",        icon: <Icons.brain /> },
+  { label: "Ask BUILT AI",     href: "/dashboard/knowledge-base", icon: <Icons.brain /> },
 ];
 
 const TOOLS_ITEMS: NavEntry[] = [
@@ -52,7 +52,6 @@ const TOOLS_ITEMS: NavEntry[] = [
 const ADMIN_ITEMS: NavEntry[] = [
   { label: "Clients",          href: "/dashboard/clients",            icon: <Icons.users /> },
   { label: "Progress Reports", href: "/dashboard/progress-reports",   icon: <Icons.report /> },
-  { label: "Knowledge Base",   href: "/dashboard/knowledge-base",    icon: <Icons.book /> },
 ];
 
 function NavLink({ item, pathname, collapsed }: { item: NavEntry; pathname: string; collapsed: boolean }) {

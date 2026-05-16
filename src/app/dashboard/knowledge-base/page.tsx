@@ -65,7 +65,7 @@ export default function KnowledgeBasePage() {
       {/* Panel stânga */}
       <aside className="w-64 shrink-0 bg-[#0d0d0d] border-r border-white/10 flex flex-col">
         <div className="p-4 border-b border-white/10">
-          <h2 className="text-xs font-semibold text-zinc-400 tracking-widest uppercase mb-3">Knowledge Base</h2>
+          <h2 className="text-xs font-semibold text-zinc-400 tracking-widest uppercase mb-3">Ask BUILT AI</h2>
           <button onClick={newConversation}
             className="w-full bg-built-red/10 hover:bg-built-red/20 border border-built-red/30 text-built-red text-xs font-semibold py-2 rounded-lg transition-all">
             + Conversație nouă
