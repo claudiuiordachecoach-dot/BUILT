@@ -679,24 +679,38 @@ export default function CalendarPage() {
               </button>
             </div>
 
-            {selectedPost.thumbnail_url && (
-              <div className="rounded-lg overflow-hidden mb-4">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
+            {/* Thumbnail cu fallback — linkurile CDN Instagram expiră după câteva ore */}
+            <div className="rounded-lg overflow-hidden mb-4 bg-[#1a1a1a] min-h-[80px] flex items-center justify-center">
+              {selectedPost.thumbnail_url ? (
+                /* eslint-disable-next-line @next/next/no-img-element */
                 <img
-                  src={selectedPost.thumbnail_url}
+                  src={`/api/img-proxy?url=${encodeURIComponent(selectedPost.thumbnail_url)}`}
                   alt={selectedPost.caption ?? "reel"}
                   className="w-full object-cover max-h-60"
+                  onError={(e) => {
+                    const t = e.currentTarget;
+                    t.style.display = "none";
+                    t.nextElementSibling?.removeAttribute("style");
+                  }}
                 />
+              ) : null}
+              <span
+                className="text-zinc-600 text-[11px] font-mono"
+                style={selectedPost.thumbnail_url ? { display: "none" } : {}}
+              >
+                No preview
+              </span>
+            </div>
+
+            {selectedPost.caption && (
+              <div className="max-h-32 overflow-y-auto mb-4 pr-1">
+                <p className="text-zinc-400 text-[12px] leading-relaxed">
+                  {selectedPost.caption}
+                </p>
               </div>
             )}
 
-            {selectedPost.caption && (
-              <p className="text-zinc-400 text-[12px] leading-relaxed mb-4 line-clamp-3">
-                {selectedPost.caption}
-              </p>
-            )}
-
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-3 mb-4">
               {selectedPost.views != null && (
                 <div className="bg-[#1a1a1a] rounded-lg p-3 text-center">
                   <p className="text-white text-[15px] font-semibold">
@@ -721,6 +735,22 @@ export default function CalendarPage() {
                   <p className="text-zinc-600 text-[10px] mt-0.5">Comments</p>
                 </div>
               )}
+            </div>
+
+            {/* Action buttons — trimite spre uneltele reale */}
+            <div className="flex gap-2 pt-3 border-t border-white/[0.06]">
+              <a
+                href={`/dashboard/reel-copy?url=https://www.instagram.com/reel/${selectedPost.instagram_id}/`}
+                className="flex-1 text-center text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg py-2 hover:bg-white/5 transition-colors"
+              >
+                ✦ Analizează
+              </a>
+              <a
+                href={`/dashboard/content?hook=${encodeURIComponent(selectedPost.caption?.slice(0, 120) ?? "")}`}
+                className="flex-1 text-center text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg py-2 hover:bg-white/5 transition-colors"
+              >
+                ↻ Generează variație
+              </a>
             </div>
           </div>
         </div>
