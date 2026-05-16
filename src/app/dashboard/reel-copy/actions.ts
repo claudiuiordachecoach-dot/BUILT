@@ -131,7 +131,7 @@ export async function fetchReelByUrl(
 
   try {
     const runRes = await fetch(
-      `https://api.apify.com/v2/acts/apify~instagram-reel-scraper/runs?token=${apiKey}`,
+      `https://api.apify.com/v2/acts/apify~instagram-scraper/runs?token=${apiKey}`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },

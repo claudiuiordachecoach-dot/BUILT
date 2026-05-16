@@ -140,19 +140,41 @@ REGULA CRITICĂ: Răspunzi EXCLUSIV cu JSON valid. Nicio formatare markdown (fă
     try {
       audit = JSON.parse(jsonStr) as InstagramAudit;
     } catch {
-      // Sanitize unescaped control characters that break JSON
-      const cleaned = jsonStr.split('').map(c => {
-        const code = c.charCodeAt(0);
-        if (code === 10) return String.raw`\n`;
-        if (code === 13) return String.raw`\r`;
-        if (code === 9) return String.raw`\t`;
-        if (code < 32) return '';
-        return c;
-      }).join('');
+      // Sanitize unescaped control characters inside string literals only
+      let cleaned = "";
+      let inString = false;
+      let escape = false;
+      for (let i = 0; i < jsonStr.length; i++) {
+        const c = jsonStr[i];
+        if (inString) {
+          if (c === '\\') {
+            cleaned += c;
+            escape = !escape;
+          } else if (c === '"' && !escape) {
+            cleaned += c;
+            inString = false;
+            escape = false;
+          } else {
+            if (c === '\n') cleaned += "\\n";
+            else if (c === '\r') cleaned += "\\r";
+            else if (c === '\t') cleaned += "\\t";
+            else if (c.charCodeAt(0) < 32) {} // ignore other control chars
+            else cleaned += c;
+            escape = false;
+          }
+        } else {
+          if (c === '"') {
+            cleaned += c;
+            inString = true;
+          } else {
+            cleaned += c;
+          }
+        }
+      }
       try {
         audit = JSON.parse(cleaned) as InstagramAudit;
-      } catch {
-        return { ok: false, error: 'JSON malformat. Incearca din nou.' };
+      } catch (err) {
+        return { ok: false, error: 'JSON malformat. Incearca din nou. Detalii: ' + (err instanceof Error ? err.message : '') };
       }
     }
 
