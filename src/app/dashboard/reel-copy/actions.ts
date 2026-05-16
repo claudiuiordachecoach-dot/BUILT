@@ -3,6 +3,36 @@
 import { getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 
+export async function transcribeAudioFile(
+  base64: string,
+  mimeType: string
+): Promise<{ ok: true; transcript: string } | { ok: false; error: string }> {
+  const apiKey = process.env.ASSEMBLYAI_API_KEY;
+  if (!apiKey) return { ok: false, error: "ASSEMBLYAI_API_KEY lipsă." };
+
+  try {
+    // Convertim base64 în buffer și uploadăm la AssemblyAI
+    const buffer = Buffer.from(base64, "base64");
+    const uploadRes = await fetch("https://api.assemblyai.com/v2/upload", {
+      method: "POST",
+      headers: {
+        authorization: apiKey,
+        "content-type": mimeType,
+        "transfer-encoding": "chunked",
+      },
+      body: buffer,
+    });
+    if (!uploadRes.ok) throw new Error(`AssemblyAI upload error: ${uploadRes.status}`);
+    const { upload_url } = await uploadRes.json();
+
+    const { transcribeVideoUrl } = await import("@/lib/assemblyai");
+    const transcript = await transcribeVideoUrl(upload_url);
+    return { ok: true, transcript };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Eroare la transcriere." };
+  }
+}
+
 export interface ReelCopyAnalysis {
   verdict: "Exceptional" | "Strong" | "Good" | "Weak";
   score: number;

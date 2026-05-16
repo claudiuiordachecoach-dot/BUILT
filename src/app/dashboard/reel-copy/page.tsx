@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { analyzeReelCopy, fetchReelByUrl, type ReelCopyAnalysis } from "./actions";
+import { useState, useRef } from "react";
+import { analyzeReelCopy, fetchReelByUrl, transcribeAudioFile, type ReelCopyAnalysis } from "./actions";
 
 type Tab = "url" | "transcript" | "audio";
 
@@ -33,6 +33,9 @@ export default function ReelCopyPage() {
   const [error, setError] = useState("");
   const [showTranscript, setShowTranscript] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [audioFile, setAudioFile] = useState<File | null>(null);
+  const [transcribing, setTranscribing] = useState(false);
+  const audioRef = useRef<HTMLInputElement>(null);
 
   const handleAnalyse = async () => {
     if (transcript.trim().length < 30) return;
@@ -58,11 +61,11 @@ export default function ReelCopyPage() {
       setError(fetched.error);
       return;
     }
-    const combined = `Caption: ${fetched.caption}\nViews: ${fetched.views} | Likes: ${fetched.likes}`;
-    setTranscript(combined);
+    const text = fetched.transcript || fetched.caption;
+    setTranscript(text);
     setLoading(true);
     setAnalysis(null);
-    const result = await analyzeReelCopy(combined);
+    const result = await analyzeReelCopy(text);
     if (result.ok) {
       setAnalysis(result.analysis);
     } else {
@@ -165,16 +168,54 @@ export default function ReelCopyPage() {
 
         {/* Audio Tab */}
         {tab === "audio" && (
-          <div className="bg-[#111111] border border-white/10 rounded-lg p-8 text-center">
-            <p className="text-zinc-500 text-[13px] mb-1">Upload Audio — Coming Soon</p>
-            <p className="text-zinc-700 text-[12px] mb-4">
-              Audio file support is on the roadmap.
+          <div className="bg-[#111111] border border-white/10 rounded-lg p-6">
+            <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono mb-4">
+              Upload Audio / Video
             </p>
             <button
-              onClick={() => setTab("transcript")}
-              className="text-[12px] text-zinc-400 border border-white/10 px-4 py-2 rounded-lg hover:bg-white/5 transition-colors"
+              onClick={() => audioRef.current?.click()}
+              className="w-full border border-dashed border-white/20 rounded-xl py-10 flex flex-col items-center gap-3 hover:border-white/40 transition-colors mb-4"
             >
-              Use Paste Transcript instead
+              <svg className="w-7 h-7 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+              </svg>
+              {audioFile
+                ? <p className="text-zinc-300 text-[13px] font-medium">{audioFile.name}</p>
+                : <p className="text-zinc-400 text-[13px]">MP3, MP4, M4A, WAV, MOV</p>
+              }
+            </button>
+            <input
+              ref={audioRef}
+              type="file"
+              accept="audio/*,video/*"
+              className="hidden"
+              onChange={e => setAudioFile(e.target.files?.[0] ?? null)}
+            />
+            <button
+              onClick={async () => {
+                if (!audioFile) return;
+                setTranscribing(true);
+                setError("");
+                const reader = new FileReader();
+                reader.onload = async () => {
+                  const base64 = (reader.result as string).split(",")[1];
+                  const res = await transcribeAudioFile(base64, audioFile.type || "audio/mpeg");
+                  setTranscribing(false);
+                  if (!res.ok) { setError(res.error); return; }
+                  setTranscript(res.transcript);
+                  setLoading(true);
+                  setAnalysis(null);
+                  const analysis = await analyzeReelCopy(res.transcript);
+                  if (analysis.ok) setAnalysis(analysis.analysis);
+                  else setError(analysis.error);
+                  setLoading(false);
+                };
+                reader.readAsDataURL(audioFile);
+              }}
+              disabled={!audioFile || transcribing || loading}
+              className="w-full bg-built-red text-white py-3 rounded-lg text-[13px] font-medium hover:bg-built-red/80 transition-colors disabled:opacity-40"
+            >
+              {transcribing ? "Se transcrie..." : loading ? "Se analizează..." : "Transcrie și Analizează"}
             </button>
           </div>
         )}
