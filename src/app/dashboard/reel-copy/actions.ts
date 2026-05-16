@@ -91,17 +91,15 @@ Verdict scale: Exceptional (90-100), Strong (75-89), Good (60-74), Weak (sub 60)
 
 export async function fetchReelByUrl(
   url: string
-): Promise<{ ok: true; caption: string; views: number; likes: number } | { ok: false; error: string }> {
+): Promise<{ ok: true; transcript: string; caption: string; views: number; likes: number } | { ok: false; error: string }> {
   const apiKey = process.env.APIFY_API_KEY;
   if (!apiKey) return { ok: false, error: "APIFY_API_KEY lipsă." };
 
-  // Extract shortcode from URL
   const match = url.match(/\/(reel|p)\/([A-Za-z0-9_-]+)/);
   const shortcode = match?.[2];
   if (!shortcode) return { ok: false, error: "URL invalid. Exemplu: https://www.instagram.com/reel/ABC123/" };
 
   try {
-    // Start Apify run
     const runRes = await fetch(
       `https://api.apify.com/v2/acts/apify~instagram-reel-scraper/runs?token=${apiKey}`,
       {
@@ -115,7 +113,6 @@ export async function fetchReelByUrl(
     const runId = run.data?.id;
     if (!runId) throw new Error("Nu s-a obținut run ID de la Apify.");
 
-    // Poll until done (max 90s)
     let datasetId = "";
     for (let i = 0; i < 18; i++) {
       await new Promise(r => setTimeout(r, 5000));
@@ -137,8 +134,20 @@ export async function fetchReelByUrl(
     const caption = String(item.caption ?? item.description ?? "").slice(0, 3000);
     const views = Number(item.videoViewCount ?? item.viewsCount ?? 0);
     const likes = Number(item.likesCount ?? 0);
+    const videoUrl = String(item.videoUrl ?? item.videoUrlList?.[0] ?? item.video_url ?? "");
 
-    return { ok: true, caption, views, likes };
+    // Transcriere audio reală cu AssemblyAI — dacă nu avem videoUrl, fallback la caption
+    let transcript = caption;
+    if (videoUrl) {
+      try {
+        const { transcribeVideoUrl } = await import("@/lib/assemblyai");
+        transcript = await transcribeVideoUrl(videoUrl);
+      } catch {
+        transcript = caption;
+      }
+    }
+
+    return { ok: true, transcript, caption, views, likes };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Eroare necunoscută." };
   }

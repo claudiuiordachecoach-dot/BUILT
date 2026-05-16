@@ -1,6 +1,7 @@
 export type ApifyReel = {
   id: string;
   url: string;
+  videoUrl: string;
   thumbnailUrl: string;
   caption: string;
   viewsCount: number;
@@ -68,6 +69,7 @@ export async function scrapeInstagramProfile(username: string, limit = 0): Promi
   const reels = (items ?? []).map((item: Record<string, unknown>) => ({
     id: String(item.id ?? item.shortCode ?? ""),
     url: String(item.url ?? ""),
+    videoUrl: String(item.videoUrl ?? (Array.isArray(item.videoUrlList) ? item.videoUrlList[0] : undefined) ?? item.video_url ?? ""),
     thumbnailUrl: String(item.displayUrl ?? item.thumbnailUrl ?? ""),
     caption: String(item.caption ?? ""),
     viewsCount: Number(item.videoViewCount ?? item.viewsCount ?? 0),

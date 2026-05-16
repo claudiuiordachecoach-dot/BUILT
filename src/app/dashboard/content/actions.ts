@@ -33,11 +33,22 @@ export async function scrapeCompetitors() {
   const { data: competitors } = await supabase.from("competitors").select("handle");
   if (!competitors?.length) return { scraped: 0 };
 
+  const { transcribeVideoUrl } = await import("@/lib/assemblyai");
+
   let total = 0;
   for (const comp of competitors) {
     try {
       const reels = await scrapeInstagramReels(comp.handle, 10);
       for (const reel of reels) {
+        let transcript: string | null = null;
+        if (reel.videoUrl) {
+          try {
+            transcript = await transcribeVideoUrl(reel.videoUrl);
+          } catch {
+            transcript = null;
+          }
+        }
+
         await supabase.from("competitor_reels").upsert({
           competitor_handle: comp.handle,
           instagram_id: reel.id,
@@ -46,7 +57,7 @@ export async function scrapeCompetitors() {
           views: reel.viewsCount,
           likes: reel.likesCount,
           posted_at: reel.timestamp,
-          transcript: null,
+          transcript,
         }, { onConflict: "instagram_id" });
       }
       total += reels.length;
