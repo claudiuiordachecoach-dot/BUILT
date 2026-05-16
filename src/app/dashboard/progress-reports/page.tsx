@@ -48,7 +48,7 @@ export default async function ProgressReportsPage() {
                 </p>
               </div>
               <Link
-                href={`/clienti/${client.id}`}
+                href={`/dashboard/clients/${client.id}`}
                 className="text-[12px] text-zinc-500 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
               >
                 Profil complet →
