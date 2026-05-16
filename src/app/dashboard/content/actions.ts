@@ -4,7 +4,7 @@ import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { scrapeInstagramReels, scrapeReelComments, type ApifyComment } from "@/lib/apify";
 import { getAnthropicClient, buildSystemBlocks, MODELS } from "@/lib/anthropic";
-import { readCreierFromFile } from "@/lib/creier";
+import { readCreierFromSupabase } from "@/lib/creier";
 
 const anthropic = new Anthropic();
 
@@ -238,7 +238,7 @@ export async function generateWeeklyPackageAI(): Promise<{ ok: true; pkg: Weekly
       .order("views", { ascending: false })
       .limit(20);
 
-    const creier = await readCreierFromFile();
+    const creier = await readCreierFromSupabase();
     const creierJson = JSON.stringify(creier, null, 2);
     const client = getAnthropicClient();
     const systemBlocks = buildSystemBlocks({ creierJson });
