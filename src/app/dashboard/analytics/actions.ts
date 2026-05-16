@@ -3,7 +3,7 @@
 import { getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
-import { scrapeInstagramReels } from "@/lib/apify";
+import { scrapeInstagramProfile } from "@/lib/apify";
 
 export interface ContentLibraryAnalysis {
   verdict: "Exceptional" | "Strong" | "Good" | "Weak";
@@ -72,6 +72,28 @@ Verdict: Exceptional (90-100), Strong (75-89), Good (60-74), Weak (sub 60).`;
   }
 }
 
+export async function saveReelAnalysis(
+  instagramId: string,
+  analysis: ContentLibraryAnalysis
+): Promise<void> {
+  const supabase = getSupabaseServer({ useServiceRole: true });
+  await supabase
+    .from("instagram_media")
+    .update({ ai_analysis: analysis })
+    .eq("instagram_id", instagramId);
+}
+
+export async function getTopLearnings(limit = 5): Promise<ContentLibraryAnalysis[]> {
+  const supabase = getSupabaseServer({ useServiceRole: true });
+  const { data } = await supabase
+    .from("instagram_media")
+    .select("ai_analysis, views")
+    .not("ai_analysis", "is", null)
+    .order("views", { ascending: false })
+    .limit(limit);
+  return (data ?? []).map((r) => r.ai_analysis as ContentLibraryAnalysis);
+}
+
 export async function getTipOfWeek(): Promise<string> {
   const supabase = getSupabaseServer();
   const { data } = await supabase
@@ -102,7 +124,7 @@ export async function getTipOfWeek(): Promise<string> {
   return text;
 }
 
-export async function listInstagramMedia(limit = 24) {
+export async function listInstagramMedia(limit = 200) {
   const supabase = getSupabaseServer({ useServiceRole: true });
   const { data } = await supabase
     .from("instagram_media")
@@ -121,31 +143,140 @@ export async function listInstagramMedia(limit = 24) {
   }));
 }
 
-export async function syncMyReels(): Promise<{ ok: true; synced: number } | { ok: false; error: string }> {
+export async function getFollowersCount(): Promise<number | null> {
+  const supabase = getSupabaseServer({ useServiceRole: true });
+  const { data } = await supabase
+    .from("creier_metadata")
+    .select("value")
+    .eq("key", "instagram_followers")
+    .single();
+  return data?.value?.count ?? null;
+}
+
+const FORMAT_TYPES = ["TALKING HEAD", "RANT", "TUTORIAL", "STORY TIME", "TREND", "LIST", "CLIENT PROOF", "BEHIND SCENES", "Q&A"] as const;
+type FormatType = typeof FORMAT_TYPES[number];
+
+async function classifyFormats(captions: { id: string; caption: string }[]): Promise<Record<string, FormatType>> {
+  if (captions.length === 0) return {};
+  const client = getAnthropicClient();
+
+  const prompt = `Clasifică fiecare reel de Instagram după format. Răspunde STRICT cu un JSON obiect { "id": "FORMAT" }.
+
+Formate valide: ${FORMAT_TYPES.join(", ")}
+
+Reguli:
+- TALKING HEAD: persoana vorbește direct la cameră, opinie/perspectivă personală
+- RANT: critică directă, contradicție, provocare la status quo
+- TUTORIAL: pași concreți, "cum să faci", instrucțiuni practice
+- STORY TIME: narațiune personală, experiență, poveste
+- TREND: audio/trend viral, remix, adaptare la tendință
+- LIST: enumerare de sfaturi/elemente ("X motive pentru...", "Top 5...")
+- CLIENT PROOF: rezultate client, testimonial, transformare
+- BEHIND SCENES: culise, zi din viață, proces, setup
+- Q&A: răspuns la întrebare, "m-ai întrebat...", feedback la comentarii
+
+Reels de clasificat:
+${captions.map(r => `ID: ${r.id}\nCaption: ${r.caption.slice(0, 200)}`).join("\n\n")}
+
+Răspunde STRICT cu JSON (fără text în afară):`;
+
   try {
-    const reels = await scrapeInstagramReels("iordacheclaudiu_", 30);
+    const resp = await client.messages.create({
+      model: "claude-haiku-4-5-20251001",
+      max_tokens: 1024,
+      messages: [{ role: "user", content: prompt }],
+    });
+    const text = resp.content[0].type === "text" ? resp.content[0].text : "";
+    const match = text.match(/\{[\s\S]*\}/);
+    if (!match) return {};
+    const raw = JSON.parse(match[0]) as Record<string, string>;
+    const result: Record<string, FormatType> = {};
+    for (const [id, fmt] of Object.entries(raw)) {
+      const upper = (fmt as string).toUpperCase() as FormatType;
+      result[id] = FORMAT_TYPES.includes(upper) ? upper : "TALKING HEAD";
+    }
+    return result;
+  } catch {
+    return {};
+  }
+}
+
+export async function syncMyReels(): Promise<{ ok: true; synced: number; followers: number | null } | { ok: false; error: string }> {
+  try {
+    const { reels, followersCount } = await scrapeInstagramProfile("iordacheclaudiu_", 0);
     if (reels.length === 0) return { ok: false, error: "Apify a returnat 0 reels — verifică APIFY_API_KEY." };
-    // Service role bypass-ează RLS — necesar pentru writes fără auth.uid()
     const supabase = getSupabaseServer({ useServiceRole: true });
+
+    if (followersCount && followersCount > 0) {
+      await supabase.from("creier_metadata").upsert({
+        key: "instagram_followers",
+        value: { count: followersCount, updated_at: new Date().toISOString() }
+      });
+    }
+
+    // Clasifică formatele în batch (un singur call Claude Haiku)
+    const toClassify = reels
+      .filter(r => r.caption?.trim())
+      .map(r => ({ id: r.id || "", caption: r.caption }));
+    const formats = await classifyFormats(toClassify);
+
     let synced = 0;
     let lastError = "";
     for (const reel of reels) {
+      const id = reel.id || `apify_${Date.now()}_${synced}`;
       const { error } = await supabase.from("instagram_media").upsert({
-        instagram_id: reel.id || `apify_${Date.now()}_${synced}`,
+        instagram_id: id,
         thumbnail_url: reel.thumbnailUrl,
         caption: reel.caption,
         views: reel.viewsCount,
         likes: reel.likesCount,
         comments: reel.commentsCount,
         posted_at: reel.timestamp || new Date().toISOString(),
+        format_type: formats[reel.id || ""] ?? "TALKING HEAD",
       }, { onConflict: "instagram_id" });
       if (!error) synced++;
       else lastError = error.message;
     }
     if (synced === 0 && lastError) return { ok: false, error: `DB: ${lastError}` };
-    return { ok: true, synced };
+    return { ok: true, synced, followers: followersCount };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Eroare necunoscută" };
+  }
+}
+
+// Reclasifică reels existente care nu au format_type setat
+export async function classifyExistingReels(): Promise<{ ok: true; classified: number } | { ok: false; error: string }> {
+  try {
+    const supabase = getSupabaseServer({ useServiceRole: true });
+    const { data } = await supabase
+      .from("instagram_media")
+      .select("instagram_id, caption")
+      .or("format_type.is.null,format_type.eq.REEL,format_type.eq.reel")
+      .not("caption", "is", null)
+      .limit(100);
+
+    if (!data || data.length === 0) return { ok: true, classified: 0 };
+
+    const toClassify = data
+      .filter(r => r.caption?.trim())
+      .map(r => ({ id: r.instagram_id, caption: r.caption as string }));
+
+    const formats = await classifyFormats(toClassify);
+
+    let classified = 0;
+    for (const row of data) {
+      const fmt = formats[row.instagram_id];
+      if (fmt) {
+        await supabase
+          .from("instagram_media")
+          .update({ format_type: fmt })
+          .eq("instagram_id", row.instagram_id);
+        classified++;
+      }
+    }
+    return { ok: true, classified };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Eroare" };
   }
 }
 
@@ -154,7 +285,7 @@ export async function syncReelsFromApify(username: string) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) throw new Error("Not authenticated");
 
-  const reels = await scrapeInstagramReels(username, 30);
+  const { reels } = await scrapeInstagramProfile(username, 30);
   for (const reel of reels) {
     await supabase.from("instagram_media").upsert({
       user_id: user.id,

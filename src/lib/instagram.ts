@@ -182,6 +182,12 @@ export interface IgInsights {
   shares?: number;
   reach?: number;
   impressions?: number;
+  // Metrici noi — private, disponibile cu instagram_manage_insights
+  avg_watch_time_ms?: number;   // ig_reels_avg_watch_time (ms)
+  total_watch_time_ms?: number; // ig_reels_video_view_total_time (ms)
+  replays?: number;             // clips_replays_count (null pe posturi vechi)
+  follows?: number;             // followeri noi din acest post
+  profile_visits?: number;      // vizite profil din acest post
 }
 
 export async function fetchMediaInsights(
@@ -189,35 +195,51 @@ export async function fetchMediaInsights(
   mediaType: string,
   accessToken: string,
 ): Promise<IgInsights> {
-  // Metrici disponibile per tip de conținut
-  const isVideo = mediaType === "VIDEO" || mediaType === "REELS";
-  const metrics = isVideo
-    ? "plays,likes,comments,saved,shares,reach,impressions"
-    : "likes,comments,saved,reach,impressions";
+  const isReel = mediaType === "VIDEO" || mediaType === "REELS";
 
-  const res = await fetch(
-    `${GRAPH}/${mediaId}/insights?metric=${metrics}&access_token=${accessToken}`,
-  );
-  if (!res.ok) {
-    // unele posturi mai vechi nu au insights — nu aruncăm eroare
-    return {};
+  // Metrici comune (toate tipurile de media)
+  const commonMetrics = "likes,comments,saved,shares,reach,impressions,follows,profile_visits";
+  // Metrici exclusiv Reels
+  const reelMetrics = "plays,ig_reels_avg_watch_time,ig_reels_video_view_total_time,clips_replays_count";
+
+  const metrics = isReel ? `${commonMetrics},${reelMetrics}` : commonMetrics;
+
+  async function doFetch(metricStr: string): Promise<Response> {
+    return fetch(
+      `${GRAPH}/${mediaId}/insights?metric=${metricStr}&access_token=${accessToken}`,
+    );
   }
 
+  let res = await doFetch(metrics);
+
+  // Dacă Meta respinge combinația (400), retry fără metrici Reels-only
+  if (!res.ok && isReel) {
+    res = await doFetch(commonMetrics);
+  }
+
+  if (!res.ok) return {};
+
   const data = (await res.json()) as {
-    data: Array<{ name: string; values: Array<{ value: number }> }>;
+    data: Array<{ name: string; values?: Array<{ value: number }>; value?: number }>;
   };
 
   const result: IgInsights = {};
   for (const metric of data.data ?? []) {
-    const val = metric.values?.[0]?.value ?? 0;
+    // Meta returnează fie `values[0].value` fie `value` direct
+    const val = metric.values?.[0]?.value ?? (metric.value as number | undefined) ?? 0;
     switch (metric.name) {
-      case "plays":        result.plays = val; break;
-      case "likes":        result.likes = val; break;
-      case "comments":     result.comments = val; break;
-      case "saved":        result.saved = val; break;
-      case "shares":       result.shares = val; break;
-      case "reach":        result.reach = val; break;
-      case "impressions":  result.impressions = val; break;
+      case "plays":                          result.plays = val; break;
+      case "likes":                          result.likes = val; break;
+      case "comments":                       result.comments = val; break;
+      case "saved":                          result.saved = val; break;
+      case "shares":                         result.shares = val; break;
+      case "reach":                          result.reach = val; break;
+      case "impressions":                    result.impressions = val; break;
+      case "ig_reels_avg_watch_time":        result.avg_watch_time_ms = val; break;
+      case "ig_reels_video_view_total_time": result.total_watch_time_ms = val; break;
+      case "clips_replays_count":            result.replays = val; break;
+      case "follows":                        result.follows = val; break;
+      case "profile_visits":                 result.profile_visits = val; break;
     }
   }
   return result;

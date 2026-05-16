@@ -1,4 +1,5 @@
 "use server";
+import { createClient } from "@supabase/supabase-js";
 import { getSupabaseAuth, getUserRole } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
@@ -236,4 +237,33 @@ export async function getClientMessages(clientId: number) {
     .order("created_at", { ascending: true })
     .limit(50);
   return data ?? [];
+}
+
+// Leagă auth_user_id la primul login al clientului (invitat via email)
+export async function linkAuthToClient(): Promise<void> {
+  const supabase = await getSupabaseAuth();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const clientId = user.user_metadata?.client_id as number | undefined;
+  if (!clientId) return;
+
+  const adminClient = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+
+  const { data: existing } = await adminClient
+    .from("clients")
+    .select("auth_user_id")
+    .eq("id", clientId)
+    .single();
+
+  if (!existing?.auth_user_id) {
+    await adminClient
+      .from("clients")
+      .update({ auth_user_id: user.id })
+      .eq("id", clientId);
+  }
 }

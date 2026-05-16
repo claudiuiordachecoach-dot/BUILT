@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
@@ -173,4 +174,28 @@ export async function deleteClientModule(clientId: number, moduleId: number) {
   const { error } = await s.from("client_modules").delete().eq("id", moduleId);
   if (error) throw new Error(error.message);
   revalidatePath(`/clienti/${clientId}`);
+}
+
+export type InviteResult = { ok: true } | { ok: false; error: string };
+
+export async function inviteClient(clientId: number): Promise<InviteResult> {
+  const client = await getClient(clientId);
+  if (!client) return { ok: false, error: "Client negăsit." };
+  if (!client.email) return { ok: false, error: "Adaugă mai întâi email-ul clientului." };
+
+  const adminClient = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://built-ai-command-center.vercel.app";
+
+  const { error } = await adminClient.auth.admin.inviteUserByEmail(client.email, {
+    redirectTo: `${appUrl}/client/dashboard`,
+    data: { client_id: clientId, name: client.name },
+  });
+
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
 }

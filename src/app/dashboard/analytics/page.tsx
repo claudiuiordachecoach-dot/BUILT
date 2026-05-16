@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   analyzeContentLibraryReel,
   getTipOfWeek,
   listInstagramMedia,
   syncMyReels,
+  saveReelAnalysis,
+  getFollowersCount,
+  classifyExistingReels,
   type ContentLibraryAnalysis,
 } from "./actions";
 
@@ -36,7 +39,7 @@ type ReelCard = {
   thumbnail_url: string | null;
 };
 
-type TimePeriod = "7d" | "1m" | "3m" | "1y";
+type TimePeriod = "7d" | "1d" | "1m" | "3m" | "1y";
 type ContentTab = "recent" | "top_views" | "top_engagement";
 type ChartMode = "daily" | "cumulative";
 
@@ -102,6 +105,8 @@ function formatPctBadge(pct: number | null): { label: string; up: boolean } {
 }
 
 // ─── Static fallback data ─────────────────────────────────────────────────────
+
+const PERIOD_DAYS: Record<TimePeriod, number> = { "7d": 7, "1d": 1, "1m": 30, "3m": 90, "1y": 365 };
 
 const STATIC_SPARKLINE = [40, 55, 48, 70, 62, 88, 95, 102, 98, 115, 130, 142];
 
@@ -178,7 +183,7 @@ function Sparkline({ data, up }: { data: number[]; up: boolean }) {
       <polyline
         points={pts}
         fill="none"
-        stroke={up ? "#3b82f6" : "#ef4444"}
+        stroke="#C0392B"
         strokeWidth="1.5"
         strokeLinecap="round"
         strokeLinejoin="round"
@@ -187,26 +192,74 @@ function Sparkline({ data, up }: { data: number[]; up: boolean }) {
   );
 }
 
-function LineChart({ data, mode }: { data: { val: number }[]; mode: ChartMode }) {
-  const { path, areaPath } = lineChartPath(data, mode === "cumulative");
-  if (!path) {
-    return (
-      <div className="flex items-center justify-center h-full text-zinc-600 text-[11px] font-mono">
-        no data
-      </div>
-    );
-  }
+function LineChart({ data, mode }: { data: { val: number; day?: string }[]; mode: ChartMode }) {
+  const [tooltip, setTooltip] = useState<{ x: number; y: number; val: number; day: string } | null>(null);
+
+  const vals = mode === "cumulative"
+    ? data.reduce<number[]>((acc, d, i) => { acc.push((acc[i - 1] ?? 0) + d.val); return acc; }, [])
+    : data.map(d => d.val);
+
+  if (vals.length === 0) return (
+    <div className="flex items-center justify-center h-full text-zinc-600 text-[11px] font-mono">no data</div>
+  );
+
+  const maxV = Math.max(...vals, 1);
+  const w = 100; const h = 60;
+  const pts = vals.map((v, i) => ({
+    x: (i / Math.max(vals.length - 1, 1)) * w,
+    y: h - (v / maxV) * (h - 4),
+    val: v,
+    day: data[i]?.day ?? "",
+  }));
+  const path = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+  const areaPath = `M ${pts[0].x} ${h} ` + pts.map(p => `L ${p.x} ${p.y}`).join(" ") + ` L ${pts[pts.length - 1].x} ${h} Z`;
+
+  const tooltipIdx = tooltip
+    ? Math.max(0, Math.min(Math.round((tooltip.x / 100) * (pts.length - 1)), pts.length - 1))
+    : null;
+
   return (
-    <svg viewBox="0 0 100 60" className="w-full h-full" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="blueGrad" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.25" />
-          <stop offset="100%" stopColor="#3b82f6" stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={areaPath} fill="url(#blueGrad)" />
-      <path d={path} fill="none" stroke="#3b82f6" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
-    </svg>
+    <div className="relative w-full h-full">
+      <svg
+        viewBox="0 0 100 60"
+        className="w-full h-full"
+        preserveAspectRatio="none"
+        onMouseLeave={() => setTooltip(null)}
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const xPct = (e.clientX - rect.left) / rect.width;
+          const idx = Math.round(xPct * (pts.length - 1));
+          const p = pts[Math.max(0, Math.min(idx, pts.length - 1))];
+          if (p) setTooltip({ x: xPct * 100, y: e.clientY - rect.top, val: p.val, day: p.day });
+        }}
+      >
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#C0392B" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="#C0392B" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <path d={areaPath} fill="url(#grad)" />
+        <path d={path} fill="none" stroke="#C0392B" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+        {tooltipIdx !== null && pts[tooltipIdx] && (
+          <circle
+            cx={pts[tooltipIdx].x}
+            cy={pts[tooltipIdx].y}
+            r="1.5"
+            fill="#C0392B"
+          />
+        )}
+      </svg>
+      {tooltip && tooltipIdx !== null && pts[tooltipIdx] && (
+        <div
+          className="absolute pointer-events-none bg-[#1a1a1a] border border-white/10 rounded-lg px-2.5 py-1.5 text-[11px] text-zinc-200 whitespace-nowrap z-10 shadow-lg"
+          style={{ left: `calc(${tooltip.x}% + 8px)`, top: Math.max(0, tooltip.y - 30) }}
+        >
+          <span className="font-mono font-bold">{fmt(pts[tooltipIdx].val)}</span>
+          {pts[tooltipIdx].day && <span className="text-zinc-500 ml-2">{pts[tooltipIdx].day}</span>}
+        </div>
+      )}
+    </div>
   );
 }
 
@@ -230,17 +283,17 @@ function AnalysisPanel({
   const scriptPct = Math.min(data.hook_score, 100);
 
   return (
-    <div className="mt-4 bg-[#0d0d0d] border border-white/10 rounded-xl p-6 space-y-5">
+    <div className="built-card mt-4 bg-[#0d0d0d] border border-white/10 rounded-xl p-6 space-y-5">
       {/* Top row */}
       <div className="flex items-center gap-4 flex-wrap">
         <span className={`text-[11px] font-bold px-2.5 py-1 rounded border ${verdictClass}`}>
           {data.verdict}
         </span>
         <span className="text-zinc-400 text-[13px]">
-          Score: <strong className="text-zinc-100">{data.score}</strong>
+          Score: <strong className="text-zinc-100 font-mono-stats">{data.score}</strong>
         </span>
         <span className="text-zinc-400 text-[13px]">
-          Hook Score: <strong className="text-zinc-100">{data.hook_score}</strong>
+          Hook Score: <strong className="text-zinc-100 font-mono-stats">{data.hook_score}</strong>
         </span>
         <button
           onClick={onClose}
@@ -255,7 +308,7 @@ function AnalysisPanel({
         <div>
           <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
             <span>Performance</span>
-            <span>{perfPct}</span>
+            <span className="font-mono-stats">{perfPct}</span>
           </div>
           <div className="h-1.5 bg-white/5 rounded-full">
             <div className="h-full bg-built-red rounded-full" style={{ width: `${perfPct}%` }} />
@@ -264,7 +317,7 @@ function AnalysisPanel({
         <div>
           <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
             <span>Script Quality</span>
-            <span>{scriptPct}</span>
+            <span className="font-mono-stats">{scriptPct}</span>
           </div>
           <div className="h-1.5 bg-white/5 rounded-full">
             <div className="h-full bg-built-red rounded-full" style={{ width: `${scriptPct}%` }} />
@@ -314,7 +367,7 @@ function AnalysisPanel({
       </div>
 
       {/* Stronger hook */}
-      <div className="bg-[#111111] border border-white/10 rounded-xl p-4">
+      <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-4">
         <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">
           Suggested Hook for Your Audience
         </p>
@@ -347,12 +400,12 @@ export default function AnalyticsPage() {
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
 
-  // Followers editable
-  const [followers, setFollowers] = useState<string>(() => {
-    if (typeof window !== "undefined") return localStorage.getItem("built_followers") ?? "2.780";
-    return "2.780";
-  });
+  // Followers — din DB, actualizat la fiecare sync
+  const [followers, setFollowers] = useState<string>("—");
   const [editingFollowers, setEditingFollowers] = useState(false);
+
+  // Main tab
+  const [mainTab, setMainTab] = useState<"creator_cult" | "analytics">("analytics");
 
   // Period + chart modes
   const [period, setPeriod] = useState<TimePeriod>("1m");
@@ -368,9 +421,12 @@ export default function AnalyticsPage() {
   // ── Data loading ───────────────────────────────────────────────────────────
   useEffect(() => {
     getTipOfWeek().then(setTip).catch(() => null);
-    listInstagramMedia(30)
+    listInstagramMedia(200)
       .then((d) => { setLiveMedia(d as MediaItem[]); setMediaLoaded(true); })
       .catch(() => setMediaLoaded(true));
+    getFollowersCount().then((n) => {
+      if (n && n > 0) setFollowers(fmt(n));
+    }).catch(() => null);
   }, []);
 
   const handleSync = useCallback(async () => {
@@ -378,50 +434,39 @@ export default function AnalyticsPage() {
     setSyncMsg(null);
     const r = await syncMyReels();
     if (r.ok) {
-      setSyncMsg(`✓ ${r.synced} reels sincronizate`);
-      const fresh = await listInstagramMedia(30).catch(() => [] as MediaItem[]);
+      setSyncMsg(`✓ ${r.synced} reels sincronizate — clasificare formate...`);
+      await classifyExistingReels().catch(() => null);
+      const fresh = await listInstagramMedia(200).catch(() => [] as MediaItem[]);
       setLiveMedia(fresh as MediaItem[]);
+      if (r.followers && r.followers > 0) setFollowers(fmt(r.followers));
+      setSyncMsg(`✓ ${r.synced} reels sincronizate + formate clasificate`);
     } else {
       setSyncMsg(`⚠ ${r.error}`);
     }
     setSyncing(false);
   }, []);
 
+  // ── Period filter ──────────────────────────────────────────────────────────
+  const filteredMedia = useMemo(() => {
+    if (liveMedia.length === 0) return [];
+    const cutoff = new Date();
+    cutoff.setDate(cutoff.getDate() - PERIOD_DAYS[period]);
+    return liveMedia.filter(m => m.posted_at ? new Date(m.posted_at) >= cutoff : false);
+  }, [liveMedia, period]);
+
   // ── Derived data ───────────────────────────────────────────────────────────
-  const totalViews = liveMedia.length > 0 ? liveMedia.reduce((s, m) => s + (m.views ?? 0), 0) : null;
-  const totalLikes = liveMedia.length > 0 ? liveMedia.reduce((s, m) => s + (m.likes ?? 0), 0) : null;
-  const totalComments = liveMedia.length > 0 ? liveMedia.reduce((s, m) => s + (m.comments ?? 0), 0) : null;
+  const totalViews = filteredMedia.length > 0 ? filteredMedia.reduce((s, m) => s + (m.views ?? 0), 0) : null;
+  const totalLikes = filteredMedia.length > 0 ? filteredMedia.reduce((s, m) => s + (m.likes ?? 0), 0) : null;
+  const totalComments = filteredMedia.length > 0 ? filteredMedia.reduce((s, m) => s + (m.comments ?? 0), 0) : null;
 
-  const viewsChartData = groupByDay(liveMedia, (m) => m.views ?? 0);
-  const engChartData = groupByDay(liveMedia, (m) => m.likes ?? 0);
+  const viewsChartData = groupByDay(filteredMedia, (m) => m.views ?? 0);
+  const engChartData = groupByDay(filteredMedia, (m) => m.likes ?? 0);
 
-  // Sparklines from live data or static fallback
+  // Sparklines from filtered data or static fallback
   const viewsSparkline =
-    liveMedia.length > 0 ? liveMedia.slice(0, 12).map((m) => m.views ?? 0).reverse() : STATIC_SPARKLINE;
+    filteredMedia.length > 0 ? filteredMedia.slice(0, 12).map((m) => m.views ?? 0).reverse() : STATIC_SPARKLINE;
   const engSparkline =
-    liveMedia.length > 0 ? liveMedia.slice(0, 12).map((m) => m.likes ?? 0).reverse() : STATIC_SPARKLINE;
-
-  // Format performance from live data
-  const formatPerf: { label: string; pct: number }[] = (() => {
-    if (liveMedia.length === 0) return [
-      { label: "Talking Head", pct: 72 },
-      { label: "Rant", pct: 58 },
-      { label: "Tutorial", pct: 44 },
-      { label: "Trend", pct: 38 },
-      { label: "Other", pct: 31 },
-    ];
-    const totals: Record<string, number> = {};
-    for (const m of liveMedia) {
-      const key = m.format_type ? m.format_type.toLowerCase() : "other";
-      const label = key.charAt(0).toUpperCase() + key.slice(1);
-      totals[label] = (totals[label] ?? 0) + (m.views ?? 0);
-    }
-    const grandTotal = Object.values(totals).reduce((a, b) => a + b, 0) || 1;
-    return Object.entries(totals)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, 5)
-      .map(([label, v]) => ({ label, pct: Math.round((v / grandTotal) * 100) }));
-  })();
+    filteredMedia.length > 0 ? filteredMedia.slice(0, 12).map((m) => m.likes ?? 0).reverse() : STATIC_SPARKLINE;
 
   // Engagement breakdown
   const engBreakdown: { label: string; count: string; pct: number }[] = (() => {
@@ -493,10 +538,12 @@ export default function AnalyticsPage() {
     if (result.ok) {
       setAnalysedId(reel.id);
       setAnalysisData(result.analysis);
+      // Feedback loop: salvează learning-ul în DB pentru generare scripturi
+      saveReelAnalysis(reel.id, result.analysis).catch(() => {});
     }
   }
 
-  const PERIOD_LABELS: TimePeriod[] = ["7d", "1m", "3m", "1y"];
+  const PERIOD_LABELS: TimePeriod[] = ["7d", "1d", "1m", "3m", "1y"];
   const CONTENT_TABS: { key: ContentTab; label: string }[] = [
     { key: "recent", label: "Recent" },
     { key: "top_views", label: "Top Views" },
@@ -506,7 +553,26 @@ export default function AnalyticsPage() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="p-8 max-w-[1400px] mx-auto space-y-6">
+    <div className="max-w-[1400px] mx-auto space-y-6">
+
+      {/* ── MAIN TAB BAR (Creator Cult | Analytics) ────────────────────────── */}
+      <div className="border-b border-white/[0.06] px-8 flex gap-6">
+        {(["creator_cult", "analytics"] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setMainTab(tab)}
+            className={`text-[13px] pb-3 font-medium transition-colors border-b-2 -mb-px ${
+              mainTab === tab
+                ? "text-zinc-100 border-white"
+                : "text-zinc-500 border-transparent hover:text-zinc-300"
+            }`}
+          >
+            {tab === "creator_cult" ? "Creator Cult" : "Analytics"}
+          </button>
+        ))}
+      </div>
+
+      <div className="px-8 space-y-6">
 
       {/* ── HEADER SECTION ─────────────────────────────────────────────────── */}
       <div className="grid grid-cols-[1fr_340px] gap-6 items-start">
@@ -524,8 +590,8 @@ export default function AnalyticsPage() {
             Metoda BUILT — Arhitectura Corpului pe 90 de zile.
           </p>
 
-          {/* Sync button */}
-          <div className="flex items-center gap-3 mt-5">
+          {/* Sync + Classify buttons */}
+          <div className="flex items-center gap-3 mt-5 flex-wrap">
             <button
               onClick={handleSync}
               disabled={syncing}
@@ -539,6 +605,23 @@ export default function AnalyticsPage() {
               ) : (
                 <>⟳ Sync Instagram (@iordacheclaudiu_)</>
               )}
+            </button>
+            <button
+              onClick={async () => {
+                setSyncMsg("Clasificare formate...");
+                const r = await classifyExistingReels();
+                if (r.ok) {
+                  setSyncMsg(`✓ ${r.classified} reels clasificate`);
+                  const fresh = await listInstagramMedia(200).catch(() => [] as MediaItem[]);
+                  setLiveMedia(fresh as MediaItem[]);
+                } else {
+                  setSyncMsg(`⚠ ${r.error}`);
+                }
+              }}
+              disabled={syncing}
+              className="flex items-center gap-2 text-[12px] border border-white/10 bg-white/5 text-zinc-300 px-4 py-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
+            >
+              ◈ Clasifică formate
             </button>
             {syncMsg && (
               <span className="text-[11px] text-zinc-500 font-mono">{syncMsg}</span>
@@ -581,6 +664,18 @@ export default function AnalyticsPage() {
               {tab}
             </button>
           ))}
+          <button
+            disabled
+            className="text-[13px] pb-3 -mb-3 font-medium border-b-2 border-transparent text-zinc-600 opacity-50 cursor-not-allowed"
+          >
+            YouTube <span className="text-[9px] text-zinc-600 ml-1">SOON</span>
+          </button>
+          <button
+            disabled
+            className="text-[13px] pb-3 -mb-3 font-medium border-b-2 border-transparent text-zinc-600 opacity-50 cursor-not-allowed"
+          >
+            TikTok <span className="text-[9px] text-zinc-600 ml-1">SOON</span>
+          </button>
         </div>
 
         {/* Time tabs */}
@@ -606,32 +701,12 @@ export default function AnalyticsPage() {
         {kpiCards.map((kpi) => {
           const badge = formatPctBadge(kpi.change);
           return (
-            <div key={kpi.key} className="bg-[#111111] border border-white/10 rounded-xl p-5">
+            <div key={kpi.key} className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
               <p className="text-[11px] text-zinc-500 uppercase tracking-wider mb-2">{kpi.label}</p>
 
-              {kpi.key === "followers" ? (
-                editingFollowers ? (
-                  <input
-                    autoFocus
-                    value={followers}
-                    onChange={(e) => setFollowers(e.target.value)}
-                    onBlur={() => { localStorage.setItem("built_followers", followers); setEditingFollowers(false); }}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") { localStorage.setItem("built_followers", followers); setEditingFollowers(false); }
-                    }}
-                    className="text-3xl font-semibold text-zinc-100 bg-transparent border-b border-built-red outline-none w-32 mb-3"
-                  />
-                ) : (
-                  <button
-                    onClick={() => setEditingFollowers(true)}
-                    className="text-3xl font-semibold text-zinc-100 hover:text-built-red transition-colors text-left mb-3 block"
-                  >
-                    {followers}
-                  </button>
-                )
-              ) : (
-                <p className="text-3xl font-semibold text-zinc-100 mb-3">{kpi.value}</p>
-              )}
+              <p className="text-3xl font-semibold text-zinc-100 mb-3 font-mono-stats">
+                {kpi.key === "followers" ? followers : kpi.value}
+              </p>
 
               <div className="flex items-center gap-2 mb-3">
                 <span
@@ -657,7 +732,7 @@ export default function AnalyticsPage() {
       {/* ── CHARTS ROW ────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 gap-4">
         {/* Views over time */}
-        <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
+        <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <p className="text-[13px] font-semibold text-zinc-200">Views over time</p>
             <div className="flex gap-1">
@@ -678,7 +753,7 @@ export default function AnalyticsPage() {
             <LineChart data={viewsChartData.length > 0 ? viewsChartData : [{ val: 0 }]} mode={viewsMode} />
           </div>
           {viewsChartData.length > 0 && (
-            <div className="flex justify-between mt-2 text-[10px] text-zinc-600 font-mono">
+            <div className="flex justify-between mt-2 text-[10px] text-zinc-600 font-mono font-mono-stats">
               <span>{viewsChartData[0]?.day ?? ""}</span>
               <span>{viewsChartData[viewsChartData.length - 1]?.day ?? ""}</span>
             </div>
@@ -686,7 +761,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Engagements over time */}
-        <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
+        <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <p className="text-[13px] font-semibold text-zinc-200">Engagements over time</p>
             <div className="flex gap-1">
@@ -707,7 +782,7 @@ export default function AnalyticsPage() {
             <LineChart data={engChartData.length > 0 ? engChartData : [{ val: 0 }]} mode={engMode} />
           </div>
           {engChartData.length > 0 && (
-            <div className="flex justify-between mt-2 text-[10px] text-zinc-600 font-mono">
+            <div className="flex justify-between mt-2 text-[10px] text-zinc-600 font-mono font-mono-stats">
               <span>{engChartData[0]?.day ?? ""}</span>
               <span>{engChartData[engChartData.length - 1]?.day ?? ""}</span>
             </div>
@@ -717,67 +792,102 @@ export default function AnalyticsPage() {
 
       {/* ── ENGAGEMENT BREAKDOWN + FORMAT PERFORMANCE ─────────────────────── */}
       <div className="grid grid-cols-2 gap-4">
-        {/* Engagement breakdown */}
-        <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-          <p className="text-[13px] font-semibold text-zinc-200 mb-4">Engagement Breakdown</p>
-          <div className="space-y-3.5">
+        {/* Engagement breakdown — matches William Scott */}
+        <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Engagement Breakdown</p>
+          <p className="text-[28px] font-semibold text-zinc-100 font-mono mb-4">
+            {fmt((totalLikes ?? 0) + (totalComments ?? 0))}
+            <span className="text-[14px] text-zinc-500 font-normal ml-2">total</span>
+          </p>
+          <div className="space-y-3">
             {engBreakdown.map((item) => (
-              <div key={item.label}>
-                <div className="flex justify-between text-[12px] mb-1.5">
-                  <span className="text-zinc-400">{item.label}</span>
-                  <div className="flex gap-3">
-                    <span className="text-zinc-500">{item.count}</span>
-                    <span className="text-zinc-200 font-mono w-8 text-right">{item.pct}%</span>
-                  </div>
-                </div>
-                <div className="h-1.5 bg-white/5 rounded-full">
-                  <div className="h-full bg-built-red rounded-full transition-all" style={{ width: `${item.pct}%` }} />
-                </div>
+              <div key={item.label} className="flex items-center justify-between text-[13px]">
+                <span className="text-zinc-400 w-24">{item.label}</span>
+                <span className="text-zinc-200 font-mono flex-1 text-right">{item.count}</span>
+                <span className="text-zinc-500 font-mono w-14 text-right">({item.pct}%)</span>
               </div>
             ))}
           </div>
-          <p className="text-[22px] font-semibold text-zinc-200 mt-5">
-            {fmt((totalLikes ?? 0) + (totalComments ?? 0))}
-            <span className="text-[13px] text-zinc-500 font-normal ml-2">total</span>
-          </p>
+          {/* TOP REEL */}
+          {reelCards.length > 0 && (() => {
+            const top = [...reelCards].sort((a, b) => b.viewsRaw - a.viewsRaw)[0];
+            return (
+              <div className="mt-5 pt-4 border-t border-white/5">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-1">Top Reel</p>
+                <p className="text-[13px] text-zinc-300">
+                  <span className="text-zinc-100 font-mono">{top.views} views</span>
+                  <span className="text-zinc-600 mx-2">·</span>
+                  <span className="text-zinc-400 line-clamp-1">{top.title.slice(0, 50)}</span>
+                </p>
+              </div>
+            );
+          })()}
         </div>
 
         {/* Format performance */}
-        <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-          <p className="text-[13px] font-semibold text-zinc-200 mb-4">Format Performance</p>
-          <div className="space-y-3.5">
-            {formatPerf.map((f) => (
-              <div key={f.label}>
-                <div className="flex justify-between text-[12px] mb-1.5">
-                  <span className="text-zinc-400">{f.label}</span>
-                  <span className="text-zinc-200 font-mono">{f.pct}%</span>
+        <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Format Performance</p>
+          {(() => {
+            const totals: Record<string, number> = {};
+            const source = filteredMedia.length > 0 ? filteredMedia : liveMedia;
+            for (const m of source) {
+              const key = (m.format_type ?? "other").toLowerCase();
+              totals[key] = (totals[key] ?? 0) + (m.views ?? 0);
+            }
+            const entries = Object.entries(totals).sort(([, a], [, b]) => b - a).slice(0, 6);
+            if (entries.length === 0) {
+              // fallback static
+              const fallback = [["talking head", 142000], ["rant", 98000], ["tutorial", 76000], ["trend", 54000], ["bts", 28000]] as [string, number][];
+              const max = fallback[0][1] as number;
+              return (
+                <div className="space-y-3 mt-3">
+                  {fallback.map(([label, views]) => (
+                    <div key={label} className="flex items-center gap-3">
+                      <span className="text-[11px] text-zinc-500 w-24 shrink-0 capitalize">{label}</span>
+                      <div className="flex-1 h-4 bg-white/5 rounded overflow-hidden">
+                        <div className="h-full bg-indigo-500/70 rounded" style={{ width: `${((views as number) / max) * 100}%` }} />
+                      </div>
+                      <span className="text-[11px] text-zinc-500 font-mono w-14 text-right">{fmt(views as number)}</span>
+                    </div>
+                  ))}
                 </div>
-                <div className="h-1.5 bg-white/5 rounded-full">
-                  <div className="h-full bg-built-red rounded-full transition-all" style={{ width: `${f.pct}%` }} />
-                </div>
+              );
+            }
+            const max = entries[0][1];
+            return (
+              <div className="space-y-3 mt-3">
+                {entries.map(([label, views]) => (
+                  <div key={label} className="flex items-center gap-3">
+                    <span className="text-[11px] text-zinc-500 w-24 shrink-0 capitalize">{label}</span>
+                    <div className="flex-1 h-4 bg-white/5 rounded overflow-hidden">
+                      <div className="h-full bg-indigo-500/70 rounded transition-all" style={{ width: `${(views / max) * 100}%` }} />
+                    </div>
+                    <span className="text-[11px] text-zinc-500 font-mono w-14 text-right">{fmt(views)}</span>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            );
+          })()}
         </div>
       </div>
 
       {/* ── CONTENT LIBRARY ───────────────────────────────────────────────── */}
       <div>
-        {/* Library header */}
+        {/* Library header — William Scott style */}
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <p className="text-[15px] font-semibold text-zinc-100">Content Library</p>
-            <span className="text-[12px] text-zinc-500 font-mono">{sortedReels.length} reels</span>
+            <span className="text-[14px] text-zinc-500">({sortedReels.length})</span>
           </div>
           <div className="flex gap-1">
             {CONTENT_TABS.map((tab) => (
               <button
                 key={tab.key}
                 onClick={() => setContentTab(tab.key)}
-                className={`text-[12px] px-3 py-1 rounded transition-colors ${
+                className={`text-[12px] px-3 py-1.5 rounded-lg transition-colors ${
                   contentTab === tab.key
-                    ? "bg-built-red/20 text-built-red"
-                    : "text-zinc-500 hover:bg-white/5 hover:text-zinc-300"
+                    ? "text-zinc-100 bg-white/10"
+                    : "text-zinc-500 hover:text-zinc-300"
                 }`}
               >
                 {tab.label}
@@ -786,15 +896,17 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-4 gap-4">
+        {/* 5-column grid — matches William Scott */}
+        <div className="grid grid-cols-5 gap-3">
           {sortedReels.map((reel) => (
             <div
               key={reel.id}
-              className="bg-[#111111] border border-white/10 rounded-xl overflow-hidden hover:border-white/20 transition-colors"
+              className={`built-card bg-[#111111] border rounded-xl overflow-hidden transition-colors ${
+                analysedId === reel.id ? "border-built-red/40" : "border-white/[0.08] hover:border-white/20"
+              }`}
             >
               {/* Thumbnail */}
-              <div className="relative bg-[#1a1a1a]" style={{ paddingBottom: "56.25%" }}>
+              <div className="relative bg-[#1a1a1a]" style={{ paddingBottom: "75%" }}>
                 {reel.thumbnail_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
@@ -805,47 +917,62 @@ export default function AnalyticsPage() {
                   />
                 ) : (
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <span className="text-4xl opacity-10">▶</span>
+                    <svg className="w-8 h-8 text-white/10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                   </div>
                 )}
-                {/* Platform badge */}
-                <span className="absolute top-2 left-2 text-[9px] font-bold px-1.5 py-0.5 rounded bg-[#E4405F] text-white z-10">
-                  INSTAGRAM
-                </span>
-                {/* Format badge */}
-                <span
-                  className={`absolute top-2 right-2 text-[9px] font-bold px-1.5 py-0.5 rounded text-white z-10 ${formatBadgeClass(reel.format)}`}
-                >
-                  {reel.format}
-                </span>
+                {/* Platform + Format badges on thumbnail */}
+                <div className="absolute top-2 left-2 flex items-center gap-1 z-10">
+                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-black/60 text-white/80 backdrop-blur-sm">
+                    instagram
+                  </span>
+                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded text-white z-10 ${formatBadgeClass(reel.format)}`}>
+                    {reel.format}
+                  </span>
+                </div>
                 {/* Date */}
-                <span className="absolute bottom-2 left-2 text-[10px] text-white/60 font-mono z-10">
+                <span className="absolute top-2 right-2 text-[9px] text-white/60 font-mono z-10 bg-black/40 px-1 rounded">
                   {reel.date}
                 </span>
               </div>
 
               {/* Card body */}
               <div className="p-3">
-                <p className="text-[12px] text-zinc-200 leading-snug mb-2 line-clamp-2">
+                <p className="text-[12px] text-zinc-200 leading-snug mb-2.5 line-clamp-2 min-h-[36px]">
                   {reel.title}
                 </p>
-                <div className="flex items-center justify-between">
-                  <div className="flex gap-2 text-[10px] text-zinc-500 font-mono">
-                    <span>▶ {reel.views}</span>
-                    <span>♥ {reel.likes}</span>
-                    <span>✦ {reel.comments}</span>
-                  </div>
-                  <button
-                    onClick={() => handleAnalyse(reel)}
-                    className={`text-[10px] px-2 py-0.5 rounded transition-colors border ${
-                      analysedId === reel.id
-                        ? "text-built-red border-built-red/30 bg-built-red/10"
-                        : "text-zinc-400 border-white/10 hover:border-white/20 hover:bg-white/5"
-                    }`}
-                  >
-                    {analysingId === reel.id ? "..." : analysedId === reel.id ? "✓ Done" : "Analyse"}
-                  </button>
+                {/* Stats */}
+                <div className="flex items-center gap-2.5 text-[11px] text-zinc-500 mb-2.5">
+                  <span className="flex items-center gap-1">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    {reel.views}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    {reel.likes}
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    {reel.comments}
+                  </span>
                 </div>
+                {/* Analyse button — full width, William Scott style */}
+                <button
+                  onClick={() => handleAnalyse(reel)}
+                  disabled={analysingId === reel.id}
+                  className={`w-full text-[11px] py-1.5 rounded-lg border transition-colors font-medium flex items-center justify-center gap-1.5 ${
+                    analysedId === reel.id
+                      ? "text-built-red border-built-red/30 bg-built-red/10"
+                      : "text-zinc-400 border-white/10 hover:border-white/25 hover:text-zinc-200 hover:bg-white/5"
+                  }`}
+                >
+                  {analysingId === reel.id ? (
+                    <><span className="w-2.5 h-2.5 border border-zinc-400 border-t-transparent rounded-full animate-spin" />Analysing...</>
+                  ) : analysedId === reel.id ? (
+                    <>✓ Re-analyse</>
+                  ) : (
+                    <>✦ Analyse</>
+                  )}
+                </button>
               </div>
             </div>
           ))}
@@ -859,6 +986,8 @@ export default function AnalyticsPage() {
           />
         )}
       </div>
+
+      </div>{/* /px-8 */}
     </div>
   );
 }

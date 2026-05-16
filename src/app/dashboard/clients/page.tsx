@@ -1,0 +1,119 @@
+import Link from "next/link";
+import { listClients } from "@/app/clienti/actions";
+import { NewClientForm } from "@/app/clienti/NewClientForm";
+
+export const dynamic = "force-dynamic";
+
+const STATUS_COLOR: Record<string, string> = {
+  active: "text-emerald-400",
+  at_risk: "text-orange-400",
+  completed: "text-zinc-500",
+  paused: "text-amber-400",
+};
+const STATUS_LABEL: Record<string, string> = {
+  active: "Activ",
+  at_risk: "⚠ La risc",
+  completed: "Finalizat",
+  paused: "Pauza",
+};
+
+export default async function ClientsDashboardPage() {
+  const clients = await listClients().catch(() => []);
+  const active = clients.filter((c) => c.status === "active");
+  const atRisk = clients.filter((c) => c.status === "at_risk");
+
+  return (
+    <div className="p-8 max-w-4xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl font-semibold text-zinc-100 mb-1">Clienti BUILT</h1>
+        <p className="text-zinc-500 text-sm">
+          {clients.length} clienti total · {active.length} activi · {atRisk.length} la risc
+        </p>
+      </div>
+
+      {/* KPI Row */}
+      <div className="grid grid-cols-4 gap-4 mb-8">
+        {[
+          ["Total", clients.length],
+          ["Activi", active.length],
+          ["La risc", atRisk.length],
+          ["Finalizati", clients.filter((c) => c.status === "completed").length],
+        ].map(([label, value]) => (
+          <div key={String(label)} className="bg-[#111111] border border-white/[0.08] rounded-xl p-5">
+            <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-2">
+              {label}
+            </p>
+            <p className={`text-3xl font-semibold font-mono ${label === "La risc" && Number(value) > 0 ? "text-orange-400" : "text-zinc-100"}`}>
+              {value}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      {/* At Risk Alert */}
+      {atRisk.length > 0 && (
+        <div className="mb-6 p-4 bg-orange-400/10 border border-orange-400/30 rounded-xl">
+          <p className="text-[10px] text-orange-400 uppercase tracking-widest font-mono mb-2">
+            ⚠ Interventie necesara
+          </p>
+          <div className="space-y-1">
+            {atRisk.map((c) => (
+              <Link
+                key={c.id}
+                href={`/clienti/${c.id}`}
+                className="flex items-center gap-3 hover:text-orange-300 transition-colors"
+              >
+                <span className="text-[13px] text-zinc-200">{c.name}</span>
+                <span className="text-[11px] text-orange-400">→ Aplica MVR</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Header + Add */}
+      <div className="flex items-center justify-between mb-4">
+        <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono">
+          Clienti ({clients.length})
+        </p>
+        <NewClientForm />
+      </div>
+
+      {/* List */}
+      {clients.length === 0 ? (
+        <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-12 text-center">
+          <p className="text-zinc-500 text-[13px]">
+            Niciun client inca. Adauga primul client BUILT.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          {clients.map((c) => (
+            <Link
+              key={c.id}
+              href={`/clienti/${c.id}`}
+              className="flex items-center justify-between p-4 bg-[#111111] border border-white/[0.08] hover:border-built-red/40 rounded-xl transition-colors"
+            >
+              <div>
+                <span className="text-[14px] font-medium text-zinc-200 mr-3">{c.name}</span>
+                {c.email && <span className="text-[12px] text-zinc-500">{c.email}</span>}
+                {c.objectives && (
+                  <p className="text-[11px] text-zinc-600 mt-0.5 line-clamp-1">{c.objectives}</p>
+                )}
+              </div>
+              <div className="flex items-center gap-4">
+                <span className="text-[11px] text-zinc-600 font-mono">
+                  Start: {new Date(c.start_date).toLocaleDateString("ro-RO")}
+                </span>
+                <span className={`text-[11px] font-mono uppercase ${STATUS_COLOR[c.status]}`}>
+                  {STATUS_LABEL[c.status]}
+                </span>
+                <span className="text-zinc-600">→</span>
+              </div>
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

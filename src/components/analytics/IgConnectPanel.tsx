@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { triggerSync, type IgAccount } from "@/app/analytics/actions";
+import { triggerSync } from "@/app/analytics/actions";
+import type { IgAccount } from "@/app/analytics/types";
 
 export function IgConnectPanel({ account }: { account: IgAccount | null }) {
   const [isPending, startTransition] = useTransition();
@@ -52,7 +53,7 @@ export function IgConnectPanel({ account }: { account: IgAccount | null }) {
           </button>
         )}
         <a
-          href="/api/instagram/connect"
+          href="/api/instagram/composio-connect"
           className="font-condensed uppercase tracking-wider text-xs px-4 py-2 bg-built-red text-white hover:bg-built-red-dark"
         >
           {account ? "Reconectează" : "Conectează Instagram"}

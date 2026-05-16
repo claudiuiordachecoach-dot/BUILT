@@ -175,7 +175,7 @@ export default async function Home({ searchParams }: HomeProps) {
                 </p>
               </div>
             );
-            const href = mod.id === "M5" ? "/" : `/${mod.slug}`;
+            const href = mod.id === "M5" ? "/" : `/dashboard/${mod.slug}`;
             return isClickable ? (
               <Link key={mod.id} href={href}>
                 {card}

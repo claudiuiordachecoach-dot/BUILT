@@ -1,31 +1,68 @@
 "use client";
 
 import { useState } from "react";
-import { analyzeReelCopy, type ReelCopyAnalysis } from "./actions";
+import { analyzeReelCopy, fetchReelByUrl, type ReelCopyAnalysis } from "./actions";
 
 type Tab = "url" | "transcript" | "audio";
 
 const VERDICT_COLOR: Record<string, string> = {
-  Exceptional: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-  Strong: "text-built-red bg-built-red/10 border-built-red/20",
-  Good: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
-  Weak: "text-red-400 bg-red-500/10 border-red-500/20",
+  Exceptional: "text-emerald-400 bg-emerald-500/10 border-emerald-500/30",
+  Strong: "text-built-red bg-built-red/10 border-built-red/30",
+  Good: "text-yellow-400 bg-yellow-500/10 border-yellow-500/30",
+  Weak: "text-red-400 bg-red-500/10 border-red-500/30",
 };
 
+function ProgressBar({ value }: { value: number }) {
+  return (
+    <div className="w-full bg-white/5 rounded-full h-[3px]">
+      <div
+        className="bg-built-red h-[3px] rounded-full transition-all duration-700"
+        style={{ width: `${Math.min(Math.max(value, 0), 100)}%` }}
+      />
+    </div>
+  );
+}
+
 export default function ReelCopyPage() {
-  const [tab, setTab] = useState<Tab>("transcript");
+  const [tab, setTab] = useState<Tab>("url");
+  const [reelUrl, setReelUrl] = useState("");
   const [transcript, setTranscript] = useState("");
   const [loading, setLoading] = useState(false);
+  const [fetchingUrl, setFetchingUrl] = useState(false);
   const [analysis, setAnalysis] = useState<ReelCopyAnalysis | null>(null);
   const [error, setError] = useState("");
   const [showTranscript, setShowTranscript] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const handleAnalyse = async () => {
+    if (transcript.trim().length < 30) return;
     setLoading(true);
     setError("");
     setAnalysis(null);
     const result = await analyzeReelCopy(transcript);
+    if (result.ok) {
+      setAnalysis(result.analysis);
+    } else {
+      setError(result.error);
+    }
+    setLoading(false);
+  };
+
+  const handleFetchUrl = async () => {
+    if (!reelUrl.trim()) return;
+    setFetchingUrl(true);
+    setError("");
+    const fetched = await fetchReelByUrl(reelUrl.trim());
+    setFetchingUrl(false);
+    if (!fetched.ok) {
+      setError(fetched.error);
+      return;
+    }
+    const combined = `Caption: ${fetched.caption}\nViews: ${fetched.views} | Likes: ${fetched.likes}`;
+    setTranscript(combined);
+    setLoading(true);
+    setAnalysis(null);
+    const result = await analyzeReelCopy(combined);
     if (result.ok) {
       setAnalysis(result.analysis);
     } else {
@@ -41,246 +78,294 @@ export default function ReelCopyPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  const TAB_STYLE = (t: Tab) =>
-    `px-4 py-2 text-[12px] font-medium rounded-lg transition-colors ${
-      tab === t
-        ? "bg-built-red/10 text-built-red border border-built-red/20"
-        : "text-zinc-500 hover:text-zinc-200 border border-transparent"
-    }`;
+  const TAB_BASE = "pb-3 text-[13px] font-medium transition-colors border-b-2 mr-6";
+  const tabStyle = (t: Tab) =>
+    tab === t
+      ? `${TAB_BASE} text-zinc-100 border-white`
+      : `${TAB_BASE} text-zinc-500 border-transparent hover:text-zinc-300`;
 
   return (
-    <div className="p-8 max-w-[900px] mx-auto">
+    <div className="p-8 max-w-[860px] mx-auto">
+      {/* Header */}
       <div className="mb-8">
-        <p className="text-[11px] text-built-red font-mono uppercase tracking-widest mb-1">
-          Tools · Reel Analyser
+        <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 mb-1">
+          REEL ANALYSER
         </p>
-        <h1 className="text-4xl font-display tracking-[0.06em] text-zinc-100">
-          REEL COPY TOOL
+        <h1 className="text-[28px] font-semibold text-zinc-100 tracking-tight mb-1">
+          Reel Copy Tool
         </h1>
-        <p className="text-zinc-500 text-sm mt-1">
-          Lipsește un reel — obții un breakdown AI complet, brief de adaptare pentru BUILT și un hook nou.
+        <p className="text-[13px] text-zinc-500 leading-relaxed max-w-[620px]">
+          Drop an Instagram reel → get a full AI breakdown, personalized adaptation advice, and a rewritten hook for your niche.
         </p>
       </div>
 
-      <div className="flex gap-1 mb-6">
-        <button className={TAB_STYLE("url")} onClick={() => setTab("url")}>
-          🔗 Instagram URL
+      {/* Tabs */}
+      <div className="flex border-b border-white/8 mb-6">
+        <button className={tabStyle("url")} onClick={() => setTab("url")}>
+          ✦ Instagram URL
         </button>
-        <button className={TAB_STYLE("transcript")} onClick={() => setTab("transcript")}>
-          📋 Paste Transcript
+        <button className={tabStyle("transcript")} onClick={() => setTab("transcript")}>
+          Paste Transcript
         </button>
-        <button className={TAB_STYLE("audio")} onClick={() => setTab("audio")}>
-          🎙 Upload Audio
+        <button className={tabStyle("audio")} onClick={() => setTab("audio")}>
+          Upload Audio
         </button>
       </div>
 
-      <div className="bg-[#111111] border border-white/10 rounded-xl p-6 mb-6">
+      {/* Input panel */}
+      <div className="mb-6">
+        {/* URL Tab */}
         {tab === "url" && (
-          <div>
-            <label className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono block mb-2">
-              Instagram Reel URL
-            </label>
-            <input
-              type="url"
-              placeholder="https://www.instagram.com/reel/..."
-              className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-4 py-3 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600 mb-3"
-            />
-            <p className="text-[11px] text-zinc-600 mb-3">
-              Funcționalitatea de scraping URL este în dezvoltare. Între timp, copiază transcriptul reelului și lipește-l în tab-ul Paste Transcript.
+          <div className="space-y-3">
+            <div>
+              <label className="block text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-2">
+                Instagram Reel URL
+              </label>
+              <input
+                type="url"
+                value={reelUrl}
+                onChange={(e) => setReelUrl(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleFetchUrl()}
+                placeholder="https://www.instagram.com/reel/..."
+                className="w-full bg-[#111111] border border-white/10 text-zinc-200 text-[13px] px-4 py-3 rounded-lg focus:outline-none focus:border-white/20 placeholder:text-zinc-700 transition-colors"
+              />
+            </div>
+            <p className="text-[12px] text-zinc-600 leading-relaxed">
+              Paste any public Instagram reel link. The AI will immediately transcribe it, score it, and tell you exactly how to adapt it for your voice and niche — or whether it&apos;s even worth adapting at all.
             </p>
             <button
-              onClick={() => setTab("transcript")}
-              className="text-[12px] text-built-red border border-built-red/20 px-3 py-1.5 rounded-lg hover:bg-built-red/10"
+              onClick={handleFetchUrl}
+              disabled={fetchingUrl || loading || !reelUrl.trim()}
+              className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-300 text-[13px] font-medium py-3 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              → Treci la Paste Transcript
+              {fetchingUrl ? "Fetching reel… (~60s)" : loading ? "Analysing…" : "Analyse Reel"}
             </button>
           </div>
         )}
 
+        {/* Transcript Tab */}
         {tab === "transcript" && (
-          <div>
-            <label className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono block mb-2">
-              Transcript / Script Reel
-            </label>
+          <div className="space-y-3">
             <textarea
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
-              placeholder="Lipește transcriptul complet al reelului pe care vrei să-l analizezi..."
+              placeholder="Paste the full transcript or script of the reel you want to analyse…"
               rows={8}
-              className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-4 py-3 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600 resize-none mb-3"
+              className="w-full bg-[#111111] border border-white/10 text-zinc-200 text-[13px] px-4 py-3 rounded-lg focus:outline-none focus:border-white/20 placeholder:text-zinc-700 resize-none transition-colors"
             />
-            <p className="text-[11px] text-zinc-600">
-              Lipește orice reel public — AI va transcrie, scora și îți va spune exact cum să-l adaptezi pentru BUILT.
-            </p>
-          </div>
-        )}
-
-        {tab === "audio" && (
-          <div className="text-center py-8">
-            <p className="text-zinc-600 text-[13px] mb-2">Upload Audio — Coming Soon</p>
-            <p className="text-zinc-700 text-[11px]">
-              Suportul pentru fișiere audio vine în curând.
-            </p>
             <button
-              onClick={() => setTab("transcript")}
-              className="mt-4 text-[12px] text-built-red border border-built-red/20 px-3 py-1.5 rounded-lg hover:bg-built-red/10"
+              onClick={handleAnalyse}
+              disabled={loading || transcript.trim().length < 30}
+              className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-300 text-[13px] font-medium py-3 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              → Paste Transcript acum
+              {loading ? "Analysing…" : "Analyse Reel"}
             </button>
           </div>
         )}
 
-        {tab === "transcript" && (
-          <button
-            onClick={handleAnalyse}
-            disabled={loading || transcript.trim().length < 30}
-            className="w-full mt-4 bg-built-red hover:bg-built-red-dark text-white py-3 rounded-xl text-[13px] font-medium transition-colors disabled:opacity-40"
-          >
-            {loading ? "Analizez..." : "✦ Analyse Reel"}
-          </button>
+        {/* Audio Tab */}
+        {tab === "audio" && (
+          <div className="bg-[#111111] border border-white/10 rounded-lg p-8 text-center">
+            <p className="text-zinc-500 text-[13px] mb-1">Upload Audio — Coming Soon</p>
+            <p className="text-zinc-700 text-[12px] mb-4">
+              Audio file support is on the roadmap.
+            </p>
+            <button
+              onClick={() => setTab("transcript")}
+              className="text-[12px] text-zinc-400 border border-white/10 px-4 py-2 rounded-lg hover:bg-white/5 transition-colors"
+            >
+              Use Paste Transcript instead
+            </button>
+          </div>
         )}
 
-        {error && <p className="mt-3 text-red-400 text-[12px]">{error}</p>}
+        {error && (
+          <p className="mt-3 text-red-400 text-[12px]">{error}</p>
+        )}
       </div>
 
-      {!analysis && !loading && (
-        <div className="text-center py-12">
-          <p className="text-4xl opacity-10 mb-3">◈</p>
+      {/* Empty state */}
+      {!analysis && !loading && !fetchingUrl && (
+        <div className="text-center py-16">
+          <p className="text-[40px] opacity-[0.06] mb-3 select-none">◈</p>
           <p className="text-zinc-700 text-[12px]">
-            Niciun reel analizat încă. Lipește un transcript și apasă Analyse Reel.
+            No reel analysed yet. Paste a URL or transcript above.
           </p>
         </div>
       )}
 
-      {loading && (
-        <div className="text-center py-12">
-          <div className="flex gap-1 justify-center mb-3">
-            {[0, 150, 300].map((delay) => (
+      {/* Loading state */}
+      {(loading || fetchingUrl) && !analysis && (
+        <div className="text-center py-16">
+          <div className="flex gap-1.5 justify-center mb-3">
+            {[0, 120, 240].map((delay) => (
               <span
                 key={delay}
-                className="w-2 h-2 rounded-full bg-built-red/60 animate-bounce"
+                className="w-1.5 h-1.5 rounded-full bg-built-red/50 animate-bounce"
                 style={{ animationDelay: `${delay}ms` }}
               />
             ))}
           </div>
-          <p className="text-zinc-600 text-[12px] font-mono">Fetching & analysing...</p>
+          <p className="text-zinc-600 text-[12px] font-mono">
+            {fetchingUrl ? "Fetching reel from Instagram…" : "Analysing reel…"}
+          </p>
         </div>
       )}
 
+      {/* Results */}
       {analysis && (
         <div className="space-y-4">
           {/* Verdict + Score row */}
-          <div className="bg-[#111111] border border-white/10 rounded-xl p-5 flex items-center justify-between">
+          <div className="bg-[#111111] border border-white/10 rounded-xl p-5 flex items-center gap-8">
             <div>
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-1">Verdict</p>
-              <span className={`text-[13px] font-bold px-3 py-1 rounded-full border ${VERDICT_COLOR[analysis.verdict] ?? "text-zinc-400 bg-white/5 border-white/10"}`}>
+              <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-2">
+                Verdict
+              </p>
+              <span
+                className={`inline-block text-[12px] font-semibold px-3 py-1 rounded-full border ${
+                  VERDICT_COLOR[analysis.verdict] ?? "text-zinc-400 bg-white/5 border-white/10"
+                }`}
+              >
                 {analysis.verdict}
               </span>
             </div>
-            <div className="text-right">
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-1">Score</p>
-              <p className="text-5xl font-bold text-zinc-100">{analysis.score}</p>
+            <div>
+              <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-1">
+                Score
+              </p>
+              <p className="text-[52px] font-bold text-zinc-100 leading-none">
+                {analysis.score}
+              </p>
             </div>
-            <div className="text-right">
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-1">Hook Score</p>
-              <p className="text-5xl font-bold text-zinc-100">{analysis.hook_score}</p>
-            </div>
-          </div>
-
-          {/* 2 progress bars */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">Performance</p>
-                <p className="text-[12px] text-zinc-400 font-medium">{analysis.score}/100</p>
+            <div className="flex-1" />
+            <div className="w-[260px] space-y-4">
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600">
+                    Performance
+                  </p>
+                  <p className="text-[11px] text-zinc-500">{analysis.score}</p>
+                </div>
+                <ProgressBar value={analysis.score} />
               </div>
-              <div className="w-full bg-white/5 rounded-full h-1.5 mb-3">
-                <div
-                  className="bg-built-red h-1.5 rounded-full transition-all"
-                  style={{ width: `${Math.min(analysis.score, 100)}%` }}
-                />
+              <div>
+                <div className="flex items-center justify-between mb-1.5">
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600">
+                    Script Quality
+                  </p>
+                  <p className="text-[11px] text-zinc-500">{analysis.hook_score}</p>
+                </div>
+                <ProgressBar value={analysis.hook_score} />
               </div>
-              <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.performance_summary}</p>
-            </div>
-            <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-              <div className="flex items-center justify-between mb-2">
-                <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest">Script Quality</p>
-                <p className="text-[12px] text-zinc-400 font-medium">{analysis.hook_score}/100</p>
-              </div>
-              <div className="w-full bg-white/5 rounded-full h-1.5 mb-3">
-                <div
-                  className="bg-built-red h-1.5 rounded-full transition-all"
-                  style={{ width: `${Math.min(analysis.hook_score, 100)}%` }}
-                />
-              </div>
-              <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.script_quality}</p>
             </div>
           </div>
 
-          {/* 3 columns: HOOK | FIXING | CTA */}
+          {/* 3-column grid */}
           <div className="grid grid-cols-3 gap-4">
+            {/* THE OPENING LINE */}
             <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">Hook</p>
-              <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.what_worked?.[0] ?? "—"}</p>
+              <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-3">
+                The Opening Line
+              </p>
+              <p className="text-zinc-300 text-[13px] leading-relaxed">
+                {analysis.performance_summary}
+              </p>
             </div>
+
+            {/* WHAT WORKED */}
             <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">Fixing</p>
-              <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.what_worked?.[1] ?? "—"}</p>
+              <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-3">
+                What Worked
+              </p>
+              <ul className="space-y-2">
+                {analysis.what_worked.map((item, i) => (
+                  <li key={i} className="flex gap-2 text-[13px] text-zinc-300 leading-relaxed">
+                    <span className="text-zinc-600 shrink-0 mt-0.5">▸</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
+
+            {/* CTA / AUDIENCE FIT */}
             <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-              <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">CTA</p>
-              <p className="text-zinc-300 text-[13px] leading-relaxed">{analysis.what_worked?.[2] ?? "—"}</p>
+              <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-3">
+                CTA / Audience Fit
+              </p>
+              <p className="text-zinc-300 text-[13px] leading-relaxed">
+                {analysis.audience_fit}
+              </p>
             </div>
           </div>
 
-          {/* Key Lessons */}
+          {/* KEY LESSONS */}
           <div className="bg-[#111111] border border-white/10 rounded-xl p-5">
-            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">Key Lessons</p>
-            <ol className="space-y-2 list-none">
+            <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-4">
+              Key Lessons
+            </p>
+            <ol className="space-y-3">
               {analysis.what_worked.map((item, i) => (
-                <li key={i} className="flex gap-3 text-[13px] text-zinc-300">
-                  <span className="text-built-red font-mono shrink-0 mt-0.5">{String(i + 1).padStart(2, "0")}.</span>
+                <li key={i} className="flex gap-4 text-[13px] text-zinc-300 leading-relaxed">
+                  <span className="text-zinc-700 font-mono shrink-0 w-5 text-right">
+                    {i + 1}.
+                  </span>
                   {item}
                 </li>
               ))}
             </ol>
           </div>
 
-          {/* Adaptation Brief */}
-          <div className="bg-[#111111] border border-white/10 rounded-xl p-5 border-l-4 border-l-built-red">
-            <p className="text-[10px] text-built-red font-mono uppercase tracking-widest mb-2">Adaptation Brief</p>
-            <p className="text-zinc-200 text-[13px] leading-relaxed">{analysis.adaptation_brief}</p>
+          {/* ADAPTATION BRIEF */}
+          <div className="bg-[#111111] border border-white/10 border-l-2 border-l-built-red rounded-xl p-5">
+            <p className="text-[10px] font-mono uppercase tracking-widest text-built-red mb-3">
+              Adaptation Brief
+            </p>
+            <p className="text-zinc-300 text-[13px] leading-relaxed italic">
+              {analysis.adaptation_brief}
+            </p>
           </div>
 
-          {/* Suggested Hook */}
-          <div className="bg-built-red/5 border border-built-red/20 rounded-xl p-6">
-            <p className="text-[10px] text-zinc-600 font-mono uppercase tracking-widest mb-3">Suggested Hook for Your Audience</p>
-            <p className="text-zinc-100 text-lg leading-relaxed italic">&ldquo;{analysis.suggested_hook}&rdquo;</p>
-            <div className="flex gap-2 mt-4">
+          {/* SUGGESTED HOOK */}
+          <div className="bg-[#111111] border border-white/10 rounded-xl p-6">
+            <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-4">
+              Suggested Hook for Your Audience
+            </p>
+            <p className="text-zinc-100 text-[17px] leading-relaxed italic mb-5">
+              &ldquo;{analysis.suggested_hook}&rdquo;
+            </p>
+            <div className="flex gap-2">
               <button
                 onClick={copyHook}
-                className="text-[12px] text-built-red border border-built-red/20 bg-built-red/10 px-3 py-1.5 rounded-lg hover:bg-built-red/20 transition-colors"
+                className="text-[12px] text-built-red border border-built-red/30 px-4 py-2 rounded-lg hover:bg-built-red/10 transition-colors"
               >
-                {copied ? "✓ Copiat" : "Copy Hook"}
+                {copied ? "✓ Copied" : "Copy Hook"}
               </button>
-              <button className="text-[12px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5">
+              <button className="text-[12px] text-zinc-500 border border-white/10 px-4 py-2 rounded-lg hover:bg-white/5 transition-colors">
                 Save to Idea Bank
               </button>
             </div>
           </div>
 
-          {/* Transcript accordion */}
+          {/* TRANSCRIPT accordion */}
           <div className="bg-[#111111] border border-white/10 rounded-xl overflow-hidden">
             <button
-              className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/5 transition-colors"
+              className="w-full flex items-center justify-between px-5 py-4 hover:bg-white/[0.02] transition-colors"
               onClick={() => setShowTranscript(!showTranscript)}
             >
-              <p className="text-[12px] text-zinc-400 font-medium">Transcript</p>
-              <span className={`text-zinc-500 transition-transform ${showTranscript ? "rotate-90" : ""}`}>›</span>
+              <p className="text-[12px] text-zinc-500 font-medium">Transcript</p>
+              <span
+                className={`text-zinc-600 text-[16px] transition-transform duration-200 ${
+                  showTranscript ? "rotate-90" : ""
+                }`}
+              >
+                ›
+              </span>
             </button>
             {showTranscript && (
-              <div className="px-5 pb-5 border-t border-white/5 pt-4">
-                <p className="text-zinc-500 text-[12px] leading-relaxed whitespace-pre-line">{analysis.transcript_clean}</p>
+              <div className="px-5 pb-5 pt-4 border-t border-white/5">
+                <p className="text-zinc-600 text-[12px] leading-relaxed whitespace-pre-line">
+                  {analysis.transcript_clean || transcript}
+                </p>
               </div>
             )}
           </div>

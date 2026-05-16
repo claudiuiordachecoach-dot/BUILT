@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useTransition, useRef, useEffect } from "react";
-import { submitCheckin, updateClientStatus, type Client, type CheckIn, type ClientStatus, type ClientModule, getClientModules, saveClientModule, deleteClientModule } from "../actions";
+import Link from "next/link";
+import { submitCheckin, updateClientStatus, inviteClient, type Client, type CheckIn, type ClientStatus, type ClientModule, getClientModules, saveClientModule, deleteClientModule } from "../actions";
 import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages } from "@/app/client/actions";
 
 const STATUS_OPTIONS: { id: ClientStatus; label: string }[] = [
@@ -27,6 +28,8 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<ClientStatus>(client.status);
   const [activeTab, setActiveTab] = useState("checkin");
+  const [inviting, setInviting] = useState(false);
+  const [inviteMsg, setInviteMsg] = useState<string | null>(null);
 
   const numericClientId = client.id;
   const currentWeek = weeksSince(client.start_date);
@@ -53,7 +56,32 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
           {client.email && <p className="text-built-gray-text text-sm mt-1">{client.email}</p>}
           {client.objectives && <p className="text-sm text-built-white/70 mt-1">{client.objectives}</p>}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 items-center">
+          <Link
+            href="/client/dashboard"
+            className="px-3 py-1.5 font-condensed text-[10px] border border-built-red/40 text-built-red hover:bg-built-red/10 transition-colors flex items-center gap-1.5"
+            target="_blank"
+          >
+            <span>◈</span> View as Client
+          </Link>
+          <button
+            onClick={async () => {
+              setInviting(true); setInviteMsg(null);
+              const r = await inviteClient(client.id);
+              setInviting(false);
+              setInviteMsg(r.ok ? `✓ Invitație trimisă la ${client.email}` : `✖ ${r.error}`);
+              setTimeout(() => setInviteMsg(null), 5000);
+            }}
+            disabled={inviting}
+            className="px-3 py-1.5 font-condensed text-[10px] border border-zinc-600 text-zinc-400 hover:border-built-red hover:text-built-red transition-colors disabled:opacity-50"
+          >
+            {inviting ? "Se trimite..." : "✉ Trimite Invitație"}
+          </button>
+          {inviteMsg && (
+            <span className={`text-[10px] font-condensed ${inviteMsg.startsWith("✓") ? "text-emerald-400" : "text-orange-400"}`}>
+              {inviteMsg}
+            </span>
+          )}
           {STATUS_OPTIONS.map((s) => (
             <button key={s.id} type="button" onClick={() => handleStatusChange(s.id)}
               className={`px-3 py-1.5 font-condensed text-[10px] border transition-colors ${status === s.id ? "bg-built-red border-built-red text-built-white" : "border-built-gray-2 text-built-gray-text hover:border-built-red"}`}>

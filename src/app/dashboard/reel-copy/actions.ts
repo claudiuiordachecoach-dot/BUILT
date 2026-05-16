@@ -88,3 +88,58 @@ Verdict scale: Exceptional (90-100), Strong (75-89), Good (60-74), Weak (sub 60)
     };
   }
 }
+
+export async function fetchReelByUrl(
+  url: string
+): Promise<{ ok: true; caption: string; views: number; likes: number } | { ok: false; error: string }> {
+  const apiKey = process.env.APIFY_API_KEY;
+  if (!apiKey) return { ok: false, error: "APIFY_API_KEY lipsă." };
+
+  // Extract shortcode from URL
+  const match = url.match(/\/(reel|p)\/([A-Za-z0-9_-]+)/);
+  const shortcode = match?.[2];
+  if (!shortcode) return { ok: false, error: "URL invalid. Exemplu: https://www.instagram.com/reel/ABC123/" };
+
+  try {
+    // Start Apify run
+    const runRes = await fetch(
+      `https://api.apify.com/v2/acts/apify~instagram-reel-scraper/runs?token=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ directUrls: [url], resultsLimit: 1 }),
+      }
+    );
+    if (!runRes.ok) throw new Error(`Apify error: ${runRes.status}`);
+    const run = await runRes.json();
+    const runId = run.data?.id;
+    if (!runId) throw new Error("Nu s-a obținut run ID de la Apify.");
+
+    // Poll until done (max 90s)
+    let datasetId = "";
+    for (let i = 0; i < 18; i++) {
+      await new Promise(r => setTimeout(r, 5000));
+      const statusRes = await fetch(`https://api.apify.com/v2/actor-runs/${runId}?token=${apiKey}`);
+      const status = await statusRes.json();
+      if (status.data?.status === "SUCCEEDED") {
+        datasetId = status.data.defaultDatasetId;
+        break;
+      }
+      if (status.data?.status === "FAILED") throw new Error("Apify run eșuat.");
+    }
+    if (!datasetId) throw new Error("Timeout — Apify nu a terminat în 90s. Încearcă Paste Transcript.");
+
+    const itemsRes = await fetch(`https://api.apify.com/v2/datasets/${datasetId}/items?token=${apiKey}&limit=1`);
+    const items = await itemsRes.json();
+    const item = Array.isArray(items) ? items[0] : null;
+    if (!item) throw new Error("Apify nu a returnat date pentru acest URL.");
+
+    const caption = String(item.caption ?? item.description ?? "").slice(0, 3000);
+    const views = Number(item.videoViewCount ?? item.viewsCount ?? 0);
+    const likes = Number(item.likesCount ?? 0);
+
+    return { ok: true, caption, views, likes };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Eroare necunoscută." };
+  }
+}

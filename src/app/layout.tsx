@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Bebas_Neue, Barlow_Condensed, Barlow } from "next/font/google";
+import { Bebas_Neue, Barlow_Condensed, Barlow, JetBrains_Mono } from "next/font/google";
 import { Sidebar } from "@/components/Sidebar";
 import "./globals.css";
 
@@ -24,6 +24,13 @@ const barlow = Barlow({
   display: "swap",
 });
 
+const jetbrainsMono = JetBrains_Mono({
+  variable: "--font-jetbrains-mono",
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "BUILT — AI Command Center",
   description: "Sistemul AI personal al lui Iordache Claudiu pentru BUILT.",
@@ -37,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="ro"
-      className={`${bebasNeue.variable} ${barlowCondensed.variable} ${barlow.variable}`}
+      className={`${bebasNeue.variable} ${barlowCondensed.variable} ${barlow.variable} ${jetbrainsMono.variable}`}
     >
       <body className="bg-built-black text-built-white">
         <div className="flex min-h-screen">

@@ -10,15 +10,11 @@
   --color-built-red: #C0392B;
   --color-built-red-dark: #8B1A1A;
 
-  /* William-style blue accent pentru UI elements */
-  --color-brand-blue: #3b82f6;
-  --color-brand-blue-dark: #2563eb;
-  --color-brand-blue-muted: rgba(59, 130, 246, 0.1);
-
   /* Fonturi — variabile setate de next/font în layout.tsx */
   --font-display: var(--font-bebas-neue);
   --font-condensed: var(--font-barlow-condensed);
   --font-sans: var(--font-barlow);
+  --font-mono: var(--font-jetbrains-mono);
 }
 
 :root {
@@ -71,4 +67,17 @@ body {
   font-family: var(--font-condensed);
   text-transform: uppercase;
   letter-spacing: 0.2em;
+}
+
+/* Monospace precision for stats */
+.font-mono-stats {
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Command Center card style */
+.built-card {
+  border: 1px solid var(--color-built-gray-2);
+  border-radius: 0.5rem;
+  background: var(--color-built-gray-1);
 }

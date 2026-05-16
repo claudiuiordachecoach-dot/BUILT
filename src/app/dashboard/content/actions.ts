@@ -57,18 +57,33 @@ export async function scrapeCompetitors() {
   return { scraped: total };
 }
 
-export async function getLatestWeeklyPackage() {
-  const supabase = await getSupabaseAuth();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data } = await supabase
-    .from("weekly_packages")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("week_start", { ascending: false })
-    .limit(1)
-    .single();
-  return data;
+export async function getLatestWeeklyPackage(): Promise<WeeklyPackage | null> {
+  try {
+    const supabase = getSupabaseServer({ useServiceRole: true });
+    const { data } = await supabase
+      .from("weekly_packages")
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    if (!data) return null;
+
+    if (data.package_json) {
+      try {
+        return JSON.parse(data.package_json) as WeeklyPackage;
+      } catch {}
+    }
+
+    return {
+      week_of: data.week_of || data.week_start || new Date().toISOString().slice(0, 10),
+      generated_at: data.generated_at || data.created_at || new Date().toISOString(),
+      intelligence_report: data.intelligence_report || { whats_popping: [], performance_last_week: [], accounts_to_watch: [] },
+      scripts: data.scripts || [],
+    };
+  } catch {
+    return null;
+  }
 }
 
 export async function generateWeeklyPackage() {
@@ -205,7 +220,22 @@ export async function generateWeeklyPackageAI(): Promise<{ ok: true; pkg: Weekly
       ? `REELS COMPETITORI (ultimele 7 zile, ordonate după views):\n${competitorReels.map((r, i) => `${i + 1}. @${r.competitor_handle} — ${r.views} views\nCaption: ${r.caption?.slice(0, 200)}\nTranscript: ${r.transcript?.slice(0, 300) ?? "N/A"}`).join("\n\n")}`
       : "Nu există date de la competitori pentru această săptămână. Generează pe baza creierului BUILT.";
 
-    const prompt = `${competitorContext}
+    // Feedback loop: top learnings din reels-urile proprii analizate
+    const { data: analysedReels } = await supabase
+      .from("instagram_media")
+      .select("ai_analysis, views, caption")
+      .not("ai_analysis", "is", null)
+      .order("views", { ascending: false })
+      .limit(5);
+
+    const learningsContext = analysedReels?.length
+      ? `\n\nLEARNINGS DIN PROPRIILE REELS (ce a mers cel mai bine la @iordacheclaudiu_):\n${analysedReels.map((r, i) => {
+          const a = r.ai_analysis as { what_worked?: string[]; stronger_hook?: string; hook_score?: number } | null;
+          return `${i + 1}. ${r.views} views — Hook score: ${a?.hook_score ?? "N/A"}\nCe a funcționat: ${(a?.what_worked ?? []).join(", ")}\nHook câștigător: ${a?.stronger_hook ?? "N/A"}`;
+        }).join("\n\n")}\n\nFolosește aceste patterns dovedite ca inspirație directă pentru hook-urile din săptămâna aceasta.`
+      : "";
+
+    const prompt = `${competitorContext}${learningsContext}
 
 Ești CMO pentru BUILT — metoda Iordache Claudiu. Generează pachetul săptămânal complet.
 
@@ -265,7 +295,8 @@ Reguli:
 
     // Salvează în Supabase (best effort)
     try {
-      await supabase.from("weekly_packages").upsert({
+      const adminDb = getSupabaseServer({ useServiceRole: true });
+      await adminDb.from("weekly_packages").upsert({
         week_of: weekOf,
         package_json: JSON.stringify(pkg),
         created_at: new Date().toISOString(),

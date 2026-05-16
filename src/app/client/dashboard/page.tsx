@@ -1,14 +1,17 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getClientDashboard } from "../actions";
+import { getClientDashboard, linkAuthToClient } from "../actions";
 
 type DashData = Awaited<ReturnType<typeof getClientDashboard>>;
 
 export default function ClientDashboardPage() {
   const [data, setData] = useState<DashData>(null);
 
-  useEffect(() => { getClientDashboard().then(setData); }, []);
+  useEffect(() => {
+    linkAuthToClient().catch(() => {});
+    getClientDashboard().then(setData);
+  }, []);
 
   if (!data) return (
     <div className="flex items-center justify-center h-64">

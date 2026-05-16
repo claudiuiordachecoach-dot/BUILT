@@ -31,7 +31,7 @@ export interface BuiltModule {
 export const MODULES: BuiltModule[] = [
   {
     id: "M1",
-    slug: "creier",
+    slug: "onboarding",
     title: "Creierul lui Claudiu",
     subtitle: "Onboarding Hub",
     description:
@@ -40,7 +40,7 @@ export const MODULES: BuiltModule[] = [
   },
   {
     id: "M2",
-    slug: "reels",
+    slug: "content",
     title: "Generator Reels",
     subtitle: "7 / săptămână",
     description:
@@ -49,7 +49,7 @@ export const MODULES: BuiltModule[] = [
   },
   {
     id: "M3",
-    slug: "stories",
+    slug: "content",
     title: "Generator Stories",
     subtitle: "21 / săptămână",
     description:
@@ -58,7 +58,7 @@ export const MODULES: BuiltModule[] = [
   },
   {
     id: "M4",
-    slug: "carusele",
+    slug: "content",
     title: "Generator Carusele",
     subtitle: "2 / săptămână",
     description:
@@ -67,7 +67,7 @@ export const MODULES: BuiltModule[] = [
   },
   {
     id: "M5",
-    slug: "",
+    slug: "calendar",
     title: "Daily Brief",
     subtitle: "Calendar & operare",
     description:
@@ -85,7 +85,7 @@ export const MODULES: BuiltModule[] = [
   },
   {
     id: "M7",
-    slug: "dm",
+    slug: "outreach",
     title: "Sistem DM",
     subtitle: "Outreach & calificare",
     description:
@@ -94,7 +94,7 @@ export const MODULES: BuiltModule[] = [
   },
   {
     id: "M8",
-    slug: "analizor",
+    slug: "reel-copy",
     title: "Analizor Reel",
     subtitle: "Scor + brief adaptare",
     description:
@@ -103,7 +103,7 @@ export const MODULES: BuiltModule[] = [
   },
   {
     id: "M9",
-    slug: "knowledge",
+    slug: "ai",
     title: "Knowledge Base",
     subtitle: "Chat cu creierul BUILT",
     description:
@@ -112,7 +112,7 @@ export const MODULES: BuiltModule[] = [
   },
   {
     id: "M10",
-    slug: "audit",
+    slug: "profile-audit",
     title: "Audit Profil Instagram",
     subtitle: "Scor pe 6 elemente",
     description:

@@ -1,10 +1,30 @@
+import Link from "next/link";
 import { ClientNav } from "@/components/ClientNav";
+import { getUserRole } from "@/lib/supabase/auth-server";
 
-export default function ClientLayout({ children }: { children: React.ReactNode }) {
+export default async function ClientLayout({ children }: { children: React.ReactNode }) {
+  const role = await getUserRole().catch(() => null);
+  const isAdmin = role === "admin";
+
   return (
-    <div className="flex min-h-screen">
-      <ClientNav />
-      <main className="flex-1 min-w-0">{children}</main>
+    <div className="flex min-h-screen flex-col">
+      {isAdmin && (
+        <div className="bg-built-red/10 border-b border-built-red/30 px-6 py-2 flex items-center justify-between">
+          <p className="text-[11px] font-condensed uppercase tracking-widest text-built-red">
+            ◈ Admin Mode — Vizualizezi portalul ca și clientul
+          </p>
+          <Link
+            href="/clienti"
+            className="text-[11px] font-condensed uppercase tracking-widest text-built-red hover:text-built-white transition-colors"
+          >
+            ← Înapoi la Admin
+          </Link>
+        </div>
+      )}
+      <div className="flex flex-1 min-h-0">
+        <ClientNav />
+        <main className="flex-1 min-w-0">{children}</main>
+      </div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import type { IgMediaRow } from "@/app/analytics/actions";
+import type { IgMediaRow } from "@/app/analytics/types";
 
 function fmt(n: number | null | undefined): string {
   if (n == null) return "—";
@@ -72,16 +72,20 @@ function MediaRow({ m, highlight }: { m: IgMediaRow; highlight?: boolean }) {
           <span className="font-condensed">{m.media_type}</span>
         </div>
       </div>
-      <div className="grid grid-cols-4 gap-3 shrink-0 text-center">
+      <div className="grid grid-cols-6 gap-2 shrink-0 text-center">
         {[
-          { label: "plays", val: m.plays },
-          { label: "likes", val: m.likes },
-          { label: "saves", val: m.saves },
-          { label: "reach", val: m.reach },
-        ].map(({ label, val }) => (
+          { label: "plays",   val: m.plays,   suffix: "" },
+          { label: "likes",   val: m.likes,   suffix: "" },
+          { label: "saves",   val: m.saves,   suffix: "" },
+          { label: "reach",   val: m.reach,   suffix: "" },
+          { label: "follows", val: m.follows, suffix: "" },
+          { label: "watch",   val: m.avg_watch_time_ms != null ? Math.round(m.avg_watch_time_ms / 1000) : null, suffix: "s" },
+        ].map(({ label, val, suffix }) => (
           <div key={label}>
             <p className="font-condensed text-[9px] text-built-gray-text uppercase">{label}</p>
-            <p className="font-display text-base text-built-white">{fmt(val)}</p>
+            <p className="font-display text-base text-built-white">
+              {val != null ? `${fmt(val)}${suffix}` : "—"}
+            </p>
           </div>
         ))}
       </div>

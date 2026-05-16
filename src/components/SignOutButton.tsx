@@ -3,10 +3,11 @@ import { signOut } from "@/app/login/actions";
 
 interface SignOutButtonProps {
   iconOnly?: boolean;
+  collapsed?: boolean;
 }
 
-export function SignOutButton({ iconOnly = false }: SignOutButtonProps) {
-  if (iconOnly) {
+export function SignOutButton({ iconOnly = false, collapsed = false }: SignOutButtonProps) {
+  if (iconOnly || collapsed) {
     return (
       <form action={signOut} className="w-full flex justify-center">
         <div className="relative group">

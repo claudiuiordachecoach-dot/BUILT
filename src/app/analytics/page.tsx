@@ -2,6 +2,8 @@ import { getIgAccount, listIgMedia, listReelsWithPerformance } from "./actions";
 import { IgConnectPanel } from "@/components/analytics/IgConnectPanel";
 import { IgMediaGrid } from "@/components/analytics/IgMediaGrid";
 import { ManualPerfPanel } from "@/components/analytics/ManualPerfPanel";
+import { HookScorePanel } from "@/components/analytics/HookScorePanel";
+import { SyncDiagnoseButton } from "@/components/analytics/SyncDiagnoseButton";
 
 export const dynamic = "force-dynamic";
 
@@ -66,6 +68,13 @@ export default async function AnalyticsPage({
       {/* CONNECT PANEL */}
       <IgConnectPanel account={account} />
 
+      {/* Composio conectat dar fără date încă — arată butonul de sync */}
+      {igConnected && !account && (
+        <div className="mb-6">
+          <SyncDiagnoseButton />
+        </div>
+      )}
+
       {/* STATS din Instagram */}
       {account && igMedia.length > 0 && (
         <>
@@ -75,6 +84,14 @@ export default async function AnalyticsPage({
             <Stat label="Total likes" value={fmt(totalLikes)} />
             <Stat label="Total saves" value={fmt(totalSaves)} />
           </div>
+
+          {/* SYNC & DIAGNOZEAZĂ */}
+          <div className="mb-6">
+            <SyncDiagnoseButton />
+          </div>
+
+          {/* HOOK SCORE PANEL */}
+          <HookScorePanel media={igMedia} />
 
           <h2 className="font-display text-2xl tracking-wide text-built-white mb-3">
             REELS · SYNC IG

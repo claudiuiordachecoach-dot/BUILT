@@ -1,44 +1,41 @@
 import { NextResponse } from "next/server";
-import { fetchMedia, fetchMediaInsights, fetchProfile } from "@/lib/instagram";
+import {
+  fetchComposioMedia,
+  fetchComposioInsights,
+  fetchComposioProfile,
+} from "@/lib/composio-instagram";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-// POST /api/instagram/sync — fetch ultimele 50 media + insights, upsert în Supabase
 export async function POST() {
   const sb = getSupabaseServer();
 
-  // Ia contul conectat
-  const { data: account, error: accErr } = await sb
-    .from("instagram_account")
-    .select("ig_user_id, access_token, token_expires_at")
-    .single();
-
-  if (accErr || !account) {
-    return NextResponse.json({ error: "Niciun cont Instagram conectat." }, { status: 400 });
-  }
-
-  // Avertizează dacă tokenul expiră în < 7 zile
-  const expiresAt = account.token_expires_at ? new Date(account.token_expires_at) : null;
-  const daysLeft = expiresAt
-    ? Math.floor((expiresAt.getTime() - Date.now()) / 86400_000)
-    : null;
-
   try {
-    // Fetch + update followers
-    const profile = await fetchProfile(account.ig_user_id, account.access_token);
-    await sb
-      .from("instagram_account")
-      .update({ followers_count: profile.followers_count })
-      .eq("ig_user_id", account.ig_user_id);
+    // Fetch profil
+    const profile = await fetchComposioProfile();
+    const username = profile?.username ?? "iordacheclaudiu_";
+    const followers = profile?.followers_count ?? null;
 
-    // Fetch media (50 cele mai recente)
-    const media = await fetchMedia(account.ig_user_id, account.access_token, 50);
+    // Upsert cont în instagram_account (pentru UI existent)
+    await sb.from("instagram_account").upsert(
+      {
+        ig_user_id: "composio_" + username,
+        username,
+        followers_count: followers,
+        access_token: "composio",
+        token_expires_at: null,
+        connected_at: new Date().toISOString(),
+      },
+      { onConflict: "ig_user_id" },
+    );
 
+    // Fetch media
+    const media = await fetchComposioMedia(50);
     let synced = 0;
     let failed = 0;
 
     for (const m of media) {
       try {
-        const insights = await fetchMediaInsights(m.id, m.media_type, account.access_token);
+        const insights = await fetchComposioInsights(m.id, m.media_type);
 
         await sb.from("instagram_media").upsert(
           {
@@ -55,7 +52,7 @@ export async function POST() {
             saves:               insights.saved              ?? null,
             shares:              insights.shares             ?? null,
             reach:               insights.reach              ?? null,
-            impressions:         insights.impressions        ?? null,
+            impressions:         null,
             avg_watch_time_ms:   insights.avg_watch_time_ms  ?? null,
             total_watch_time_ms: insights.total_watch_time_ms ?? null,
             replays:             insights.replays             ?? null,
@@ -71,15 +68,9 @@ export async function POST() {
       }
     }
 
-    return NextResponse.json({
-      ok: true,
-      synced,
-      failed,
-      total: media.length,
-      tokenDaysLeft: daysLeft,
-    });
+    return NextResponse.json({ ok: true, synced, failed, total: media.length });
   } catch (e) {
-    const msg = e instanceof Error ? e.message : "Eroare sync";
+    const msg = e instanceof Error ? e.message : "Eroare sync Composio";
     return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

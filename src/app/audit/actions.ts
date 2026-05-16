@@ -2,6 +2,7 @@
 
 import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
+import { getSupabaseServer } from "@/lib/supabase/server";
 
 export interface AuditElement {
   score: number;
@@ -130,7 +131,39 @@ ${textContext}
     const t = textBlock.text.trim();
     const a = t.indexOf("{"), b = t.lastIndexOf("}");
     if (a === -1) return { ok: false, error: "JSON invalid." };
-    return { ok: true, audit: JSON.parse(t.slice(a, b + 1)) as InstagramAudit };
+
+    let jsonStr = t.slice(a, b + 1);
+    let audit: InstagramAudit;
+    try {
+      audit = JSON.parse(jsonStr) as InstagramAudit;
+    } catch {
+      // Sanitize unescaped control characters that break JSON
+      const cleaned = jsonStr.split('').map(c => {
+        const code = c.charCodeAt(0);
+        if (code === 10) return String.raw`\n`;
+        if (code === 13) return String.raw`\r`;
+        if (code === 9) return String.raw`\t`;
+        if (code < 32) return '';
+        return c;
+      }).join('');
+      try {
+        audit = JSON.parse(cleaned) as InstagramAudit;
+      } catch {
+        return { ok: false, error: 'JSON malformat. Incearca din nou.' };
+      }
+    }
+
+        // Salvează în DB (best effort)
+    try {
+      const supabase = getSupabaseServer({ useServiceRole: true });
+      await supabase.from("profile_audits").insert({
+        score: audit.overall,
+        recommendations: { quick_wins: audit.quick_wins, top_priority: audit.top_priority, elements: audit.elements },
+        new_bio: audit.rewritten_bio,
+      });
+    } catch { /* ignorăm — audit-ul e valid */ }
+
+    return { ok: true, audit };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
   }

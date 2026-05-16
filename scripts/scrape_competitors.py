@@ -1,19 +1,13 @@
 #!/usr/bin/env python3
 """
-BUILT M6 — Competitor Reels Scraper
+BUILT M6 — Competitor Reels Scraper (via Apify)
 
 Pentru fiecare competitor activ:
-  1. Fetch ultimele 7 zile de reels (instaloader, fără auth — public only)
-  2. Skip reels deja scrape-uite (deduplicare pe shortcode)
-  3. Download video → transcribe cu Whisper local (model "base")
-  4. Upsert în Supabase: competitor_reels + update last_scraped_at
+  1. Apify instagram-reel-scraper → ultimele 20 reels
+  2. Deduplicare pe shortcode
+  3. Upsert în Supabase competitor_reels
 
 Rulare locală: npm run scrape:competitors
-Rulare cron: invocat din .github/workflows/scrape.yml săptămânal.
-
-Variabile env necesare (.env.local):
-  NEXT_PUBLIC_SUPABASE_URL
-  SUPABASE_SERVICE_ROLE_KEY
 """
 
 from __future__ import annotations
@@ -21,19 +15,19 @@ from __future__ import annotations
 import argparse
 import os
 import sys
-import tempfile
-from datetime import datetime, timedelta, timezone
+import time
+import json
+import urllib.request
+import urllib.error
+from datetime import datetime, timezone
 from pathlib import Path
 
-import instaloader
-import whisper
 from dotenv import load_dotenv
 from supabase import Client, create_client
 
 
-WHISPER_MODEL = "base"          # ~140MB, rezonabil pentru limba RO
-DAYS_BACK = 7
-MAX_REELS_PER_COMPETITOR = 15   # safety net, tipic 5-10/săpt
+APIFY_ACTOR = "apify~instagram-reel-scraper"
+MAX_REELS = 20
 
 
 def log(msg: str) -> None:
@@ -41,20 +35,67 @@ def log(msg: str) -> None:
     print(f"[{ts}] {msg}", flush=True)
 
 
-def load_env() -> tuple[str, str]:
+def load_env() -> tuple[str, str, str]:
     project_root = Path(__file__).parent.parent
     load_dotenv(project_root / ".env.local")
-    url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL")
-    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
+    url = os.environ.get("NEXT_PUBLIC_SUPABASE_URL", "")
+    key = os.environ.get("SUPABASE_SERVICE_ROLE_KEY", "")
+    apify = os.environ.get("APIFY_API_KEY", "")
     if not url or not key:
         log("EROARE: NEXT_PUBLIC_SUPABASE_URL sau SUPABASE_SERVICE_ROLE_KEY lipsă.")
         sys.exit(1)
-    return url, key
+    if not apify:
+        log("EROARE: APIFY_API_KEY lipsă în .env.local")
+        sys.exit(1)
+    return url, key, apify
 
 
-def fetch_active_competitors(sb: Client) -> list[dict]:
-    res = sb.table("competitors").select("*").eq("is_active", True).execute()
-    return res.data or []
+def apify_get(path: str, apify_key: str) -> dict | list:
+    sep = "&" if "?" in path else "?"
+    url = f"https://api.apify.com/v2{path}{sep}token={apify_key}"
+    req = urllib.request.Request(url, headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return json.loads(resp.read())
+
+
+def apify_post(path: str, apify_key: str, body: dict) -> dict:
+    url = f"https://api.apify.com/v2{path}?token={apify_key}"
+    data = json.dumps(body).encode()
+    req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"}, method="POST")
+    with urllib.request.urlopen(req, timeout=60) as resp:
+        return json.loads(resp.read())
+
+
+def scrape_via_apify(handle: str, apify_key: str) -> list[dict]:
+    clean = handle.lstrip("@")
+    log(f"  Apify → @{clean} ...")
+
+    run_resp = apify_post(f"/acts/{APIFY_ACTOR}/runs", apify_key, {"username": [clean], "resultsLimit": MAX_REELS})
+    run_id = run_resp.get("data", {}).get("id")
+    if not run_id:
+        log(f"  ⚠ Apify run pornire eșuată: {run_resp}")
+        return []
+
+    log(f"  Run ID: {run_id} — aștept finalizare (max 5 min)...")
+    status_resp: dict = {}
+    for i in range(60):  # 60 × 5s = 5 min
+        time.sleep(5)
+        status_resp = apify_get(f"/actor-runs/{run_id}", apify_key)  # type: ignore[assignment]
+        status = status_resp.get("data", {}).get("status", "")
+        if i % 6 == 0:
+            log(f"  ... {status} ({i * 5}s)")
+        if status == "SUCCEEDED":
+            break
+        if status in ("FAILED", "ABORTED", "TIMED-OUT"):
+            log(f"  ⚠ Apify run {status}")
+            return []
+    else:
+        log("  ⚠ Apify timeout după 5 min")
+        return []
+
+    dataset_id = status_resp.get("data", {}).get("defaultDatasetId", "")
+    items_resp = apify_get(f"/datasets/{dataset_id}/items?limit={MAX_REELS}", apify_key)
+    return items_resp if isinstance(items_resp, list) else []
 
 
 def existing_shortcodes(sb: Client, competitor_id: int) -> set[str]:
@@ -67,91 +108,62 @@ def existing_shortcodes(sb: Client, competitor_id: int) -> set[str]:
     return {row["shortcode"] for row in (res.data or [])}
 
 
-def transcribe(model, video_path: Path) -> str:
-    try:
-        result = model.transcribe(str(video_path), language="ro", fp16=False)
-        return (result.get("text") or "").strip()
-    except Exception as exc:
-        log(f"  ⚠ Transcribe eșuat: {exc}")
-        return ""
+def shortcode_from_url(url: str) -> str:
+    """Extrage shortcode din URL-ul Instagram."""
+    parts = [p for p in url.rstrip("/").split("/") if p]
+    return parts[-1] if parts else url
 
 
-def scrape_one(
-    L: instaloader.Instaloader,
-    whisper_model,
-    sb: Client,
-    competitor: dict,
-) -> int:
+def scrape_one(sb: Client, competitor: dict, apify_key: str) -> int:
     handle = competitor["handle"].lstrip("@")
     log(f"→ @{handle}")
 
-    try:
-        profile = instaloader.Profile.from_username(L.context, handle)
-    except Exception as exc:
-        log(f"  ⚠ Profile fetch eșuat: {exc}")
+    reels = scrape_via_apify(handle, apify_key)
+    if not reels:
+        log(f"  ⚠ 0 reels returnate de Apify")
         return 0
 
-    sb.table("competitors").update({
-        "followers_count": profile.followers,
-        "display_name": profile.full_name or handle,
-    }).eq("id", competitor["id"]).execute()
-
-    cutoff = datetime.now(timezone.utc) - timedelta(days=DAYS_BACK)
     seen = existing_shortcodes(sb, competitor["id"])
     saved = 0
-    processed = 0
 
-    with tempfile.TemporaryDirectory() as tmpdir:
-        tmp = Path(tmpdir)
-        L.dirname_pattern = str(tmp)
+    for r in reels:
+        url = r.get("url") or r.get("shortCode") or ""
+        shortcode = r.get("shortCode") or shortcode_from_url(url)
+        if not shortcode or shortcode in seen:
+            continue
 
-        for post in profile.get_posts():
-            if processed >= MAX_REELS_PER_COMPETITOR:
-                break
-            processed += 1
+        ig_url = f"https://www.instagram.com/reel/{shortcode}/" if shortcode else url
+        posted_raw = r.get("timestamp") or r.get("takenAtTs")
+        try:
+            posted_at = datetime.fromisoformat(str(posted_raw).replace("Z", "+00:00")).isoformat() if posted_raw else None
+        except Exception:
+            posted_at = None
 
-            if post.date_utc.replace(tzinfo=timezone.utc) < cutoff:
-                break  # postări mai vechi de 7 zile, oprire
+        row = {
+            "competitor_id": competitor["id"],
+            "shortcode": shortcode,
+            "url": ig_url,
+            "posted_at": posted_at,
+            "caption": (r.get("caption") or "")[:5000],
+            "thumbnail_url": r.get("thumbnailUrl") or r.get("displayUrl"),
+            "views": r.get("videoViewCount") or r.get("viewsCount") or 0,
+            "likes": r.get("likesCount") or r.get("likes") or 0,
+            "comments_count": r.get("commentsCount") or r.get("comments") or 0,
+        }
 
-            if not post.is_video:
-                continue
-            if post.shortcode in seen:
-                continue
-
-            log(f"  • {post.shortcode} ({post.video_view_count or 0} views)")
-
-            transcript = ""
-            try:
-                L.download_post(post, target=handle)
-                video_files = list(tmp.glob(f"{handle}/*.mp4"))
-                if video_files:
-                    transcript = transcribe(whisper_model, video_files[0])
-                    for f in video_files:
-                        f.unlink(missing_ok=True)
-            except Exception as exc:
-                log(f"  ⚠ Download/transcribe failed: {exc}")
-
-            sb.table("competitor_reels").insert({
-                "competitor_id": competitor["id"],
-                "shortcode": post.shortcode,
-                "url": f"https://www.instagram.com/p/{post.shortcode}/",
-                "posted_at": post.date_utc.isoformat(),
-                "caption": (post.caption or "")[:5000],
-                "transcript": transcript,
-                "thumbnail_url": post.url,
-                "video_url": post.video_url,
-                "views": post.video_view_count,
-                "likes": post.likes,
-                "comments_count": post.comments,
-                "duration_seconds": int(post.video_duration or 0) if post.video_duration else None,
-            }).execute()
+        try:
+            sb.table("competitor_reels").insert(row).execute()
             saved += 1
+            log(f"  • {shortcode} ({row['views']} views)")
+        except Exception as exc:
+            log(f"  ⚠ Insert eșuat {shortcode}: {exc}")
 
     sb.table("competitors").update({
-        "last_scraped_at": datetime.now(timezone.utc).isoformat()
+        "last_scraped_at": datetime.now(timezone.utc).isoformat(),
+        "display_name": handle,
     }).eq("id", competitor["id"]).execute()
 
-    log(f"  ✓ {saved} reels noi (din {processed} procesate)")
+    log(f"  ✓ {saved} reels noi salvate")
     return saved
 
 
@@ -160,10 +172,12 @@ def main() -> int:
     parser.add_argument("--handle", help="Scrape doar acest handle (debug)")
     args = parser.parse_args()
 
-    url, key = load_env()
+    url, key, apify_key = load_env()
     sb = create_client(url, key)
 
-    competitors = fetch_active_competitors(sb)
+    res = sb.table("competitors").select("*").eq("is_active", True).execute()
+    competitors = res.data or []
+
     if args.handle:
         wanted = args.handle.lstrip("@").lower()
         competitors = [c for c in competitors if c["handle"].lstrip("@").lower() == wanted]
@@ -172,24 +186,10 @@ def main() -> int:
         log("Niciun competitor activ. Adaugă unul prin UI (/competitors).")
         return 0
 
-    log(f"Loading Whisper '{WHISPER_MODEL}'...")
-    whisper_model = whisper.load_model(WHISPER_MODEL)
-
-    L = instaloader.Instaloader(
-        download_videos=True,
-        download_video_thumbnails=False,
-        download_geotags=False,
-        download_comments=False,
-        save_metadata=False,
-        post_metadata_txt_pattern="",
-        compress_json=False,
-        quiet=True,
-    )
-
     total = 0
     for c in competitors:
         try:
-            total += scrape_one(L, whisper_model, sb, c)
+            total += scrape_one(sb, c, apify_key)
         except KeyboardInterrupt:
             log("Întrerupt manual.")
             break

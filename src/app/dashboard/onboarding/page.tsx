@@ -182,28 +182,24 @@ export default function OnboardingPage() {
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
-      <div className="mb-8">
-        <p className="text-[11px] text-built-red font-mono uppercase tracking-widest mb-1">My Profile</p>
-        <h1 className="text-4xl font-display tracking-[0.06em] text-zinc-100 mb-1">ONBOARDING HUB</h1>
-        <p className="text-zinc-500 text-sm">Cu cât pui mai mult, cu atât AI-ul tău devine mai bun. Revino și actualizează oricând.</p>
-      </div>
-
-      {/* Progress */}
+      {/* Header — William Scott style */}
       <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-zinc-400">{filledCount} câmpuri completate</span>
-          <span className="text-sm font-medium text-zinc-200">{progressPct}%</span>
-        </div>
-        <div className="h-1.5 bg-zinc-800 rounded-full overflow-hidden">
-          <div className="h-full bg-built-red rounded-full transition-all duration-500" style={{ width: `${progressPct}%` }} />
+        <h1 className="text-2xl font-semibold text-zinc-100 mb-1">Onboarding Hub</h1>
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-[13px] text-zinc-500">
+            The more you put in, the better your AI gets. Come back and update whenever something changes.
+          </p>
+          <span className="text-[12px] text-zinc-500 whitespace-nowrap shrink-0">
+            {filledCount} forms completed | {progressPct}%
+          </span>
         </div>
       </div>
 
-      {/* Save button top */}
+      {/* Save button */}
       <button
         onClick={handleSave}
         disabled={saveStatus === "saving"}
-        className="w-full py-3 rounded-xl bg-zinc-100 text-zinc-900 font-semibold text-sm hover:bg-white transition-colors mb-6 disabled:opacity-60 flex items-center justify-center gap-2"
+        className="w-full py-3 rounded-xl bg-white text-zinc-900 font-semibold text-sm hover:bg-zinc-100 transition-colors mb-8 disabled:opacity-60 flex items-center justify-center gap-2"
       >
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
@@ -213,64 +209,65 @@ export default function OnboardingPage() {
         {saveBtnLabel}
       </button>
 
-      {/* AI Personalised Panel */}
-      <div className="bg-built-red/5 border border-built-red/20 rounded-xl p-5 mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-built-red animate-pulse" />
-            <span className="text-[11px] font-semibold text-built-red tracking-widest uppercase">AI Personalizat</span>
-          </div>
+      {/* AI Personalized Section */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">AI Personalized</span>
           <button
             onClick={handleGenerateSummary}
             disabled={summaryLoading}
             className="text-[11px] text-zinc-400 hover:text-zinc-100 border border-white/10 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40"
           >
-            {summaryLoading ? "Generez..." : "↺ Regenerează"}
+            {summaryLoading ? "Generating..." : "↺ Regenerate"}
           </button>
         </div>
-        {aiSummary ? (
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Nișa ta</p>
+        <div className="grid grid-cols-2 gap-3">
+          <div className="bg-[#111] border border-white/[0.08] rounded-xl p-4">
+            <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Niche</p>
+            {aiSummary ? (
               <p className="text-sm text-zinc-300 leading-relaxed">{aiSummary.niche}</p>
-            </div>
-            <div>
-              <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Clientul tău ideal</p>
-              <p className="text-sm text-zinc-300 leading-relaxed">{aiSummary.ideal_client}</p>
-            </div>
+            ) : (
+              <p className="text-sm text-zinc-600">Fill in fields below and click Regenerate.</p>
+            )}
           </div>
-        ) : (
-          <p className="text-sm text-zinc-600 text-center py-2">
-            Completează câmpurile de mai jos și apasă &quot;Regenerează&quot; pentru a vedea ce știe AI-ul despre tine.
-          </p>
-        )}
+          <div className="bg-[#111] border border-white/[0.08] rounded-xl p-4">
+            <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Ideal Client</p>
+            {aiSummary ? (
+              <p className="text-sm text-zinc-300 leading-relaxed">{aiSummary.ideal_client}</p>
+            ) : (
+              <p className="text-sm text-zinc-600">Fill in fields below and click Regenerate.</p>
+            )}
+          </div>
+        </div>
       </div>
 
-      {/* Sections */}
-      <div className="space-y-3">
+      {/* Sections Accordion */}
+      <div className="space-y-2">
         {SECTIONS.map((section) => {
           const filled = section.fields.filter((f) => data[f.key]?.trim().length > 0).length;
           const isOpen = openSection === section.id;
+          const allFilled = filled === section.fields.length;
           return (
-            <div key={section.id} className="bg-[#111111] border border-white/10 rounded-xl overflow-hidden">
+            <div key={section.id} className="bg-[#111] border border-white/[0.08] rounded-xl overflow-hidden">
               <button
                 className="w-full flex items-center gap-4 px-5 py-4 hover:bg-white/5 transition-colors text-left"
                 onClick={() => setOpenSection(isOpen ? "" : section.id)}
               >
-                <span className="w-6 h-6 rounded-full bg-built-red/10 text-built-red text-[11px] font-bold flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-full bg-white/10 text-zinc-400 text-[11px] font-bold flex items-center justify-center shrink-0">
                   {section.num}
                 </span>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <span className="text-[13px] text-zinc-200 font-medium">{section.title}</span>
-                    <span className="text-[11px] text-zinc-600">{filled}/{section.fields.length} completate</span>
+                    <span className="text-[11px] text-zinc-600">
+                      {allFilled ? `${filled}/${section.fields.length} completed` : `${filled}/${section.fields.length} complete`}
+                    </span>
                   </div>
-                  <p className="text-[11px] text-zinc-600 mt-0.5">{section.description}</p>
                 </div>
-                <span className={`text-zinc-500 transition-transform ${isOpen ? "rotate-90" : ""}`}>›</span>
+                <span className={`text-zinc-500 text-lg leading-none transition-transform ${isOpen ? "rotate-90" : ""}`}>›</span>
               </button>
               {isOpen && (
-                <div className="px-5 pb-5 space-y-4 border-t border-white/5 pt-4">
+                <div className="px-5 pb-5 space-y-4 border-t border-white/[0.08] pt-4">
                   {section.fields.map((field) =>
                     field.textarea ? (
                       <div key={field.key}>
@@ -280,7 +277,7 @@ export default function OnboardingPage() {
                           onChange={(e) => handleField(field.key, e.target.value)}
                           placeholder={field.placeholder}
                           rows={3}
-                          className="w-full bg-built-black border border-white/10 rounded-lg px-3 py-2.5 text-sm text-zinc-200 placeholder-zinc-700 focus:outline-none focus:border-built-red/40 resize-none transition-colors"
+                          className="w-full bg-black border border-white/10 rounded-lg px-3 py-2.5 text-sm text-zinc-200 placeholder-zinc-700 focus:outline-none focus:border-white/20 resize-none transition-colors"
                         />
                       </div>
                     ) : (
@@ -291,7 +288,7 @@ export default function OnboardingPage() {
                           value={data[field.key]}
                           onChange={(e) => handleField(field.key, e.target.value)}
                           placeholder={field.placeholder}
-                          className="w-full bg-built-black border border-white/10 rounded-lg px-3 py-2.5 text-sm text-zinc-200 placeholder-zinc-700 focus:outline-none focus:border-built-red/40 transition-colors"
+                          className="w-full bg-black border border-white/10 rounded-lg px-3 py-2.5 text-sm text-zinc-200 placeholder-zinc-700 focus:outline-none focus:border-white/20 transition-colors"
                         />
                       </div>
                     )
@@ -307,8 +304,13 @@ export default function OnboardingPage() {
       <button
         onClick={handleSave}
         disabled={saveStatus === "saving"}
-        className="w-full py-3 rounded-xl bg-zinc-100 text-zinc-900 font-semibold text-sm hover:bg-white transition-colors mt-8 disabled:opacity-60"
+        className="w-full py-3 rounded-xl bg-white text-zinc-900 font-semibold text-sm hover:bg-zinc-100 transition-colors mt-6 disabled:opacity-60 flex items-center justify-center gap-2"
       >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+          <polyline points="17 21 17 13 7 13 7 21" />
+          <polyline points="7 3 7 8 15 8" />
+        </svg>
         {saveBtnLabel}
       </button>
     </div>
