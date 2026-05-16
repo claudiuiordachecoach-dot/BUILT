@@ -746,7 +746,7 @@ export default function CalendarPage() {
                 ✦ Analizează
               </a>
               <a
-                href={`/dashboard/content?hook=${encodeURIComponent(selectedPost.caption?.slice(0, 120) ?? "")}`}
+                href={`/dashboard/ai?q=${encodeURIComponent("Generează o variație de hook pentru acest reel: " + (selectedPost.caption?.slice(0, 200) ?? ""))}`}
                 className="flex-1 text-center text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg py-2 hover:bg-white/5 transition-colors"
               >
                 ↻ Generează variație

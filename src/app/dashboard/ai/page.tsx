@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
 import { sendChatMessage, type ChatMessage } from "./actions";
 
 const QUICK_QUESTIONS = [
@@ -12,16 +13,27 @@ const QUICK_QUESTIONS = [
   "How do I reply to this objection?",
 ];
 
-export default function AskAIPage() {
+function AskAIContent() {
+  const searchParams = useSearchParams();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const autoSentRef = useRef(false);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, loading]);
+
+  useEffect(() => {
+    const q = searchParams.get("q");
+    if (q && !autoSentRef.current) {
+      autoSentRef.current = true;
+      sendMessage(q);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || loading) return;
@@ -187,5 +199,13 @@ export default function AskAIPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AskAIPage() {
+  return (
+    <Suspense>
+      <AskAIContent />
+    </Suspense>
   );
 }
