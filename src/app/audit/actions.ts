@@ -1,5 +1,6 @@
 "use server";
 
+import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 import { getSupabaseServer } from "@/lib/supabase/server";
@@ -31,15 +32,98 @@ export type AuditResult = { ok: true; audit: InstagramAudit } | { ok: false; err
 export interface AuditInput {
   handle: string;
   followers: string;
-  // screenshot în base64 (opțional — dacă există, se trimite la Claude vision)
   screenshot_base64?: string;
   screenshot_media_type?: string;
-  // câmpuri text fallback
   bio: string;
   highlights: string;
   last_posts: string;
   posting_frequency: string;
 }
+
+const auditTool: Anthropic.Tool = {
+  name: "submit_instagram_audit",
+  description: "Submit the calculated Instagram profile audit scores and recommendations.",
+  input_schema: {
+    type: "object",
+    properties: {
+      overall: { type: "number", description: "Overall weighted score out of 100 (e.g. 65)" },
+      elements: {
+        type: "object",
+        properties: {
+          profile_picture: {
+            type: "object",
+            properties: {
+              score: { type: "number", description: "Score 0-10" },
+              label: { type: "string", description: "Label e.g. 'Poză profil'" },
+              feedback: { type: "string", description: "Specific critique of the profile picture" },
+              fix: { type: "string", description: "Exact action to fix it" }
+            },
+            required: ["score", "label", "feedback", "fix"]
+          },
+          name_username: {
+            type: "object",
+            properties: {
+              score: { type: "number", description: "Score 0-10" },
+              label: { type: "string", description: "Label e.g. 'Nume & Username'" },
+              feedback: { type: "string", description: "Specific critique of handle and name" },
+              fix: { type: "string", description: "Exact action to fix it" }
+            },
+            required: ["score", "label", "feedback", "fix"]
+          },
+          bio: {
+            type: "object",
+            properties: {
+              score: { type: "number", description: "Score 0-10" },
+              label: { type: "string", description: "Label e.g. 'Bio'" },
+              feedback: { type: "string", description: "Specific critique of the bio clarity and value" },
+              fix: { type: "string", description: "Exact action to fix it" }
+            },
+            required: ["score", "label", "feedback", "fix"]
+          },
+          link_in_bio: {
+            type: "object",
+            properties: {
+              score: { type: "number", description: "Score 0-10" },
+              label: { type: "string", description: "Label e.g. 'Link în Bio'" },
+              feedback: { type: "string", description: "Specific critique of the CTA and link destination" },
+              fix: { type: "string", description: "Exact action to fix it" }
+            },
+            required: ["score", "label", "feedback", "fix"]
+          },
+          highlights: {
+            type: "object",
+            properties: {
+              score: { type: "number", description: "Score 0-10" },
+              label: { type: "string", description: "Label e.g. 'Highlights'" },
+              feedback: { type: "string", description: "Specific critique of story highlights strategy" },
+              fix: { type: "string", description: "Exact action to fix it" }
+            },
+            required: ["score", "label", "feedback", "fix"]
+          },
+          pinned_posts: {
+            type: "object",
+            properties: {
+              score: { type: "number", description: "Score 0-10" },
+              label: { type: "string", description: "Label e.g. 'Posturi Fixate'" },
+              feedback: { type: "string", description: "Specific critique of pinned reels/posts" },
+              fix: { type: "string", description: "Exact action to fix it" }
+            },
+            required: ["score", "label", "feedback", "fix"]
+          }
+        },
+        required: ["profile_picture", "name_username", "bio", "link_in_bio", "highlights", "pinned_posts"]
+      },
+      top_priority: { type: "string", description: "The single most important fix to make today (1 specific sentence)" },
+      rewritten_bio: { type: "string", description: "The complete rewritten bio ready for copy-paste, in BUILT voice with CTA. Ex: 'Reconstruiesc corpul bărbaților ocupați în 90 de zile. Fără dietă restrictivă. Fără ore la sală. → DM ARHITECTURĂ'" },
+      quick_wins: {
+        type: "array",
+        items: { type: "string" },
+        description: "List of 3 quick wins implementable in under 10 minutes"
+      }
+    },
+    required: ["overall", "elements", "top_priority", "rewritten_bio", "quick_wins"]
+  }
+};
 
 export async function auditProfile(input: AuditInput): Promise<AuditResult> {
   const hasScreenshot = !!input.screenshot_base64;
@@ -72,25 +156,7 @@ ${textContext}
 
 ## Verdict global: media ponderată a celor 6 elemente × 10
 
-## Format JSON strict (fără markdown, fără text înainte/după):
-{
-  "overall": 63,
-  "elements": {
-    "profile_picture": { "score": 7, "label": "Poză profil", "feedback": "string specific ce vezi/ce lipsește", "fix": "string — acțiunea exactă de implementat" },
-    "name_username": { "score": 8, "label": "Nume & Username", "feedback": "string", "fix": "string" },
-    "bio": { "score": 5, "label": "Bio", "feedback": "string — ce lipsește, ce e prea generic", "fix": "string — ce trebuie să includă" },
-    "link_in_bio": { "score": 4, "label": "Link în Bio", "feedback": "string", "fix": "string" },
-    "highlights": { "score": 6, "label": "Highlights", "feedback": "string", "fix": "string" },
-    "pinned_posts": { "score": 3, "label": "Posturi Fixate", "feedback": "string", "fix": "string" }
-  },
-  "top_priority": "string — cel mai important lucru de schimbat AZI (1 frază, specifică)",
-  "rewritten_bio": "string — bio-ul rescris COMPLET, gata de copy-paste, în vocea BUILT, cu CTA inclus. Ex: 'Reconstruiesc corpul bărbaților ocupați în 90 de zile. Fără dietă restrictivă. Fără ore la sală. → DM ARHITECTURĂ'",
-  "quick_wins": [
-    "string — schimbare implementabilă în sub 10 minute",
-    "string",
-    "string"
-  ]
-}`;
+Apelează instrumentul submit_instagram_audit cu rezultatele exacte.`;
 
   try {
     const creier = await readCreierFromSupabase();
@@ -98,9 +164,8 @@ ${textContext}
     const systemPrompt = `Ești un expert în optimizarea profilurilor Instagram pentru coaching fitness.
 Contextul creatorului: ${JSON.stringify(creier).slice(0, 1500)}
 
-REGULA CRITICĂ: Răspunzi EXCLUSIV cu JSON valid. Nicio formatare markdown (fără **, fără _, fără rânduri noi brute în valorile string). Toate valorile text din JSON trebuie să fie pe un singur rând sau cu \\n escaped. Niciun text în afara JSON-ului.`;
+REGULA CRITICĂ: Analizează profilul și apelează instrumentul submit_instagram_audit cu structura completă. Niciun text suplimentar.`;
 
-    // Construiește mesajul — cu sau fără imagine
     type AllowedMime = "image/png" | "image/jpeg" | "image/gif" | "image/webp";
     const ALLOWED_MIMES = new Set<string>(["image/png", "image/jpeg", "image/gif", "image/webp"]);
 
@@ -119,66 +184,25 @@ REGULA CRITICĂ: Răspunzi EXCLUSIV cu JSON valid. Nicio formatare markdown (fă
       });
     }
 
-    userContent.push({ type: "text", text: "Auditează profilul. JSON strict." });
+    userContent.push({ type: "text", text: task });
 
     const message = await client.messages.create({
       model: MODELS.routine,
-      max_tokens: 1500,
+      max_tokens: 2500,
       system: systemPrompt,
       messages: [{ role: "user", content: userContent }],
+      tools: [auditTool],
+      tool_choice: { type: "tool", name: "submit_instagram_audit" },
     });
 
-    const textBlock = message.content.find((b) => b.type === "text");
-    if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns fără text." };
-
-    const t = textBlock.text.trim();
-    const a = t.indexOf("{"), b = t.lastIndexOf("}");
-    if (a === -1) return { ok: false, error: "JSON invalid." };
-
-    let jsonStr = t.slice(a, b + 1);
-    let audit: InstagramAudit;
-    try {
-      audit = JSON.parse(jsonStr) as InstagramAudit;
-    } catch {
-      // Sanitize unescaped control characters inside string literals only
-      let cleaned = "";
-      let inString = false;
-      let escape = false;
-      for (let i = 0; i < jsonStr.length; i++) {
-        const c = jsonStr[i];
-        if (inString) {
-          if (c === '\\') {
-            cleaned += c;
-            escape = !escape;
-          } else if (c === '"' && !escape) {
-            cleaned += c;
-            inString = false;
-            escape = false;
-          } else {
-            if (c === '\n') cleaned += "\\n";
-            else if (c === '\r') cleaned += "\\r";
-            else if (c === '\t') cleaned += "\\t";
-            else if (c.charCodeAt(0) < 32) {} // ignore other control chars
-            else cleaned += c;
-            escape = false;
-          }
-        } else {
-          if (c === '"') {
-            cleaned += c;
-            inString = true;
-          } else {
-            cleaned += c;
-          }
-        }
-      }
-      try {
-        audit = JSON.parse(cleaned) as InstagramAudit;
-      } catch (err) {
-        return { ok: false, error: 'JSON malformat. Incearca din nou. Detalii: ' + (err instanceof Error ? err.message : '') };
-      }
+    const toolBlock = message.content.find((b) => b.type === "tool_use");
+    if (!toolBlock || toolBlock.type !== "tool_use") {
+      return { ok: false, error: "AI nu a returnat structura de audit." };
     }
 
-        // Salvează în DB (best effort)
+    const audit = toolBlock.input as unknown as InstagramAudit;
+
+    // Salvează în DB (best effort)
     try {
       const supabase = getSupabaseServer({ useServiceRole: true });
       await supabase.from("profile_audits").insert({
