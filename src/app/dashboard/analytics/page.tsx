@@ -406,8 +406,6 @@ export default function AnalyticsPage() {
   const [followers, setFollowers] = useState<string>("—");
   const [editingFollowers, setEditingFollowers] = useState(false);
 
-  // Main tab
-  const [mainTab, setMainTab] = useState<"creator_cult" | "analytics">("analytics");
 
   // Period + chart modes
   const [period, setPeriod] = useState<TimePeriod>("1m");
@@ -560,22 +558,6 @@ export default function AnalyticsPage() {
   return (
     <div className="max-w-[1400px] mx-auto space-y-6">
 
-      {/* ── MAIN TAB BAR (Creator Cult | Analytics) ────────────────────────── */}
-      <div className="border-b border-white/[0.06] px-8 flex gap-6">
-        {(["creator_cult", "analytics"] as const).map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setMainTab(tab)}
-            className={`text-[13px] pb-3 font-medium transition-colors border-b-2 -mb-px ${
-              mainTab === tab
-                ? "text-zinc-100 border-white"
-                : "text-zinc-500 border-transparent hover:text-zinc-300"
-            }`}
-          >
-            {tab === "creator_cult" ? "Creator Cult" : "Analytics"}
-          </button>
-        ))}
-      </div>
 
       <div className="px-8 space-y-6">
 
