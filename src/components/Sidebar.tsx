@@ -51,8 +51,8 @@ const TOOLS_ITEMS: NavEntry[] = [
 
 const ADMIN_ITEMS: NavEntry[] = [
   { label: "Clients",          href: "/dashboard/clients",            icon: <Icons.users /> },
-  { label: "Progress Reports", href: "/dashboard/clients",            icon: <Icons.report /> },
-  { label: "Knowledge Base",   href: "/dashboard/onboarding",        icon: <Icons.book /> },
+  { label: "Progress Reports", href: "/dashboard/progress-reports",   icon: <Icons.report /> },
+  { label: "Knowledge Base",   href: "/dashboard/knowledge-base",    icon: <Icons.book /> },
 ];
 
 function NavLink({ item, pathname, collapsed }: { item: NavEntry; pathname: string; collapsed: boolean }) {
