@@ -128,7 +128,7 @@ export async function listInstagramMedia(limit = 200) {
   const supabase = getSupabaseServer({ useServiceRole: true });
   const { data } = await supabase
     .from("instagram_media")
-    .select("instagram_id, caption, views, likes, comments, posted_at, thumbnail_url, format_type")
+    .select("instagram_id, caption, views, likes, comments, saves, shares, posted_at, thumbnail_url, format_type")
     .order("posted_at", { ascending: false })
     .limit(limit);
   return (data ?? []).map((m) => ({
@@ -137,6 +137,8 @@ export async function listInstagramMedia(limit = 200) {
     views: m.views,
     likes: m.likes,
     comments: m.comments,
+    saves: m.saves ?? null,
+    shares: m.shares ?? null,
     posted_at: m.posted_at,
     thumbnail_url: m.thumbnail_url,
     format_type: m.format_type,
@@ -224,6 +226,7 @@ export async function syncMyReels(): Promise<{ ok: true; synced: number; followe
     let lastError = "";
     for (const reel of reels) {
       const id = reel.id || `apify_${Date.now()}_${synced}`;
+      const item = reel as typeof reel & { savesCount?: number; sharesCount?: number };
       const { error } = await supabase.from("instagram_media").upsert({
         instagram_id: id,
         thumbnail_url: reel.thumbnailUrl,
@@ -231,6 +234,8 @@ export async function syncMyReels(): Promise<{ ok: true; synced: number; followe
         views: reel.viewsCount,
         likes: reel.likesCount,
         comments: reel.commentsCount,
+        saves: item.savesCount ?? null,
+        shares: item.sharesCount ?? null,
         posted_at: reel.timestamp || new Date().toISOString(),
         format_type: formats[reel.id || ""] ?? "TALKING HEAD",
       }, { onConflict: "instagram_id" });

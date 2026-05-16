@@ -20,6 +20,8 @@ type MediaItem = {
   views: number | null;
   likes: number | null;
   comments: number | null;
+  saves: number | null;
+  shares: number | null;
   posted_at: string | null;
   thumbnail_url: string | null;
   format_type?: string | null;
@@ -468,19 +470,22 @@ export default function AnalyticsPage() {
   const engSparkline =
     filteredMedia.length > 0 ? filteredMedia.slice(0, 12).map((m) => m.likes ?? 0).reverse() : STATIC_SPARKLINE;
 
-  // Engagement breakdown
-  const engBreakdown: { label: string; count: string; pct: number }[] = (() => {
+  // Engagement breakdown — saves/shares reale dacă există în DB, altfel estimate
+  const engBreakdown: { label: string; count: string; pct: number; estimated?: boolean }[] = (() => {
     const likes = totalLikes ?? 0;
     const comments = totalComments ?? 0;
-    // saves/shares not available in DB — estimate
-    const saves = Math.round(likes * 0.4);
-    const shares = Math.round(likes * 0.22);
+    const realSaves = filteredMedia.length > 0 ? filteredMedia.reduce((s, m) => s + ((m.saves ?? null) !== null ? (m.saves as number) : 0), 0) : null;
+    const realShares = filteredMedia.length > 0 ? filteredMedia.reduce((s, m) => s + ((m.shares ?? null) !== null ? (m.shares as number) : 0), 0) : null;
+    const hasSaves = filteredMedia.some(m => m.saves != null);
+    const hasShares = filteredMedia.some(m => m.shares != null);
+    const saves = hasSaves ? (realSaves ?? 0) : Math.round(likes * 0.4);
+    const shares = hasShares ? (realShares ?? 0) : Math.round(likes * 0.22);
     const total = likes + comments + saves + shares || 1;
     return [
       { label: "Likes", count: fmt(likes), pct: Math.round((likes / total) * 100) },
       { label: "Comments", count: fmt(comments), pct: Math.round((comments / total) * 100) },
-      { label: "Saves", count: fmt(saves), pct: Math.round((saves / total) * 100) },
-      { label: "Shares", count: fmt(shares), pct: Math.round((shares / total) * 100) },
+      { label: "Saves", count: fmt(saves), pct: Math.round((saves / total) * 100), estimated: !hasSaves },
+      { label: "Shares", count: fmt(shares), pct: Math.round((shares / total) * 100), estimated: !hasShares },
     ];
   })();
 
@@ -802,7 +807,10 @@ export default function AnalyticsPage() {
           <div className="space-y-3">
             {engBreakdown.map((item) => (
               <div key={item.label} className="flex items-center justify-between text-[13px]">
-                <span className="text-zinc-400 w-24">{item.label}</span>
+                <span className="text-zinc-400 w-24 flex items-center gap-1">
+                  {item.label}
+                  {item.estimated && <span className="text-[10px] text-zinc-600 font-mono">(est.)</span>}
+                </span>
                 <span className="text-zinc-200 font-mono flex-1 text-right">{item.count}</span>
                 <span className="text-zinc-500 font-mono w-14 text-right">({item.pct}%)</span>
               </div>
