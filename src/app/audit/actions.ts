@@ -1,6 +1,6 @@
 "use server";
 
-import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
+import { getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
@@ -95,7 +95,10 @@ ${textContext}
   try {
     const creier = await readCreierFromSupabase();
     const client = getAnthropicClient();
-    const systemBlocks = buildSystemBlocks({ creierJson: JSON.stringify(creier, null, 2), taskContext: task });
+    const systemPrompt = `Ești un expert în optimizarea profilurilor Instagram pentru coaching fitness.
+Contextul creatorului: ${JSON.stringify(creier).slice(0, 1500)}
+
+REGULA CRITICĂ: Răspunzi EXCLUSIV cu JSON valid. Nicio formatare markdown (fără **, fără _, fără rânduri noi brute în valorile string). Toate valorile text din JSON trebuie să fie pe un singur rând sau cu \\n escaped. Niciun text în afara JSON-ului.`;
 
     // Construiește mesajul — cu sau fără imagine
     type AllowedMime = "image/png" | "image/jpeg" | "image/gif" | "image/webp";
@@ -121,7 +124,7 @@ ${textContext}
     const message = await client.messages.create({
       model: MODELS.routine,
       max_tokens: 1500,
-      system: systemBlocks,
+      system: systemPrompt,
       messages: [{ role: "user", content: userContent }],
     });
 
