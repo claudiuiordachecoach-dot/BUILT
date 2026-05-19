@@ -298,6 +298,21 @@ function ScriptCard({ script, index }: { script: WeeklyScript; index: number }) 
               {copied ? "✓ Copiat" : "Copy"}
             </button>
           </div>
+
+          {/* Competitor comments that inspired this script */}
+          {script.competitor_comments && script.competitor_comments.length > 0 && (
+            <div className="border-t border-white/5 pt-4 space-y-2">
+              <p className="text-[10px] text-zinc-700 uppercase tracking-widest font-mono">Din audiența competitorilor</p>
+              {script.competitor_comments.map((c, i) => (
+                <div key={i} className="flex items-start gap-2.5">
+                  <div className="w-6 h-6 rounded-full bg-white/[0.06] flex items-center justify-center text-[9px] text-zinc-500 shrink-0 mt-0.5 font-mono">
+                    {c.user.slice(0, 2).toUpperCase()}
+                  </div>
+                  <p className="text-[12px] text-zinc-600 leading-relaxed italic">&ldquo;{c.text}&rdquo;</p>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>

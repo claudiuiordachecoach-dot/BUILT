@@ -650,107 +650,78 @@ export default function CalendarPage() {
         </div>
       )}
 
-      {/* ── POSTED REEL DETAIL MODAL ── */}
+      {/* ── POSTED REEL BOTTOM PANEL ── */}
       {selectedPost && (
-        <div
-          className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
-          onClick={() => setSelectedPost(null)}
-        >
-          <div
-            className="bg-[#111] border border-white/10 rounded-xl p-6 w-full max-w-md shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-wider">
-                  Posted Reel
-                </span>
-                {selectedPost.posted_at && (
-                  <p className="text-[11px] text-zinc-600 font-mono mt-0.5">
-                    {selectedPost.posted_at.slice(0, 10)}
-                  </p>
-                )}
-              </div>
-              <button
-                onClick={() => setSelectedPost(null)}
-                className="text-zinc-600 hover:text-zinc-300 transition-colors text-lg leading-none"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Thumbnail cu fallback — linkurile CDN Instagram expiră după câteva ore */}
-            <div className="rounded-lg overflow-hidden mb-4 bg-[#1a1a1a] min-h-[80px] flex items-center justify-center">
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#0d0d0d] shadow-2xl">
+          <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-start gap-5">
+            {/* Thumbnail */}
+            <div className="w-14 h-14 rounded-lg overflow-hidden bg-[#1a1a1a] shrink-0 flex items-center justify-center">
               {selectedPost.thumbnail_url ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
                 <img
                   src={`/api/img-proxy?url=${encodeURIComponent(selectedPost.thumbnail_url)}`}
-                  alt={selectedPost.caption ?? "reel"}
-                  className="w-full object-cover max-h-60"
-                  onError={(e) => {
-                    const t = e.currentTarget;
-                    t.style.display = "none";
-                    t.nextElementSibling?.removeAttribute("style");
-                  }}
+                  alt=""
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.currentTarget.style.display = "none"; }}
                 />
-              ) : null}
-              <span
-                className="text-zinc-600 text-[11px] font-mono"
-                style={selectedPost.thumbnail_url ? { display: "none" } : {}}
-              >
-                No preview
-              </span>
+              ) : <span className="text-zinc-700 text-[10px]">—</span>}
             </div>
 
-            {selectedPost.caption && (
-              <div className="max-h-32 overflow-y-auto mb-4 pr-1">
-                <p className="text-zinc-400 text-[12px] leading-relaxed">
-                  {selectedPost.caption}
-                </p>
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">Posted</span>
+                {selectedPost.posted_at && (
+                  <span className="text-[11px] text-zinc-600 font-mono">{selectedPost.posted_at.slice(0, 10)}</span>
+                )}
               </div>
-            )}
+              {selectedPost.caption && (
+                <p className="text-zinc-400 text-[12px] leading-relaxed truncate">{selectedPost.caption}</p>
+              )}
+            </div>
 
-            <div className="grid grid-cols-3 gap-3 mb-4">
+            {/* Stats */}
+            <div className="flex items-center gap-4 shrink-0">
               {selectedPost.views != null && (
-                <div className="bg-[#1a1a1a] rounded-lg p-3 text-center">
-                  <p className="text-white text-[15px] font-semibold">
-                    {formatViews(selectedPost.views)}
-                  </p>
-                  <p className="text-zinc-600 text-[10px] mt-0.5">Views</p>
+                <div className="text-center">
+                  <p className="text-zinc-100 text-[14px] font-semibold font-mono">{formatViews(selectedPost.views)}</p>
+                  <p className="text-zinc-600 text-[10px]">Views</p>
                 </div>
               )}
               {selectedPost.likes != null && (
-                <div className="bg-[#1a1a1a] rounded-lg p-3 text-center">
-                  <p className="text-white text-[15px] font-semibold">
-                    {formatViews(selectedPost.likes)}
-                  </p>
-                  <p className="text-zinc-600 text-[10px] mt-0.5">Likes</p>
+                <div className="text-center">
+                  <p className="text-zinc-100 text-[14px] font-semibold font-mono">{formatViews(selectedPost.likes)}</p>
+                  <p className="text-zinc-600 text-[10px]">Likes</p>
                 </div>
               )}
               {selectedPost.comments != null && (
-                <div className="bg-[#1a1a1a] rounded-lg p-3 text-center">
-                  <p className="text-white text-[15px] font-semibold">
-                    {formatViews(selectedPost.comments)}
-                  </p>
-                  <p className="text-zinc-600 text-[10px] mt-0.5">Comments</p>
+                <div className="text-center">
+                  <p className="text-zinc-100 text-[14px] font-semibold font-mono">{formatViews(selectedPost.comments)}</p>
+                  <p className="text-zinc-600 text-[10px]">Comments</p>
                 </div>
               )}
             </div>
 
-            {/* Action buttons — trimite spre uneltele reale */}
-            <div className="flex gap-2 pt-3 border-t border-white/[0.06]">
+            {/* Actions */}
+            <div className="flex items-center gap-2 shrink-0">
               <a
                 href={`/dashboard/reel-copy?url=https://www.instagram.com/reel/${selectedPost.instagram_id}/`}
-                className="flex-1 text-center text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg py-2 hover:bg-white/5 transition-colors"
+                className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors"
               >
                 ✦ Analizează
               </a>
               <a
                 href={`/dashboard/ai?q=${encodeURIComponent("Generează o variație de hook pentru acest reel: " + (selectedPost.caption?.slice(0, 200) ?? ""))}`}
-                className="flex-1 text-center text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg py-2 hover:bg-white/5 transition-colors"
+                className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors"
               >
-                ↻ Generează variație
+                ↻ Variație
               </a>
+              <button
+                onClick={() => setSelectedPost(null)}
+                className="text-zinc-600 hover:text-zinc-300 transition-colors text-lg leading-none ml-1"
+              >
+                ✕
+              </button>
             </div>
           </div>
         </div>

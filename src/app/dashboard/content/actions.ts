@@ -210,6 +210,7 @@ export interface WeeklyScript {
   full_script: string;
   caption: string;
   cta: string;
+  competitor_comments?: { user: string; text: string }[];
 }
 
 export interface WeeklyIntelligenceReport {
@@ -292,7 +293,7 @@ Returnează STRICT un JSON cu această structură exactă (fără text în afara
     { "day": "Joi", "type": "Lead Magnet", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." },
     { "day": "Vineri", "type": "Controversă", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." },
     { "day": "Sâmbătă", "type": "Question Hook", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." },
-    { "day": "Duminică", "type": "Story Time", "hook": "...", "full_script": "...", "caption": "...", "cta": "..." }
+    { "day": "Duminică", "type": "Story Time", "hook": "...", "full_script": "...", "caption": "...", "cta": "...", "competitor_comments": [{"user": "username", "text": "comentariu real din audiența competitorului care a inspirat acest script"}] }
   ]
 }
 
