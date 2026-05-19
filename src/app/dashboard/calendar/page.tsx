@@ -76,6 +76,7 @@ export default function CalendarPage() {
   const [selectedPost, setSelectedPost] = useState<InstagramPost | null>(null);
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
+  const [expandedPanel, setExpandedPanel] = useState(false);
 
   // Add idea form state
   const [hook, setHook] = useState("");
@@ -655,111 +656,115 @@ export default function CalendarPage() {
       {/* ── POSTED REEL BOTTOM PANEL ── */}
       {selectedPost && (
         <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#0d0d0d] shadow-2xl">
-          {/* Recommendations row */}
-          {recommendations.length > 0 && (
-            <div className="border-b border-white/5 px-6 py-3">
-              <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">{recommendations.length} Recomandări</p>
-              <div className="flex flex-wrap gap-2">
-                {recommendations.map((r, i) => (
-                  <div key={i} className="flex items-start gap-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 max-w-xs">
-                    <span className="text-zinc-600 text-[10px] font-mono shrink-0 mt-0.5">{i + 1}.</span>
-                    <p className="text-zinc-400 text-[11px] leading-relaxed">{r}</p>
+
+          {/* ── EXPANDED VIEW ── */}
+          {expandedPanel && (
+            <div className="max-w-[1400px] mx-auto px-6 pt-6 pb-2">
+              <div className="grid grid-cols-[auto_1fr_auto] gap-6 items-start">
+                {/* Thumbnail mare */}
+                <div className="w-28 h-28 rounded-xl overflow-hidden bg-[#1a1a1a] shrink-0 flex items-center justify-center">
+                  {selectedPost.thumbnail_url ? (
+                    /* eslint-disable-next-line @next/next/no-img-element */
+                    <img src={`/api/img-proxy?url=${encodeURIComponent(selectedPost.thumbnail_url)}`} alt=""
+                      className="w-full h-full object-cover"
+                      onError={(e) => { e.currentTarget.style.display = "none"; }} />
+                  ) : <span className="text-zinc-700 text-[11px]">No preview</span>}
+                </div>
+
+                {/* Caption complet */}
+                <div>
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">Posted</span>
+                    {selectedPost.posted_at && <span className="text-[11px] text-zinc-600 font-mono">{selectedPost.posted_at.slice(0, 10)}</span>}
                   </div>
-                ))}
+                  {selectedPost.caption && (
+                    <p className="text-zinc-300 text-[13px] leading-relaxed whitespace-pre-line max-h-40 overflow-y-auto pr-2">
+                      {selectedPost.caption}
+                    </p>
+                  )}
+                </div>
+
+                {/* Stats + actions */}
+                <div className="flex flex-col gap-4 items-end shrink-0">
+                  <div className="flex gap-5">
+                    {selectedPost.views != null && <div className="text-center"><p className="text-zinc-100 text-[18px] font-semibold font-mono">{formatViews(selectedPost.views)}</p><p className="text-zinc-600 text-[10px]">Views</p></div>}
+                    {selectedPost.likes != null && <div className="text-center"><p className="text-zinc-100 text-[18px] font-semibold font-mono">{formatViews(selectedPost.likes)}</p><p className="text-zinc-600 text-[10px]">Likes</p></div>}
+                    {selectedPost.comments != null && <div className="text-center"><p className="text-zinc-100 text-[18px] font-semibold font-mono">{formatViews(selectedPost.comments)}</p><p className="text-zinc-600 text-[10px]">Comments</p></div>}
+                  </div>
+                  <div className="flex gap-2">
+                    <button onClick={async () => {
+                      if (loadingRecs) return;
+                      setRecommendations([]);
+                      setLoadingRecs(true);
+                      const r = await generateReelRecommendations(selectedPost.caption ?? "", selectedPost.views, selectedPost.likes, selectedPost.comments, selectedPost.posted_at);
+                      setLoadingRecs(false);
+                      if (r.ok) setRecommendations(r.recommendations);
+                    }} disabled={loadingRecs}
+                      className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors disabled:opacity-40">
+                      {loadingRecs ? "..." : `✦ Recomandări${recommendations.length > 0 ? ` (${recommendations.length})` : ""}`}
+                    </button>
+                    <a href={`/dashboard/reel-copy?url=https://www.instagram.com/reel/${selectedPost.instagram_id}/`}
+                      className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors">
+                      Analizează
+                    </a>
+                    <a href={`/dashboard/ai?q=${encodeURIComponent("Generează o variație de hook pentru: " + (selectedPost.caption?.slice(0, 200) ?? ""))}`}
+                      className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors">
+                      ↻ Variație
+                    </a>
+                  </div>
+                </div>
               </div>
+
+              {/* Recommendations in expanded view */}
+              {recommendations.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-white/5">
+                  <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-3">Recomandări AI</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {recommendations.map((r, i) => (
+                      <div key={i} className="flex gap-2 bg-white/[0.02] border border-white/[0.06] rounded-lg px-3 py-2">
+                        <span className="text-zinc-600 text-[10px] font-mono shrink-0 mt-0.5">{i + 1}.</span>
+                        <p className="text-zinc-400 text-[12px] leading-relaxed">{r}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
 
-          <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-start gap-5">
-            {/* Thumbnail */}
-            <div className="w-14 h-14 rounded-lg overflow-hidden bg-[#1a1a1a] shrink-0 flex items-center justify-center">
+          {/* ── COMPACT BAR (always visible) ── */}
+          <div
+            className="max-w-[1400px] mx-auto px-6 py-3 flex items-center gap-4 cursor-pointer hover:bg-white/[0.01] transition-colors"
+            onClick={() => setExpandedPanel(p => !p)}
+          >
+            {/* Thumbnail mic */}
+            <div className="w-10 h-10 rounded-lg overflow-hidden bg-[#1a1a1a] shrink-0 flex items-center justify-center">
               {selectedPost.thumbnail_url ? (
                 /* eslint-disable-next-line @next/next/no-img-element */
-                <img
-                  src={`/api/img-proxy?url=${encodeURIComponent(selectedPost.thumbnail_url)}`}
-                  alt=""
+                <img src={`/api/img-proxy?url=${encodeURIComponent(selectedPost.thumbnail_url)}`} alt=""
                   className="w-full h-full object-cover"
-                  onError={(e) => { e.currentTarget.style.display = "none"; }}
-                />
-              ) : <span className="text-zinc-700 text-[10px]">—</span>}
+                  onError={(e) => { e.currentTarget.style.display = "none"; }} />
+              ) : <span className="text-zinc-700 text-[9px]">—</span>}
             </div>
 
-            {/* Info */}
-            <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">Posted</span>
-                {selectedPost.posted_at && (
-                  <span className="text-[11px] text-zinc-600 font-mono">{selectedPost.posted_at.slice(0, 10)}</span>
-                )}
-              </div>
-              {selectedPost.caption && (
-                <p className="text-zinc-400 text-[12px] leading-relaxed truncate">{selectedPost.caption}</p>
-              )}
-            </div>
+            <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono shrink-0">Posted</span>
+            {selectedPost.posted_at && <span className="text-[11px] text-zinc-600 font-mono shrink-0">{selectedPost.posted_at.slice(0, 10)}</span>}
 
-            {/* Stats */}
+            <p className="text-zinc-400 text-[12px] flex-1 min-w-0 truncate">{selectedPost.caption}</p>
+
             <div className="flex items-center gap-4 shrink-0">
-              {selectedPost.views != null && (
-                <div className="text-center">
-                  <p className="text-zinc-100 text-[14px] font-semibold font-mono">{formatViews(selectedPost.views)}</p>
-                  <p className="text-zinc-600 text-[10px]">Views</p>
-                </div>
-              )}
-              {selectedPost.likes != null && (
-                <div className="text-center">
-                  <p className="text-zinc-100 text-[14px] font-semibold font-mono">{formatViews(selectedPost.likes)}</p>
-                  <p className="text-zinc-600 text-[10px]">Likes</p>
-                </div>
-              )}
-              {selectedPost.comments != null && (
-                <div className="text-center">
-                  <p className="text-zinc-100 text-[14px] font-semibold font-mono">{formatViews(selectedPost.comments)}</p>
-                  <p className="text-zinc-600 text-[10px]">Comments</p>
-                </div>
-              )}
+              {selectedPost.views != null && <div className="text-center"><p className="text-zinc-100 text-[13px] font-mono font-semibold">{formatViews(selectedPost.views)}</p><p className="text-zinc-600 text-[9px]">Views</p></div>}
+              {selectedPost.likes != null && <div className="text-center"><p className="text-zinc-100 text-[13px] font-mono font-semibold">{formatViews(selectedPost.likes)}</p><p className="text-zinc-600 text-[9px]">Likes</p></div>}
+              {selectedPost.comments != null && <div className="text-center"><p className="text-zinc-100 text-[13px] font-mono font-semibold">{formatViews(selectedPost.comments)}</p><p className="text-zinc-600 text-[9px]">Comments</p></div>}
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={async () => {
-                  if (loadingRecs) return;
-                  setRecommendations([]);
-                  setLoadingRecs(true);
-                  const r = await generateReelRecommendations(
-                    selectedPost.caption ?? "",
-                    selectedPost.views,
-                    selectedPost.likes,
-                    selectedPost.comments,
-                    selectedPost.posted_at
-                  );
-                  setLoadingRecs(false);
-                  if (r.ok) setRecommendations(r.recommendations);
-                }}
-                disabled={loadingRecs}
-                className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors disabled:opacity-40"
-              >
-                {loadingRecs ? "..." : `✦ ${recommendations.length > 0 ? recommendations.length : ""} Recomandări`}
-              </button>
-              <a
-                href={`/dashboard/reel-copy?url=https://www.instagram.com/reel/${selectedPost.instagram_id}/`}
-                className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors"
-              >
-                Analizează
-              </a>
-              <a
-                href={`/dashboard/ai?q=${encodeURIComponent("Generează o variație de hook pentru acest reel: " + (selectedPost.caption?.slice(0, 200) ?? ""))}`}
-                className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors"
-              >
-                ↻ Variație
-              </a>
-              <button
-                onClick={() => { setSelectedPost(null); setRecommendations([]); }}
-                className="text-zinc-600 hover:text-zinc-300 transition-colors text-lg leading-none ml-1"
-              >
+            <span className={`text-zinc-500 text-[13px] shrink-0 transition-transform ${expandedPanel ? "rotate-180" : ""}`}>▲</span>
+
+            <button onClick={(e) => { e.stopPropagation(); setSelectedPost(null); setRecommendations([]); setExpandedPanel(false); }}
+              className="text-zinc-600 hover:text-zinc-300 transition-colors text-lg leading-none shrink-0 ml-1"
+            >
                 ✕
               </button>
-            </div>
           </div>
         </div>
       )}
