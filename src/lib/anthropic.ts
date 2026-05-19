@@ -1,6 +1,6 @@
 import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
-import { readCreierFromFile } from "@/lib/creier";
+import { readCreierFromSupabase } from "@/lib/creier";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
 /**
@@ -76,37 +76,56 @@ export function buildSystemBlocks(opts: {
 export async function buildUnifiedContext(): Promise<string> {
   const parts: string[] = [];
 
-  // 1. Creierul lui Claudiu — fundația
+  // 1. Creierul lui Claudiu din Supabase (sursa de adevăr live)
   try {
-    const creier = await readCreierFromFile();
-    parts.push(`# CREIERUL LUI CLAUDIU (fundație filozofică + identitate)\n\`\`\`json\n${JSON.stringify(creier, null, 2)}\n\`\`\``);
+    const creier = await readCreierFromSupabase();
+    const completedSections = creier.sections.filter(s => s.status === "completed" && s.data);
+    if (completedSections.length > 0) {
+      parts.push(`# CREIERUL LUI CLAUDIU (${completedSections.length} secțiuni completate)\n${completedSections.map(s => `## ${s.title}\n${JSON.stringify(s.data)}`).join("\n\n")}`);
+    }
   } catch {}
 
-  // 2. Onboarding — profilul live completat de Claudiu
+  // 2. Onboarding — profilul live completat
   try {
     const supabase = getSupabaseServer();
     const { data: onboarding } = await supabase.from("onboarding").select("*").eq("id", 1).single();
     if (onboarding) {
-      const filtered = Object.fromEntries(Object.entries(onboarding).filter(([k, v]) => v && !["id", "created_at", "updated_at"].includes(k)));
-      parts.push(`# PROFIL ONBOARDING (date completate de Claudiu)\n${Object.entries(filtered).map(([k, v]) => `- **${k}**: ${v}`).join("\n")}`);
+      const filtered = Object.fromEntries(
+        Object.entries(onboarding).filter(([k, v]) => v && !["id", "created_at", "updated_at", "ai_niche_summary", "ai_ideal_client_summary"].includes(k))
+      );
+      if (Object.keys(filtered).length > 0) {
+        parts.push(`# PROFIL ONBOARDING\n${Object.entries(filtered).map(([k, v]) => `- **${k}**: ${v}`).join("\n")}`);
+      }
     }
   } catch {}
 
-  // 3. Clienți activi — context real curent
+  // 3. Analytics live — performanța reală a reels-urilor
   try {
     const supabase = getSupabaseServer();
-    const { data: clients } = await supabase.from("profiles").select("full_name, role, created_at").eq("role", "client").limit(10);
-    if (clients && clients.length > 0) {
-      parts.push(`# CLIENȚI ACTIVI (${clients.length} clienți)\n${clients.map((c) => `- ${c.full_name}`).join("\n")}`);
-    }
-  } catch {}
-
-  // 4. Conținut recent generat
-  try {
-    const supabase = getSupabaseServer();
-    const { data: reels } = await supabase.from("reels").select("hook, script, created_at").order("created_at", { ascending: false }).limit(5);
+    const { data: reels } = await supabase
+      .from("instagram_media")
+      .select("caption, views, likes, format_type, posted_at")
+      .order("posted_at", { ascending: false })
+      .limit(10);
     if (reels && reels.length > 0) {
-      parts.push(`# REELS RECENTE (ultimele ${reels.length} generate)\n${reels.map((r, i) => `${i + 1}. Hook: "${r.hook}"`).join("\n")}`);
+      const totalViews = reels.reduce((s, r) => s + (r.views ?? 0), 0);
+      const topReel = [...reels].sort((a, b) => (b.views ?? 0) - (a.views ?? 0))[0];
+      const byFormat: Record<string, number[]> = {};
+      for (const r of reels) {
+        const f = r.format_type ?? "other";
+        byFormat[f] = [...(byFormat[f] ?? []), r.views ?? 0];
+      }
+      const formatAvg = Object.entries(byFormat).map(([f, vs]) => `${f}: avg ${Math.round(vs.reduce((a, b) => a + b, 0) / vs.length / 1000)}K views`).join(", ");
+      parts.push(`# ANALYTICS LIVE (ultimele ${reels.length} reels)\n- Total views: ${Math.round(totalViews / 1000)}K\n- Top reel: "${topReel?.caption?.slice(0, 80)}" — ${Math.round((topReel?.views ?? 0) / 1000)}K views\n- Performanță pe format: ${formatAvg}`);
+    }
+  } catch {}
+
+  // 4. Clienți activi
+  try {
+    const supabase = getSupabaseServer();
+    const { data: clients } = await supabase.from("profiles").select("full_name").eq("role", "client").limit(10);
+    if (clients && clients.length > 0) {
+      parts.push(`# CLIENȚI ACTIVI (${clients.length})\n${clients.map(c => `- ${c.full_name}`).join("\n")}`);
     }
   } catch {}
 

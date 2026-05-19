@@ -6,10 +6,9 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    const { generateWeeklyPackageAI } = await import("@/app/dashboard/content/actions");
-    const result = await generateWeeklyPackageAI();
-    if (!result.ok) throw new Error(result.error);
-    return NextResponse.json({ success: true, scripts: result.pkg.scripts.length });
+    const { syncMyReels } = await import("@/app/dashboard/analytics/actions");
+    const result = await syncMyReels();
+    return NextResponse.json({ success: result.ok, synced: result.ok ? result.synced : 0 });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
   }
