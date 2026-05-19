@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { generateMonthPlan, generateHookForIdea, type GeneratedIdea } from "./actions";
+import { generateMonthPlan, generateHookForIdea, generateReelRecommendations, type GeneratedIdea } from "./actions";
 import {
   listCalendarIdeas,
   addCalendarIdea,
@@ -74,6 +74,8 @@ export default function CalendarPage() {
   const [modalDate, setModalDate] = useState("");
   const [selectedIdea, setSelectedIdea] = useState<CalendarIdea | null>(null);
   const [selectedPost, setSelectedPost] = useState<InstagramPost | null>(null);
+  const [recommendations, setRecommendations] = useState<string[]>([]);
+  const [loadingRecs, setLoadingRecs] = useState(false);
 
   // Add idea form state
   const [hook, setHook] = useState("");
@@ -653,6 +655,21 @@ export default function CalendarPage() {
       {/* ── POSTED REEL BOTTOM PANEL ── */}
       {selectedPost && (
         <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-white/10 bg-[#0d0d0d] shadow-2xl">
+          {/* Recommendations row */}
+          {recommendations.length > 0 && (
+            <div className="border-b border-white/5 px-6 py-3">
+              <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">{recommendations.length} Recomandări</p>
+              <div className="flex flex-wrap gap-2">
+                {recommendations.map((r, i) => (
+                  <div key={i} className="flex items-start gap-1.5 bg-white/[0.03] border border-white/[0.06] rounded-lg px-3 py-2 max-w-xs">
+                    <span className="text-zinc-600 text-[10px] font-mono shrink-0 mt-0.5">{i + 1}.</span>
+                    <p className="text-zinc-400 text-[11px] leading-relaxed">{r}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div className="max-w-[1400px] mx-auto px-6 py-4 flex items-start gap-5">
             {/* Thumbnail */}
             <div className="w-14 h-14 rounded-lg overflow-hidden bg-[#1a1a1a] shrink-0 flex items-center justify-center">
@@ -704,11 +721,31 @@ export default function CalendarPage() {
 
             {/* Actions */}
             <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={async () => {
+                  if (loadingRecs) return;
+                  setRecommendations([]);
+                  setLoadingRecs(true);
+                  const r = await generateReelRecommendations(
+                    selectedPost.caption ?? "",
+                    selectedPost.views,
+                    selectedPost.likes,
+                    selectedPost.comments,
+                    selectedPost.posted_at
+                  );
+                  setLoadingRecs(false);
+                  if (r.ok) setRecommendations(r.recommendations);
+                }}
+                disabled={loadingRecs}
+                className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors disabled:opacity-40"
+              >
+                {loadingRecs ? "..." : `✦ ${recommendations.length > 0 ? recommendations.length : ""} Recomandări`}
+              </button>
               <a
                 href={`/dashboard/reel-copy?url=https://www.instagram.com/reel/${selectedPost.instagram_id}/`}
                 className="text-[11px] font-medium text-zinc-300 border border-white/10 rounded-lg px-3 py-2 hover:bg-white/5 transition-colors"
               >
-                ✦ Analizează
+                Analizează
               </a>
               <a
                 href={`/dashboard/ai?q=${encodeURIComponent("Generează o variație de hook pentru acest reel: " + (selectedPost.caption?.slice(0, 200) ?? ""))}`}
@@ -717,7 +754,7 @@ export default function CalendarPage() {
                 ↻ Variație
               </a>
               <button
-                onClick={() => setSelectedPost(null)}
+                onClick={() => { setSelectedPost(null); setRecommendations([]); }}
                 className="text-zinc-600 hover:text-zinc-300 transition-colors text-lg leading-none ml-1"
               >
                 ✕

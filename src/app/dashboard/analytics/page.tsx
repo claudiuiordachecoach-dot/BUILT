@@ -511,13 +511,34 @@ export default function AnalyticsPage() {
     return 0; // recent — already ordered from DB
   });
 
-  // KPI values
+  // KPI values cu % change față de perioada anterioară
   const kpiViews = mediaLoaded && totalViews !== null ? fmt(totalViews) : "—";
   const kpiEng = mediaLoaded && totalLikes !== null ? fmt(totalLikes) : "—";
 
+  const prevFilteredMedia = useMemo(() => {
+    if (liveMedia.length === 0) return [];
+    const days = PERIOD_DAYS[period];
+    const now = new Date();
+    const prevEnd = new Date(now); prevEnd.setDate(prevEnd.getDate() - days);
+    const prevStart = new Date(prevEnd); prevStart.setDate(prevStart.getDate() - days);
+    return liveMedia.filter(m => {
+      if (!m.posted_at) return false;
+      const d = new Date(m.posted_at);
+      return d >= prevStart && d < prevEnd;
+    });
+  }, [liveMedia, period]);
+
+  const pctChange = (curr: number | null, prev: number | null): number | null => {
+    if (curr === null || prev === null || prev === 0) return null;
+    return Math.round(((curr - prev) / prev) * 100);
+  };
+
+  const prevViews = prevFilteredMedia.length > 0 ? prevFilteredMedia.reduce((s, m) => s + (m.views ?? 0), 0) : null;
+  const prevLikes = prevFilteredMedia.length > 0 ? prevFilteredMedia.reduce((s, m) => s + (m.likes ?? 0), 0) : null;
+
   const kpiCards = [
-    { key: "views", label: "TOTAL VIEWS", value: kpiViews, change: null, sparkline: viewsSparkline },
-    { key: "eng", label: "ENGAGEMENTS", value: kpiEng, change: null, sparkline: engSparkline },
+    { key: "views", label: "TOTAL VIEWS", value: kpiViews, change: pctChange(totalViews, prevViews), sparkline: viewsSparkline },
+    { key: "eng", label: "ENGAGEMENTS", value: kpiEng, change: pctChange(totalLikes, prevLikes), sparkline: engSparkline },
     { key: "followers", label: "FOLLOWERS", value: followers, change: null, sparkline: STATIC_SPARKLINE },
   ];
 

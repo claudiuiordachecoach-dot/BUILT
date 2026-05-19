@@ -148,3 +148,48 @@ Returnează DOAR hook-ul, fără ghilimele, fără explicații.`;
     return { ok: false, error: message };
   }
 }
+
+export async function generateReelRecommendations(
+  caption: string,
+  views: number | null,
+  likes: number | null,
+  comments: number | null,
+  postedAt: string | null
+): Promise<{ ok: true; recommendations: string[] } | { ok: false; error: string }> {
+  try {
+    const client = getAnthropicClient();
+    const creier = await readCreierFromSupabase().catch(() => null);
+    const context = creier ? JSON.stringify(creier).slice(0, 1000) : "";
+
+    const prompt = `Ești un expert în optimizarea conținutului Instagram pentru BUILT coaching.
+${context ? `Context BUILT: ${context}` : ""}
+
+Analizează acest reel postat și generează 5-7 recomandări concrete și acționabile pentru a-l îmbunătăți sau pentru a crea variante mai bune.
+
+REEL:
+- Caption: "${caption?.slice(0, 300) ?? "fără caption"}"
+- Views: ${views ?? 0}
+- Likes: ${likes ?? 0}
+- Comments: ${comments ?? 0}
+- Postat: ${postedAt?.slice(0, 10) ?? "necunoscut"}
+
+Returnează STRICT un JSON array de strings (fără markdown):
+["recomandare 1 specifică", "recomandare 2 specifică", "recomandare 3 specifică", "recomandare 4 specifică", "recomandare 5 specifică"]
+
+Fiecare recomandare: acționabilă imediat, specifică, în vocea BUILT. Max 2 propoziții per recomandare.`;
+
+    const response = await client.messages.create({
+      model: MODELS.routine,
+      max_tokens: 600,
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = response.content[0]?.type === "text" ? response.content[0].text : "[]";
+    const match = text.match(/\[[\s\S]*\]/);
+    if (!match) return { ok: false, error: "JSON invalid" };
+    const recs: string[] = JSON.parse(match[0]);
+    return { ok: true, recommendations: recs };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Eroare" };
+  }
+}
