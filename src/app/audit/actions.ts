@@ -8,7 +8,8 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 export interface AuditElement {
   score: number;
   label: string;
-  feedback: string;
+  feedback_good: string;
+  feedback_bad: string;
   fix: string;
 }
 
@@ -24,7 +25,9 @@ export interface InstagramAudit {
   };
   top_priority: string;
   rewritten_bio: string;
-  quick_wins: string[];
+  new_bio_explanation: string;
+  suggested_highlights: string[];
+  priority_fixes: string[];
 }
 
 export type AuditResult = { ok: true; audit: InstagramAudit } | { ok: false; error: string };
@@ -40,89 +43,53 @@ export interface AuditInput {
   posting_frequency: string;
 }
 
+const ELEMENT_SCHEMA = (label: string, hint: string) => ({
+  type: "object" as const,
+  properties: {
+    score: { type: "number" as const, description: "Score 0-10" },
+    label: { type: "string" as const, description: label },
+    feedback_good: { type: "string" as const, description: `What is working well — ${hint}` },
+    feedback_bad: { type: "string" as const, description: `What is missing or wrong — ${hint}` },
+    fix: { type: "string" as const, description: "Exact blue-box recommendation to fix it" },
+  },
+  required: ["score", "label", "feedback_good", "feedback_bad", "fix"] as string[],
+});
+
 const auditTool: Anthropic.Tool = {
   name: "submit_instagram_audit",
-  description: "Submit the calculated Instagram profile audit scores and recommendations.",
+  description: "Submit the Instagram profile audit with split good/bad feedback per element.",
   input_schema: {
     type: "object",
     properties: {
-      overall: { type: "number", description: "Overall weighted score out of 100 (e.g. 65)" },
+      overall: { type: "number", description: "Overall score out of 10 (e.g. 6.3)" },
       elements: {
         type: "object",
         properties: {
-          profile_picture: {
-            type: "object",
-            properties: {
-              score: { type: "number", description: "Score 0-10" },
-              label: { type: "string", description: "Label e.g. 'Poză profil'" },
-              feedback: { type: "string", description: "Specific critique of the profile picture" },
-              fix: { type: "string", description: "Exact action to fix it" }
-            },
-            required: ["score", "label", "feedback", "fix"]
-          },
-          name_username: {
-            type: "object",
-            properties: {
-              score: { type: "number", description: "Score 0-10" },
-              label: { type: "string", description: "Label e.g. 'Nume & Username'" },
-              feedback: { type: "string", description: "Specific critique of handle and name" },
-              fix: { type: "string", description: "Exact action to fix it" }
-            },
-            required: ["score", "label", "feedback", "fix"]
-          },
-          bio: {
-            type: "object",
-            properties: {
-              score: { type: "number", description: "Score 0-10" },
-              label: { type: "string", description: "Label e.g. 'Bio'" },
-              feedback: { type: "string", description: "Specific critique of the bio clarity and value" },
-              fix: { type: "string", description: "Exact action to fix it" }
-            },
-            required: ["score", "label", "feedback", "fix"]
-          },
-          link_in_bio: {
-            type: "object",
-            properties: {
-              score: { type: "number", description: "Score 0-10" },
-              label: { type: "string", description: "Label e.g. 'Link în Bio'" },
-              feedback: { type: "string", description: "Specific critique of the CTA and link destination" },
-              fix: { type: "string", description: "Exact action to fix it" }
-            },
-            required: ["score", "label", "feedback", "fix"]
-          },
-          highlights: {
-            type: "object",
-            properties: {
-              score: { type: "number", description: "Score 0-10" },
-              label: { type: "string", description: "Label e.g. 'Highlights'" },
-              feedback: { type: "string", description: "Specific critique of story highlights strategy" },
-              fix: { type: "string", description: "Exact action to fix it" }
-            },
-            required: ["score", "label", "feedback", "fix"]
-          },
-          pinned_posts: {
-            type: "object",
-            properties: {
-              score: { type: "number", description: "Score 0-10" },
-              label: { type: "string", description: "Label e.g. 'Posturi Fixate'" },
-              feedback: { type: "string", description: "Specific critique of pinned reels/posts" },
-              fix: { type: "string", description: "Exact action to fix it" }
-            },
-            required: ["score", "label", "feedback", "fix"]
-          }
+          profile_picture: ELEMENT_SCHEMA("e.g. 'Profile Picture'", "photo quality, professionalism, authority"),
+          name_username: ELEMENT_SCHEMA("e.g. 'Name & Username'", "memorability, searchability, brand consistency"),
+          bio: ELEMENT_SCHEMA("e.g. 'Bio'", "ICP specificity, CTA clarity, proof of outcome"),
+          link_in_bio: ELEMENT_SCHEMA("e.g. 'Link in Bio'", "branded domain, CTA context, landing page relevance"),
+          highlights: ELEMENT_SCHEMA("e.g. 'Highlights'", "Start Here / social proof / lead magnet presence"),
+          pinned_posts: ELEMENT_SCHEMA("e.g. 'Pinned Posts'", "conversion funnel: hook reel / proof / offer CTA"),
         },
-        required: ["profile_picture", "name_username", "bio", "link_in_bio", "highlights", "pinned_posts"]
+        required: ["profile_picture", "name_username", "bio", "link_in_bio", "highlights", "pinned_posts"],
       },
-      top_priority: { type: "string", description: "The single most important fix to make today (1 specific sentence)" },
-      rewritten_bio: { type: "string", description: "The complete rewritten bio ready for copy-paste, in BUILT voice with CTA. Ex: 'Reconstruiesc corpul bărbaților ocupați în 90 de zile. Fără dietă restrictivă. Fără ore la sală. → DM ARHITECTURĂ'" },
-      quick_wins: {
+      top_priority: { type: "string", description: "Single most important fix today" },
+      rewritten_bio: { type: "string", description: "Complete rewritten bio ready to copy-paste with CTA" },
+      new_bio_explanation: { type: "string", description: "2-3 sentences explaining WHY the current bio fails and what the rewrite fixes" },
+      suggested_highlights: {
         type: "array",
         items: { type: "string" },
-        description: "List of 3 quick wins implementable in under 10 minutes"
-      }
+        description: "5 suggested highlight names for this creator (e.g. Start Here, Client Wins, Free Training, My Story, Results)",
+      },
+      priority_fixes: {
+        type: "array",
+        items: { type: "string" },
+        description: "3 priority fixes implementable today, each as a complete actionable sentence",
+      },
     },
-    required: ["overall", "elements", "top_priority", "rewritten_bio", "quick_wins"]
-  }
+    required: ["overall", "elements", "top_priority", "rewritten_bio", "new_bio_explanation", "suggested_highlights", "priority_fixes"],
+  },
 };
 
 export async function auditProfile(input: AuditInput): Promise<AuditResult> {
@@ -207,7 +174,7 @@ REGULA CRITICĂ: Analizează profilul și apelează instrumentul submit_instagra
       const supabase = getSupabaseServer({ useServiceRole: true });
       await supabase.from("profile_audits").insert({
         score: audit.overall,
-        recommendations: { quick_wins: audit.quick_wins, top_priority: audit.top_priority, elements: audit.elements },
+        recommendations: { priority_fixes: audit.priority_fixes, top_priority: audit.top_priority, elements: audit.elements },
         new_bio: audit.rewritten_bio,
       });
     } catch { /* ignorăm — audit-ul e valid */ }

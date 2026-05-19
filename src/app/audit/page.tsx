@@ -143,7 +143,7 @@ export default function AuditPage() {
               <p className="font-condensed text-[10px] text-built-red uppercase mb-1">Prioritate #1</p>
               <p className="text-sm text-built-white mb-4">{audit.top_priority}</p>
               <div className="flex flex-wrap gap-2">
-                {audit.quick_wins.map((w, i) => (
+                {(audit.priority_fixes ?? []).map((w: string, i: number) => (
                   <span key={i} className="px-2 py-1 bg-amber-500/10 border border-amber-500/30 text-amber-400 font-condensed text-[10px]">
                     ⚡ {w}
                   </span>
@@ -178,7 +178,7 @@ export default function AuditPage() {
                   <div className={`h-1 ${el.score >= 8 ? "bg-emerald-500" : el.score >= 5 ? "bg-amber-500" : "bg-built-red"}`}
                     style={{ width: `${el.score * 10}%` }} />
                 </div>
-                <p className="text-xs text-built-white/70 mb-2">{el.feedback}</p>
+                <p className="text-xs text-built-white/70 mb-2">{el.feedback_good}{el.feedback_bad ? ` — ${el.feedback_bad}` : ""}</p>
                 <p className="text-xs text-built-red border-t border-built-gray-2/50 pt-2">→ {el.fix}</p>
               </div>
             ))}
