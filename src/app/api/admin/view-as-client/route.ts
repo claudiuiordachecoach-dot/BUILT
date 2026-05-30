@@ -5,13 +5,6 @@ export async function GET(request: NextRequest) {
   if (!clientId || isNaN(Number(clientId))) {
     return NextResponse.json({ error: "Invalid clientId" }, { status: 400 });
   }
-
-  const response = NextResponse.redirect(new URL("/client/dashboard", request.url));
-  response.cookies.set("admin_view_client_id", clientId, {
-    path: "/",
-    maxAge: 60 * 60 * 24,
-    httpOnly: false,
-    sameSite: "lax",
-  });
-  return response;
+  // Redirectam la dashboard cu clientId in URL — simplu si garantat
+  return NextResponse.redirect(new URL(`/client/dashboard?clientId=${clientId}`, request.url));
 }
