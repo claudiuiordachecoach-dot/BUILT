@@ -34,8 +34,8 @@ async function getClientId(): Promise<number | null> {
   return null;
 }
 
-export async function getClientDashboard() {
-  const clientId = await getClientId();
+export async function getClientDashboard(overrideClientId?: number) {
+  const clientId = overrideClientId ?? await getClientId();
   if (!clientId) return null;
   const db = getSupabaseServer();
 

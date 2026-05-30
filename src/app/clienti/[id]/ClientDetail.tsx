@@ -58,7 +58,7 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
         </div>
         <div className="flex gap-2 items-center">
           <Link
-            href="/client/dashboard"
+            href={`/client/dashboard?clientId=${numericClientId}`}
             className="px-3 py-1.5 font-condensed text-[10px] border border-built-red/40 text-built-red hover:bg-built-red/10 transition-colors flex items-center gap-1.5"
             target="_blank"
           >

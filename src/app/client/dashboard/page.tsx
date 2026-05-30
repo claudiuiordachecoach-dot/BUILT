@@ -1,17 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { getClientDashboard, linkAuthToClient } from "../actions";
 
 type DashData = Awaited<ReturnType<typeof getClientDashboard>>;
 
 export default function ClientDashboardPage() {
   const [data, setData] = useState<DashData>(null);
+  const searchParams = useSearchParams();
+  const clientId = searchParams.get("clientId") ? Number(searchParams.get("clientId")) : undefined;
 
   useEffect(() => {
     linkAuthToClient().catch(() => {});
-    getClientDashboard().then(setData);
-  }, []);
+    getClientDashboard(clientId).then(setData);
+  }, [clientId]);
 
   if (!data) return (
     <div className="flex items-center justify-center h-64">
