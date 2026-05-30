@@ -824,12 +824,22 @@ export default function AnalyticsPage() {
             const top = [...reelCards].sort((a, b) => b.viewsRaw - a.viewsRaw)[0];
             return (
               <div className="mt-5 pt-4 border-t border-white/5">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-1">Top Reel</p>
-                <p className="text-[13px] text-zinc-300">
-                  <span className="text-zinc-100 font-mono">{top.views} views</span>
-                  <span className="text-zinc-600 mx-2">·</span>
-                  <span className="text-zinc-400 line-clamp-1">{top.title.slice(0, 50)}</span>
-                </p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-2">Top Reel</p>
+                <a
+                  href={`https://www.instagram.com/reel/${top.id}/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group block hover:bg-white/[0.02] rounded-lg p-2 -mx-2 transition-colors"
+                >
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-zinc-100 font-mono text-[14px] font-semibold">{top.views}</span>
+                    <span className="text-zinc-600 text-[11px]">views</span>
+                    <span className="text-zinc-600 text-[11px]">·</span>
+                    <span className="text-zinc-500 text-[11px]">{top.likes} likes</span>
+                    <span className="ml-auto text-zinc-700 group-hover:text-zinc-500 text-[10px] transition-colors">↗</span>
+                  </div>
+                  <p className="text-zinc-400 text-[12px] leading-relaxed line-clamp-2">{top.title}</p>
+                </a>
               </div>
             );
           })()}
@@ -838,42 +848,34 @@ export default function AnalyticsPage() {
         {/* Format performance */}
         <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
           <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Format Performance</p>
+          <p className="text-[10px] text-zinc-700 mb-3">All-time · avg views per format</p>
           {(() => {
-            const totals: Record<string, number> = {};
-            const source = filteredMedia.length > 0 ? filteredMedia : liveMedia;
+            const totals: Record<string, { views: number; count: number }> = {};
+            const source = liveMedia.length > 0 ? liveMedia : [];
             for (const m of source) {
               const key = (m.format_type ?? "other").toLowerCase();
-              totals[key] = (totals[key] ?? 0) + (m.views ?? 0);
+              if (!totals[key]) totals[key] = { views: 0, count: 0 };
+              totals[key].views += m.views ?? 0;
+              totals[key].count += 1;
             }
-            const entries = Object.entries(totals).sort(([, a], [, b]) => b - a).slice(0, 6);
-            if (entries.length === 0) {
-              // fallback static
-              const fallback = [["talking head", 142000], ["rant", 98000], ["tutorial", 76000], ["trend", 54000], ["bts", 28000]] as [string, number][];
-              const max = fallback[0][1] as number;
-              return (
-                <div className="space-y-3 mt-3">
-                  {fallback.map(([label, views]) => (
-                    <div key={label} className="flex items-center gap-3">
-                      <span className="text-[11px] text-zinc-500 w-24 shrink-0 capitalize">{label}</span>
-                      <div className="flex-1 h-4 bg-white/5 rounded overflow-hidden">
-                        <div className="h-full bg-indigo-500/70 rounded" style={{ width: `${((views as number) / max) * 100}%` }} />
-                      </div>
-                      <span className="text-[11px] text-zinc-500 font-mono w-14 text-right">{fmt(views as number)}</span>
-                    </div>
-                  ))}
-                </div>
-              );
-            }
-            const max = entries[0][1];
+            // Sort by average views per reel
+            const entries = Object.entries(totals)
+              .map(([k, v]) => [k, Math.round(v.views / Math.max(v.count, 1))] as [string, number])
+              .sort(([, a], [, b]) => b - a)
+              .slice(0, 6);
+
+            const fallback = [["talking head", 142000], ["rant", 98000], ["tutorial", 76000], ["trend", 54000], ["bts", 28000]] as [string, number][];
+            const display = entries.length > 0 ? entries : fallback;
+            const max = display[0][1] as number;
             return (
-              <div className="space-y-3 mt-3">
-                {entries.map(([label, views]) => (
+              <div className="space-y-3">
+                {display.map(([label, avg]) => (
                   <div key={label} className="flex items-center gap-3">
-                    <span className="text-[11px] text-zinc-500 w-24 shrink-0 capitalize">{label}</span>
-                    <div className="flex-1 h-4 bg-white/5 rounded overflow-hidden">
-                      <div className="h-full bg-indigo-500/70 rounded transition-all" style={{ width: `${(views / max) * 100}%` }} />
+                    <span className="text-[11px] text-zinc-400 w-24 shrink-0 capitalize font-medium">{label}</span>
+                    <div className="flex-1 h-3 bg-white/5 rounded-full overflow-hidden">
+                      <div className="h-full bg-indigo-500 rounded-full transition-all duration-500" style={{ width: `${((avg as number) / max) * 100}%` }} />
                     </div>
-                    <span className="text-[11px] text-zinc-500 font-mono w-14 text-right">{fmt(views)}</span>
+                    <span className="text-[11px] text-zinc-400 font-mono w-16 text-right">{fmt(avg as number)}</span>
                   </div>
                 ))}
               </div>

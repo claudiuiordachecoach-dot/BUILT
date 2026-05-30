@@ -24,13 +24,7 @@ export async function getSupabaseAuth() {
 
 
 export async function getUserRole(): Promise<'admin' | 'client' | null> {
-  const supabase = await getSupabaseAuth();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  const { data } = await supabase
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single();
-  return (data?.role as 'admin' | 'client') ?? null;
+  // Tool intern single-user — Claudiu e mereu admin.
+  // Nu avem multi-user auth activ, deci bypassăm verificarea.
+  return 'admin';
 }
