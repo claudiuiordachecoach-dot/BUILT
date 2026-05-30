@@ -5,8 +5,9 @@ import { ClientDetail } from "@/app/clienti/[id]/ClientDetail";
 
 export const dynamic = "force-dynamic";
 
-export default async function DashboardClientPage({ params }: { params: { id: string } }) {
-  const id = Number(params.id);
+export default async function DashboardClientPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: idStr } = await params;
+  const id = Number(idStr);
   if (isNaN(id)) notFound();
 
   const [client, checkins] = await Promise.all([
