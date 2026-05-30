@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
 import { submitCheckin, updateClientStatus, inviteClient, type Client, type CheckIn, type ClientStatus, type ClientModule, getClientModules, saveClientModule, deleteClientModule } from "../actions";
-import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages } from "@/app/client/actions";
+import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages, setAdminViewClient } from "@/app/client/actions";
 
 const STATUS_OPTIONS: { id: ClientStatus; label: string }[] = [
   { id: "active", label: "Activ" }, { id: "at_risk", label: "La risc" },
@@ -55,15 +55,17 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
           <h1 className="font-display text-4xl tracking-wider text-built-white">{client.name}</h1>
           {client.email && <p className="text-built-gray-text text-sm mt-1">{client.email}</p>}
           {client.objectives && <p className="text-sm text-built-white/70 mt-1">{client.objectives}</p>}
-        </div>
-        <div className="flex gap-2 items-center">
-          <Link
-            href={`/client/dashboard?clientId=${numericClientId}`}
-            className="px-3 py-1.5 font-condensed text-[10px] border border-built-red/40 text-built-red hover:bg-built-red/10 transition-colors flex items-center gap-1.5"
-            target="_blank"
+          <button
+            onClick={async () => {
+              await setAdminViewClient(numericClientId);
+              window.open("/client/dashboard", "_blank");
+            }}
+            className="mt-2 px-3 py-1.5 font-condensed text-[10px] border border-built-red/40 text-built-red hover:bg-built-red/10 transition-colors flex items-center gap-1.5"
           >
             <span>◈</span> View as Client
-          </Link>
+          </button>
+        </div>
+        <div className="flex gap-2 items-center">
           <button
             onClick={async () => {
               setInviting(true); setInviteMsg(null);

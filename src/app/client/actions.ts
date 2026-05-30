@@ -1,35 +1,40 @@
 "use server";
 import { createClient } from "@supabase/supabase-js";
+import { cookies } from "next/headers";
 import { getSupabaseAuth, getUserRole } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+
+// Seteaza cookie-ul cand admin apasa "View as Client"
+export async function setAdminViewClient(clientId: number) {
+  const cookieStore = await cookies();
+  cookieStore.set("admin_view_client_id", String(clientId), {
+    path: "/",
+    maxAge: 60 * 60 * 24, // 24 ore
+    httpOnly: false,
+    sameSite: "lax",
+  });
+}
 
 async function getClientId(): Promise<number | null> {
   const supabase = await getSupabaseAuth();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return null;
-  
-  const db = getSupabaseServer();
-  
-  // Încercăm să găsim clientul legat de acest user
-  const { data: linkedClient } = await db
-    .from("clients")
-    .select("id")
-    .eq("auth_user_id", user.id)
-    .maybeSingle();
-    
-  if (linkedClient) return linkedClient.id;
 
-  // Dacă nu e client, dar e admin, îi arătăm primul client ca "Demo"
-  const role = await getUserRole();
-  if (role === 'admin') {
-    const { data: firstClient } = await db
+  const db = getSupabaseServer();
+
+  if (user) {
+    // Clientul logat — cauta dupa auth_user_id
+    const { data: linkedClient } = await db
       .from("clients")
       .select("id")
-      .order("created_at", { ascending: true })
-      .limit(1)
+      .eq("auth_user_id", user.id)
       .maybeSingle();
-    return firstClient?.id ?? null;
+    if (linkedClient) return linkedClient.id;
   }
+
+  // Admin sau fara auth — citeste cookie-ul setat de "View as Client"
+  const cookieStore = await cookies();
+  const cookieClientId = cookieStore.get("admin_view_client_id")?.value;
+  if (cookieClientId) return Number(cookieClientId);
 
   return null;
 }
