@@ -55,15 +55,14 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
           <h1 className="font-display text-4xl tracking-wider text-built-white">{client.name}</h1>
           {client.email && <p className="text-built-gray-text text-sm mt-1">{client.email}</p>}
           {client.objectives && <p className="text-sm text-built-white/70 mt-1">{client.objectives}</p>}
-          <button
-            onClick={async () => {
-              await setAdminViewClient(numericClientId);
-              window.open("/client/dashboard", "_blank");
-            }}
+          <a
+            href={`/api/admin/view-as-client?clientId=${numericClientId}`}
+            target="_blank"
+            rel="noopener noreferrer"
             className="mt-2 px-3 py-1.5 font-condensed text-[10px] border border-built-red/40 text-built-red hover:bg-built-red/10 transition-colors flex items-center gap-1.5"
           >
             <span>◈</span> View as Client
-          </button>
+          </a>
         </div>
         <div className="flex gap-2 items-center">
           <button
