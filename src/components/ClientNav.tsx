@@ -1,6 +1,7 @@
 "use client";
+import { Suspense } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
 import { SignOutButton } from "./SignOutButton";
 import { UserDisplay } from "./UserDisplay";
@@ -14,8 +15,11 @@ const NAV = [
   { label: "Mesaje", href: "/client/mesaje", icon: "◎" },
 ];
 
-export function ClientNav() {
+function ClientNavContent() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const clientId = searchParams.get("clientId");
+  const qs = clientId ? `?clientId=${clientId}` : "";
   return (
     <aside className="w-56 shrink-0 bg-[#111111] border-r border-white/10 flex flex-col h-screen sticky top-0">
       <div className="p-5 border-b border-white/10">
@@ -26,7 +30,7 @@ export function ClientNav() {
         {NAV.map(item => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
-            <Link key={item.href} href={item.href}
+            <Link key={item.href} href={`${item.href}${qs}`}
               className={`flex items-center gap-2.5 px-3 py-2 rounded-lg text-[13px] transition-all ${
                 isActive ? 'bg-built-red/15 text-built-red font-medium' : 'text-zinc-400 hover:bg-white/5 hover:text-zinc-200'
               }`}>
@@ -40,5 +44,13 @@ export function ClientNav() {
         <SignOutButton />
       </div>
     </aside>
+  );
+}
+
+export function ClientNav() {
+  return (
+    <Suspense fallback={<aside className="w-56 shrink-0 bg-[#111111] border-r border-white/10 flex flex-col h-screen sticky top-0"></aside>}>
+      <ClientNavContent />
+    </Suspense>
   );
 }
