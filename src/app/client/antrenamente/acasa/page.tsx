@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function AntrenamentAcasaPage() {
   return (
-    <div className="flex flex-col" style={{ height: "calc(100vh - 60px)", maxWidth: "520px", margin: "0 auto", width: "100%" }}>
+    <div className="flex flex-col w-full" style={{ height: "calc(100vh - 60px)" }}>
       <div className="flex gap-2 px-4 py-2 bg-[#111111] border-b border-white/10 shrink-0">
         <Link
           href="/client/antrenamente"

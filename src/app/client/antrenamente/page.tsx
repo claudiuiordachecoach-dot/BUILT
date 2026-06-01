@@ -22,7 +22,7 @@ export default function AntrenamantePage() {
 
   if (plan.quickref_url) {
     return (
-      <div className="flex flex-col" style={{ height: "calc(100vh - 60px)", maxWidth: "520px", margin: "0 auto", width: "100%" }}>
+      <div className="flex flex-col w-full" style={{ height: "calc(100vh - 60px)" }}>
         <div className="flex gap-2 px-4 py-2 bg-[#111111] border-b border-white/10 shrink-0">
           <span className="text-xs font-semibold text-built-red border-b-2 border-built-red pb-1 px-1">Sală</span>
           <Link
