@@ -20,8 +20,11 @@ export async function signIn(formData: FormData) {
     .eq('id', user.id)
     .single();
 
-  if (profile?.role === 'client') redirect('/client/dashboard');
-  redirect('/dashboard/analytics');
+  // Admin explicit → dashboard admin
+  if (profile?.role === 'admin') redirect('/dashboard/analytics');
+
+  // Client sau user nou fără profil → portal client
+  redirect('/client/dashboard');
 }
 
 export async function signOut() {

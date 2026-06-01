@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { ClientNav } from "@/components/ClientNav";
 import { getUserRole } from "@/lib/supabase/auth-server";
+import { linkAuthToClient } from "./actions";
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
   const role = await getUserRole().catch(() => null);
   const isAdmin = role === "admin";
+
+  // Leagă auth_user_id la clientul invitat (silențios, doar dacă e necesar)
+  if (!isAdmin) await linkAuthToClient().catch(() => null);
 
   return (
     <div className="flex min-h-screen flex-col">
