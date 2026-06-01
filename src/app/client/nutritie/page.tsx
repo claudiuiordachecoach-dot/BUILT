@@ -18,12 +18,13 @@ export default function NutritiePage() {
 
   if (plan.quickref_url) {
     return (
-      <iframe
-        src={plan.quickref_url}
-        className="w-full border-0"
-        style={{ height: "calc(100vh - 60px)" }}
-        title="Plan Nutrițional"
-      />
+      <div className="w-full md:max-w-[520px] md:mx-auto" style={{ height: "calc(100vh - 60px)" }}>
+        <iframe
+          src={plan.quickref_url}
+          className="w-full h-full border-0"
+          title="Plan Nutrițional"
+        />
+      </div>
     );
   }
 
