@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { SignOutButton } from "./SignOutButton";
+import { getAdminUnreadCount } from "@/app/client/actions";
 
 /* ─── Icons ──────────────────────────────────────────────────────────────────*/
 function Icon({ d, d2 }: { d: string; d2?: string }) {
@@ -35,7 +36,7 @@ const Icons = {
   collapse: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>,
 };
 
-type NavEntry = { label: string; href: string; icon: React.ReactNode; exact?: boolean };
+type NavEntry = { label: string; href: string; icon: React.ReactNode; exact?: boolean; badge?: number };
 
 const MAIN_ITEMS: NavEntry[] = [
   { label: "Dashboard",           href: "/dashboard/analytics",       icon: <Icons.grid />,     exact: true },
@@ -71,8 +72,20 @@ function NavLink({ item, pathname, collapsed }: { item: NavEntry; pathname: stri
           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
       } ${collapsed ? "justify-center" : ""}`}
     >
-      <span className={isActive ? "text-foreground" : ""}>{item.icon}</span>
-      {!collapsed && <span>{item.label}</span>}
+      <span className={`relative ${isActive ? "text-foreground" : ""}`}>
+        {item.icon}
+        {(item.badge ?? 0) > 0 && (
+          <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] bg-built-red text-white text-[9px] font-bold rounded-full flex items-center justify-center px-0.5">
+            {(item.badge ?? 0) > 9 ? "9+" : item.badge}
+          </span>
+        )}
+      </span>
+      {!collapsed && <span className="flex-1">{item.label}</span>}
+      {!collapsed && (item.badge ?? 0) > 0 && (
+        <span className="ml-auto bg-built-red text-white text-[9px] font-bold rounded-full px-1.5 py-0.5">
+          {(item.badge ?? 0) > 9 ? "9+" : item.badge}
+        </span>
+      )}
     </Link>
   );
 }
@@ -92,9 +105,14 @@ export function Sidebar() {
   const [adminOpen, setAdminOpen] = useState(true);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   useEffect(() => {
     setMounted(true);
+    const fetchUnread = () => getAdminUnreadCount().then(setUnreadCount).catch(() => {});
+    fetchUnread();
+    const interval = setInterval(fetchUnread, 30_000);
+    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -167,7 +185,11 @@ export function Sidebar() {
             <ul className="space-y-0.5 px-2">
               {ADMIN_ITEMS.map(item => (
                 <li key={item.label}>
-                  <NavLink item={item} pathname={pathname} collapsed={collapsed} />
+                  <NavLink
+                    item={item.href === "/dashboard/clients" ? { ...item, badge: unreadCount } : item}
+                    pathname={pathname}
+                    collapsed={collapsed}
+                  />
                 </li>
               ))}
             </ul>

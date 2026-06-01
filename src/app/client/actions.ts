@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 import { getSupabaseAuth, getUserRole } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { sendMessageNotification } from "@/lib/email";
 
 // Seteaza cookie-ul cand admin apasa "View as Client"
 export async function setAdminViewClient(clientId: number) {
@@ -187,11 +188,20 @@ export async function sendClientMessage(content: string) {
   const clientId = await getClientId();
   if (!clientId) throw new Error("Client not found");
   const db = getSupabaseServer();
+
   await db.from("client_messages").insert({
     client_id: clientId,
     sender: "client",
     content,
   });
+
+  // Notificare email către admin (silențios, nu blochează)
+  const { data: client } = await db
+    .from("clients")
+    .select("name")
+    .eq("id", clientId)
+    .single();
+  sendMessageNotification(client?.name ?? "Client", content).catch(() => {});
 }
 
 // ── ADMIN actions ──
@@ -233,6 +243,16 @@ export async function saveNutritionPlan(clientId: number, plan: {
 export async function sendAdminMessage(clientId: number, content: string) {
   const db = getSupabaseServer();
   await db.from("client_messages").insert({ client_id: clientId, sender: "admin", content });
+}
+
+export async function getAdminUnreadCount(): Promise<number> {
+  const db = getSupabaseServer();
+  const { count } = await db
+    .from("client_messages")
+    .select("*", { count: "exact", head: true })
+    .eq("sender", "client")
+    .is("read_at", null);
+  return count ?? 0;
 }
 
 export async function getClientMessages(clientId: number) {
