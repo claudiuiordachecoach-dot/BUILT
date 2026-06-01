@@ -19,7 +19,7 @@ const getBarColor = (s: number) =>
   s >= 8 ? "bg-emerald-500" : s >= 6 ? "bg-yellow-500" : "bg-built-red";
 
 const getVerdict = (s: number) =>
-  s >= 8 ? { label: "Strong", style: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" }
+  s >= 8 ? { label: "Puternic", style: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" }
   : s >= 6 ? { label: "Necesită Îmbunătățiri", style: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" }
   : { label: "Critic", style: "bg-built-red/10 text-built-red border border-built-red/20" };
 

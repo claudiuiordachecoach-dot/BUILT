@@ -254,7 +254,7 @@ function ReelCard({
 
 // ─── Script Card ──────────────────────────────────────────────────────────────
 
-function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
+function CopyButton({ text, label = "Copiază" }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <button
