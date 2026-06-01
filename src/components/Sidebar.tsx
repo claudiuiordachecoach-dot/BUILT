@@ -2,7 +2,8 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 import { SignOutButton } from "./SignOutButton";
 
 /* ─── Icons ──────────────────────────────────────────────────────────────────*/
@@ -30,6 +31,7 @@ const Icons = {
   report:   () => <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>,
   chevron:  () => <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="18 15 12 9 6 15"/></svg>,
   sun:      () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>,
+  moon:     () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>,
   collapse: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>,
 };
 
@@ -65,18 +67,18 @@ function NavLink({ item, pathname, collapsed }: { item: NavEntry; pathname: stri
       title={collapsed ? item.label : undefined}
       className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all w-full ${
         isActive
-          ? "text-white bg-white/10"
-          : "text-zinc-500 hover:text-zinc-200 hover:bg-white/5"
+          ? "text-foreground bg-muted"
+          : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
       } ${collapsed ? "justify-center" : ""}`}
     >
-      <span className={isActive ? "text-zinc-200" : ""}>{item.icon}</span>
+      <span className={isActive ? "text-foreground" : ""}>{item.icon}</span>
       {!collapsed && <span>{item.label}</span>}
     </Link>
   );
 }
 
 function SectionLabel({ label, collapsed }: { label: string; collapsed: boolean }) {
-  if (collapsed) return <div className="h-px bg-white/[0.06] mx-3 my-2" />;
+  if (collapsed) return <div className="h-px bg-border mx-3 my-2" />;
   return (
     <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 px-3 mb-1 mt-4">
       {label}
@@ -88,29 +90,35 @@ export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
   const [adminOpen, setAdminOpen] = useState(true);
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <aside
-      className={`shrink-0 flex flex-col h-screen sticky top-0 bg-[#0a0a0a] border-r border-white/[0.06] transition-all duration-200 ${
+      className={`shrink-0 flex flex-col h-screen sticky top-0 bg-background border-r border-border transition-all duration-200 ${
         collapsed ? "w-[52px]" : "w-56"
       }`}
     >
       {/* Header */}
-      <div className={`border-b border-white/[0.06] ${collapsed ? "p-3" : "p-4"}`}>
+      <div className={`border-b border-border ${collapsed ? "p-3" : "p-4"}`}>
         <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2"} mb-3`}>
           <div className="w-6 h-6 bg-built-red rounded flex items-center justify-center shrink-0">
             <span className="text-white text-[10px] font-bold">B</span>
           </div>
-          {!collapsed && <span className="text-white font-semibold text-[13px]">BUILT AI</span>}
+          {!collapsed && <span className="text-foreground font-semibold text-[13px]">BUILT AI</span>}
         </div>
         {!collapsed && (
-          <div className="flex items-center gap-2 px-2 py-1.5 bg-white/5 rounded-lg">
+          <div className="flex items-center gap-2 px-2 py-1.5 bg-muted/50 rounded-lg">
             <div className="w-6 h-6 rounded-full bg-built-red/20 flex items-center justify-center shrink-0">
               <span className="text-built-red text-[10px] font-bold">C</span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-[12px] text-zinc-200 font-medium truncate">Claudiu Iordache</p>
-              <p className="text-[10px] text-zinc-500">Admin</p>
+              <p className="text-[12px] text-foreground font-medium truncate">Claudiu Iordache</p>
+              <p className="text-[10px] text-muted-foreground">Admin</p>
             </div>
           </div>
         )}
@@ -152,7 +160,7 @@ export function Sidebar() {
               </span>
             </button>
           ) : (
-            <div className="h-px bg-white/[0.06] mx-3 my-2" />
+            <div className="h-px bg-border mx-3 my-2" />
           )}
 
           {(adminOpen || collapsed) && (
@@ -168,25 +176,28 @@ export function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className={`border-t border-white/[0.06] py-2 space-y-1 ${collapsed ? "px-2" : "px-2"}`}>
+      <div className={`border-t border-border py-2 space-y-1 ${collapsed ? "px-2" : "px-2"}`}>
         {/* Collapse toggle */}
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-[12px] text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-all ${collapsed ? "justify-center" : ""}`}
+          className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-[12px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all ${collapsed ? "justify-center" : ""}`}
           title={collapsed ? "Expand" : "Collapse"}
         >
           <span className={`transition-transform ${collapsed ? "rotate-180" : ""}`}><Icons.collapse /></span>
           {!collapsed && <span>Collapse</span>}
         </button>
 
-        {/* Light mode (placeholder) */}
-        <button
-          className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-[12px] text-zinc-500 hover:text-zinc-300 hover:bg-white/5 transition-all ${collapsed ? "justify-center" : ""}`}
-          title="Light mode"
-        >
-          <Icons.sun />
-          {!collapsed && <span>Light mode</span>}
-        </button>
+        {/* Light mode toggle */}
+        {mounted && (
+          <button
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-[12px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all ${collapsed ? "justify-center" : ""}`}
+            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          >
+            {theme === "dark" ? <Icons.sun /> : <Icons.moon />}
+            {!collapsed && <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>}
+          </button>
+        )}
 
         {/* Sign out */}
         <div className={collapsed ? "flex justify-center" : ""}>

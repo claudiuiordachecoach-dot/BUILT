@@ -757,7 +757,7 @@ export default function AnalyticsPage() {
               ))}
             </div>
           </div>
-          <div className="h-36">
+          <div className="h-36 overflow-visible relative">
             <LineChart data={viewsChartData.length > 0 ? viewsChartData : [{ val: 0 }]} mode={viewsMode} />
           </div>
           {viewsChartData.length > 0 && (
@@ -786,7 +786,7 @@ export default function AnalyticsPage() {
               ))}
             </div>
           </div>
-          <div className="h-36">
+          <div className="h-36 overflow-visible relative">
             <LineChart data={engChartData.length > 0 ? engChartData : [{ val: 0 }]} mode={engMode} />
           </div>
           {engChartData.length > 0 && (

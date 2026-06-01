@@ -1,29 +1,50 @@
 @import "tailwindcss";
 
 @theme inline {
-  /* BUILT Brand Colors — sursa: WEBSITE/BUILT - BRAND IDENTITY/dist/index.html */
-  --color-built-black: #0A0A0A;
-  --color-built-gray-1: #1A1A1A;
-  --color-built-gray-2: #2A2A2A;
-  --color-built-gray-text: #888888;
-  --color-built-white: #F5F5F5;
+  /* Dynamic Semantic Colors */
+  --color-background: var(--bg);
+  --color-foreground: var(--fg);
+  --color-card: var(--card);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-fg);
+  --color-border: var(--border);
+  
+  /* BUILT Brand Colors (Fixed) */
   --color-built-red: #C0392B;
   --color-built-red-dark: #8B1A1A;
 
-  /* Fonturi — variabile setate de next/font în layout.tsx */
+  /* Font Variables */
   --font-display: var(--font-bebas-neue);
   --font-condensed: var(--font-barlow-condensed);
   --font-sans: var(--font-barlow);
   --font-mono: var(--font-jetbrains-mono);
 }
 
-:root {
-  color-scheme: dark;
+@layer base {
+  :root, .dark {
+    --bg: #0A0A0A;
+    --fg: #F5F5F5;
+    --card: #111111;
+    --muted: #1A1A1A;
+    --muted-fg: #888888;
+    --border: rgba(255, 255, 255, 0.08);
+    color-scheme: dark;
+  }
+  
+  .light {
+    --bg: #F5F5F5;
+    --fg: #0A0A0A;
+    --card: #FFFFFF;
+    --muted: #E5E5E5;
+    --muted-fg: #555555;
+    --border: rgba(0, 0, 0, 0.08);
+    color-scheme: light;
+  }
 }
 
 html, body {
-  background: var(--color-built-black);
-  color: var(--color-built-white);
+  background: var(--color-background);
+  color: var(--color-foreground);
 }
 
 body {
@@ -46,10 +67,10 @@ body {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-built-black);
+  background: var(--color-background);
 }
 ::-webkit-scrollbar-thumb {
-  background: var(--color-built-gray-2);
+  background: var(--color-muted);
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
@@ -77,7 +98,7 @@ body {
 
 /* Command Center card style */
 .built-card {
-  border: 1px solid var(--color-built-gray-2);
+  border: 1px solid var(--color-border);
   border-radius: 0.5rem;
-  background: var(--color-built-gray-1);
+  background: var(--color-card);
 }
