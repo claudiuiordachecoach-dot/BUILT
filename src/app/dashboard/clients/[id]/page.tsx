@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getClient, getClientCheckins } from "@/app/clienti/actions";
 import { ClientDetail } from "@/app/clienti/[id]/ClientDetail";
+import { markClientMessagesRead } from "@/app/client/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -13,6 +14,7 @@ export default async function DashboardClientPage({ params }: { params: Promise<
   const [client, checkins] = await Promise.all([
     getClient(id),
     getClientCheckins(id),
+    markClientMessagesRead(id),
   ]);
 
   if (!client) notFound();

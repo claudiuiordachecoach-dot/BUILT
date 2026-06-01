@@ -257,6 +257,30 @@ export async function getAdminUnreadCount(): Promise<number> {
   return count ?? 0;
 }
 
+export async function getUnreadCountPerClient(): Promise<Record<number, number>> {
+  const db = getSupabaseServer();
+  const { data } = await db
+    .from("client_messages")
+    .select("client_id")
+    .eq("sender", "client")
+    .is("read_at", null);
+  const counts: Record<number, number> = {};
+  for (const row of data ?? []) {
+    counts[row.client_id] = (counts[row.client_id] ?? 0) + 1;
+  }
+  return counts;
+}
+
+export async function markClientMessagesRead(clientId: number) {
+  const db = getSupabaseServer();
+  await db
+    .from("client_messages")
+    .update({ read_at: new Date().toISOString() })
+    .eq("client_id", clientId)
+    .eq("sender", "client")
+    .is("read_at", null);
+}
+
 export async function getClientMessages(clientId: number) {
   const db = getSupabaseServer();
   const { data } = await db

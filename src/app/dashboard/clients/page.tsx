@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listClients } from "@/app/clienti/actions";
 import { NewClientForm } from "@/app/clienti/NewClientForm";
+import { getUnreadCountPerClient } from "@/app/client/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +19,10 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function ClientsDashboardPage() {
-  const clients = await listClients().catch(() => []);
+  const [clients, unreadPerClient] = await Promise.all([
+    listClients().catch(() => []),
+    getUnreadCountPerClient().catch(() => ({} as Record<number, number>)),
+  ]);
   const active = clients.filter((c) => c.status === "active");
   const atRisk = clients.filter((c) => c.status === "at_risk");
 
@@ -95,10 +99,17 @@ export default async function ClientsDashboardPage() {
               className="flex items-center justify-between p-4 bg-[#111111] border border-white/[0.08] hover:border-built-red/40 rounded-xl transition-colors"
             >
               <div>
-                <span className="text-[14px] font-medium text-zinc-200 mr-3">{c.name}</span>
-                {c.email && <span className="text-[12px] text-zinc-500">{c.email}</span>}
+                <div className="flex items-center gap-2 mb-0.5">
+                  <span className="text-[14px] font-medium text-zinc-200">{c.name}</span>
+                  {(unreadPerClient[c.id] ?? 0) > 0 && (
+                    <span className="bg-built-red text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none">
+                      {unreadPerClient[c.id]} mesaj{unreadPerClient[c.id] > 1 ? "e" : ""}
+                    </span>
+                  )}
+                  {c.email && <span className="text-[12px] text-zinc-500">{c.email}</span>}
+                </div>
                 {c.objectives && (
-                  <p className="text-[11px] text-zinc-600 mt-0.5 line-clamp-1">{c.objectives}</p>
+                  <p className="text-[11px] text-zinc-600 line-clamp-1">{c.objectives}</p>
                 )}
               </div>
               <div className="flex items-center gap-4">
