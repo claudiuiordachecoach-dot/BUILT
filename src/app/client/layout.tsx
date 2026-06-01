@@ -1,9 +1,15 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { ClientNav } from "@/components/ClientNav";
-import { getUserRole } from "@/lib/supabase/auth-server";
+import { getUserRole, getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { linkAuthToClient } from "./actions";
 
 export default async function ClientLayout({ children }: { children: React.ReactNode }) {
+  // Verifică sesiunea direct — nu depinde de middleware
+  const supabase = await getSupabaseAuth();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+
   const role = await getUserRole().catch(() => null);
   const isAdmin = role === "admin";
 
