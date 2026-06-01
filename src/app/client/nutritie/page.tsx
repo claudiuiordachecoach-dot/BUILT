@@ -18,7 +18,7 @@ export default function NutritiePage() {
 
   if (plan.quickref_url) {
     return (
-      <div className="w-full md:max-w-[520px] md:mx-auto" style={{ height: "calc(100vh - 60px)" }}>
+      <div style={{ height: "calc(100vh - 60px)", maxWidth: "520px", margin: "0 auto", width: "100%" }}>
         <iframe
           src={plan.quickref_url}
           className="w-full h-full border-0"
