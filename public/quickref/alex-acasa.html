@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BUILT — Protocoale Acasă · Alexandru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blk: #0A0A0A;
+  --drk: #141414;
+  --drk2: #1A1A1A;
+  --red: #C0392B;
+  --red-dim: rgba(192,57,43,0.12);
+  --wht: #F5F5F5;
+  --muted: #777;
+  --brd: #252525;
+  --card: #111111;
+  --orange: #E67E22;
+  --green: #27AE60;
+  --blue: #2980B9;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--blk);
+  color: var(--wht);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+/* HEADER */
+.hdr {
+  background: var(--drk);
+  border-bottom: 1px solid var(--brd);
+  padding: 16px 18px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.hdr-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 5px; color: var(--red); }
+.hdr-name { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+.budget-bar {
+  background: var(--red-dim);
+  border: 1px solid rgba(192,57,43,0.3);
+  border-radius: 4px;
+  padding: 6px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.budget-bar span { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--red); }
+.budget-bar strong { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--wht); }
+
+/* TABS */
+.tabs {
+  display: flex;
+  overflow-x: auto;
+  background: var(--drk2);
+  border-bottom: 1px solid var(--brd);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.tab.active {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+
+/* PANELS */
+.panel { display: none; padding: 18px; }
+.panel.active { display: block; }
+
+/* WORKOUT BLOCK */
+.phase-block {
+  background: var(--card);
+  border: 1px solid var(--brd);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.phase-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--brd);
+}
+.phase-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.phase-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.phase-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: var(--wht);
+  padding: 8px 14px 4px;
+}
+.ex-list { padding: 0 14px 12px; }
+.ex-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  flex-direction: column;
+}
+.ex-item:last-child { border-bottom: none; }
+.ex-top {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.ex-name {
+  font-size: 12px;
+  color: var(--wht);
+  font-weight: 500;
+  line-height: 1.4;
+  flex: 1;
+}
+.ex-cue {
+  font-size: 10px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 4px;
+  line-height: 1.4;
+}
+.ex-sets {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--red);
+  white-space: nowrap;
+  text-align: right;
+  line-height: 1.5;
+}
+
+/* TAGS + ALERTS */
+.tag {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+.tag-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(192,57,43,0.3); }
+.tag-orange { background: rgba(230,126,34,0.1); color: var(--orange); border: 1px solid rgba(230,126,34,0.3); }
+.tag-green { background: rgba(39,174,96,0.08); color: var(--green); border: 1px solid rgba(39,174,96,0.25); }
+.tag-blue { background: rgba(41,128,185,0.1); color: var(--blue); border: 1px solid rgba(41,128,185,0.3); }
+
+.alert-box {
+  border-left: 3px solid var(--red);
+  background: var(--red-dim);
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: #ccc;
+  line-height: 1.65;
+}
+.alert-box.orange {
+  border-color: var(--orange);
+  background: rgba(230,126,34,0.07);
+}
+.alert-box.green {
+  border-color: var(--green);
+  background: rgba(39,174,96,0.06);
+}
+.alert-box.blue {
+  border-color: var(--blue);
+  background: rgba(41,128,185,0.07);
+}
+.alert-ttl {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--red);
+  margin-bottom: 4px;
+}
+.alert-box.orange .alert-ttl { color: var(--orange); }
+.alert-box.green .alert-ttl { color: var(--green); }
+.alert-box.blue .alert-ttl { color: var(--blue); }
+
+/* RULE LIST */
+.rule-list { list-style: none; margin: 10px 0; }
+.rule-list li {
+  padding: 7px 0 7px 18px;
+  position: relative;
+  font-size: 12px;
+  color: #bbb;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  line-height: 1.55;
+}
+.rule-list li::before { content: '→'; position: absolute; left: 0; color: var(--red); }
+.rule-list li strong { color: var(--wht); }
+
+/* SECTION TITLE */
+.sec-ttl {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--red);
+  margin: 18px 0 10px;
+}
+.sec-ttl:first-child { margin-top: 0; }
+
+/* VIDEO BUTTON */
+.btn-vid {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--drk2);
+  border: 1px solid var(--brd);
+  color: var(--wht);
+  text-decoration: none;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin-top: 8px;
+  transition: border-color 0.2s;
+}
+.btn-vid:hover { border-color: var(--red); }
+.btn-vid span { color: var(--red); font-size: 12px; }
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT</div>
+    <div class="hdr-name">Acasă · Alexandru</div>
+  </div>
+  <div class="budget-bar">
+    <span>Timp Investit</span>
+    <strong>10-15 MIN</strong>
+    <span>Zero Echipament</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('info')">Info</div>
+  <div class="tab" onclick="showTab('c1')">C1: Tot Corpul</div>
+  <div class="tab" onclick="showTab('c2')">C2: Picioare</div>
+  <div class="tab" onclick="showTab('c3')">C3: Abdomen</div>
+  <div class="tab" onclick="showTab('c4')">C4: Brațe</div>
+  <div class="tab" onclick="showTab('c5')">C5: Birou</div>
+  <div class="tab" onclick="showTab('s1')">S1: Postură</div>
+  <div class="tab" onclick="showTab('s2')">S2: Șolduri</div>
+  <div class="tab" onclick="showTab('s3')">S3: Gât (Cervical)</div>
+  <div class="tab" onclick="showTab('s4')">S4: Lombar</div>
+  <div class="tab" onclick="showTab('s5')">S5: Flux</div>
+</div>
+
+<!-- ==================== TAB: INFO ==================== -->
+<div class="panel active" id="tab-info">
+  <div class="alert-box">
+    <div class="alert-ttl">Obiectivul Protocoalelor Acasă</div>
+    Sunt gândite pentru zilele în care lucrezi mult la birou și ai nevoie de o pauză activă pentru detensionare și un impuls de energie.<br><br>
+    <strong>Circuitele (C1-C5):</strong> Ajută la arderea caloriilor și menținerea tonusului muscular prin exerciții dinamice, scurte și eficiente (10-15 min).<br>
+    <strong>Stretching-ul (S1-S5):</strong> Ajută la relaxarea mușchilor rigizi de la statul prelungit pe scaun, cu accent special pe eliberarea tensiunii din zona lombară și cervicală.
+  </div>
+
+  <div class="alert-box blue">
+    <div class="alert-ttl">💡 Micro-Pauze la Birou (Lombar & Cervical)</div>
+    Nu trebuie mereu să te întinzi pe sol. Când simți că înțepenești la birou, fă aceste 2 mișcări direct de pe scaun (1 minut total):<br><br>
+    <strong>1. Pentru Gât (Chin Tucks):</strong> Trage bărbia în spate (făcând "gușă"), menține 3 secunde și relaxează. Repetă de 5 ori. Aliniază instant vertebrele cervicale.<br>
+    <strong>2. Pentru Lombar (Seated Cat-Cow):</strong> Pune palmele pe genunchi. Curbează spatele în spate privindu-ți buricul, apoi arcuiește pieptul în față privind spre tavan. Repetă de 5 ori. Hidratează discurile intervertebrale.
+  </div>
+
+  <div class="sec-ttl">Reguli de Bază</div>
+  <ul class="rule-list">
+    <li><strong>Alege 1 Circuit sau 1 Rutină de Stretching</strong> în funcție de cum te simți în ziua respectivă.</li>
+    <li><strong>Corectitudinea execuției este mai importantă decât viteza.</strong> Concentrează-te pe o mișcare curată.</li>
+    <li>La circuite, folosește un cronometru pe telefon (ex. 30 secunde lucru / 15 secunde pauză).</li>
+    <li>Dacă nu ești sigur cum se face un exercițiu, apasă pe butonul "▶ VIDEO" pentru a vedea demonstrația directă.</li>
+  </ul>
+</div>
+
+<!-- ==================== TAB: C1 ==================== -->
+<div class="panel" id="tab-c1">
+  <div class="tag tag-red">Format: 30 sec ON / 15 sec OFF · 4 Runde</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🔥 Circuit 1</div>
+      <div class="phase-time">12 Min</div>
+    </div>
+    <div class="phase-title">Tot Corpul (Metabolic)</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Jumping Jacks</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Ritm alert pentru a crește pulsul. Menține spatele drept și respiră constant.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+jumping+jacks+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. Bodyweight Squats</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Coboară până când coapsele sunt paralele cu solul. Ține tălpile lipite de podea și genunchii ușor spre exterior.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+bodyweight+squat+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Push-ups (clasice sau pe genunchi)</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Ține corpul ferm ca o scândură. Coatele merg ușor spre spate, nu pe aceeași linie cu umerii.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+push+ups+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Mountain Climbers</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Adu genunchii spre piept într-un ritm rapid, menținând spatele drept și umerii stabili.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+mountain+climbers+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: C2 ==================== -->
+<div class="panel" id="tab-c2">
+  <div class="tag tag-red">Format: 30 sec ON / 15 sec OFF · 4 Runde</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🔥 Circuit 2</div>
+      <div class="phase-time">12 Min</div>
+    </div>
+    <div class="phase-title">Picioare și Fesieri</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Alternating Lunges</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Fă un pas mare în față și coboară până când genunchiul din spate atinge ușor solul. Ține trunchiul drept.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+alternating+lunges+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. Glute Bridges</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Împinge în călcâie și ridică bazinul încordând fesierii în punctul de sus. Nu curba spatele.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+glute+bridges+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Jump Squats (sau genuflexiuni rapide)</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Sari ușor în sus la ridicare pentru explozivitate. Dacă te dor genunchii, fă genuflexiuni normale în ritm rapid.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+jump+squats+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Plank Jacks</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Din poziție de flotare, depărtează și apropie picioarele prin săritură, menținând trunchiul stabil.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+plank+jacks+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: C3 ==================== -->
+<div class="panel" id="tab-c3">
+  <div class="tag tag-red">Format: 40 sec ON / 20 sec OFF · 3 Runde</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🔥 Circuit 3</div>
+      <div class="phase-time">12 Min</div>
+    </div>
+    <div class="phase-title">Abdomen și Stabilitate</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Forearm Plank</div>
+          <div class="ex-sets">40 sec</div>
+        </div>
+        <div class="ex-cue">Menține corpul perfect drept. Încordează abdomenul și fesierii, fără să lași șoldurile să cadă spre sol.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+forearm+plank+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. Hollow Body Hold</div>
+          <div class="ex-sets">40 sec</div>
+        </div>
+        <div class="ex-cue">Stai pe spate, ridică ușor picioarele și umerii de la sol. Spatele inferior trebuie să rămână complet lipit de podea.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+hollow+body+hold+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Russian Twists</div>
+          <div class="ex-sets">40 sec</div>
+        </div>
+        <div class="ex-cue">Din șezut, cu trunchiul ușor lăsat pe spate, rotește umerii dintr-o parte în alta. Mișcarea se face din trunchi, nu doar din brațe.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+russian+twists+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Superman Hold</div>
+          <div class="ex-sets">40 sec</div>
+        </div>
+        <div class="ex-cue">Culcat pe burtă, ridică brațele și picioarele de la sol în același timp. Menține sus o secundă.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+superman+hold+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: C4 ==================== -->
+<div class="panel" id="tab-c4">
+  <div class="tag tag-red">Format: 30 sec ON / 15 sec OFF · 4 Runde</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🔥 Circuit 4</div>
+      <div class="phase-time">12 Min</div>
+    </div>
+    <div class="phase-title">Brațe, Umeri și Piept</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Pike Push-ups</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Cu bazinul ridicat sus în forma literei V, coboară creștetul capului spre sol. Solicită excelent umerii.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+pike+push+ups+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. Chair Dips</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Sprijină palmele pe marginea unui scaun și coboară bazinul spre sol, îndoind coatele spre spate.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+chair+dips+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Shoulder Taps</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Din poziție de flotare, atinge umărul opus cu mâna. Ține corpul ferm, fără să te balansezi stânga-dreapta.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+plank+shoulder+taps+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Inchworms</div>
+          <div class="ex-sets">30 sec</div>
+        </div>
+        <div class="ex-cue">Apleacă-te, pune palmele pe sol și mergi în față până ajungi în poziție de flotare, apoi mergi înapoi și te ridici.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+inchworms+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: C5 ==================== -->
+<div class="panel" id="tab-c5">
+  <div class="tag tag-red">Format: 20 sec ON / 10 sec OFF (Tabata) · 8 Runde (2 ture)</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🔥 Circuit 5</div>
+      <div class="phase-time">8 Min</div>
+    </div>
+    <div class="phase-title">Pauza de la Birou (Cardio Ușor)</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. High Knees</div>
+          <div class="ex-sets">20 sec</div>
+        </div>
+        <div class="ex-cue">Ridică genunchii cât mai sus spre piept, mișcându-te rapid pe vârfuri.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+high+knees+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. Burpees (fără săritură)</div>
+          <div class="ex-sets">20 sec</div>
+        </div>
+        <div class="ex-cue">Pune palmele pe sol, du picioarele în spate în poziție de flotare, adu-le înapoi și ridică-te în picioare.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+burpees+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Skaters</div>
+          <div class="ex-sets">20 sec</div>
+        </div>
+        <div class="ex-cue">Sari dintr-o parte în alta de pe un picior pe celălalt, amortizând mișcarea. Excelent pentru echilibru.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+skaters+exercise+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Butt Kicks</div>
+          <div class="ex-sets">20 sec</div>
+        </div>
+        <div class="ex-cue">Alergare ușoară aducând călcâiele spre fesieri. Ajută la întinderea coapselor rigide de la statul pe scaun.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+butt+kicks+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: S1 ==================== -->
+<div class="panel" id="tab-s1">
+  <div class="tag tag-green">Timp Sub Tensiune: Minim 60 sec / exercițiu</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🧘 Rutina 1</div>
+      <div class="phase-time">5 Min</div>
+    </div>
+    <div class="phase-title">Postură și Deschidere Piept</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Wall Angels</div>
+          <div class="ex-sets">15 rep</div>
+        </div>
+        <div class="ex-cue">Lipește spatele, capul și brațele de perete. Glisează brațele în sus și în jos pentru a deschide pieptul și umerii.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+wall+angels+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. Cat-Cow Stretch</div>
+          <div class="ex-sets">10 rep</div>
+        </div>
+        <div class="ex-cue">Din sprijin pe palme și genunchi, curbează coloana în sus spre tavan, apoi arcuiește-o blând în jos privindu-n față.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+cat+cow+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Doorway Pectoral Stretch</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Pune antebrațul pe tocul ușii și fă un pas ușor în față până simți o întindere plăcută în piept și umăr.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+doorway+pectoral+stretch+how+to" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Arm Circles</div>
+          <div class="ex-sets">20 rep</div>
+        </div>
+        <div class="ex-cue">Fă cercuri mari din umeri și brațe spre spate. Mișcarea elimină tensiunea acumulată din poziția aplecată peste tastatură.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+arm+circles+exercise+for+posture" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: S2 ==================== -->
+<div class="panel" id="tab-s2">
+  <div class="tag tag-green">Timp Sub Tensiune: Minim 60 sec / exercițiu</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🧘 Rutina 2</div>
+      <div class="phase-time">7 Min</div>
+    </div>
+    <div class="phase-title">Mobilitate Șolduri și Picioare</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Kneeling Hip Flexor Stretch</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Fă un pas în față stând pe un genunchi. Împinge bazinul ușor înainte menținând trunchiul drept, până simți întinderea în coapsa din spate.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+kneeling+hip+flexor+stretch+correct+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. 90/90 Stretch</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Stai pe sol cu ambele picioare îndoite la 90 de grade. Apleacă-te ușor peste piciorul din față pentru a debloca articulația șoldului.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+90+90+stretch+how+to" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Pigeon Pose</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Adu un picior îndoit sub piept și întinde celălalt picior în spate. Coboară trunchiul pentru o relaxare profundă a fesierilor.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+pigeon+pose+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Butterfly Stretch</div>
+          <div class="ex-sets">60 sec</div>
+        </div>
+        <div class="ex-cue">Din șezut, lipește tălpile între ele și trage-le spre bazin. Lasă genunchii să coboare relaxat spre sol.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+butterfly+stretch+how+to" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: S3 ==================== -->
+<div class="panel" id="tab-s3">
+  <div class="tag tag-blue">Focus Special: Aliniere Cervicală & Eliberare Trapez</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🧘 Rutina 3</div>
+      <div class="phase-time">6 Min</div>
+    </div>
+    <div class="phase-title">Gât și Umeri (Cervical)</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Chin Tucks (din stând sau pe scaun)</div>
+          <div class="ex-sets">15 rep</div>
+        </div>
+        <div class="ex-cue">Privind înainte, trage bărbia și capul direct în spate (fără să apleci capul), creând o "gușă". Menține 3 secunde. Corectează postura de la ecran.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+chin+tucks+exercise+for+neck+pain" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. Upper Trapezius Stretch</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Du o mână la spate, iar cu cealaltă mână trage foarte blând capul spre umăr. Oprește-te când simți o întindere plăcută pe partea opusă.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+upper+trapezius+stretch+how+to" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Levator Scapulae Stretch</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Rotește capul la 45 de grade și privește în jos spre subraț. Pune mâna pe ceafă și trage blând în jos. Eliberează mușchiul care arde cel mai tare la birou.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+levator+scapulae+stretch+neck+pain" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Thread the Needle</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Din sprijin pe palme și genunchi, strecoară un braț pe sub corp până când umărul și capul se odihnesc pe podea. Deblochează umerii și baza gâtului.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+thread+the+needle+stretch+how+to" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">5. Shoulder Rolls (Backward)</div>
+          <div class="ex-sets">20 rep</div>
+        </div>
+        <div class="ex-cue">Ridică umerii spre urechi, trage-i spre spate și coboară-i lent. Repetă mișcarea pentru a elibera tensiunea acumulată.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+shoulder+rolls+exercise" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: S4 ==================== -->
+<div class="panel" id="tab-s4">
+  <div class="tag tag-blue">Focus Special: Decompresie & Relaxare Lombară Profundă</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🧘 Rutina 4</div>
+      <div class="phase-time">7 Min</div>
+    </div>
+    <div class="phase-title">Relaxare Zona Lombară</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Cat-Cow Decompression (pe sol sau scaun)</div>
+          <div class="ex-sets">12 rep</div>
+        </div>
+        <div class="ex-cue">Mișcare blândă de flexie și extensie a coloanei. Sincronizează cu respirația pentru a lubrifia și decomprima vertebrele lombare.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+cat+cow+stretch+for+lower+back+pain" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. Lying Knee to Chest</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Întins pe spate, trage un genunchi (sau ambii) spre piept cu ajutorul brațelor. Întinde și relaxează mușchii tensionați din zona lombară.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+lying+knee+to+chest+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Supine Spinal Twist</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Întins pe spate, adu un genunchi peste corp spre podea, privind în direcția opusă. Deblochează tensiunea acumulată la baza coloanei.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+supine+spinal+twist+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Child's Pose (cu respirație abdominală)</div>
+          <div class="ex-sets">90 sec</div>
+        </div>
+        <div class="ex-cue">Așază-te cu bazinul pe călcâie și întinde brațele în față. Respiră profund în abdomen pentru a extinde și relaxa complet spatele inferior.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+childs+pose+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">5. Psoas Stretch (Kneeling Lunge)</div>
+          <div class="ex-sets">60s/parte</div>
+        </div>
+        <div class="ex-cue">Din fandare pe genunchi, rotește bazinul sub tine și strânge fesierul. Psoasul scurtat de la scaun trage de lombar; întinderea lui elimină durerea de mijloc.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+psoas+stretch+for+lower+back+relief" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB: S5 ==================== -->
+<div class="panel" id="tab-s5">
+  <div class="tag tag-green">Timp Sub Tensiune: Dinamic & Static</div>
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🧘 Rutina 5</div>
+      <div class="phase-time">6 Min</div>
+    </div>
+    <div class="phase-title">Flux de Mobilitate Completă</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">1. Downward Dog to Cobra</div>
+          <div class="ex-sets">10 rep</div>
+        </div>
+        <div class="ex-cue">Treci lent din poziția de V întors (împingând bazinul sus și întinzând spatele) în poziția de Cobra (bazinul jos și pieptul ridicat).</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+downward+dog+to+cobra+transition" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">2. World's Greatest Stretch</div>
+          <div class="ex-sets">5/parte</div>
+        </div>
+        <div class="ex-cue">Fă o fandare lungă, pune palma pe sol lângă piciorul din față și rotește celălalt braț și trunchiul spre tavan.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+worlds+greatest+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">3. Deep Squat Hold</div>
+          <div class="ex-sets">60-90s</div>
+        </div>
+        <div class="ex-cue">Coboară într-o genuflexiune cât mai adâncă, cu tălpile pe sol. Împinge ușor genunchii spre exterior cu coatele și menține spatele drept.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+deep+squat+hold+mobility" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+      <div class="ex-item">
+        <div class="ex-top">
+          <div class="ex-name">4. Standing Forward Fold</div>
+          <div class="ex-sets">60 sec</div>
+        </div>
+        <div class="ex-cue">Din stând în picioare, apleacă trunchiul relaxat spre sol, lăsând capul și brațele să atârne greu pentru a decontracta coloana și picioarele.</div>
+        <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+standing+forward+fold+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+}
+</script>
+
+</body>
+</html>

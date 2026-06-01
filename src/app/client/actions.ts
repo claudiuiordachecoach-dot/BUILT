@@ -121,7 +121,7 @@ const QUICKREF_NUTRITIE: Record<number, string> = {
 };
 
 const QUICKREF_ANTRENAMENT: Record<number, string> = {
-  1: "https://quickref-alexandru.netlify.app/",
+  1: "/quickref/alex-antrenament.html",
   2: "/quickref/letitia-antrenament.html",
 };
 
