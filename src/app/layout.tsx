@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Barlow_Condensed, Barlow, JetBrains_Mono } from "next/font/google";
 import { Sidebar } from "@/components/Sidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -37,11 +38,14 @@ export const metadata: Metadata = {
   description: "Sistemul AI personal al lui Iordache Claudiu pentru BUILT.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const supabase = await getSupabaseAuth();
+  const { data: { user } } = await supabase.auth.getUser();
+
   return (
     <html
       lang="ro"
@@ -50,7 +54,7 @@ export default function RootLayout({
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <div className="flex min-h-screen">
-            <Sidebar />
+            {user && <Sidebar />}
             <main className="flex-1 min-w-0">{children}</main>
           </div>
         </ThemeProvider>
