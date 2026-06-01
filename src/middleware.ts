@@ -20,7 +20,6 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
   const { pathname } = request.nextUrl;
 
   // Rute publice — trec liber
@@ -28,23 +27,30 @@ export async function middleware(request: NextRequest) {
     return response;
   }
 
-  // Neautentificat → login
-  if (!user) {
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    // Neautentificat → login
+    if (!user) {
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    // Determină rolul
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
+
+    const role = profile?.role ?? "client";
+
+    // Client încearcă să acceseze admin → redirecționează la portalul lui
+    if (role === "client" && !pathname.startsWith("/client")) {
+      return NextResponse.redirect(new URL("/client/dashboard", request.url));
+    }
+  } catch {
+    // Orice eroare → redirect la login (fail-safe)
     return NextResponse.redirect(new URL("/login", request.url));
-  }
-
-  // Determină rolul
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  const role = profile?.role ?? "client";
-
-  // Client încearcă să acceseze admin → redirecționează la portalul lui
-  if (role === "client" && !pathname.startsWith("/client")) {
-    return NextResponse.redirect(new URL("/client/dashboard", request.url));
   }
 
   return response;
