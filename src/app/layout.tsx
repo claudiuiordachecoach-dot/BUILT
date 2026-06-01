@@ -3,6 +3,8 @@ import { Bebas_Neue, Barlow_Condensed, Barlow, JetBrains_Mono } from "next/font/
 import { Sidebar } from "@/components/Sidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
+import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -43,8 +45,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = (await headers()).get("x-pathname") ?? "";
   const supabase = await getSupabaseAuth();
   const { data: { user } } = await supabase.auth.getUser();
+
+  // Blochează orice pagină în afară de /login dacă nu ești logat
+  if (!user && pathname !== "/login") redirect("/login");
 
   return (
     <html
