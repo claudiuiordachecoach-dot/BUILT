@@ -341,6 +341,8 @@ export default function CalendarPage() {
                           onClick={(e) => {
                             e.stopPropagation();
                             setSelectedPost(post);
+                            setExpandedPanel(false);
+                            setRecommendations([]);
                           }}
                           className="mb-1.5 cursor-pointer group"
                         >
@@ -353,10 +355,15 @@ export default function CalendarPage() {
                                 className="w-full h-16 object-cover group-hover:opacity-80 transition-opacity"
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                              {/* Recommendations badge */}
+                              <span className="absolute top-1 right-1 bg-orange-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full leading-none">
+                                ✦ recs
+                              </span>
                             </div>
                           ) : (
-                            <div className="w-full h-14 bg-[#1a1a1a] rounded-sm flex items-center justify-center">
+                            <div className="w-full h-14 bg-[#1a1a1a] rounded-sm flex items-center justify-center relative">
                               <span className="text-zinc-600 text-[10px]">Reel</span>
+                              <span className="absolute top-1 right-1 bg-orange-500 text-white text-[8px] font-bold px-1.5 py-0.5 rounded-full leading-none">✦</span>
                             </div>
                           )}
                           {post.views && (

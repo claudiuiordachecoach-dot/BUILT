@@ -5,12 +5,14 @@ import { useSearchParams } from "next/navigation";
 import { sendChatMessage, type ChatMessage } from "./actions";
 
 const QUICK_QUESTIONS = [
-  "Why don't my reels keep getting views?",
-  "What should I post this week?",
-  "How do I write a hook?",
-  "How do I grow faster on Instagram?",
-  "What's the best content formula for my niche?",
-  "How do I reply to this objection?",
+  "De ce reels-urile mele nu primesc views?",
+  "Ce ar trebui să postez săptămâna asta?",
+  "Cum scriu un hook care oprește scrollul?",
+  "Cum cresc mai rapid pe Instagram?",
+  "Care e cel mai bun format de conținut pentru nișa mea?",
+  "Cum convertesc followerii în clienți?",
+  "Analizează cele mai bune reels-uri ale mele și spune-mi ce pattern funcționează.",
+  "Generează 3 idei de reels pe baza datelor mele reale.",
 ];
 
 function AskAIContent() {

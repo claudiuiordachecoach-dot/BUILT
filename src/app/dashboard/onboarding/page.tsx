@@ -185,12 +185,19 @@ export default function OnboardingPage() {
       {/* Header — William Scott style */}
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-zinc-100 mb-1">Onboarding Hub</h1>
-        <div className="flex items-center justify-between gap-4">
-          <p className="text-[13px] text-zinc-500">
-            The more you put in, the better your AI gets. Come back and update whenever something changes.
-          </p>
-          <span className="text-[12px] text-zinc-500 whitespace-nowrap shrink-0">
-            {filledCount} forms completed | {progressPct}%
+        <p className="text-[13px] text-zinc-500 mb-3">
+          The more you put in, the better your AI gets. Come back and update whenever something changes.
+        </p>
+        {/* Progress bar */}
+        <div className="flex items-center gap-3">
+          <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-built-red rounded-full transition-all duration-500"
+              style={{ width: `${progressPct}%` }}
+            />
+          </div>
+          <span className="text-[12px] text-zinc-500 whitespace-nowrap shrink-0 font-mono">
+            {filledCount} fields completed — <strong className="text-zinc-300">{progressPct}%</strong>
           </span>
         </div>
       </div>

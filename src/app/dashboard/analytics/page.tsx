@@ -11,6 +11,7 @@ import {
   classifyExistingReels,
   type ContentLibraryAnalysis,
 } from "./actions";
+import { loadOnboarding } from "@/app/dashboard/onboarding/actions";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -401,6 +402,7 @@ export default function AnalyticsPage() {
   const [mediaLoaded, setMediaLoaded] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
+  const [aboutText, setAboutText] = useState<string | null>(null);
 
   // Followers — din DB, actualizat la fiecare sync
   const [followers, setFollowers] = useState<string>("—");
@@ -421,6 +423,13 @@ export default function AnalyticsPage() {
   // ── Data loading ───────────────────────────────────────────────────────────
   useEffect(() => {
     getTipOfWeek().then(setTip).catch(() => null);
+    loadOnboarding().then(data => {
+      const niche = (data as Record<string, string>).niche;
+      const tp = (data as Record<string, string>).transformation_promise;
+      const name = (data as Record<string, string>).full_name;
+      if (niche || tp) setAboutText([niche, tp].filter(Boolean).join(" · "));
+      else if (name) setAboutText(`${name} — Hybrid Athlete · Metoda BUILT`);
+    }).catch(() => null);
     listInstagramMedia(200)
       .then((d) => { setLiveMedia(d as MediaItem[]); setMediaLoaded(true); })
       .catch(() => setMediaLoaded(true));
@@ -593,9 +602,11 @@ export default function AnalyticsPage() {
             {reelCards.length} total posts · Instagram
           </p>
           <p className="text-[13px] text-zinc-400 leading-relaxed max-w-lg">
-            Claudiu este un <strong className="text-zinc-200">Hybrid Athlete</strong> cu{" "}
-            <strong className="text-zinc-200">7+ ani experiență</strong>.<br />
-            Metoda BUILT — Arhitectura Corpului pe 90 de zile.
+            {aboutText ?? (
+              <>Claudiu este un <strong className="text-zinc-200">Hybrid Athlete</strong> cu{" "}
+              <strong className="text-zinc-200">7+ ani experiență</strong>.<br />
+              Metoda BUILT — Arhitectura Corpului pe 90 de zile.</>
+            )}
           </p>
 
           {/* Sync + Classify buttons */}
