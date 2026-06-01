@@ -4,7 +4,7 @@ import { getWorkoutPlan } from "../actions";
 
 const DAYS = ["Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă", "Duminică"];
 type Exercise = { name: string; sets: number; reps: string; note?: string };
-type WorkoutPlan = { days: Record<string, Exercise[]>; notes?: string; week_start?: string };
+type WorkoutPlan = { days: Record<string, Exercise[]>; notes?: string; week_start?: string; quickref_url?: string };
 
 export default function AntrenamantePage() {
   const [plan, setPlan] = useState<WorkoutPlan | null>(null);
@@ -18,6 +18,17 @@ export default function AntrenamantePage() {
       <p className="text-zinc-500 text-sm">Planul tău nu a fost creat încă. Claudiu îl va pregăti în curând.</p>
     </div>
   );
+
+  if (plan.quickref_url) {
+    return (
+      <iframe
+        src={plan.quickref_url}
+        className="w-full border-0"
+        style={{ height: "calc(100vh - 60px)" }}
+        title="Plan Antrenament"
+      />
+    );
+  }
 
   const todayExercises: Exercise[] = plan.days?.[activeDay] ?? [];
 

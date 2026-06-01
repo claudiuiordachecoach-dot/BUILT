@@ -102,6 +102,7 @@ export async function getModuleContent(moduleId: number) {
 export async function getWorkoutPlan() {
   const clientId = await getClientId();
   if (!clientId) return null;
+  if (QUICKREF_ANTRENAMENT[clientId]) return { quickref_url: QUICKREF_ANTRENAMENT[clientId] };
   const db = getSupabaseServer();
   const { data } = await db
     .from("workout_plans")
@@ -113,9 +114,18 @@ export async function getWorkoutPlan() {
   return data;
 }
 
+const QUICKREF_NUTRITIE: Record<number, string> = {
+  2: "/quickref/letitia-nutritie.html",
+};
+
+const QUICKREF_ANTRENAMENT: Record<number, string> = {
+  2: "/quickref/letitia-antrenament.html",
+};
+
 export async function getNutritionPlan() {
   const clientId = await getClientId();
   if (!clientId) return null;
+  if (QUICKREF_NUTRITIE[clientId]) return { quickref_url: QUICKREF_NUTRITIE[clientId] };
   const db = getSupabaseServer();
   const { data } = await db
     .from("nutrition_plans")

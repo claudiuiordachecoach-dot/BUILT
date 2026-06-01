@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { getNutritionPlan } from "../actions";
 
 type Meal = { name: string; foods: string[]; calories?: number; protein_g?: number };
-type NutritionPlan = { calories: number; protein_g: number; carbs_g: number; fat_g: number; meals: Meal[]; notes?: string };
+type NutritionPlan = { calories: number; protein_g: number; carbs_g: number; fat_g: number; meals: Meal[]; notes?: string; quickref_url?: string };
 
 export default function NutritiePage() {
   const [plan, setPlan] = useState<NutritionPlan | null>(null);
@@ -15,6 +15,17 @@ export default function NutritiePage() {
       <p className="text-zinc-500 text-sm">Planul tău nutrițional va fi pregătit de Claudiu în curând.</p>
     </div>
   );
+
+  if (plan.quickref_url) {
+    return (
+      <iframe
+        src={plan.quickref_url}
+        className="w-full border-0"
+        style={{ height: "calc(100vh - 60px)" }}
+        title="Plan Nutrițional"
+      />
+    );
+  }
 
   return (
     <div className="p-8 max-w-3xl">

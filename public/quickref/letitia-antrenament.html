@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Gym Log · Letitia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--rdim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;padding-bottom:130px;}
+
+/* HEADER */
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:12px 16px 10px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;}
+.logo span{color:var(--red);}
+.hdr-right{text-align:right;}
+.hdr-name{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.hdr-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-top:2px;}
+.prog-wrap{margin-bottom:2px;}
+.prog-bar{height:3px;background:var(--brd);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--red);border-radius:2px;transition:width 1.2s ease;width:0%;}
+.prog-meta{display:flex;justify-content:space-between;margin-top:3px;}
+.prog-meta span{font-size:9px;color:var(--muted);letter-spacing:1px;}
+
+/* TABS */
+.tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:11px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-weight:700;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+/* PANELS */
+.panel{display:none;padding:16px;}
+.panel.active{display:block;}
+
+/* ALERT BOX */
+.alert{border-left:3px solid var(--red);background:var(--rdim);padding:11px 13px;margin-bottom:14px;font-size:12px;color:#ccc;line-height:1.6;border-radius:0 4px 4px 0;}
+.alert.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
+.alert.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
+.alert.blue{border-color:var(--blue);background:rgba(41,128,185,0.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--red);margin-bottom:3px;}
+.alert.green .alert-ttl{color:var(--green);}
+.alert.orange .alert-ttl{color:var(--orange);}
+.alert.blue .alert-ttl{color:var(--blue);}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+.pill{font-size:9px;padding:4px 10px;border-radius:3px;background:var(--card);border:1px solid var(--brd);color:#aaa;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.pill.red{background:var(--rdim);border-color:rgba(192,57,43,.3);color:var(--red);}
+.pill.blue{background:rgba(41,128,185,.1);border-color:rgba(41,128,185,.3);color:var(--blue);}
+
+/* EXERCISE BLOCK */
+.ex-block{background:var(--card);border:1px solid var(--brd);border-radius:6px;margin-bottom:10px;overflow:hidden;}
+.ex-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 13px;cursor:pointer;user-select:none;}
+.ex-hdr:hover{background:rgba(255,255,255,.02);}
+.ex-left{flex:1;padding-right:8px;}
+.ex-num{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.ex-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.5px;color:var(--wht);line-height:1.2;}
+.ex-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+.tag-red{background:var(--rdim);color:var(--red);border:1px solid rgba(192,57,43,.3);}
+.tag-orange{background:rgba(230,126,34,.1);color:var(--orange);border:1px solid rgba(230,126,34,.3);}
+.tag-green{background:rgba(39,174,96,.08);color:var(--green);border:1px solid rgba(39,174,96,.25);}
+.tag-blue{background:rgba(41,128,185,.1);color:var(--blue);border:1px solid rgba(41,128,185,.3);}
+.ex-icon{font-size:11px;color:var(--muted);transition:transform .25s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--drk2);border:1px solid var(--brd);border-radius:3px;flex-shrink:0;}
+.ex-block.open .ex-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.ex-body{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1);}
+.ex-block.open .ex-body{max-height:800px;}
+.ex-cue{padding:0 13px 10px;font-size:12px;color:#aaa;line-height:1.6;border-bottom:1px solid var(--brd);}
+.ex-cue.warn{color:var(--orange);}
+.ex-cue.good{color:var(--green);}
+
+/* SET TRACKER */
+.sets-wrap{padding:8px 10px 10px;}
+.set-labels{display:flex;padding:0 36px 4px 44px;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.set-labels div{flex:1;text-align:center;}
+.set-row{display:flex;align-items:center;gap:5px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.set-row:last-child{border-bottom:none;}
+.set-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);width:38px;flex-shrink:0;}
+.set-tgt{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:48px;text-align:center;flex-shrink:0;}
+.set-inp{background:var(--blk);border:1px solid var(--brd);color:var(--wht);font-family:'DM Mono',monospace;font-size:14px;text-align:center;flex:1;padding:5px 2px;border-radius:3px;min-width:0;}
+.set-inp:focus{outline:none;border-color:var(--red);}
+.set-chk{width:30px;height:30px;flex-shrink:0;border-radius:3px;border:1px solid var(--brd);background:var(--drk);display:flex;justify-content:center;align-items:center;cursor:pointer;transition:all .15s;}
+.set-chk.done{background:var(--green);border-color:var(--green);}
+.set-chk.done::after{content:'✓';color:#fff;font-weight:700;font-size:14px;}
+.rest-btn{width:100%;background:var(--drk2);border:1px solid var(--brd);color:var(--muted);padding:8px;font-size:10px;letter-spacing:1px;font-weight:700;text-transform:uppercase;cursor:pointer;border-radius:3px;margin-top:8px;transition:all .15s;}
+.rest-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* CONDITIONING BLOCK */
+.cond-block{border:1px solid var(--orange);border-radius:6px;background:rgba(230,126,34,.04);padding:14px;margin-top:14px;}
+.cond-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.cond-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:3px;}
+.cond-equip{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--wht);}
+.cond-setup{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;}
+.cond-rounds{display:flex;gap:7px;justify-content:center;margin-bottom:10px;}
+.rdot{height:8px;flex:1;border-radius:4px;background:var(--brd);transition:all .3s;}
+.rdot.done{background:var(--green);}
+.rdot.active.work{background:var(--orange);}
+.rdot.active.rest{background:var(--blue);}
+.cond-state{text-align:center;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;min-height:16px;transition:color .3s;}
+.cond-cd{font-family:'Bebas Neue',sans-serif;font-size:58px;text-align:center;letter-spacing:2px;color:var(--wht);line-height:1;margin-bottom:14px;transition:color .3s;}
+.cond-ctrls{display:flex;gap:8px;}
+.cond-btn{flex:1;padding:11px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .15s;border:1px solid;}
+.cond-start{background:rgba(230,126,34,.15);border-color:var(--orange);color:var(--orange);}
+.cond-start:hover{background:rgba(230,126,34,.25);}
+.cond-reset{background:var(--drk2);border-color:var(--brd);color:var(--muted);}
+.cond-reset:hover{border-color:var(--red);color:var(--red);}
+
+/* McGILL */
+.mcg-card{background:var(--drk);border:1px solid rgba(39,174,96,.35);border-radius:6px;padding:14px;margin-bottom:12px;}
+.mcg-ttl{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--wht);letter-spacing:1px;margin-bottom:2px;}
+.mcg-sets{font-family:'DM Mono',monospace;font-size:12px;color:var(--orange);margin-bottom:10px;}
+.mcg-steps{list-style:none;}
+.mcg-steps li{font-size:12px;color:#ccc;padding:5px 0 5px 16px;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.5;position:relative;}
+.mcg-steps li::before{content:'→';position:absolute;left:0;color:var(--green);font-size:11px;}
+.mcg-steps li:last-child{border-bottom:none;}
+.mcg-timer-btn{width:100%;background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.3);color:var(--green);padding:10px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;margin-top:10px;}
+
+/* REGULI */
+.rule-card{background:var(--drk);border:1px solid var(--brd);border-radius:6px;padding:14px;margin-bottom:12px;}
+.rule-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--wht);letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.rule-body{font-size:12px;color:#ccc;line-height:1.7;}
+.rule-body strong{color:var(--orange);}
+.rule-body .ok{color:var(--green);}
+
+/* SUMMARY MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-ov.open{opacity:1;pointer-events:auto;}
+.modal-box{background:var(--card);border:1px solid var(--red);border-radius:8px;padding:24px;width:90%;max-width:400px;text-align:center;transform:translateY(20px);transition:transform .3s;}
+.modal-ov.open .modal-box{transform:translateY(0);}
+.modal-ttl{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--wht);letter-spacing:2px;margin-bottom:20px;}
+.modal-ttl span{color:var(--red);}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.sum-box{background:var(--blk);border:1px solid var(--brd);border-radius:4px;padding:16px 10px;}
+.sum-val{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--red);line-height:1;margin-bottom:4px;}
+.sum-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.modal-desc{font-size:13px;color:#aaa;margin-bottom:18px;line-height:1.6;}
+.modal-btn{width:100%;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);padding:12px;font-weight:700;letter-spacing:1px;font-size:12px;border-radius:4px;cursor:pointer;text-transform:uppercase;margin-bottom:8px;transition:all .2s;}
+.modal-btn.green-btn{background:rgba(39,174,96,.15);border-color:rgba(39,174,96,.4);color:var(--green);margin-bottom:12px;}
+.modal-btn.cancel{background:transparent;border-color:var(--brd);color:var(--muted);margin-bottom:0;}
+
+/* TIMER BAR */
+.timer-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,13,.97);backdrop-filter:blur(12px);border-top:1px solid var(--brd);padding:11px 16px;display:flex;justify-content:space-between;align-items:center;z-index:1000;max-width:480px;margin:0 auto;}
+.t-info{display:flex;flex-direction:column;gap:2px;}
+.t-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.t-val{font-family:'DM Mono',monospace;font-size:26px;color:var(--wht);line-height:1;font-weight:600;}
+.t-val.active{color:var(--blue);}
+.t-val.done{color:var(--green);}
+.t-ctrls{display:flex;gap:8px;align-items:center;}
+.t-btn{background:var(--card);border:1px solid var(--brd);color:var(--wht);font-size:10px;font-weight:700;padding:9px 14px;border-radius:3px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+.t-btn.red{color:var(--red);}
+.fin-btn{font-size:10px;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);padding:9px 12px;border-radius:3px;cursor:pointer;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT<span>GYM</span></div>
+    <div class="hdr-right">
+      <div class="hdr-name">Letitia · Gym Log</div>
+      <div class="hdr-day" id="hdr-day">Zi — din 90</div>
+    </div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-meta">
+      <span id="prog-phase">FAZA 1: Fundație</span>
+      <span id="prog-pct">0% complet</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('a')">ZIUA A</div>
+  <div class="tab" onclick="showTab('b')">ZIUA B</div>
+  <div class="tab" onclick="showTab('c')">ZIUA C</div>
+  <div class="tab" onclick="showTab('mcgill')">McGILL</div>
+  <div class="tab" onclick="showTab('reguli')">REGULI</div>
+</div>
+
+<!-- SUMMARY MODAL -->
+<div id="modal" class="modal-ov">
+  <div class="modal-box">
+    <div class="modal-ttl">RAPORT <span>SĂPTĂMÂNAL</span></div>
+    <div class="sum-grid">
+      <div class="sum-box"><div class="sum-val" id="sum-sets">0</div><div class="sum-lbl">Serii Finalizate</div></div>
+      <div class="sum-box"><div class="sum-val" id="sum-vol">0</div><div class="sum-lbl">Volum Total (kg)</div></div>
+    </div>
+    <div class="modal-desc">Descarcă istoricul înainte să resetezi pentru o săptămână nouă.</div>
+    <button class="modal-btn green-btn" onclick="exportCSV()">📥 Descarcă Istoric (CSV)</button>
+    <button class="modal-btn" onclick="confirmReset()">Resetează pentru Săptămâna Nouă</button>
+    <button class="modal-btn cancel" onclick="closeModal()">Înapoi</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ ZIUA A ═══════════════════════════ -->
+<div class="panel active" id="tab-a">
+
+  <div class="alert">
+    <div class="alert-ttl">FESIERI + ISCHIOGAMBIERI</div>
+    Prioritate lanțul posterior. McGill Big 3 <strong>obligatoriu</strong> înainte (tab McGill).
+  </div>
+  <div class="pills">
+    <span class="pill red">Compuse: 2 min pauză</span>
+    <span class="pill">Izolare: 60–90 sec</span>
+  </div>
+
+  <!-- 1. HIP THRUST -->
+  <div class="ex-block open" id="ex-a1">
+    <div class="ex-hdr" onclick="toggleEx('ex-a1')">
+      <div class="ex-left">
+        <div class="ex-num">01 · PRIORITATE ABSOLUTĂ</div>
+        <div class="ex-ttl">Hip Thrust cu Bara</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">2 min pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue good">Contreras: activarea fesierilor 2–3× față de squat. Acesta e exercițiul tău principal.</div>
+      <div class="ex-cue">Sprijină spatele pe bancă la nivelul omoplaților. Așază bara pe bazin cu un burete de protecție. Împinge vertical în sus prin călcâie și strânge puternic fesierii la final timp de o secundă.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a1s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a1s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a1s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a1s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(120)">Start Pauză 2:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. BULGARIAN SPLIT SQUAT -->
+  <div class="ex-block" id="ex-a2">
+    <div class="ex-hdr" onclick="toggleEx('ex-a2')">
+      <div class="ex-left">
+        <div class="ex-num">02</div>
+        <div class="ex-ttl">Bulgarian Split Squat</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 10/parte</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Ține o pereche de gantere, cu piciorul din spate sprijinit pe bancă. Apleacă trunchiul foarte puțin în față pentru a activa fesierul la maximum. Coboară lent, numărând 2 secunde.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a2s1"><div class="set-num">S1</div><div class="set-tgt">10/pt</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a2s2"><div class="set-num">S2</div><div class="set-tgt">10/pt</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a2s3"><div class="set-num">S3</div><div class="set-tgt">10/pt</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. RDL -->
+  <div class="ex-block" id="ex-a3">
+    <div class="ex-hdr" onclick="toggleEx('ex-a3')">
+      <div class="ex-left">
+        <div class="ex-num">03</div>
+        <div class="ex-ttl">RDL cu Gantere</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue warn">⚠ Coloana DREAPTĂ pe tot parcursul mișcării — fără să îți curbezi deloc spatele.</div>
+      <div class="ex-cue">Flexia din șold (hip hinge): Împinge bazinul mult în spate, menținând spatele perfect drept. Ține ganterele lipite de picioare și coboară doar până când simți o întindere fermă în partea din spate a coapselor.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a3s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a3s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a3s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a3s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LEG CURL -->
+  <div class="ex-block" id="ex-a4">
+    <div class="ex-hdr" onclick="toggleEx('ex-a4')">
+      <div class="ex-left">
+        <div class="ex-num">04</div>
+        <div class="ex-ttl">Leg Curl (Aparat)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12–15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Coboară greutatea controlat (2 secunde), trage rapid. Ține bazinul bine fixat pe aparat tot timpul.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a4s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a4s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a4s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ABDUCTOR -->
+  <div class="ex-block" id="ex-a5">
+    <div class="ex-hdr" onclick="toggleEx('ex-a5')">
+      <div class="ex-left">
+        <div class="ex-num">05 · ZONA ȚINTĂ</div>
+        <div class="ex-ttl">Abductor (Aparat)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15–20</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue good">Acest aparat lucrează direct zona laterală („aripioarele”). Nu te grăbi deloc. Controlează mișcarea perfect, atât la deschidere, cât și la închidere.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a5s1"><div class="set-num">S1</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a5s2"><div class="set-num">S2</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a5s3"><div class="set-num">S3</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONDITIONING ZIUA A -->
+  <div class="cond-block" data-work="30" data-rest="30" data-rounds="4">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">Conditioning · Ziua A</div>
+        <div class="cond-equip">Assault Bike</div>
+      </div>
+      <div class="cond-setup">4 runde<br>30″ max / 30″ rest<br>Zero impact spinal</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">00:30</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+
+  <div class="alert green" style="margin-top:14px;">
+    <div class="alert-ttl">După antrenament</div>
+    Cat-Cow 2×10 + Child's Pose 60 sec. Decompresie lombară — obligatorie.
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════ ZIUA B ═══════════════════════════ -->
+<div class="panel" id="tab-b">
+
+  <div class="alert">
+    <div class="alert-ttl">UPPER BODY · BACK-FOCUSED</div>
+    Spate + umeri + brațe. McGill Big 3 <strong>obligatoriu</strong> înainte (tab McGill).
+  </div>
+  <div class="pills">
+    <span class="pill red">Tracțiuni/Rows: 90 sec</span>
+    <span class="pill">Izolare: 60 sec</span>
+  </div>
+
+  <!-- 1. LAT PULLDOWN -->
+  <div class="ex-block open" id="ex-b1">
+    <div class="ex-hdr" onclick="toggleEx('ex-b1')">
+      <div class="ex-left">
+        <div class="ex-num">01 · PRIORITATE SPATE</div>
+        <div class="ex-ttl">Lat Pulldown / Assisted Pull-Up</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Prinde bara mai lat decât umerii. Ține pieptul sus și trage bara spre claviculă folosind mușchii spatelui (nu forța din brațe). Revino sus controlat în 2 secunde.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b1s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b1s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b1s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b1s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. CHEST-SUPPORTED ROW -->
+  <div class="ex-block" id="ex-b2">
+    <div class="ex-hdr" onclick="toggleEx('ex-b2')">
+      <div class="ex-left">
+        <div class="ex-num">02 · CRITIC SCOLIOZĂ</div>
+        <div class="ex-ttl">Chest-Supported Row</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue warn">⭐ Faptul că stai cu pieptul pe bancă îți protejează 100% zona lombară — de aceea am exclus complet varianta de ramat din picioare (bent-over row).</div>
+      <div class="ex-cue">Ține pieptul bine lipit de banca înclinată. Trage ganterele spre abdomen, păstrând coatele pe lângă corp. Strânge omoplații la finalul mișcării.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b2s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b2s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b2s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b2s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. SHOULDER PRESS -->
+  <div class="ex-block" id="ex-b3">
+    <div class="ex-hdr" onclick="toggleEx('ex-b3')">
+      <div class="ex-left">
+        <div class="ex-num">03</div>
+        <div class="ex-ttl">DB Shoulder Press (Bilateral)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Fiind un exercițiu simetric, este perfect sigur pentru scolioză. Pornește cu coatele îndoite la 90 de grade. Împinge vertical, fără să forțezi umerii spre spate. Păstrează spatele lipit de spătar.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b3s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b3s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b3s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CABLE PRESS -->
+  <div class="ex-block" id="ex-b4">
+    <div class="ex-hdr" onclick="toggleEx('ex-b4')">
+      <div class="ex-left">
+        <div class="ex-num">04</div>
+        <div class="ex-ttl">Cable Chest Press / Push-Up</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Poți face împins la cablu sau flotări clasice. Coboară lent (2 secunde), împinge rapid. Menține abdomenul încordat pe tot parcursul mișcării.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b4s1"><div class="set-num">S1</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b4s2"><div class="set-num">S2</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b4s3"><div class="set-num">S3</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. FACE PULLS + ARMS -->
+  <div class="ex-block" id="ex-b5">
+    <div class="ex-hdr" onclick="toggleEx('ex-b5')">
+      <div class="ex-left">
+        <div class="ex-num">05 · POSTURĂ</div>
+        <div class="ex-ttl">Face Pulls (Cablu)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue good">Lucrează spatele umerilor — zona esențială pentru a repara postura aplecată de la lucrul pe laptop. Trage cablul spre nivelul ochilor și ține coatele sus.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b5s1"><div class="set-num">S1</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b5s2"><div class="set-num">S2</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b5s3"><div class="set-num">S3</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. BICEP + TRICEP -->
+  <div class="ex-block" id="ex-b6">
+    <div class="ex-hdr" onclick="toggleEx('ex-b6')">
+      <div class="ex-left">
+        <div class="ex-num">06 · FINISHER</div>
+        <div class="ex-ttl">Bicep Curl + Tricep Pushdown</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">2 × 12–15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Superserie dinamică: flexii urmate imediat de extensii, fără nicio pauză între ele. Alege o greutate medie pe care o poți controla perfect.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b6s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b6s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONDITIONING ZIUA B -->
+  <div class="cond-block" data-work="45" data-rest="30" data-rounds="4">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">Conditioning · Ziua B</div>
+        <div class="cond-equip">Aparat de Vâslit (Rowing)</div>
+      </div>
+      <div class="cond-setup">4 runde<br>45″ / 30″ rest<br>Lucrează tot corpul, zero impact pe articulații</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">00:45</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+
+  <div class="alert green" style="margin-top:14px;">
+    <div class="alert-ttl">După antrenament</div>
+    Cat-Cow 2×10 + Child's Pose 60 sec. Dead Hang 2×20 sec (decompresie).
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════ ZIUA C ═══════════════════════════ -->
+<div class="panel" id="tab-c">
+
+  <div class="alert">
+    <div class="alert-ttl">CVADRICEPS + ADDUCTORI</div>
+    Inner thigh ziua de azi. McGill Big 3 <strong>obligatoriu</strong> înainte (tab McGill).
+  </div>
+  <div class="pills">
+    <span class="pill red">Compuse: 2 min pauză</span>
+    <span class="pill">Izolare: 60–90 sec</span>
+  </div>
+
+  <!-- 1. LEG PRESS -->
+  <div class="ex-block open" id="ex-c1">
+    <div class="ex-hdr" onclick="toggleEx('ex-c1')">
+      <div class="ex-left">
+        <div class="ex-num">01 · ALTERNATIVA SQUAT</div>
+        <div class="ex-ttl">Leg Press</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">2 min pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue good">Este varianta mult mai sigură pentru coloană față de genuflexiunile clasice cu bara. Păstrează spatele mereu lipit de spătar.</div>
+      <div class="ex-cue">Tălpile depărtate la nivelul umerilor, cu vârfurile orientate puțin spre exterior. Coboară până când genunchii formează un unghi de 90 de grade. Sus, la final, nu bloca genunchii.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c1s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c1s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c1s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c1s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(120)">Start Pauză 2:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. GOBLET SQUAT -->
+  <div class="ex-block" id="ex-c2">
+    <div class="ex-hdr" onclick="toggleEx('ex-c2')">
+      <div class="ex-left">
+        <div class="ex-num">02</div>
+        <div class="ex-ttl">Goblet Squat</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Ține o ganteră la nivelul pieptului. Picioarele puțin mai depărtate decât umerii, vârfurile spre exterior. Ține spatele drept. Coboară foarte lent (2 secunde).</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c2s1"><div class="set-num">S1</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c2s2"><div class="set-num">S2</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c2s3"><div class="set-num">S3</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. WALKING LUNGES -->
+  <div class="ex-block" id="ex-c3">
+    <div class="ex-hdr" onclick="toggleEx('ex-c3')">
+      <div class="ex-left">
+        <div class="ex-num">03</div>
+        <div class="ex-ttl">Walking Lunges (Gantere)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12/parte</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Fă un pas mare în față, ducând genunchiul din spate foarte aproape de podea. Rămâi o secundă în poziția de jos. Trunchiul rămâne perfect drept.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c3s1"><div class="set-num">S1</div><div class="set-tgt">12/pt</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c3s2"><div class="set-num">S2</div><div class="set-tgt">12/pt</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c3s3"><div class="set-num">S3</div><div class="set-tgt">12/pt</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. LEG EXTENSION -->
+  <div class="ex-block" id="ex-c4">
+    <div class="ex-hdr" onclick="toggleEx('ex-c4')">
+      <div class="ex-left">
+        <div class="ex-num">04</div>
+        <div class="ex-ttl">Leg Extension</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue">Izolează precis partea din față a coapselor. Întinde piciorul complet, blochează o secundă sus, apoi coboară lent. Nu te folosi de inerție pentru a arunca greutatea.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c4s1"><div class="set-num">S1</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c4s2"><div class="set-num">S2</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c4s3"><div class="set-num">S3</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. ADDUCTOR -->
+  <div class="ex-block" id="ex-c5">
+    <div class="ex-hdr" onclick="toggleEx('ex-c5')">
+      <div class="ex-left">
+        <div class="ex-num">05 · ZONA ȚINTĂ</div>
+        <div class="ex-ttl">Adductor (Aparat)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 15–20</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue good">Lucrează direct partea interioară a coapsei. Apropie picioarele complet cu o mișcare fermă, apoi revino foarte lent pe parcursul a 2 secunde.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c5s1"><div class="set-num">S1</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c5s2"><div class="set-num">S2</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c5s3"><div class="set-num">S3</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c5s4"><div class="set-num">S4</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONDITIONING ZIUA C -->
+  <div class="cond-block" data-work="45" data-rest="30" data-rounds="4">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">Conditioning · Ziua C</div>
+        <div class="cond-equip">Ski Erg</div>
+      </div>
+      <div class="cond-setup">4 runde<br>45″ / 30″ rest<br>Partea superioară, zero impact</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">00:45</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+
+  <div class="alert green" style="margin-top:14px;">
+    <div class="alert-ttl">După antrenament</div>
+    Cat-Cow 2×10 + Child's Pose 60 sec.
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════ McGILL ═══════════════════════════ -->
+<div class="panel" id="tab-mcgill">
+
+  <div class="alert green">
+    <div class="alert-ttl">McGILL BIG 3 — WARMUP OBLIGATORIU</div>
+    Faci asta <strong>înainte de FIECARE sesiune</strong>. Nu e opțional. Protocolul terapeutic pentru scolioză (McGill, 2015).
+  </div>
+
+  <!-- BIRD DOG -->
+  <div class="mcg-card">
+    <div class="mcg-ttl">1. Bird-Dog</div>
+    <div class="mcg-sets">3 serii × 8 repetări / parte · Tempo lent</div>
+    <ul class="mcg-steps">
+      <li>Stai în patru labe: palmele așezate fix sub umeri, genunchii fix sub șold.</li>
+      <li>Păstrează spatele complet drept — fără să-l curbezi sau să-l cocoșezi.</li>
+      <li>Întinde în același timp brațul drept în față și piciorul stâng în spate.</li>
+      <li>Menține poziția ferm 2 secunde. Revino controlat la sol și schimbă partea.</li>
+      <li>Dacă simți că bazinul se dezechilibrează într-o parte, nu mai ridica brațul și piciorul la fel de sus.</li>
+    </ul>
+    <button class="rest-btn" onclick="startRest(45)">Start Pauză 45 sec</button>
+  </div>
+
+  <!-- MODIFIED CURL-UP -->
+  <div class="mcg-card">
+    <div class="mcg-ttl">2. Modified Curl-Up</div>
+    <div class="mcg-sets">3 serii × 10 repetări · Tempo lent</div>
+    <ul class="mcg-steps">
+      <li>Stai întinsă pe spate, cu o talpă pe podea (genunchiul îndoit) și celălalt picior perfect întins.</li>
+      <li>Pune ambele mâini sub curbura zonei lombare (nu sub ceafă).</li>
+      <li>Ridică doar capul și umerii câțiva centimetri de pe sol — nu te ridica de tot în șezut.</li>
+      <li>Nu îți forța bărbia în piept, privește fix spre tavan. Stai sus 2 secunde.</li>
+      <li>Revino lent. Trebuie să simți în permanență o presiune ușoară pe mâinile de sub spate.</li>
+    </ul>
+    <button class="rest-btn" onclick="startRest(45)">Start Pauză 45 sec</button>
+  </div>
+
+  <!-- SIDE PLANK -->
+  <div class="mcg-card">
+    <div class="mcg-ttl">3. Side Plank</div>
+    <div class="mcg-sets">3 serii × 20–30 sec / parte · Stabilizare laterală</div>
+    <ul class="mcg-steps">
+      <li>Sprijină-te pe un antebraț, corpul trebuie să formeze o linie dreaptă perfectă de la cap la picioare.</li>
+      <li>Ține bazinul ridicat sus — nu-l lăsa să cadă spre podea sub nicio formă.</li>
+      <li>Respiră natural și constant, nu îți bloca respirația pe durata efortului.</li>
+      <li>Terapeutic pentru scolioză (stabilizare laterală activă).</li>
+    </ul>
+    <button class="mcg-timer-btn" onclick="startRest(25)">Start Hold 25 sec</button>
+  </div>
+
+  <div class="alert blue" style="margin-top:4px;">
+    <div class="alert-ttl">EXERCIȚII ELIMINATE — MOTIVUL</div>
+    <strong>Barbell Squat</strong> — compresie axială directă pe coloană<br>
+    <strong>Deadlift convențional cu bara</strong> — flexie lombară sub sarcină<br>
+    <strong>Bent-Over Row</strong> — compensare lombară inevitabilă<br>
+    <strong>Good Mornings</strong> — forțare flexie lombară sub sarcină
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════ REGULI ═══════════════════════════ -->
+<div class="panel" id="tab-reguli">
+
+  <div class="rule-card" style="border-color:var(--red);">
+    <div class="rule-ttl">Progresia</div>
+    <div class="rule-body">
+      <strong>Double Progression:</strong> Lucrezi la RPE 8 (1–2 repetări în rezervă).<br><br>
+      Când scoți <strong>repetările maxime</strong> dintr-o serie cu formă perfectă → data viitoare crești cu <strong>1–2.5 kg</strong>.<br><br>
+      <strong>Forma dictează greutatea.</strong> Nu invers.<br><br>
+      La conditioning (Bike/Ski/Row): obiectivul rămâne același (30″ sau 45″). Progresia = execuți mai <strong>exploziv</strong>.
+    </div>
+  </div>
+
+  <div class="rule-card" style="border-color:var(--orange);">
+    <div class="rule-ttl">Protocolul 30 min</div>
+    <div class="rule-body">
+      Call prelungit → ajungi la sală la 20:00? <strong>30 min e suficient.</strong><br><br>
+      Varianta scurtă Ziua A: <span class="ok">Hip Thrust 3×10 + RDL 3×10 + Abductor 2×15 + 8 min Bike</span><br><br>
+      Un antrenament parțial bate oricând zero antrenamente.
+    </div>
+  </div>
+
+  <div class="rule-card" style="border-color:var(--green);">
+    <div class="rule-ttl">8.000 Pași Zilnic</div>
+    <div class="rule-body">
+      Cel mai eficient cardio invizibil. Nu simte ca sport, arde ca sport.<br><br>
+      <span class="ok">→ Hrănit pisici = 10–15 min mers = ~1000–1500 pași. Contează.</span><br>
+      → Calls de muncă: te plimbi prin casă.<br>
+      → Seara 10 min mers după cină = scade cortizolul + oprește pofta de dulce.
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-ttl">Scolioza — Reguli Non-Negociabile</div>
+    <div class="rule-body">
+      <strong>Nu rotești coloana sub sarcină.</strong><br>
+      <strong>Nu faci flexie laterală sub sarcină.</strong><br>
+      <strong>Nu sacrifici forma pentru greutate.</strong><br><br>
+      Dacă simți disconfort lombar acut → oprești exercițiul imediat. Nu „tragi" prin durere.
+    </div>
+  </div>
+
+  <div style="padding-bottom:8px;">
+    <button onclick="showModal()" class="fin-btn" style="width:100%;padding:14px;font-size:12px;border:none;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);border-radius:4px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;">
+      FINALIZEAZĂ SĂPTĂMÂNA / RAPORT
+    </button>
+  </div>
+
+</div>
+
+<!-- TIMER BAR -->
+<div class="timer-bar">
+  <div class="t-info">
+    <div class="t-lbl">TIMP RĂMAS PAUZĂ</div>
+    <div class="t-val" id="t-val">00:00</div>
+  </div>
+  <div class="t-ctrls">
+    <button class="t-btn red" onclick="stopRest()">STOP</button>
+  </div>
+</div>
+
+<script>
+/* ─── TABS ─── */
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ─── ACCORDION ─── */
+function toggleEx(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ─── REST TIMER ─── */
+let restTimer = null, restEnd = 0;
+const tVal = document.getElementById('t-val');
+
+function startRest(sec) {
+  if (restTimer) clearInterval(restTimer);
+  restEnd = Date.now() + sec * 1000;
+  tVal.className = 't-val active';
+  tickRest();
+  restTimer = setInterval(tickRest, 1000);
+}
+
+function tickRest() {
+  const left = Math.round((restEnd - Date.now()) / 1000);
+  if (left <= 0) {
+    clearInterval(restTimer);
+    tVal.textContent = '00:00';
+    tVal.className = 't-val done';
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    return;
+  }
+  const m = Math.floor(left / 60), s = left % 60;
+  tVal.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+}
+
+function stopRest() {
+  if (restTimer) clearInterval(restTimer);
+  tVal.textContent = '00:00';
+  tVal.className = 't-val';
+}
+
+/* ─── INTERVAL TIMER (CONDITIONING) ─── */
+let ivTimer = null, ivBlock = null;
+let ivPhase = 'idle', ivRound = 0, ivRemaining = 0;
+let ivWorkSec = 30, ivRestSec = 30, ivTotalRounds = 4;
+
+function startCond(block) {
+  if (ivTimer) clearInterval(ivTimer);
+  ivBlock = block;
+  ivWorkSec = parseInt(block.dataset.work);
+  ivRestSec = parseInt(block.dataset.rest);
+  ivTotalRounds = parseInt(block.dataset.rounds);
+  ivRound = 0;
+  ivPhase = 'work';
+  ivRemaining = ivWorkSec;
+  updateCondUI();
+  ivTimer = setInterval(tickCond, 1000);
+}
+
+function tickCond() {
+  ivRemaining--;
+  if (ivRemaining <= 0) {
+    if (ivPhase === 'work') {
+      ivPhase = 'rest';
+      ivRemaining = ivRestSec;
+      if (navigator.vibrate) navigator.vibrate(300);
+    } else {
+      ivRound++;
+      if (ivRound >= ivTotalRounds) {
+        ivPhase = 'done';
+        clearInterval(ivTimer);
+        ivTimer = null;
+        if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+      } else {
+        ivPhase = 'work';
+        ivRemaining = ivWorkSec;
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      }
+    }
+  }
+  updateCondUI();
+}
+
+function updateCondUI() {
+  if (!ivBlock) return;
+  const stateEl = ivBlock.querySelector('.cond-state');
+  const cdEl = ivBlock.querySelector('.cond-cd');
+  const dots = ivBlock.querySelectorAll('.rdot');
+
+  if (ivPhase === 'done') {
+    stateEl.textContent = '✓ COMPLET';
+    stateEl.style.color = 'var(--green)';
+    cdEl.textContent = '00:00';
+    cdEl.style.color = 'var(--green)';
+    dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
+    return;
+  }
+
+  if (ivPhase === 'work') {
+    stateEl.textContent = 'LUCRU';
+    stateEl.style.color = 'var(--orange)';
+    cdEl.style.color = 'var(--orange)';
+  } else {
+    stateEl.textContent = 'PAUZĂ';
+    stateEl.style.color = 'var(--blue)';
+    cdEl.style.color = 'var(--blue)';
+  }
+
+  const m = Math.floor(ivRemaining / 60), s = ivRemaining % 60;
+  cdEl.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+
+  dots.forEach((d, i) => {
+    d.classList.remove('active', 'done', 'work', 'rest');
+    if (i < ivRound) d.classList.add('done');
+    else if (i === ivRound) { d.classList.add('active'); d.classList.add(ivPhase); }
+  });
+}
+
+function resetCond(block) {
+  if (ivTimer && ivBlock === block) { clearInterval(ivTimer); ivTimer = null; ivBlock = null; }
+  const workSec = parseInt(block.dataset.work);
+  const stateEl = block.querySelector('.cond-state');
+  const cdEl = block.querySelector('.cond-cd');
+  const m = Math.floor(workSec / 60), s = workSec % 60;
+  stateEl.textContent = 'GATA SĂ ÎNCEPI';
+  stateEl.style.color = '';
+  cdEl.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+  cdEl.style.color = '';
+  block.querySelectorAll('.rdot').forEach(d => d.classList.remove('active', 'done', 'work', 'rest'));
+}
+
+/* ─── 90-DAY PROGRESS ─── */
+(function() {
+  const day1 = new Date(2026, 5, 1);
+  const today = new Date();
+  const elapsed = Math.max(0, Math.floor((today - day1) / (1000*60*60*24)));
+  const dayNum = Math.min(elapsed + 1, 90);
+  const pct = Math.min(100, Math.round((elapsed / 89) * 100));
+
+  document.getElementById('hdr-day').textContent = 'Zi ' + dayNum + ' din 90';
+  document.getElementById('prog-pct').textContent = pct + '% complet';
+
+  setTimeout(() => {
+    document.getElementById('prog-fill').style.width = pct + '%';
+  }, 300);
+
+  const phase = elapsed < 30 ? 'FAZA 1: Fundație' : elapsed < 60 ? 'FAZA 2: Progresie' : 'FAZA 3: Vârf';
+  document.getElementById('prog-phase').textContent = phase;
+})();
+
+/* ─── LOCALSTORAGE ─── */
+const LS_KEY = 'built_letitia_gym';
+
+function loadData() {
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
+
+  document.querySelectorAll('.set-row').forEach(row => {
+    const id = row.dataset.id;
+    if (!id || !data[id]) return;
+    const kg = row.querySelector('.set-inp.kg');
+    const rep = row.querySelector('.set-inp.rep');
+    const chk = row.querySelector('.set-chk');
+    if (kg && data[id].kg !== undefined) kg.value = data[id].kg;
+    if (rep && data[id].rep !== undefined) rep.value = data[id].rep;
+    if (data[id].done) chk.classList.add('done');
+    if (kg) kg.addEventListener('change', () => saveRow(row));
+    if (rep) rep.addEventListener('change', () => saveRow(row));
+  });
+}
+
+function saveRow(row) {
+  const id = row.dataset.id;
+  if (!id) return;
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
+  const kg = row.querySelector('.set-inp.kg');
+  const rep = row.querySelector('.set-inp.rep');
+  const chk = row.querySelector('.set-chk');
+  data[id] = { kg: kg ? kg.value : '', rep: rep ? rep.value : '', done: chk.classList.contains('done') };
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
+
+function toggleSet(btn) {
+  btn.classList.toggle('done');
+  const row = btn.closest('.set-row');
+  if (row) saveRow(row);
+}
+
+/* ─── MODAL / SUMMARY ─── */
+function showModal() {
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
+  let sets = 0, vol = 0;
+  Object.values(data).forEach(s => {
+    if (s.done) {
+      sets++;
+      const kg = parseFloat(s.kg), rep = parseInt(s.rep, 10);
+      if (!isNaN(kg) && !isNaN(rep)) vol += kg * rep;
+    }
+  });
+  document.getElementById('sum-sets').textContent = sets;
+  document.getElementById('sum-vol').textContent = new Intl.NumberFormat('de-DE').format(Math.round(vol));
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function confirmReset() { localStorage.removeItem(LS_KEY); location.reload(); }
+
+function exportCSV() {
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
+  let lines = ['ID,Greutate(kg),Reps,Finalizat'];
+  for (const [id, s] of Object.entries(data)) lines.push(`${id},${s.kg||0},${s.rep||0},${s.done?'DA':'NU'}`);
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'BUILT_Letitia_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+
+document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>
