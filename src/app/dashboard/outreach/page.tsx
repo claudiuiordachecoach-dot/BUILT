@@ -31,12 +31,12 @@ interface SavedTemplate {
 }
 
 const STAGES = [
-  { label: "Initial contact", value: "initial_contact" },
+  { label: "Contact inițial", value: "initial_contact" },
   { label: "Follow up", value: "follow_up" },
-  { label: "Booking a call", value: "booking_call" },
-  { label: "Objection", value: "objection" },
+  { label: "Rezervare apel", value: "booking_call" },
+  { label: "Obiecție", value: "objection" },
   { label: "Closing", value: "closing" },
-  { label: "Price call", value: "price_call" },
+  { label: "Apel preț", value: "price_call" },
 ];
 
 type Tab = "daily" | "templates" | "generator";
@@ -85,10 +85,10 @@ export default function OutreachPage() {
   const responseRate = dmsSent > 0 ? Math.round((responses / dmsSent) * 100) : 0;
 
   const KPI_STATS = [
-    { label: "DMS SENT (7D)", value: dmsSent },
-    { label: "RESPONSES (7D)", value: responses },
-    { label: "QUALIFIED LEADS (7D)", value: qualified },
-    { label: "RESPONSE RATE", value: `${responseRate}%` },
+    { label: "DM-URI TRIMISE (7Z)", value: dmsSent },
+    { label: "RĂSPUNSURI (7Z)", value: responses },
+    { label: "LEADURI CALIFICATE (7Z)", value: qualified },
+    { label: "RATĂ RĂSPUNS", value: `${responseRate}%` },
   ];
 
   const TAB_STYLE = (t: Tab) =>
@@ -114,7 +114,7 @@ export default function OutreachPage() {
 
   const handleSaveAsTemplate = async () => {
     if (!generatedReply.trim()) return;
-    const name = window.prompt("Template name:");
+    const name = window.prompt("Numele template-ului:");
     if (!name?.trim()) return;
     await saveDmTemplate(name.trim(), generatedReply);
     const stageLabel = STAGES.find((s) => s.value === stage)?.label ?? stage;
@@ -169,7 +169,7 @@ export default function OutreachPage() {
           Outreach
         </h1>
         <p className="text-zinc-500 text-sm">
-          Log your daily DMs, generate replies, and save your best templates.
+          Loghează DM-urile zilnice, generează răspunsuri și salvează-ți cele mai bune template-uri.
         </p>
       </div>
 
@@ -193,13 +193,13 @@ export default function OutreachPage() {
       {/* Tabs */}
       <div className="flex gap-1 mb-6">
         <button className={TAB_STYLE("daily")} onClick={() => setActiveTab("daily")}>
-          Daily Log
+          Jurnal Zilnic
         </button>
         <button className={TAB_STYLE("templates")} onClick={() => setActiveTab("templates")}>
-          Templates
+          Template-uri
         </button>
         <button className={TAB_STYLE("generator")} onClick={() => setActiveTab("generator")}>
-          AI Reply Generator
+          Generator Răspuns AI
         </button>
       </div>
 
@@ -211,7 +211,7 @@ export default function OutreachPage() {
               onClick={() => setShowLogForm(true)}
               className="bg-built-red text-white text-[13px] font-medium px-4 py-2.5 rounded-lg hover:bg-built-red/90 transition-colors"
             >
-              + Log Today&apos;s Outreach
+              + Loghează DM-ul de Azi
             </button>
           </div>
 
@@ -231,7 +231,7 @@ export default function OutreachPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1.5">
-                    Stage
+                    Etapă
                   </label>
                   <select
                     value={logForm.stage}
@@ -245,7 +245,7 @@ export default function OutreachPage() {
                 </div>
                 <div>
                   <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1.5">
-                    Outcome
+                    Rezultat
                   </label>
                   <select
                     value={logForm.outcome}
@@ -254,20 +254,20 @@ export default function OutreachPage() {
                     }
                     className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-2.5 rounded-lg focus:outline-none"
                   >
-                    <option value="positive">Positive</option>
-                    <option value="neutral">Neutral</option>
-                    <option value="negative">Negative</option>
+                    <option value="positive">Pozitiv</option>
+                    <option value="neutral">Neutru</option>
+                    <option value="negative">Negativ</option>
                   </select>
                 </div>
               </div>
               <div>
                 <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1.5">
-                  Notes
+                  Note
                 </label>
                 <input
                   value={logForm.notes}
                   onChange={(e) => setLogForm((f) => ({ ...f, notes: e.target.value }))}
-                  placeholder="What happened in the conversation..."
+                  placeholder="Ce s-a întâmplat în conversație..."
                   className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-2.5 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600"
                 />
               </div>
@@ -277,13 +277,13 @@ export default function OutreachPage() {
                   disabled={!logForm.prospect.trim()}
                   className="bg-built-red text-white text-[13px] font-medium px-4 py-2 rounded-lg hover:bg-built-red/90 disabled:opacity-40 transition-colors"
                 >
-                  Save Entry
+                  Salvează
                 </button>
                 <button
                   onClick={() => setShowLogForm(false)}
                   className="text-zinc-500 text-[13px] px-4 py-2 rounded-lg hover:text-zinc-200 transition-colors"
                 >
-                  Cancel
+                  Anulează
                 </button>
               </div>
             </div>
@@ -292,7 +292,7 @@ export default function OutreachPage() {
           {dailyLog.length === 0 ? (
             <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-12 text-center">
               <p className="text-zinc-500 text-[13px]">
-                No outreach logged yet — Log your daily DM activity to track response rates and qualified leads over time.
+                Niciun DM logat încă — Loghează activitatea zilnică de DM-uri pentru a urmări ratele de răspuns și leadurile calificate.
               </p>
             </div>
           ) : (
@@ -362,11 +362,11 @@ export default function OutreachPage() {
             </p>
 
             <div>
-              <label className="text-[11px] text-zinc-400 block mb-2">Their Message</label>
+              <label className="text-[11px] text-zinc-400 block mb-2">Mesajul lor</label>
               <textarea
                 value={theirMessage}
                 onChange={(e) => setTheirMessage(e.target.value)}
-                placeholder="Paste the message you received in DM..."
+                placeholder="Lipește mesajul primit în DM..."
                 rows={5}
                 className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-3 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600 resize-none"
               />
@@ -374,7 +374,7 @@ export default function OutreachPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-[11px] text-zinc-400 block mb-2">Conversation Stage</label>
+                <label className="text-[11px] text-zinc-400 block mb-2">Etapa conversației</label>
                 <select
                   value={stage}
                   onChange={(e) => setStage(e.target.value)}
@@ -386,11 +386,11 @@ export default function OutreachPage() {
                 </select>
               </div>
               <div>
-                <label className="text-[11px] text-zinc-400 block mb-2">Extra Context (optional)</label>
+                <label className="text-[11px] text-zinc-400 block mb-2">Context extra (opțional)</label>
                 <input
                   value={context}
                   onChange={(e) => setContext(e.target.value)}
-                  placeholder="e.g. they commented on cortisol reel"
+                  placeholder="ex. a comentat pe reel-ul despre cortizol"
                   className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-2.5 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600"
                 />
               </div>
@@ -401,14 +401,14 @@ export default function OutreachPage() {
               disabled={generating || !theirMessage.trim()}
               className="w-full bg-built-red text-white py-3 rounded-lg text-[13px] font-medium hover:bg-built-red/90 transition-colors disabled:opacity-40"
             >
-              {generating ? "Generating..." : "✦ Generate Reply"}
+              {generating ? "Generează..." : "✦ Generează Răspuns"}
             </button>
           </div>
 
           {generatedReply && (
             <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5 space-y-3">
               <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">
-                GENERATED REPLY
+                RĂSPUNS GENERAT
               </p>
               <p className="text-zinc-200 text-[13px] leading-relaxed whitespace-pre-line">
                 {generatedReply}
@@ -418,13 +418,13 @@ export default function OutreachPage() {
                   onClick={handleCopyReply}
                   className="text-[12px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
                 >
-                  {copiedReply ? "Copied!" : "Copy"}
+                  {copiedReply ? "Copiat!" : "Copiază"}
                 </button>
                 <button
                   onClick={handleSaveAsTemplate}
                   className="text-[12px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
                 >
-                  Save as Template
+                  Salvează ca Template
                 </button>
               </div>
             </div>
@@ -438,7 +438,7 @@ export default function OutreachPage() {
           {templates.length === 0 ? (
             <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-12 text-center">
               <p className="text-zinc-500 text-[13px]">
-                No templates saved yet — generate a reply and save it as a template.
+                Niciun template salvat încă — generează un răspuns și salvează-l ca template.
               </p>
             </div>
           ) : (
@@ -461,7 +461,7 @@ export default function OutreachPage() {
                     onClick={() => handleCopyTemplate(t)}
                     className="text-[12px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
                   >
-                    {copiedTemplateId === t.id ? "Copied!" : "Copy"}
+                    {copiedTemplateId === t.id ? "Copiat!" : "Copiază"}
                   </button>
                 </div>
               ))}

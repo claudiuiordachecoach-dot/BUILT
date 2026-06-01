@@ -112,7 +112,7 @@ function AnalysisPanel({
           onClick={onClose}
           className="ml-auto text-[11px] text-zinc-500 border border-white/10 px-3 py-1 rounded-lg hover:bg-white/5 transition-colors"
         >
-          × Close
+          × Închide
         </button>
       </div>
 
@@ -120,7 +120,7 @@ function AnalysisPanel({
       <div className="grid grid-cols-2 gap-4">
         <div>
           <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
-            <span>Performance Score</span>
+            <span>Scor Performanță</span>
             <span className="font-mono">{data.score}</span>
           </div>
           <div className="h-1.5 bg-white/5 rounded-full">
@@ -129,7 +129,7 @@ function AnalysisPanel({
         </div>
         <div>
           <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
-            <span>Hook Quality</span>
+            <span>Calitate Hook</span>
             <span className="font-mono">{data.hook_score}</span>
           </div>
           <div className="h-1.5 bg-white/5 rounded-full">
@@ -141,11 +141,11 @@ function AnalysisPanel({
       {/* 3-col breakdown */}
       <div className="grid grid-cols-3 gap-6 text-[12px]">
         <div>
-          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Why It Performed</p>
+          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">De Ce a Performat</p>
           <p className="text-zinc-300 leading-relaxed">{data.performance_summary}</p>
         </div>
         <div>
-          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">What Worked</p>
+          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Ce a Funcționat</p>
           <ul className="space-y-1.5">
             {data.what_worked.slice(0, 3).map((item, i) => (
               <li key={i} className="text-zinc-300 flex gap-1.5">
@@ -156,7 +156,7 @@ function AnalysisPanel({
           </ul>
         </div>
         <div>
-          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Audience Fit</p>
+          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Potrivire Audiență</p>
           <p className="text-zinc-300 leading-relaxed">{data.audience_fit}</p>
         </div>
       </div>
@@ -164,7 +164,7 @@ function AnalysisPanel({
       {/* Suggested hook */}
       <div className="bg-[#111111] border border-white/10 rounded-xl p-4">
         <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">
-          Suggested Hook for BUILT Audience
+          Hook Sugerat pentru Audiența BUILT
         </p>
         <p className="text-zinc-100 text-[13px] font-medium leading-relaxed mb-3">
           &ldquo;{data.stronger_hook}&rdquo;
@@ -174,7 +174,7 @@ function AnalysisPanel({
             onClick={() => { navigator.clipboard.writeText(data.stronger_hook); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
             className="text-[11px] text-built-red border border-built-red/20 bg-built-red/10 px-3 py-1 rounded-lg hover:bg-built-red/20 transition-colors"
           >
-            {copied ? "✓ Copiat" : "Copy Hook"}
+            {copied ? "✓ Copiat" : "Copiază Hook"}
           </button>
           <span className="text-[11px] text-zinc-600">
             {data.adaptation_brief}
@@ -245,7 +245,7 @@ function ReelCard({
               <span className="w-2.5 h-2.5 border border-zinc-400 border-t-transparent rounded-full animate-spin" />
               ...
             </span>
-          ) : analysed ? "✓ Analysed" : "✨ Analyse"}
+          ) : analysed ? "✓ Analizat" : "✨ Analizează"}
         </button>
       </div>
     </div>
@@ -300,7 +300,7 @@ function ScriptCard({ script, index }: { script: WeeklyScript; index: number }) 
           {/* FULL SCRIPT */}
           <div>
             <div className="flex items-center justify-between mb-2">
-              <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">Full Script</p>
+              <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">Script Complet</p>
               <CopyButton text={script.full_script} />
             </div>
             <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">{script.full_script}</p>
@@ -324,8 +324,8 @@ function ScriptCard({ script, index }: { script: WeeklyScript; index: number }) 
               <p className="text-sm text-built-red font-medium">{script.cta}</p>
             </div>
             <div className="flex items-center gap-2 shrink-0">
-              <CopyButton text={script.cta} label="Copy CTA" />
-              <CopyButton text={`HOOK:\n${script.hook}\n\nSCRIPT:\n${script.full_script}\n\nCAPTION:\n${script.caption}\n\nCTA: ${script.cta}`} label="Copy All" />
+              <CopyButton text={script.cta} label="Copiază CTA" />
+              <CopyButton text={`HOOK:\n${script.hook}\n\nSCRIPT:\n${script.full_script}\n\nCAPTION:\n${script.caption}\n\nCTA: ${script.cta}`} label="Copiază Tot" />
             </div>
           </div>
 
@@ -504,8 +504,8 @@ export default function ContentPage() {
       <div className="border-b border-white/[0.08] px-8">
         <div className="flex items-center gap-8">
           {([
-            { key: "creator_cult",  label: "Creator Cult" },
-            { key: "content_intel", label: "Content Intel" },
+            { key: "creator_cult",  label: "Reels-urile Tale" },
+            { key: "content_intel", label: "Inteligență Conținut" },
           ] as { key: Tab; label: string }[]).map(t => (
             <button
               key={t.key}
@@ -528,17 +528,17 @@ export default function ContentPage() {
         {tab === "creator_cult" && (
           <div>
             <p className="text-[13px] text-zinc-500 mb-6">
-              Your reels, competitor intelligence, and weekly scripts — all in one place.
+              Reels-urile tale, inteligență competitori și scripturi săptămânale — totul într-un singur loc.
             </p>
 
             {/* Header row */}
             <div className="flex items-center justify-between mb-4">
               <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">
-                Your Reels
+                Reels-urile Tale
               </p>
               <div className="flex items-center gap-4">
                 <span className="text-[12px] text-zinc-500 font-mono">
-                  {reels.length} tracked · {totalViewsStr(reels)}
+                  {reels.length} reels · {totalViewsStr(reels)}
                 </span>
                 <button
                   onClick={handleSync}
@@ -571,13 +571,13 @@ export default function ContentPage() {
         {tab === "content_intel" && (
           <div className="space-y-6">
             <p className="text-[13px] text-zinc-500">
-              Competitor intelligence, weekly scripts, and AI-generated content strategy.
+              Inteligență competitori, scripturi săptămânale și strategie de conținut generată de AI.
             </p>
 
             <div className="grid grid-cols-[160px_1fr_300px] gap-6">
               {/* Past Packages Sidebar */}
               <div className="space-y-1">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-3 px-1">Packages</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-3 px-1">Pachete</p>
                 <button
                   onClick={() => setSelectedPkgId("current")}
                   className={`w-full text-left px-3 py-2 rounded-lg text-[12px] transition-colors ${
@@ -586,7 +586,7 @@ export default function ContentPage() {
                       : "text-zinc-500 hover:bg-white/5 hover:text-zinc-300"
                   }`}
                 >
-                  This week
+                  Săptămâna asta
                 </button>
                 {pastPackages.map(p => (
                   <button
@@ -598,7 +598,7 @@ export default function ContentPage() {
                         : "text-zinc-600 hover:bg-white/5 hover:text-zinc-400"
                     }`}
                   >
-                    Week of {new Date(p.week_of).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                    Săpt. {new Date(p.week_of).toLocaleDateString("ro-RO", { day: "numeric", month: "short", year: "numeric" })}
                   </button>
                 ))}
               </div>
@@ -606,7 +606,7 @@ export default function ContentPage() {
               {/* Centre — Scripts */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">This Week&apos;s Scripts</p>
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">Scripturile Săptămânii</p>
                   <button
                     onClick={handleGeneratePkg}
                     disabled={generatingPkg}
@@ -614,7 +614,7 @@ export default function ContentPage() {
                   >
                     {generatingPkg ? (
                       <><span className="w-3 h-3 border border-white border-t-transparent rounded-full animate-spin" />Generez...</>
-                    ) : "⚡ Regenerate This Week"}
+                    ) : "⚡ Regenerează Săptămâna"}
                   </button>
                 </div>
 
@@ -622,11 +622,11 @@ export default function ContentPage() {
                   <div className="space-y-2">
                     {weeklyPkg.intelligence_report && (
                       <div className="bg-[#0d0d0d] border border-white/[0.06] rounded-xl p-5 mb-4 space-y-4">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">→ Weekly Intelligence Report</p>
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">→ Raport de Inteligență Săptămânală</p>
 
                         {weeklyPkg.intelligence_report.whats_popping?.length > 0 && (
                           <div>
-                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">What&apos;s Popping This Week</p>
+                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Ce Funcționează Săptămâna Asta</p>
                             <ul className="space-y-1.5">
                               {weeklyPkg.intelligence_report.whats_popping.map((item, i) => (
                                 <li key={i} className="text-[12px] text-zinc-300 flex gap-2">
@@ -639,7 +639,7 @@ export default function ContentPage() {
 
                         {weeklyPkg.intelligence_report.performance_last_week?.length > 0 && (
                           <div>
-                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Performance Last Week</p>
+                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Performanța Săptămânii Trecute</p>
                             <ul className="space-y-1.5">
                               {weeklyPkg.intelligence_report.performance_last_week.map((item, i) => (
                                 <li key={i} className="text-[12px] text-zinc-400 flex gap-2">
@@ -652,7 +652,7 @@ export default function ContentPage() {
 
                         {weeklyPkg.intelligence_report.accounts_to_watch?.length > 0 && (
                           <div>
-                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Accounts to Watch</p>
+                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Conturi de Urmărit</p>
                             <div className="flex flex-wrap gap-2">
                               {weeklyPkg.intelligence_report.accounts_to_watch.map((item, i) => (
                                 <span key={i} className="text-[11px] text-zinc-400 bg-white/5 border border-white/10 rounded-full px-2.5 py-1">
@@ -671,13 +671,13 @@ export default function ContentPage() {
                 ) : (
                   <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-8 text-center">
                     <p className="text-[13px] text-zinc-500 mb-2">Niciun pachet generat.</p>
-                    <p className="text-[12px] text-zinc-600">Apasă &ldquo;Regenerate This Week&rdquo; pentru a genera scripturi AI pe baza datelor tale reale.</p>
+                    <p className="text-[12px] text-zinc-600">Apasă &ldquo;Regenerează Săptămâna&rdquo; pentru a genera scripturi AI pe baza datelor tale reale.</p>
                   </div>
                 )}
 
                 {quickScripts.length > 0 && (
                   <div className="mt-4 space-y-2">
-                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Quick Generated</p>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">Generate Rapid</p>
                     {quickScripts.map((script, i) => (
                       <ScriptCard key={i} script={script} index={i} />
                     ))}
@@ -690,7 +690,7 @@ export default function ContentPage() {
                 {/* Competitors */}
                 <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5">
                   <div className="flex items-center justify-between mb-3">
-                    <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">Competitors</p>
+                    <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">Competitori</p>
                     <button
                       onClick={async () => { await scrapeCompetitors(); }}
                       className="text-[10px] text-zinc-500 border border-white/10 px-2 py-1 rounded hover:bg-white/5 transition-colors"
@@ -722,7 +722,7 @@ export default function ContentPage() {
 
                 {/* Script generator */}
                 <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5">
-                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-3">Generate Script</p>
+                  <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400 mb-3">Generează Script</p>
                   <select
                     value={genFormat}
                     onChange={e => setGenFormat(e.target.value)}

@@ -203,7 +203,7 @@ function LineChart({ data, mode }: { data: { val: number; day?: string }[]; mode
     : data.map(d => d.val);
 
   if (vals.length === 0) return (
-    <div className="flex items-center justify-center h-full text-zinc-600 text-[11px] font-mono">no data</div>
+    <div className="flex items-center justify-center h-full text-zinc-600 text-[11px] font-mono">fără date</div>
   );
 
   const maxV = Math.max(...vals, 1);
@@ -273,6 +273,8 @@ function AnalysisPanel({
   data: ContentLibraryAnalysis;
   onClose: () => void;
 }) {
+  const [analysisTab, setAnalysisTab] = useState<"breakdown" | "from">("breakdown");
+
   const verdictClass =
     data.verdict === "Exceptional"
       ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20"
@@ -293,7 +295,7 @@ function AnalysisPanel({
           {data.verdict}
         </span>
         <span className="text-zinc-400 text-[13px]">
-          Score: <strong className="text-zinc-100 font-mono-stats">{data.score}</strong>
+          Scor: <strong className="text-zinc-100 font-mono-stats">{data.score}</strong>
         </span>
         <span className="text-zinc-400 text-[13px]">
           Hook Score: <strong className="text-zinc-100 font-mono-stats">{data.hook_score}</strong>
@@ -302,93 +304,127 @@ function AnalysisPanel({
           onClick={onClose}
           className="ml-auto text-[11px] text-zinc-500 border border-white/10 px-2 py-0.5 rounded hover:bg-white/5 transition-colors"
         >
-          Close
+          Închide
         </button>
       </div>
 
-      {/* Score bars */}
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
-            <span>Performance</span>
-            <span className="font-mono-stats">{perfPct}</span>
-          </div>
-          <div className="h-1.5 bg-white/5 rounded-full">
-            <div className="h-full bg-built-red rounded-full" style={{ width: `${perfPct}%` }} />
-          </div>
-        </div>
-        <div>
-          <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
-            <span>Script Quality</span>
-            <span className="font-mono-stats">{scriptPct}</span>
-          </div>
-          <div className="h-1.5 bg-white/5 rounded-full">
-            <div className="h-full bg-built-red rounded-full" style={{ width: `${scriptPct}%` }} />
-          </div>
-        </div>
-      </div>
-
-      {/* 3-column row */}
-      <div className="grid grid-cols-3 gap-4 text-[12px]">
-        <div>
-          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">HOOK</p>
-          <p className="text-zinc-300 leading-relaxed">{data.performance_summary}</p>
-        </div>
-        <div>
-          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">WHAT WORKED</p>
-          <ul className="space-y-1.5">
-            {data.what_worked.slice(0, 3).map((item, i) => (
-              <li key={i} className="text-zinc-300 flex gap-1.5">
-                <span className="text-built-red shrink-0">▸</span>
-                {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">CTA / AUDIENCE FIT</p>
-          <p className="text-zinc-300 leading-relaxed">{data.audience_fit}</p>
-        </div>
-      </div>
-
-      {/* Key Lessons */}
-      <div>
-        <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Key Lessons</p>
-        <ul className="space-y-1">
-          {data.what_worked.map((item, i) => (
-            <li key={i} className="text-zinc-400 text-[12px]">
-              {i + 1}. {item}
-            </li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Adaptation brief */}
-      <div className="border-l-2 border-built-red/40 pl-4">
-        <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-1.5">Adaptation Brief</p>
-        <p className="text-zinc-300 text-[12px] leading-relaxed">{data.adaptation_brief}</p>
-      </div>
-
-      {/* Stronger hook */}
-      <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-4">
-        <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">
-          Suggested Hook for Your Audience
-        </p>
-        <p className="text-zinc-100 text-[13px] font-medium leading-relaxed">
-          &ldquo;{data.stronger_hook}&rdquo;
-        </p>
-        <div className="flex gap-2 mt-3">
+      {/* Sub-tabs */}
+      <div className="flex gap-6 border-b border-white/5 pb-0">
+        {([
+          { key: "breakdown", label: "Analiză" },
+          { key: "from", label: "Audiență" },
+        ] as { key: "breakdown" | "from"; label: string }[]).map((t) => (
           <button
-            onClick={() => navigator.clipboard.writeText(data.stronger_hook)}
-            className="text-[11px] text-built-red border border-built-red/20 bg-built-red/10 px-3 py-1 rounded hover:bg-built-red/20 transition-colors"
+            key={t.key}
+            onClick={() => setAnalysisTab(t.key)}
+            className={`text-[13px] pb-3 -mb-[1px] font-medium transition-colors border-b-2 ${
+              analysisTab === t.key
+                ? "border-built-red text-zinc-100"
+                : "border-transparent text-zinc-500 hover:text-zinc-300"
+            }`}
           >
-            Copy Hook
+            {t.label}
           </button>
-          <button className="text-[11px] text-zinc-500 border border-white/10 px-3 py-1 rounded hover:bg-white/5 transition-colors">
-            Save to Idea Bank
-          </button>
-        </div>
+        ))}
       </div>
+
+      {analysisTab === "breakdown" && (
+        <>
+          {/* Score bars */}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
+                <span>Performanță</span>
+                <span className="font-mono-stats">{perfPct}</span>
+              </div>
+              <div className="h-1.5 bg-white/5 rounded-full">
+                <div className="h-full bg-built-red rounded-full" style={{ width: `${perfPct}%` }} />
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
+                <span>Calitate Script</span>
+                <span className="font-mono-stats">{scriptPct}</span>
+              </div>
+              <div className="h-1.5 bg-white/5 rounded-full">
+                <div className="h-full bg-built-red rounded-full" style={{ width: `${scriptPct}%` }} />
+              </div>
+            </div>
+          </div>
+
+          {/* 3-column row */}
+          <div className="grid grid-cols-3 gap-4 text-[12px]">
+            <div>
+              <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">HOOK</p>
+              <p className="text-zinc-300 leading-relaxed">{data.performance_summary}</p>
+            </div>
+            <div>
+              <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">CE A FUNCȚIONAT</p>
+              <ul className="space-y-1.5">
+                {data.what_worked.slice(0, 3).map((item, i) => (
+                  <li key={i} className="text-zinc-300 flex gap-1.5">
+                    <span className="text-built-red shrink-0">▸</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">CTA / POTRIVIRE AUDIENȚĂ</p>
+              <p className="text-zinc-300 leading-relaxed">{data.audience_fit}</p>
+            </div>
+          </div>
+
+          {/* Key Lessons */}
+          <div>
+            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Lecții Cheie</p>
+            <ul className="space-y-1">
+              {data.what_worked.map((item, i) => (
+                <li key={i} className="text-zinc-400 text-[12px]">
+                  {i + 1}. {item}
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Adaptation brief */}
+          <div className="border-l-2 border-built-red/40 pl-4">
+            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-1.5">Brief de Adaptare</p>
+            <p className="text-zinc-300 text-[12px] leading-relaxed">{data.adaptation_brief}</p>
+          </div>
+        </>
+      )}
+
+      {analysisTab === "from" && (
+        <>
+          {/* Audience fit — prominent box */}
+          <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-4">
+            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">CTA / POTRIVIRE AUDIENȚĂ</p>
+            <p className="text-zinc-200 text-[13px] leading-relaxed">{data.audience_fit}</p>
+          </div>
+
+          {/* Stronger hook */}
+          <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-4">
+            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">
+              Hook Sugerat pentru Audiența Ta
+            </p>
+            <p className="text-zinc-100 text-[13px] font-medium leading-relaxed">
+              &ldquo;{data.stronger_hook}&rdquo;
+            </p>
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={() => navigator.clipboard.writeText(data.stronger_hook)}
+                className="text-[11px] text-built-red border border-built-red/20 bg-built-red/10 px-3 py-1 rounded hover:bg-built-red/20 transition-colors"
+              >
+                Copiază Hook
+              </button>
+              <button className="text-[11px] text-zinc-500 border border-white/10 px-3 py-1 rounded hover:bg-white/5 transition-colors">
+                Salvează în Idea Bank
+              </button>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 }
@@ -578,7 +614,7 @@ export default function AnalyticsPage() {
 
   const PERIOD_LABELS: TimePeriod[] = ["7d", "1d", "1m", "3m", "1y"];
   const CONTENT_TABS: { key: ContentTab; label: string }[] = [
-    { key: "recent", label: "Recent" },
+    { key: "recent", label: "Recente" },
     { key: "top_views", label: "Top Views" },
     { key: "top_engagement", label: "Top Engagement" },
   ];
@@ -671,7 +707,7 @@ export default function AnalyticsPage() {
       <div className="flex items-center justify-between border-b border-white/5 pb-3">
         {/* Platform tabs */}
         <div className="flex gap-6">
-          {["All", "Instagram ✓"].map((tab) => (
+          {["Toate", "Instagram ✓"].map((tab) => (
             <button
               key={tab}
               className={`text-[13px] pb-3 -mb-3 font-medium transition-colors border-b-2 ${
@@ -737,7 +773,7 @@ export default function AnalyticsPage() {
                 >
                   {badge.label}
                 </span>
-                <span className="text-[11px] text-zinc-600">vs prior period</span>
+                <span className="text-[11px] text-zinc-600">vs perioadă anterioară</span>
               </div>
 
               <div className="h-10">
@@ -753,7 +789,7 @@ export default function AnalyticsPage() {
         {/* Views over time */}
         <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-[13px] font-semibold text-zinc-200">Views over time</p>
+            <p className="text-[13px] font-semibold text-zinc-200">Views în timp</p>
             <div className="flex gap-1">
               {(["daily", "cumulative"] as ChartMode[]).map((m) => (
                 <button
@@ -763,7 +799,7 @@ export default function AnalyticsPage() {
                     viewsMode === m ? "bg-built-red/20 text-built-red" : "text-zinc-500 hover:bg-white/5"
                   }`}
                 >
-                  {m.charAt(0).toUpperCase() + m.slice(1)}
+                  {m === "daily" ? "Zilnic" : "Cumulativ"}
                 </button>
               ))}
             </div>
@@ -782,7 +818,7 @@ export default function AnalyticsPage() {
         {/* Engagements over time */}
         <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
-            <p className="text-[13px] font-semibold text-zinc-200">Engagements over time</p>
+            <p className="text-[13px] font-semibold text-zinc-200">Engagements în timp</p>
             <div className="flex gap-1">
               {(["daily", "cumulative"] as ChartMode[]).map((m) => (
                 <button
@@ -792,7 +828,7 @@ export default function AnalyticsPage() {
                     engMode === m ? "bg-built-red/20 text-built-red" : "text-zinc-500 hover:bg-white/5"
                   }`}
                 >
-                  {m.charAt(0).toUpperCase() + m.slice(1)}
+                  {m === "daily" ? "Zilnic" : "Cumulativ"}
                 </button>
               ))}
             </div>
@@ -813,7 +849,7 @@ export default function AnalyticsPage() {
       <div className="grid grid-cols-2 gap-4">
         {/* Engagement breakdown — matches William Scott */}
         <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Engagement Breakdown</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Breakdown Engagement</p>
           <p className="text-[28px] font-semibold text-zinc-100 font-mono mb-4">
             {fmt((totalLikes ?? 0) + (totalComments ?? 0))}
             <span className="text-[14px] text-zinc-500 font-normal ml-2">total</span>
@@ -858,8 +894,8 @@ export default function AnalyticsPage() {
 
         {/* Format performance */}
         <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
-          <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Format Performance</p>
-          <p className="text-[10px] text-zinc-700 mb-3">All-time · avg views per format</p>
+          <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Performanță pe format</p>
+          <p className="text-[10px] text-zinc-700 mb-3">All-time · views medii pe format</p>
           {(() => {
             const totals: Record<string, { views: number; count: number }> = {};
             const source = liveMedia.length > 0 ? liveMedia : [];
@@ -900,7 +936,7 @@ export default function AnalyticsPage() {
         {/* Library header — William Scott style */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <p className="text-[15px] font-semibold text-zinc-100">Content Library</p>
+            <p className="text-[15px] font-semibold text-zinc-100">Biblioteca de Conținut</p>
             <span className="text-[14px] text-zinc-500">({sortedReels.length})</span>
           </div>
           <div className="flex gap-1">
@@ -990,11 +1026,11 @@ export default function AnalyticsPage() {
                   }`}
                 >
                   {analysingId === reel.id ? (
-                    <><span className="w-2.5 h-2.5 border border-zinc-400 border-t-transparent rounded-full animate-spin" />Analysing...</>
+                    <><span className="w-2.5 h-2.5 border border-zinc-400 border-t-transparent rounded-full animate-spin" />Se analizează...</>
                   ) : analysedId === reel.id ? (
-                    <>✓ Re-analyse</>
+                    <>✓ Analizat</>
                   ) : (
-                    <>✦ Analyse</>
+                    <>✦ Analizează</>
                   )}
                 </button>
               </div>

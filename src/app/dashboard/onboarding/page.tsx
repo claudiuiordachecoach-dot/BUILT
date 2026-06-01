@@ -44,7 +44,7 @@ type SectionDef = {
 const SECTIONS: SectionDef[] = [
   {
     id: "who_you_are", num: 1,
-    title: "Who You Are",
+    title: "Cine Ești",
     description: "Bazele. Spune-ne despre tine ca persoană, nu doar ca coach.",
     fields: [
       { key: "full_name", label: "Nume complet", placeholder: "Iordache Claudiu" },
@@ -64,7 +64,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "your_content", num: 2,
-    title: "Your Content",
+    title: "Conținutul Tău",
     description: "Cum creezi acum și ce a funcționat.",
     fields: [
       { key: "content_formats", label: "Formate principale", placeholder: "Talking Head, Rant, Tutorial" },
@@ -77,7 +77,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "where_stuck", num: 3,
-    title: "Where You're Stuck",
+    title: "Unde Te Blochezi",
     description: "Fii sincer. Cu cât mai mult detaliu, cu atât mai bine te pot ajuta.",
     fields: [
       { key: "biggest_challenge", label: "Cel mai mare obstacol acum", placeholder: "Conversie din DM în call", textarea: true },
@@ -90,7 +90,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "what_you_want", num: 4,
-    title: "What You Want",
+    title: "Ce Vrei",
     description: "Fii specific. Obiectivele vagi produc rezultate vagi.",
     fields: [
       { key: "ideal_outcome_90_days", label: "Cum arată ziua ta ideală în 90 de zile", placeholder: "10 clienți activi la 500 EUR, 2 ore de muncă/zi, sistem care rulează fără mine", textarea: true },
@@ -102,7 +102,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "mindset_opinions", num: 5,
-    title: "Mindset & Opinions",
+    title: "Mindset & Opinii",
     description: "Perspectivele tale. Ce crezi tu. Asta diferențiază conținutul tău.",
     fields: [
       { key: "philosophy", label: "Filozofia ta despre fitness (2-3 propoziții)", placeholder: "Eșecul nu vine din lipsă de voință — vine din lipsă de sistem.", textarea: true },
@@ -113,7 +113,7 @@ const SECTIONS: SectionDef[] = [
   },
   {
     id: "your_story", num: 6,
-    title: "Your Story",
+    title: "Povestea Ta",
     description: "Originea ta, dovezile tale, credibilitatea ta. Alimentează fiecare script.",
     fields: [
       { key: "origin_story", label: "Povestea ta de origine", placeholder: "Am ajuns la 120kg, bâlbâit, fără identitate. Sportul m-a reconstruit.", textarea: true },
@@ -178,7 +178,7 @@ export default function OnboardingPage() {
     saveStatus === "saving" ? "Se salvează..." :
     saveStatus === "saved" ? "✓ Salvat cu succes" :
     saveStatus === "error" ? "Eroare — încearcă din nou" :
-    "Save & Update My AI";
+    "Salvează & Actualizează AI-ul";
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-10">
@@ -186,7 +186,7 @@ export default function OnboardingPage() {
       <div className="mb-6">
         <h1 className="text-2xl font-semibold text-zinc-100 mb-1">Onboarding Hub</h1>
         <p className="text-[13px] text-zinc-500 mb-3">
-          The more you put in, the better your AI gets. Come back and update whenever something changes.
+          Cu cât completezi mai mult, cu atât AI-ul tău devine mai precis. Revino oricând să actualizezi.
         </p>
         {/* Progress bar */}
         <div className="flex items-center gap-3">
@@ -197,7 +197,7 @@ export default function OnboardingPage() {
             />
           </div>
           <span className="text-[12px] text-zinc-500 whitespace-nowrap shrink-0 font-mono">
-            {filledCount} fields completed — <strong className="text-zinc-300">{progressPct}%</strong>
+            {filledCount} câmpuri completate — <strong className="text-zinc-300">{progressPct}%</strong>
           </span>
         </div>
       </div>
@@ -219,13 +219,13 @@ export default function OnboardingPage() {
       {/* AI Personalized Section */}
       <div className="mb-8">
         <div className="flex items-center justify-between mb-3">
-          <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">AI Personalized</span>
+          <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-semibold">AI Personalizat</span>
           <button
             onClick={handleGenerateSummary}
             disabled={summaryLoading}
             className="text-[11px] text-zinc-400 hover:text-zinc-100 border border-white/10 px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40"
           >
-            {summaryLoading ? "Generating..." : "↺ Regenerate"}
+            {summaryLoading ? "Se generează..." : "↺ Regenerează"}
           </button>
         </div>
         <div className="grid grid-cols-2 gap-3">
@@ -234,15 +234,15 @@ export default function OnboardingPage() {
             {aiSummary ? (
               <p className="text-sm text-zinc-300 leading-relaxed">{aiSummary.niche}</p>
             ) : (
-              <p className="text-sm text-zinc-600">Fill in fields below and click Regenerate.</p>
+              <p className="text-sm text-zinc-600">Completează câmpurile de mai jos și apasă Regenerează.</p>
             )}
           </div>
           <div className="bg-[#111] border border-white/[0.08] rounded-xl p-4">
-            <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Ideal Client</p>
+            <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-widest mb-2">Client Ideal</p>
             {aiSummary ? (
               <p className="text-sm text-zinc-300 leading-relaxed">{aiSummary.ideal_client}</p>
             ) : (
-              <p className="text-sm text-zinc-600">Fill in fields below and click Regenerate.</p>
+              <p className="text-sm text-zinc-600">Completează câmpurile de mai jos și apasă Regenerează.</p>
             )}
           </div>
         </div>
@@ -267,7 +267,7 @@ export default function OnboardingPage() {
                   <div className="flex items-center gap-2">
                     <span className="text-[13px] text-zinc-200 font-medium">{section.title}</span>
                     <span className="text-[11px] text-zinc-600">
-                      {allFilled ? `${filled}/${section.fields.length} completed` : `${filled}/${section.fields.length} complete`}
+                      {`${filled}/${section.fields.length} completate`}
                     </span>
                   </div>
                 </div>

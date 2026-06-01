@@ -4,12 +4,12 @@ import { useState, useRef, useEffect, type ChangeEvent } from "react";
 import { auditProfile, type InstagramAudit } from "@/app/audit/actions";
 
 const ELEMENT_LABELS: Record<string, string> = {
-  profile_picture: "Profile Picture",
-  name_username: "Name & Username",
+  profile_picture: "Poză de Profil",
+  name_username: "Nume & Username",
   bio: "Bio",
-  link_in_bio: "Link in Bio",
+  link_in_bio: "Link în Bio",
   highlights: "Highlights",
-  pinned_posts: "Pinned Posts",
+  pinned_posts: "Postări Fixate",
 };
 
 const getScoreColor = (s: number) =>
@@ -20,8 +20,8 @@ const getBarColor = (s: number) =>
 
 const getVerdict = (s: number) =>
   s >= 8 ? { label: "Strong", style: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" }
-  : s >= 6 ? { label: "Needs Work", style: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" }
-  : { label: "Critical", style: "bg-built-red/10 text-built-red border border-built-red/20" };
+  : s >= 6 ? { label: "Necesită Îmbunătățiri", style: "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" }
+  : { label: "Critic", style: "bg-built-red/10 text-built-red border border-built-red/20" };
 
 function Toast({ show, onHide }: { show: boolean; onHide: () => void }) {
   useEffect(() => {
@@ -33,7 +33,7 @@ function Toast({ show, onHide }: { show: boolean; onHide: () => void }) {
   if (!show) return null;
   return (
     <div className="fixed bottom-6 right-6 z-50 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[13px] font-medium px-4 py-3 rounded-xl flex items-center gap-2 shadow-2xl">
-      <span>✓</span> Audit completed
+      <span>✓</span> Audit finalizat
     </div>
   );
 }
@@ -93,23 +93,23 @@ export default function ProfileAuditPage() {
       <Toast show={toast} onHide={() => setToast(false)} />
 
       <div className="mb-8">
-        <h1 className="text-3xl font-display tracking-[0.06em] text-zinc-100 mb-2">Profile Audit</h1>
+        <h1 className="text-3xl font-display tracking-[0.06em] text-zinc-100 mb-2">Audit Profil</h1>
         <p className="text-zinc-500 text-sm leading-relaxed">
-          Take a screenshot of your Instagram profile from your phone and upload it below. Claude will score you out of 10 across 6 elements and tell you exactly what to fix.
+          Fă un screenshot al profilului tău Instagram de pe telefon și încarcă-l mai jos. Claude va da un scor din 10 pentru 6 elemente și îți va spune exact ce să repari.
         </p>
       </div>
 
       {/* Profile Info */}
       <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-6 mb-4">
-        <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono mb-4">Profile Info</p>
+        <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono mb-4">Info Profil</p>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className="text-[11px] text-zinc-500 mb-1 block">Instagram Handle</label>
+            <label className="text-[11px] text-zinc-500 mb-1 block">Handle Instagram</label>
             <input type="text" value={handle} onChange={e => setHandle(e.target.value)} placeholder="@username"
               className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-[13px] text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-white/20" />
           </div>
           <div>
-            <label className="text-[11px] text-zinc-500 mb-1 block">Followers</label>
+            <label className="text-[11px] text-zinc-500 mb-1 block">Followeri</label>
             <input type="text" value={followers} onChange={e => setFollowers(e.target.value)} placeholder="ex: 2780"
               className="w-full bg-[#1a1a1a] border border-white/10 rounded-lg px-3 py-2 text-[13px] text-zinc-200 placeholder-zinc-600 focus:outline-none focus:border-white/20" />
           </div>
@@ -118,7 +118,7 @@ export default function ProfileAuditPage() {
 
       {/* Upload */}
       <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-6 mb-6">
-        <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono mb-4">Profile Screenshot</p>
+        <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono mb-4">Screenshot Profil</p>
         {previewUrl ? (
           <div className="relative mb-4">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -132,14 +132,14 @@ export default function ProfileAuditPage() {
             <svg className="w-8 h-8 text-zinc-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
             </svg>
-            <p className="text-zinc-400 text-[13px] font-medium">Upload your Instagram profile screenshot</p>
-            <p className="text-zinc-600 text-[12px] text-center px-6">On your phone: open Instagram → your profile → take a screenshot → upload here</p>
+            <p className="text-zinc-400 text-[13px] font-medium">Încarcă screenshot-ul profilului tău Instagram</p>
+            <p className="text-zinc-600 text-[12px] text-center px-6">Pe telefon: deschide Instagram → profilul tău → fă un screenshot → încarcă-l aici</p>
           </button>
         )}
         <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
         <button onClick={handleRunAudit} disabled={!imageBase64 || loading}
           className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 py-3 rounded-lg text-[13px] font-medium hover:bg-white/5 transition-colors disabled:opacity-40">
-          {loading ? "Analysing profile..." : "Run Audit"}
+          {loading ? "Se analizează profilul..." : "Rulează Auditul"}
         </button>
         {error && <p className="mt-3 text-built-red text-[12px]">{error}</p>}
       </div>
@@ -152,7 +152,7 @@ export default function ProfileAuditPage() {
               <span key={delay} className="w-2 h-2 rounded-full bg-built-red/60 animate-bounce" style={{ animationDelay: `${delay}ms` }} />
             ))}
           </div>
-          <p className="text-zinc-600 text-[12px] font-mono">Claude is analyzing your profile...</p>
+          <p className="text-zinc-600 text-[12px] font-mono">Claude analizează profilul tău...</p>
         </div>
       )}
 
@@ -163,7 +163,7 @@ export default function ProfileAuditPage() {
           {/* Score header */}
           <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5 flex items-start justify-between">
             <div>
-              <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">OVERALL SCORE</p>
+              <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">SCOR GENERAL</p>
               <div className="flex items-center gap-3">
                 <span className="text-5xl font-display text-zinc-100 leading-none">
                   {audit.overall}<span className="text-2xl text-zinc-500">/10</span>
@@ -189,7 +189,7 @@ export default function ProfileAuditPage() {
 
           {/* Element Breakdown */}
           <div>
-            <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono mb-3">ELEMENT BREAKDOWN</p>
+            <p className="text-[11px] text-zinc-500 uppercase tracking-widest font-mono mb-3">DETALIU ELEMENTE</p>
             <div className="space-y-2">
               {elements.map(([key, el]) => (
                 <div key={key} className="bg-[#111111] border border-white/[0.08] rounded-xl overflow-hidden">
@@ -229,7 +229,7 @@ export default function ProfileAuditPage() {
                       {/* Suggested Highlights chips — only in highlights section */}
                       {key === "highlights" && audit.suggested_highlights?.length > 0 && (
                         <div className="pt-1">
-                          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Suggested Highlight Names</p>
+                          <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Sugestii Highlight</p>
                           <div className="flex flex-wrap gap-2">
                             {audit.suggested_highlights.map((name) => (
                               <span key={name} className="text-[11px] text-zinc-300 bg-white/[0.06] border border-white/10 px-3 py-1 rounded-full">
@@ -249,7 +249,7 @@ export default function ProfileAuditPage() {
           {/* YOUR NEW BIO */}
           {audit.rewritten_bio && (
             <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5 space-y-4">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Your New Bio</p>
+              <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">Bio-ul Tău Nou</p>
               {audit.new_bio_explanation && (
                 <p className="text-zinc-500 text-[12px] leading-relaxed">{audit.new_bio_explanation}</p>
               )}
@@ -260,7 +260,7 @@ export default function ProfileAuditPage() {
                 onClick={() => { navigator.clipboard.writeText(audit.rewritten_bio); setCopiedBio(true); setTimeout(() => setCopiedBio(false), 2000); }}
                 className="text-[11px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
               >
-                {copiedBio ? "✓ Copied" : "Copy Bio"}
+                {copiedBio ? "✓ Copiat" : "Copiază Bio"}
               </button>
             </div>
           )}
@@ -268,7 +268,7 @@ export default function ProfileAuditPage() {
           {/* PRIORITY FIXES */}
           {audit.priority_fixes?.length > 0 && (
             <div className="bg-[#111111] border border-built-red/20 rounded-xl p-5">
-              <p className="text-[10px] text-built-red font-mono uppercase tracking-widest mb-4">Priority Fixes</p>
+              <p className="text-[10px] text-built-red font-mono uppercase tracking-widest mb-4">Reparații Prioritare</p>
               <ol className="space-y-3">
                 {audit.priority_fixes.map((fix, i) => (
                   <li key={i} className="flex gap-3">

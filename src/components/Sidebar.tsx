@@ -38,22 +38,22 @@ const Icons = {
 type NavEntry = { label: string; href: string; icon: React.ReactNode; exact?: boolean };
 
 const MAIN_ITEMS: NavEntry[] = [
-  { label: "Dashboard",        href: "/dashboard/analytics", icon: <Icons.grid />,     exact: true },
-  { label: "Content Studio",   href: "/dashboard/content",   icon: <Icons.star /> },
-  { label: "Content Calendar", href: "/dashboard/calendar",  icon: <Icons.calendar /> },
-  { label: "DM Sales",         href: "/dashboard/outreach",  icon: <Icons.message /> },
-  { label: "Ask BUILT AI",     href: "/dashboard/knowledge-base", icon: <Icons.brain /> },
+  { label: "Dashboard",           href: "/dashboard/analytics",       icon: <Icons.grid />,     exact: true },
+  { label: "Studio Conținut",     href: "/dashboard/content",         icon: <Icons.star /> },
+  { label: "Calendar Conținut",   href: "/dashboard/calendar",        icon: <Icons.calendar /> },
+  { label: "DM Sales",            href: "/dashboard/outreach",        icon: <Icons.message /> },
+  { label: "Întreabă BUILT AI",   href: "/dashboard/knowledge-base",  icon: <Icons.brain /> },
 ];
 
 const TOOLS_ITEMS: NavEntry[] = [
-  { label: "Reel Analyser", href: "/dashboard/reel-copy",     icon: <Icons.chart /> },
-  { label: "Profile Audit", href: "/dashboard/profile-audit", icon: <Icons.search /> },
-  { label: "My Profile",    href: "/dashboard/onboarding",    icon: <Icons.user /> },
+  { label: "Analizor Reel", href: "/dashboard/reel-copy",     icon: <Icons.chart /> },
+  { label: "Audit Profil",  href: "/dashboard/profile-audit", icon: <Icons.search /> },
+  { label: "Profilul Meu",  href: "/dashboard/onboarding",    icon: <Icons.user /> },
 ];
 
 const ADMIN_ITEMS: NavEntry[] = [
-  { label: "Clients",          href: "/dashboard/clients",            icon: <Icons.users /> },
-  { label: "Progress Reports", href: "/dashboard/progress-reports",   icon: <Icons.report /> },
+  { label: "Clienți",            href: "/dashboard/clients",          icon: <Icons.users /> },
+  { label: "Rapoarte Progres",   href: "/dashboard/progress-reports", icon: <Icons.report /> },
 ];
 
 function NavLink({ item, pathname, collapsed }: { item: NavEntry; pathname: string; collapsed: boolean }) {
@@ -136,7 +136,7 @@ export function Sidebar() {
         </ul>
 
         {/* Tools */}
-        <SectionLabel label="Tools" collapsed={collapsed} />
+        <SectionLabel label="Instrumente" collapsed={collapsed} />
         <ul className="space-y-0.5 px-2">
           {TOOLS_ITEMS.map(item => (
             <li key={item.label}>
@@ -181,10 +181,10 @@ export function Sidebar() {
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-[12px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all ${collapsed ? "justify-center" : ""}`}
-          title={collapsed ? "Expand" : "Collapse"}
+          title={collapsed ? "Extinde" : "Restrânge"}
         >
           <span className={`transition-transform ${collapsed ? "rotate-180" : ""}`}><Icons.collapse /></span>
-          {!collapsed && <span>Collapse</span>}
+          {!collapsed && <span>Restrânge</span>}
         </button>
 
         {/* Light mode toggle */}
@@ -192,10 +192,10 @@ export function Sidebar() {
           <button
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
             className={`flex items-center gap-2.5 w-full px-3 py-2 rounded-lg text-[12px] text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all ${collapsed ? "justify-center" : ""}`}
-            title={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            title={theme === "dark" ? "Mod Luminos" : "Mod Întunecat"}
           >
             {theme === "dark" ? <Icons.sun /> : <Icons.moon />}
-            {!collapsed && <span>{theme === "dark" ? "Light mode" : "Dark mode"}</span>}
+            {!collapsed && <span>{theme === "dark" ? "Mod Luminos" : "Mod Întunecat"}</span>}
           </button>
         )}
 

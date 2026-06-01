@@ -34,10 +34,10 @@ interface InstagramPost {
 }
 
 const MONTHS_EN = [
-  "January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December",
+  "Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie",
+  "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie",
 ];
-const DAYS_EN = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAYS_EN = ["Lun", "Mar", "Mie", "Joi", "Vin", "Sâm", "Dum"];
 
 const FORMATS = ["RANT", "TALKING HEAD", "TUTORIAL", "STORY TIME", "TREND", "BTS", "LIST"];
 
@@ -210,17 +210,17 @@ export default function CalendarPage() {
         <div className="flex items-start justify-between mb-8">
           <div>
             <h1 className="text-2xl font-bold text-white tracking-tight">
-              Content Calendar
+              Calendar de Conținut
             </h1>
             <p className="text-zinc-500 text-sm mt-1">
-              See what you&apos;ve posted and plan what&apos;s coming next.
+              Vezi ce ai postat și planifică ce urmează.
             </p>
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
             {/* Postsweek selector */}
             <div className="flex items-center gap-1.5 border border-white/[0.06] rounded-lg px-3 py-2">
-              <span className="text-zinc-500 text-[12px]">Postsweek:</span>
+              <span className="text-zinc-500 text-[12px]">Postări/săpt.:</span>
               <button onClick={() => setPostsPerWeek(p => Math.max(1, p - 1))} className="text-zinc-500 hover:text-zinc-200 w-5 h-5 flex items-center justify-center">−</button>
               <span className="text-white text-[13px] font-semibold w-4 text-center">{postsPerWeek}</span>
               <button onClick={() => setPostsPerWeek(p => Math.min(7, p + 1))} className="text-zinc-500 hover:text-zinc-200 w-5 h-5 flex items-center justify-center">+</button>
@@ -244,7 +244,7 @@ export default function CalendarPage() {
               disabled={generating}
               className="bg-[#C0392B] text-white text-[13px] font-medium px-4 py-2 rounded-lg hover:bg-[#a93226] transition-colors disabled:opacity-50"
             >
-              {generating ? "Generating..." : "Plan this month"}
+              {generating ? "Se generează..." : "Planifică luna asta"}
             </button>
 
             {/* Add Idea */}
@@ -252,7 +252,7 @@ export default function CalendarPage() {
               onClick={() => openAddModal(toDateStr(today.getDate()))}
               className="bg-[#1a1a1a] border border-white/[0.06] text-zinc-300 text-[13px] px-3 py-2 rounded-lg hover:bg-white/5 transition-colors"
             >
-              + Add Idea
+              + Adaugă Idee
             </button>
           </div>
         </div>
@@ -408,15 +408,15 @@ export default function CalendarPage() {
           <div className="flex items-center gap-5 mt-4 text-[11px] text-zinc-600">
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-[#C0392B]" />
-              Manual idea
+              Idee manuală
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-blue-500" />
-              AI planned
+              Planificat de AI
             </span>
             <span className="flex items-center gap-1.5">
               <span className="w-8 h-3 rounded-sm bg-[#1a1a1a] border border-white/10" />
-              Posted reel
+              Reel postat
             </span>
           </div>
         )}
@@ -445,9 +445,9 @@ export default function CalendarPage() {
                       <img src={`/api/img-proxy?url=${encodeURIComponent(post.thumbnail_url)}`} alt="" className="w-full h-full object-cover" onError={e => { e.currentTarget.style.display = "none"; }} />
                     ) : <div className="w-full h-full flex items-center justify-center text-zinc-700 text-[10px]">—</div>}
                   </div>
-                  <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono shrink-0">Posted</span>
+                  <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono shrink-0">Postat</span>
                   <span className="text-[11px] text-zinc-600 font-mono shrink-0">{post.posted_at?.slice(0, 10)}</span>
-                  <p className="text-[12px] text-zinc-400 flex-1 min-w-0 truncate">{post.caption ?? "No caption"}</p>
+                  <p className="text-[12px] text-zinc-400 flex-1 min-w-0 truncate">{post.caption ?? "Fără caption"}</p>
                   <div className="flex items-center gap-4 shrink-0 text-[11px] text-zinc-500">
                     {post.views != null && <span className="font-mono">{formatViews(post.views)} views</span>}
                     {post.likes != null && <span className="font-mono">{formatViews(post.likes)} likes</span>}
@@ -496,7 +496,7 @@ export default function CalendarPage() {
             <div className="flex items-start justify-between mb-5">
               <div>
                 <h2 className="text-[16px] font-semibold text-white">
-                  Add your own idea
+                  Adaugă ideea ta
                 </h2>
                 <p className="text-[12px] text-zinc-500 mt-0.5 font-mono">
                   {modalDate}
@@ -523,13 +523,13 @@ export default function CalendarPage() {
                     disabled={hookLoading || !contentBrief.trim()}
                     className="px-2.5 py-1 text-[10px] bg-[#C0392B]/10 border border-[#C0392B]/20 text-[#C0392B] rounded-lg hover:bg-[#C0392B]/20 transition-colors disabled:opacity-40 whitespace-nowrap font-medium"
                   >
-                    {hookLoading ? "Generating..." : "Generate Hook"}
+                    {hookLoading ? "Se generează..." : "Generează Hook"}
                   </button>
                 </div>
                 <textarea
                   value={hook}
                   onChange={(e) => setHook(e.target.value)}
-                  placeholder="The opening line that stops the scroll..."
+                  placeholder="Linia de deschidere care oprește scrollul..."
                   rows={3}
                   className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-3 py-2.5 rounded-lg focus:outline-none focus:border-[#C0392B]/40 placeholder:text-zinc-700 resize-none transition-colors"
                 />
@@ -570,12 +570,12 @@ export default function CalendarPage() {
               {/* BRIEF */}
               <div>
                 <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1.5">
-                  BRIEF / CONTENT NOTE
+                  BRIEF / NOTĂ CONȚINUT
                 </label>
                 <textarea
                   value={contentBrief}
                   onChange={(e) => setContentBrief(e.target.value)}
-                  placeholder="What's the story, angle, or key point of this video?"
+                  placeholder="Care e unghiul, povestea sau ideea cheie a acestui video?"
                   rows={2}
                   className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-3 py-2.5 rounded-lg focus:outline-none focus:border-[#C0392B]/40 placeholder:text-zinc-700 resize-none transition-colors"
                 />
@@ -584,7 +584,7 @@ export default function CalendarPage() {
               {/* CONTENT PILLAR */}
               <div>
                 <label className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono block mb-1.5">
-                  CONTENT PILLAR
+                  PILON DE CONȚINUT
                 </label>
                 <input
                   type="text"
@@ -602,14 +602,14 @@ export default function CalendarPage() {
                 onClick={() => setShowAddModal(false)}
                 className="flex-1 text-[13px] text-zinc-500 border border-white/10 py-2.5 rounded-lg hover:bg-white/5 transition-colors"
               >
-                Cancel
+                Anulează
               </button>
               <button
                 onClick={handleAddIdea}
                 disabled={!hook.trim()}
                 className="flex-1 text-[13px] bg-[#C0392B] text-white font-medium py-2.5 rounded-lg hover:bg-[#a93226] transition-colors disabled:opacity-40"
               >
-                Add to calendar
+                Adaugă în calendar
               </button>
             </div>
           </div>
@@ -630,23 +630,23 @@ export default function CalendarPage() {
               <>
                 <div className="text-4xl mb-3">✓</div>
                 <h2 className="text-white text-[18px] font-semibold mb-2">
-                  Plan generated!
+                  Plan generat!
                 </h2>
                 <p className="text-zinc-500 text-[13px]">
-                  Your content calendar has been filled in.
+                  Calendarul de conținut a fost completat.
                 </p>
               </>
             ) : (
               <>
                 <h2 className="text-white text-[18px] font-semibold mb-2">
-                  Plan this month
+                  Planifică luna asta
                 </h2>
                 <p className="text-zinc-500 text-[13px] mb-6 leading-relaxed">
-                  AI will generate a full content plan for{" "}
+                  AI va genera un plan complet de conținut pentru{" "}
                   <span className="text-zinc-300 font-medium">
                     {MONTHS_EN[month]} {year}
                   </span>
-                  , distributing ideas across all free days. Existing ideas won&apos;t be replaced.
+                  , distribuind idei pe toate zilele libere. Ideile existente nu vor fi înlocuite.
                 </p>
                 <div className="flex gap-3">
                   <button
@@ -654,14 +654,14 @@ export default function CalendarPage() {
                     disabled={planLoading}
                     className="flex-1 text-[13px] text-zinc-500 border border-white/10 py-2.5 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-40"
                   >
-                    Cancel
+                    Anulează
                   </button>
                   <button
                     onClick={handlePlanMonth}
                     disabled={planLoading}
                     className="flex-1 text-[13px] bg-[#C0392B] text-white font-medium py-2.5 rounded-lg hover:bg-[#a93226] transition-colors disabled:opacity-50"
                   >
-                    {planLoading ? "Generating..." : "Generate plan"}
+                    {planLoading ? "Se generează..." : "Generează plan"}
                   </button>
                 </div>
               </>
@@ -721,7 +721,7 @@ export default function CalendarPage() {
               onClick={() => handleRemoveIdea(selectedIdea)}
               className="text-[11px] text-[#C0392B] border border-[#C0392B]/20 px-3 py-1.5 rounded-lg hover:bg-[#C0392B]/10 transition-colors"
             >
-              Remove from calendar
+              Șterge din calendar
             </button>
           </div>
         </div>
@@ -742,13 +742,13 @@ export default function CalendarPage() {
                     <img src={`/api/img-proxy?url=${encodeURIComponent(selectedPost.thumbnail_url)}`} alt=""
                       className="w-full h-full object-cover"
                       onError={(e) => { e.currentTarget.style.display = "none"; }} />
-                  ) : <span className="text-zinc-700 text-[11px]">No preview</span>}
+                  ) : <span className="text-zinc-700 text-[11px]">Fără preview</span>}
                 </div>
 
                 {/* Caption complet */}
                 <div>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">Posted</span>
+                    <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono">Postat</span>
                     {selectedPost.posted_at && <span className="text-[11px] text-zinc-600 font-mono">{selectedPost.posted_at.slice(0, 10)}</span>}
                   </div>
                   {selectedPost.caption && (
@@ -821,7 +821,7 @@ export default function CalendarPage() {
               ) : <span className="text-zinc-700 text-[9px]">—</span>}
             </div>
 
-            <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono shrink-0">Posted</span>
+            <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono shrink-0">Postat</span>
             {selectedPost.posted_at && <span className="text-[11px] text-zinc-600 font-mono shrink-0">{selectedPost.posted_at.slice(0, 10)}</span>}
 
             <p className="text-zinc-400 text-[12px] flex-1 min-w-0 truncate">{selectedPost.caption}</p>

@@ -92,26 +92,26 @@ export default function ReelCopyPage() {
       {/* Header */}
       <div className="mb-8">
         <p className="text-[10px] font-mono uppercase tracking-[0.2em] text-zinc-500 mb-1">
-          REEL ANALYSER
+          ANALIZOR REEL
         </p>
         <h1 className="text-[28px] font-semibold text-zinc-100 tracking-tight mb-1">
-          Reel Copy Tool
+          Analizor Reel
         </h1>
         <p className="text-[13px] text-zinc-500 leading-relaxed max-w-[620px]">
-          Drop an Instagram reel → get a full AI breakdown, personalized adaptation advice, and a rewritten hook for your niche.
+          Aruncă un reel Instagram → primești o analiză AI completă, sfaturi de adaptare și un hook rescris pentru nișa ta.
         </p>
       </div>
 
       {/* Tabs */}
       <div className="flex border-b border-white/8 mb-6">
         <button className={tabStyle("url")} onClick={() => setTab("url")}>
-          ✦ Instagram URL
+          ✦ URL Instagram
         </button>
         <button className={tabStyle("transcript")} onClick={() => setTab("transcript")}>
-          Paste Transcript
+          Lipește Transcript
         </button>
         <button className={tabStyle("audio")} onClick={() => setTab("audio")}>
-          Upload Audio
+          Încarcă Audio
         </button>
       </div>
 
@@ -122,7 +122,7 @@ export default function ReelCopyPage() {
           <div className="space-y-3">
             <div>
               <label className="block text-[11px] font-mono uppercase tracking-widest text-zinc-500 mb-2">
-                Instagram Reel URL
+                URL Reel Instagram
               </label>
               <input
                 type="url"
@@ -134,14 +134,14 @@ export default function ReelCopyPage() {
               />
             </div>
             <p className="text-[12px] text-zinc-600 leading-relaxed">
-              Paste any public Instagram reel link. The AI will immediately transcribe it, score it, and tell you exactly how to adapt it for your voice and niche — or whether it&apos;s even worth adapting at all.
+              Lipește orice link public de reel Instagram. AI-ul va transcrie, scora și îți va spune exact cum să-l adaptezi pentru vocea și nișa ta.
             </p>
             <button
               onClick={handleFetchUrl}
               disabled={fetchingUrl || loading || !reelUrl.trim()}
               className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-300 text-[13px] font-medium py-3 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {fetchingUrl ? "Fetching reel… (~60s)" : loading ? "Analysing…" : "Analyse Reel"}
+              {fetchingUrl ? "Se preia reel-ul… (~60s)" : loading ? "Se analizează…" : "Analizează Reel"}
             </button>
           </div>
         )}
@@ -152,7 +152,7 @@ export default function ReelCopyPage() {
             <textarea
               value={transcript}
               onChange={(e) => setTranscript(e.target.value)}
-              placeholder="Paste the full transcript or script of the reel you want to analyse…"
+              placeholder="Lipește transcriptul complet sau scriptul reel-ului pe care vrei să-l analizezi…"
               rows={8}
               className="w-full bg-[#111111] border border-white/10 text-zinc-200 text-[13px] px-4 py-3 rounded-lg focus:outline-none focus:border-white/20 placeholder:text-zinc-700 resize-none transition-colors"
             />
@@ -161,7 +161,7 @@ export default function ReelCopyPage() {
               disabled={loading || transcript.trim().length < 30}
               className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-300 text-[13px] font-medium py-3 rounded-lg hover:bg-white/5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {loading ? "Analysing…" : "Analyse Reel"}
+              {loading ? "Se analizează…" : "Analizează Reel"}
             </button>
           </div>
         )}
@@ -230,7 +230,7 @@ export default function ReelCopyPage() {
         <div className="text-center py-16">
           <p className="text-[40px] opacity-[0.06] mb-3 select-none">◈</p>
           <p className="text-zinc-700 text-[12px]">
-            No reel analysed yet. Paste a URL or transcript above.
+            Niciun reel analizat încă. Lipește un URL sau un transcript mai sus.
           </p>
         </div>
       )}
@@ -248,7 +248,7 @@ export default function ReelCopyPage() {
             ))}
           </div>
           <p className="text-zinc-600 text-[12px] font-mono">
-            {fetchingUrl ? "Fetching reel from Instagram…" : "Analysing reel…"}
+            {fetchingUrl ? "Se preia reel-ul de pe Instagram…" : "Se analizează reel-ul…"}
           </p>
         </div>
       )}
@@ -272,7 +272,7 @@ export default function ReelCopyPage() {
             </div>
             <div>
               <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600 mb-1">
-                Score
+                Scor
               </p>
               <p className="text-[52px] font-bold text-zinc-100 leading-none">
                 {analysis.score}
@@ -283,7 +283,7 @@ export default function ReelCopyPage() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600">
-                    Performance
+                    Performanță
                   </p>
                   <p className="text-[11px] text-zinc-500">{analysis.score}</p>
                 </div>
@@ -292,7 +292,7 @@ export default function ReelCopyPage() {
               <div>
                 <div className="flex items-center justify-between mb-1.5">
                   <p className="text-[10px] font-mono uppercase tracking-widest text-zinc-600">
-                    Script Quality
+                    Calitate Script
                   </p>
                   <p className="text-[11px] text-zinc-500">{analysis.hook_score}</p>
                 </div>
@@ -379,7 +379,7 @@ export default function ReelCopyPage() {
                 onClick={copyHook}
                 className="text-[12px] text-built-red border border-built-red/30 px-4 py-2 rounded-lg hover:bg-built-red/10 transition-colors"
               >
-                {copied ? "✓ Copied" : "Copy Hook"}
+                {copied ? "✓ Copiat" : "Copiază Hook"}
               </button>
               <button className="text-[12px] text-zinc-500 border border-white/10 px-4 py-2 rounded-lg hover:bg-white/5 transition-colors">
                 Save to Idea Bank

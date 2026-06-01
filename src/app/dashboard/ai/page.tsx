@@ -76,7 +76,7 @@ function AskAIContent() {
       {/* Left panel — Quick Questions, fixed 240px */}
       <div className="w-[240px] shrink-0 border-r border-white/[0.06] p-4 flex flex-col gap-1.5 overflow-y-auto">
         <p className="text-[10px] font-semibold tracking-widest text-zinc-500 uppercase mb-3">
-          QUICK QUESTIONS
+          ÎNTREBĂRI RAPIDE
         </p>
         {QUICK_QUESTIONS.map((q) => (
           <button
@@ -115,8 +115,7 @@ function AskAIContent() {
                   Ask BUILT AI anything
                 </p>
                 <p className="text-[13px] text-zinc-500 text-center max-w-xs leading-relaxed">
-                  Get personalized advice on growing your Instagram, writing
-                  better content, and converting followers to clients.
+                  Primești sfaturi personalizate pentru creșterea pe Instagram, conținut mai bun și conversia followerilor în clienți.
                 </p>
               </div>
             </div>
@@ -170,7 +169,7 @@ function AskAIContent() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={loading}
-                placeholder="Ask BUILT AI anything..."
+                placeholder="Întreabă BUILT AI orice..."
                 rows={1}
                 className="flex-1 bg-transparent text-[13px] text-zinc-100 placeholder-zinc-600 resize-none outline-none max-h-32 disabled:opacity-50"
               />
@@ -195,7 +194,7 @@ function AskAIContent() {
               </button>
             </div>
             <p className="text-[10px] text-zinc-600 text-center mt-2">
-              Enter to send · Shift+Enter for new line
+              Enter pentru trimitere · Shift+Enter pentru linie nouă
             </p>
           </div>
         </div>
