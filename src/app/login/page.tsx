@@ -62,7 +62,7 @@ export default function LoginPage() {
           </form>
         </div>
         <p className="text-center text-[11px] text-zinc-700 mt-6">
-          BUILT AI Command Center · v0.2
+          BUILT AI Command Center
         </p>
       </div>
     </div>
