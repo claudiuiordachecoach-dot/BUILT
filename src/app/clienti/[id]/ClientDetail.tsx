@@ -22,7 +22,7 @@ const TABS = [
 
 export function ClientDetail({ client, initialCheckins }: { client: Client; initialCheckins: CheckIn[] }) {
   const [checkins, setCheckins] = useState(initialCheckins);
-  const [form, setForm] = useState({ training: 80, nutrition: 80, energy: 7, mood: 7, notes: "" });
+  const [form, setForm] = useState({ training: 80, nutrition: 80, energy: 7, mood: 7, sleep: 7.5, hydration: 2.5, stress: 4, notes: "" });
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -37,8 +37,8 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
   function handleCheckin() {
     setError(null); setFeedback(null);
     startTransition(async () => {
-      const r = await submitCheckin(client.id, { week: currentWeek, training: form.training, nutrition: form.nutrition, energy: form.energy, mood: form.mood, notes: form.notes });
-      if (r.ok) { setFeedback(r.feedback); setCheckins((prev) => [{ id: Date.now(), client_id: client.id, week_number: currentWeek, training_adherence: form.training, nutrition_adherence: form.nutrition, energy_level: form.energy, mood: form.mood, notes: form.notes, ai_feedback: r.feedback, created_at: new Date().toISOString() }, ...prev]); }
+      const r = await submitCheckin(client.id, { week: currentWeek, training: form.training, nutrition: form.nutrition, energy: form.energy, mood: form.mood, sleep: form.sleep, hydration: form.hydration, stress: form.stress, notes: form.notes });
+      if (r.ok) { setFeedback(r.feedback); setCheckins((prev) => [{ id: Date.now(), client_id: client.id, week_number: currentWeek, training_adherence: form.training, nutrition_adherence: form.nutrition, energy_level: form.energy, mood: form.mood, sleep_hours: form.sleep, hydration_l: form.hydration, stress_level: form.stress, notes: form.notes, ai_feedback: r.feedback, created_at: new Date().toISOString() }, ...prev]); }
       else setError(r.error);
     });
   }
@@ -49,7 +49,7 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
   }
 
   return (
-    <div>
+    <div className="max-w-4xl mx-auto px-8 pb-12">
       <div className="flex items-end justify-between mb-6">
         <div>
           <h1 className="font-display text-4xl tracking-wider text-built-white">{client.name}</h1>
@@ -116,15 +116,49 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
         <>
           <div className="p-6 bg-built-gray-1 border border-built-gray-2 rounded-sm mb-6">
             <h3 className="font-display text-xl tracking-wider mb-4">Check-in săptămâna {currentWeek}</h3>
-            <div className="grid grid-cols-2 gap-4 mb-4">
-              {[["Antrenament", "training", 100], ["Nutriție", "nutrition", 100], ["Energie", "energy", 10], ["Dispoziție", "mood", 10]].map(([l, k, max]) => (
+            <div className="grid grid-cols-2 gap-x-6 gap-y-4 mb-4">
+              {/* Row 1 — Aderență */}
+              {([
+                ["Antrenament", "training", 0, 100, "%"],
+                ["Nutriție",    "nutrition", 0, 100, "%"],
+              ] as [string, string, number, number, string][]).map(([l, k, min, max, unit]) => (
                 <div key={k}>
                   <div className="flex justify-between mb-1">
                     <p className="font-condensed text-[10px] text-built-gray-text uppercase">{l}</p>
-                    <span className="font-condensed text-[10px] text-built-red">{(form as unknown as Record<string, number>)[k as string]}{max === 100 ? "%" : "/10"}</span>
+                    <span className="font-condensed text-[10px] text-built-red">{(form as unknown as Record<string, number>)[k]}{unit}</span>
                   </div>
-                  <input type="range" min={0} max={max as number} value={(form as unknown as Record<string, number>)[k as string]}
-                    onChange={(e) => setForm((f) => ({ ...f, [k as string]: Number(e.target.value) }))}
+                  <input type="range" min={min} max={max} step={5} value={(form as unknown as Record<string, number>)[k]}
+                    onChange={(e) => setForm((f) => ({ ...f, [k]: Number(e.target.value) }))}
+                    className="w-full accent-built-red" />
+                </div>
+              ))}
+              {/* Row 2 — Energie + Somn */}
+              {([
+                ["Energie",  "energy",    1, 10,  "/10"],
+                ["Somn",     "sleep",     0, 12,  " ore"],
+              ] as [string, string, number, number, string][]).map(([l, k, min, max, unit]) => (
+                <div key={k}>
+                  <div className="flex justify-between mb-1">
+                    <p className="font-condensed text-[10px] text-built-gray-text uppercase">{l}</p>
+                    <span className="font-condensed text-[10px] text-built-red">{(form as unknown as Record<string, number>)[k]}{unit}</span>
+                  </div>
+                  <input type="range" min={min} max={max} step={k === "sleep" ? 0.5 : 1} value={(form as unknown as Record<string, number>)[k]}
+                    onChange={(e) => setForm((f) => ({ ...f, [k]: Number(e.target.value) }))}
+                    className="w-full accent-built-red" />
+                </div>
+              ))}
+              {/* Row 3 — Hidratare + Stres */}
+              {([
+                ["Hidratare", "hydration", 0, 5,   "L"],
+                ["Stres",     "stress",    1, 10,  "/10"],
+              ] as [string, string, number, number, string][]).map(([l, k, min, max, unit]) => (
+                <div key={k}>
+                  <div className="flex justify-between mb-1">
+                    <p className="font-condensed text-[10px] text-built-gray-text uppercase">{l}</p>
+                    <span className="font-condensed text-[10px] text-built-red">{(form as unknown as Record<string, number>)[k]}{unit}</span>
+                  </div>
+                  <input type="range" min={min} max={max} step={k === "hydration" ? 0.25 : 1} value={(form as unknown as Record<string, number>)[k]}
+                    onChange={(e) => setForm((f) => ({ ...f, [k]: Number(e.target.value) }))}
                     className="w-full accent-built-red" />
                 </div>
               ))}
@@ -154,12 +188,14 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
               <div className="space-y-3">
                 {checkins.map((c) => (
                   <div key={c.id} className="p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
-                    <div className="flex items-center gap-4 mb-2">
-                      <span className="font-condensed text-xs text-built-red">Săptămâna {c.week_number}</span>
+                    <div className="flex items-center flex-wrap gap-3 mb-2">
+                      <span className="font-condensed text-xs text-built-red">Săpt. {c.week_number}</span>
                       <span className="font-condensed text-[10px] text-built-gray-text">Antren: {c.training_adherence}%</span>
                       <span className="font-condensed text-[10px] text-built-gray-text">Nutriție: {c.nutrition_adherence}%</span>
                       <span className="font-condensed text-[10px] text-built-gray-text">Energie: {c.energy_level}/10</span>
-                      <span className="font-condensed text-[10px] text-built-gray-text">Dispoziție: {c.mood}/10</span>
+                      {c.sleep_hours != null && <span className="font-condensed text-[10px] text-built-gray-text">Somn: {c.sleep_hours}h</span>}
+                      {c.hydration_l != null && <span className="font-condensed text-[10px] text-built-gray-text">Hidratare: {c.hydration_l}L</span>}
+                      {c.stress_level != null && <span className="font-condensed text-[10px] text-built-gray-text">Stres: {c.stress_level}/10</span>}
                     </div>
                     {c.notes && <p className="text-xs text-built-white/70 mb-2">Note: {c.notes}</p>}
                     {c.ai_feedback && <p className="text-xs text-built-gray-text border-t border-built-gray-2/50 pt-2">{c.ai_feedback}</p>}

@@ -29,6 +29,7 @@ export interface CheckIn {
   id: number; client_id: number; week_number: number;
   training_adherence: number; nutrition_adherence: number;
   energy_level: number; mood: number;
+  sleep_hours: number | null; hydration_l: number | null; stress_level: number | null;
   notes: string | null; ai_feedback: string | null; created_at: string;
 }
 
@@ -65,7 +66,7 @@ export async function createClient(name: string, startDate: string, objectives: 
 
 export type CheckInResult = { ok: true; feedback: string } | { ok: false; error: string };
 
-export async function submitCheckin(clientId: number, data: { week: number; training: number; nutrition: number; energy: number; mood: number; notes: string }): Promise<CheckInResult> {
+export async function submitCheckin(clientId: number, data: { week: number; training: number; nutrition: number; energy: number; mood: number; sleep: number; hydration: number; stress: number; notes: string }): Promise<CheckInResult> {
   const s = getSupabaseServer();
   const client = await getClient(clientId);
   if (!client) return { ok: false, error: "Client negăsit." };
@@ -81,7 +82,9 @@ export async function submitCheckin(clientId: number, data: { week: number; trai
 - Antrenament: ${data.training}% aderență
 - Nutriție: ${data.nutrition}% aderență
 - Energie: ${data.energy}/10
-- Dispoziție: ${data.mood}/10
+- Somn: ${data.sleep} ore
+- Hidratare: ${data.hydration}L
+- Stres: ${data.stress}/10
 - Note: "${data.notes || "—"}"
 
 ## Obiective client: ${client.objectives || "—"}
@@ -107,7 +110,7 @@ Răspunde cu un mesaj scurt (3-5 propoziții) în vocea BUILT. Direct, uman, fă
     const textBlock = message.content.find((b) => b.type === "text");
     const feedback = textBlock?.type === "text" ? textBlock.text : "Check-in înregistrat.";
 
-    await s.from("client_checkins").insert({ client_id: clientId, week_number: data.week, training_adherence: data.training, nutrition_adherence: data.nutrition, energy_level: data.energy, mood: data.mood, notes: data.notes || null, ai_feedback: feedback });
+    await s.from("client_checkins").insert({ client_id: clientId, week_number: data.week, training_adherence: data.training, nutrition_adherence: data.nutrition, energy_level: data.energy, mood: data.mood, sleep_hours: data.sleep, hydration_l: data.hydration, stress_level: data.stress, notes: data.notes || null, ai_feedback: feedback });
     await s.from("clients").update({ status: newStatus }).eq("id", clientId);
 
     revalidatePath(`/clienti/${clientId}`);
