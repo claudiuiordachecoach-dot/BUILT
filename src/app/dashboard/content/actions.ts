@@ -84,6 +84,43 @@ export async function scrapeCompetitors() {
   return { scraped: total };
 }
 
+export async function listWeeklyPackages(): Promise<{ id: number; week_of: string; created_at: string }[]> {
+  try {
+    const supabase = getSupabaseServer({ useServiceRole: true });
+    const { data } = await supabase
+      .from("weekly_packages")
+      .select("id, week_of, created_at")
+      .order("created_at", { ascending: false })
+      .limit(12);
+    return (data ?? []) as { id: number; week_of: string; created_at: string }[];
+  } catch {
+    return [];
+  }
+}
+
+export async function getWeeklyPackageById(id: number): Promise<WeeklyPackage | null> {
+  try {
+    const supabase = getSupabaseServer({ useServiceRole: true });
+    const { data } = await supabase
+      .from("weekly_packages")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (!data) return null;
+    if (data.package_json) {
+      try { return JSON.parse(data.package_json) as WeeklyPackage; } catch {}
+    }
+    return {
+      week_of: data.week_of || new Date().toISOString().slice(0, 10),
+      generated_at: data.created_at || new Date().toISOString(),
+      intelligence_report: data.intelligence_report || { whats_popping: [], performance_last_week: [], accounts_to_watch: [] },
+      scripts: data.scripts || [],
+    };
+  } catch {
+    return null;
+  }
+}
+
 export async function getLatestWeeklyPackage(): Promise<WeeklyPackage | null> {
   try {
     const supabase = getSupabaseServer({ useServiceRole: true });

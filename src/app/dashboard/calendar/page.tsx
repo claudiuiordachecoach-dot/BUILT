@@ -77,6 +77,8 @@ export default function CalendarPage() {
   const [recommendations, setRecommendations] = useState<string[]>([]);
   const [loadingRecs, setLoadingRecs] = useState(false);
   const [expandedPanel, setExpandedPanel] = useState(false);
+  const [calendarView, setCalendarView] = useState<"grid" | "list">("grid");
+  const [postsPerWeek, setPostsPerWeek] = useState(3);
 
   // Add idea form state
   const [hook, setHook] = useState("");
@@ -215,24 +217,26 @@ export default function CalendarPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            {/* Previous nav indicator */}
-            <button className="flex items-center gap-1.5 text-zinc-400 text-[13px] px-3 py-2 rounded-lg hover:bg-white/5 border border-white/[0.06] transition-colors">
-              <span>←</span>
-              <span>Previous</span>
-            </button>
-
-            {/* Planned count */}
-            <div className="px-3 py-2 border border-white/[0.06] rounded-lg">
-              <span className="text-white text-[13px] font-semibold">{plannedCount}</span>
-              <span className="text-zinc-500 text-[13px] ml-1">planned</span>
+          <div className="flex items-center gap-2 flex-wrap">
+            {/* Postsweek selector */}
+            <div className="flex items-center gap-1.5 border border-white/[0.06] rounded-lg px-3 py-2">
+              <span className="text-zinc-500 text-[12px]">Postsweek:</span>
+              <button onClick={() => setPostsPerWeek(p => Math.max(1, p - 1))} className="text-zinc-500 hover:text-zinc-200 w-5 h-5 flex items-center justify-center">−</button>
+              <span className="text-white text-[13px] font-semibold w-4 text-center">{postsPerWeek}</span>
+              <button onClick={() => setPostsPerWeek(p => Math.min(7, p + 1))} className="text-zinc-500 hover:text-zinc-200 w-5 h-5 flex items-center justify-center">+</button>
             </div>
 
-            {/* Your Ideas */}
-            <button className="flex items-center gap-1.5 text-zinc-400 text-[13px] px-3 py-2 rounded-lg hover:bg-white/5 border border-white/[0.06] transition-colors">
-              <span>►</span>
-              <span>Your Ideas</span>
-            </button>
+            {/* View toggle */}
+            <div className="flex border border-white/[0.06] rounded-lg overflow-hidden">
+              <button
+                onClick={() => setCalendarView("grid")}
+                className={`px-3 py-2 text-[12px] transition-colors ${calendarView === "grid" ? "bg-white/10 text-zinc-200" : "text-zinc-500 hover:bg-white/5"}`}
+              >⊞ Grid</button>
+              <button
+                onClick={() => setCalendarView("list")}
+                className={`px-3 py-2 text-[12px] transition-colors ${calendarView === "list" ? "bg-white/10 text-zinc-200" : "text-zinc-500 hover:bg-white/5"}`}
+              >≡ List</button>
+            </div>
 
             {/* Plan this month */}
             <button
@@ -287,8 +291,9 @@ export default function CalendarPage() {
             ))}
           </div>
 
-          {/* Calendar grid */}
-          <div className="grid grid-cols-7">
+          {/* Calendar grid or List view */}
+          {calendarView === "list" ? null : null /* placeholder — grid below */}
+          <div className="grid grid-cols-7" style={{ display: calendarView === "list" ? "none" : undefined }}>
             {cells.map((day, idx) => {
               const dateStr = day ? toDateStr(day) : "";
               const dayIdeas = day ? getIdeasForDate(dateStr) : [];
@@ -391,21 +396,83 @@ export default function CalendarPage() {
           </div>
         </div>
 
-        {/* Legend */}
-        <div className="flex items-center gap-5 mt-4 text-[11px] text-zinc-600">
-          <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#C0392B]" />
-            Manual idea
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-blue-500" />
-            AI planned
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="w-8 h-3 rounded-sm bg-[#1a1a1a] border border-white/10" />
-            Posted reel
-          </span>
-        </div>
+        {/* Legend (grid view only) */}
+        {calendarView === "grid" && (
+          <div className="flex items-center gap-5 mt-4 text-[11px] text-zinc-600">
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-[#C0392B]" />
+              Manual idea
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-blue-500" />
+              AI planned
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="w-8 h-3 rounded-sm bg-[#1a1a1a] border border-white/10" />
+              Posted reel
+            </span>
+          </div>
+        )}
+
+        {/* ── LIST VIEW ── */}
+        {calendarView === "list" && (
+          <div className="space-y-2 mt-4">
+            {/* Posted reels */}
+            {posts
+              .filter(p => {
+                if (!p.posted_at) return false;
+                const d = new Date(p.posted_at);
+                return d.getFullYear() === year && d.getMonth() === month;
+              })
+              .sort((a, b) => (a.posted_at ?? "").localeCompare(b.posted_at ?? ""))
+              .map(post => (
+                <div
+                  key={post.instagram_id}
+                  onClick={() => { setSelectedPost(post); setExpandedPanel(false); setRecommendations([]); }}
+                  className="flex items-center gap-4 p-3 bg-[#111111] border border-white/[0.08] rounded-xl hover:border-white/20 cursor-pointer transition-colors"
+                >
+                  {/* Thumbnail */}
+                  <div className="w-12 h-12 rounded-lg overflow-hidden bg-[#1a1a1a] shrink-0">
+                    {post.thumbnail_url ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={`/api/img-proxy?url=${encodeURIComponent(post.thumbnail_url)}`} alt="" className="w-full h-full object-cover" onError={e => { e.currentTarget.style.display = "none"; }} />
+                    ) : <div className="w-full h-full flex items-center justify-center text-zinc-700 text-[10px]">—</div>}
+                  </div>
+                  <span className="text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-mono shrink-0">Posted</span>
+                  <span className="text-[11px] text-zinc-600 font-mono shrink-0">{post.posted_at?.slice(0, 10)}</span>
+                  <p className="text-[12px] text-zinc-400 flex-1 min-w-0 truncate">{post.caption ?? "No caption"}</p>
+                  <div className="flex items-center gap-4 shrink-0 text-[11px] text-zinc-500">
+                    {post.views != null && <span className="font-mono">{formatViews(post.views)} views</span>}
+                    {post.likes != null && <span className="font-mono">{formatViews(post.likes)} likes</span>}
+                  </div>
+                </div>
+              ))
+            }
+            {/* Planned ideas */}
+            {ideas
+              .filter(idea => idea.date.startsWith(`${year}-${String(month + 1).padStart(2, "0")}`))
+              .sort((a, b) => a.date.localeCompare(b.date))
+              .map(idea => (
+                <div
+                  key={idea.id}
+                  onClick={() => setSelectedIdea(idea)}
+                  className="flex items-center gap-4 p-3 bg-[#111111] border border-white/[0.08] rounded-xl hover:border-white/20 cursor-pointer transition-colors"
+                >
+                  <div className="w-12 h-12 rounded-lg bg-[#1a1a1a] shrink-0 flex items-center justify-center">
+                    <span className={`text-[9px] font-bold text-white px-1.5 py-0.5 rounded ${FORMAT_COLORS[idea.format] ?? "bg-zinc-600"}`}>{idea.format.slice(0, 6)}</span>
+                  </div>
+                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-mono shrink-0 ${idea.type === "ai" ? "bg-blue-500/10 text-blue-400 border border-blue-500/20" : "bg-built-red/10 text-built-red border border-built-red/20"}`}>{idea.type === "ai" ? "AI" : "Manual"}</span>
+                  <span className="text-[11px] text-zinc-600 font-mono shrink-0">{idea.date}</span>
+                  <p className="text-[12px] text-zinc-300 flex-1 min-w-0 truncate">{idea.hook}</p>
+                  <span className="text-[10px] text-zinc-600 shrink-0">{idea.cta}</span>
+                </div>
+              ))
+            }
+            {posts.filter(p => { const d = p.posted_at ? new Date(p.posted_at) : null; return d && d.getFullYear() === year && d.getMonth() === month; }).length === 0 && ideas.filter(i => i.date.startsWith(`${year}-${String(month + 1).padStart(2, "0")}`)).length === 0 && (
+              <div className="text-center py-12 text-zinc-600 text-[13px]">Nicio postare sau idee pentru {MONTHS_EN[month]} {year}</div>
+            )}
+          </div>
+        )}
       </div>
 
       {/* ── ADD IDEA MODAL ── */}

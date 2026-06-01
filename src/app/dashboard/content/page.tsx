@@ -9,6 +9,8 @@ import {
   generateWeeklyPackageAI,
   generateSingleScript,
   getLatestWeeklyPackage,
+  listWeeklyPackages,
+  getWeeklyPackageById,
   type WeeklyScript,
   type WeeklyPackage,
 } from "./actions";
@@ -252,9 +254,20 @@ function ReelCard({
 
 // ─── Script Card ──────────────────────────────────────────────────────────────
 
+function CopyButton({ text, label = "Copy" }: { text: string; label?: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
+      className="text-[10px] text-zinc-500 border border-white/10 px-2 py-0.5 rounded hover:bg-white/5 hover:text-zinc-300 transition-colors shrink-0"
+    >
+      {copied ? "✓" : label}
+    </button>
+  );
+}
+
 function ScriptCard({ script, index }: { script: WeeklyScript; index: number }) {
   const [open, setOpen] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   const COLORS = ["bg-orange-500","bg-purple-600","bg-teal-600","bg-blue-600","bg-built-red","bg-emerald-600","bg-amber-600"];
 
@@ -273,33 +286,50 @@ function ScriptCard({ script, index }: { script: WeeklyScript; index: number }) 
 
       {open && (
         <div className="px-5 pb-5 border-t border-white/5 pt-4 space-y-4">
+          {/* HOOK */}
           <div>
-            <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-2">Hook</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">Hook</p>
+              <CopyButton text={script.hook} />
+            </div>
             <div className="border-l-2 border-built-red pl-3">
               <p className="text-sm text-zinc-200 italic">&ldquo;{script.hook}&rdquo;</p>
             </div>
           </div>
+
+          {/* FULL SCRIPT */}
           <div>
-            <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-2">Full Script</p>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">Full Script</p>
+              <CopyButton text={script.full_script} />
+            </div>
             <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">{script.full_script}</p>
           </div>
+
+          {/* CAPTION */}
           {script.caption && (
             <div>
-              <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-2">Caption</p>
+              <div className="flex items-center justify-between mb-2">
+                <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest">Caption</p>
+                <CopyButton text={script.caption} />
+              </div>
               <p className="text-sm text-zinc-400 leading-relaxed">{script.caption}</p>
             </div>
           )}
-          <div className="flex items-center justify-between pt-1">
-            <p className="text-sm text-built-red font-medium">{script.cta}</p>
-            <button
-              onClick={() => { navigator.clipboard.writeText(`HOOK:\n${script.hook}\n\nSCRIPT:\n${script.full_script}\n\nCAPTION:\n${script.caption}\n\nCTA: ${script.cta}`); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-              className="text-[12px] text-zinc-400 hover:text-zinc-100 border border-white/10 px-3 py-1.5 rounded-lg transition-colors"
-            >
-              {copied ? "✓ Copiat" : "Copy"}
-            </button>
+
+          {/* CTA */}
+          <div className="flex items-center justify-between pt-1 border-t border-white/5">
+            <div className="flex-1 min-w-0 mr-3">
+              <p className="text-[10px] font-semibold text-zinc-600 uppercase tracking-widest mb-1">CTA</p>
+              <p className="text-sm text-built-red font-medium">{script.cta}</p>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <CopyButton text={script.cta} label="Copy CTA" />
+              <CopyButton text={`HOOK:\n${script.hook}\n\nSCRIPT:\n${script.full_script}\n\nCAPTION:\n${script.caption}\n\nCTA: ${script.cta}`} label="Copy All" />
+            </div>
           </div>
 
-          {/* Competitor comments that inspired this script */}
+          {/* Competitor comments */}
           {script.competitor_comments && script.competitor_comments.length > 0 && (
             <div className="border-t border-white/5 pt-4 space-y-2">
               <p className="text-[10px] text-zinc-700 uppercase tracking-widest font-mono">Din audiența competitorilor</p>
@@ -342,6 +372,8 @@ export default function ContentPage() {
   const [genPilon, setGenPilon] = useState("Pilon B — Base Strength");
   const [genLoading, setGenLoading] = useState(false);
   const [quickScripts, setQuickScripts] = useState<WeeklyScript[]>([]);
+  const [pastPackages, setPastPackages] = useState<{ id: number; week_of: string; created_at: string }[]>([]);
+  const [selectedPkgId, setSelectedPkgId] = useState<number | "current">("current");
 
   useEffect(() => {
     listInstagramMedia(200).then(d => {
@@ -351,6 +383,7 @@ export default function ContentPage() {
     getLatestWeeklyPackage().then(pkg => {
       if (pkg) setWeeklyPkg(pkg);
     }).catch(() => null);
+    listWeeklyPackages().then(setPastPackages).catch(() => null);
   }, []);
 
   const handleSync = async () => {
@@ -401,8 +434,19 @@ export default function ContentPage() {
   const handleGeneratePkg = async () => {
     setGeneratingPkg(true);
     const result = await generateWeeklyPackageAI();
-    if (result.ok) setWeeklyPkg(result.pkg);
+    if (result.ok) {
+      setWeeklyPkg(result.pkg);
+      setSelectedPkgId("current");
+      listWeeklyPackages().then(setPastPackages).catch(() => null);
+    }
     setGeneratingPkg(false);
+  };
+
+  const handleSelectPkg = async (id: number) => {
+    if (id === (selectedPkgId as number)) return;
+    setSelectedPkgId(id);
+    const pkg = await getWeeklyPackageById(id);
+    if (pkg) setWeeklyPkg(pkg);
   };
 
   const handleGenerateSingle = async () => {
@@ -530,8 +574,36 @@ export default function ContentPage() {
               Competitor intelligence, weekly scripts, and AI-generated content strategy.
             </p>
 
-            <div className="grid grid-cols-[1fr_320px] gap-6">
-              {/* Left */}
+            <div className="grid grid-cols-[160px_1fr_300px] gap-6">
+              {/* Past Packages Sidebar */}
+              <div className="space-y-1">
+                <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-3 px-1">Packages</p>
+                <button
+                  onClick={() => setSelectedPkgId("current")}
+                  className={`w-full text-left px-3 py-2 rounded-lg text-[12px] transition-colors ${
+                    selectedPkgId === "current"
+                      ? "bg-built-red/10 text-built-red border border-built-red/20"
+                      : "text-zinc-500 hover:bg-white/5 hover:text-zinc-300"
+                  }`}
+                >
+                  This week
+                </button>
+                {pastPackages.map(p => (
+                  <button
+                    key={p.id}
+                    onClick={() => handleSelectPkg(p.id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-[12px] transition-colors ${
+                      selectedPkgId === p.id
+                        ? "bg-white/10 text-zinc-100"
+                        : "text-zinc-600 hover:bg-white/5 hover:text-zinc-400"
+                    }`}
+                  >
+                    Week of {new Date(p.week_of).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}
+                  </button>
+                ))}
+              </div>
+
+              {/* Centre — Scripts */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">This Week&apos;s Scripts</p>
@@ -549,16 +621,46 @@ export default function ContentPage() {
                 {weeklyPkg ? (
                   <div className="space-y-2">
                     {weeklyPkg.intelligence_report && (
-                      <div className="bg-[#0d0d0d] border border-white/[0.06] rounded-xl p-5 mb-4">
-                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500 mb-3">Weekly Intelligence Report</p>
+                      <div className="bg-[#0d0d0d] border border-white/[0.06] rounded-xl p-5 mb-4 space-y-4">
+                        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-500">→ Weekly Intelligence Report</p>
+
                         {weeklyPkg.intelligence_report.whats_popping?.length > 0 && (
-                          <ul className="space-y-1.5">
-                            {weeklyPkg.intelligence_report.whats_popping.map((item, i) => (
-                              <li key={i} className="text-[12px] text-zinc-300 flex gap-2">
-                                <span className="text-built-red shrink-0">▸</span>{item}
-                              </li>
-                            ))}
-                          </ul>
+                          <div>
+                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">What&apos;s Popping This Week</p>
+                            <ul className="space-y-1.5">
+                              {weeklyPkg.intelligence_report.whats_popping.map((item, i) => (
+                                <li key={i} className="text-[12px] text-zinc-300 flex gap-2">
+                                  <span className="text-built-red shrink-0">*</span>{item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {weeklyPkg.intelligence_report.performance_last_week?.length > 0 && (
+                          <div>
+                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Performance Last Week</p>
+                            <ul className="space-y-1.5">
+                              {weeklyPkg.intelligence_report.performance_last_week.map((item, i) => (
+                                <li key={i} className="text-[12px] text-zinc-400 flex gap-2">
+                                  <span className="text-zinc-600 shrink-0">—</span>{item}
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        )}
+
+                        {weeklyPkg.intelligence_report.accounts_to_watch?.length > 0 && (
+                          <div>
+                            <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">Accounts to Watch</p>
+                            <div className="flex flex-wrap gap-2">
+                              {weeklyPkg.intelligence_report.accounts_to_watch.map((item, i) => (
+                                <span key={i} className="text-[11px] text-zinc-400 bg-white/5 border border-white/10 rounded-full px-2.5 py-1">
+                                  {item}
+                                </span>
+                              ))}
+                            </div>
+                          </div>
                         )}
                       </div>
                     )}
