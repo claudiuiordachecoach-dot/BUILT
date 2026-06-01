@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BUILT — Quick Ref Antrenament · Alexandru</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blk: #0A0A0A;
+  --drk: #141414;
+  --drk2: #1A1A1A;
+  --red: #C0392B;
+  --red-dim: rgba(192,57,43,0.12);
+  --wht: #F5F5F5;
+  --muted: #777;
+  --brd: #252525;
+  --card: #111111;
+  --orange: #E67E22;
+  --green: #27AE60;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--blk);
+  color: var(--wht);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  max-width: 480px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+/* HEADER */
+.hdr {
+  background: var(--drk);
+  border-bottom: 1px solid var(--brd);
+  padding: 16px 18px 12px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.hdr-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 5px; color: var(--red); }
+.hdr-name { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+.budget-bar {
+  background: var(--red-dim);
+  border: 1px solid rgba(192,57,43,0.3);
+  border-radius: 4px;
+  padding: 6px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.budget-bar span { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--red); }
+.budget-bar strong { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--wht); }
+
+/* TABS */
+.tabs {
+  display: flex;
+  overflow-x: auto;
+  background: var(--drk2);
+  border-bottom: 1px solid var(--brd);
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+}
+.tab.active {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+
+/* PANELS */
+.panel { display: none; padding: 18px; }
+.panel.active { display: block; }
+
+/* WEEK GRID */
+.wgrid {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: 3px;
+  margin-bottom: 18px;
+}
+.wd {
+  background: var(--card);
+  border: 1px solid var(--brd);
+  padding: 8px 4px;
+  text-align: center;
+}
+.wd.on { border-color: var(--red); background: var(--red-dim); }
+.wd-n { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.wd-t { font-family: 'Bebas Neue', sans-serif; font-size: 11px; color: var(--wht); line-height: 1.2; }
+.wd.on .wd-t { color: var(--red); }
+.wd-s { font-size: 8px; color: var(--muted); margin-top: 2px; line-height: 1.2; }
+
+/* WORKOUT BLOCK */
+.phase-block {
+  background: var(--card);
+  border: 1px solid var(--brd);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.phase-hdr {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--brd);
+}
+.phase-label {
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--red);
+}
+.phase-time {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--muted);
+}
+.phase-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 15px;
+  letter-spacing: 1px;
+  color: var(--wht);
+  padding: 8px 14px 4px;
+}
+.ex-list { padding: 0 14px 12px; }
+.ex-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.ex-item:last-child { border-bottom: none; }
+.ex-name {
+  font-size: 12px;
+  color: var(--wht);
+  font-weight: 500;
+  line-height: 1.4;
+  flex: 1;
+}
+.ex-cue {
+  font-size: 10px;
+  color: var(--muted);
+  font-style: italic;
+  margin-top: 2px;
+  line-height: 1.4;
+}
+.ex-cue.warn {
+  color: var(--orange);
+  font-style: normal;
+  font-weight: 500;
+}
+.ex-sets {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--red);
+  white-space: nowrap;
+  text-align: right;
+  line-height: 1.5;
+}
+.ex-rest {
+  font-size: 9px;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* TAGS + ALERTS */
+.tag {
+  display: inline-block;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 8px;
+  border-radius: 2px;
+  margin-bottom: 10px;
+}
+.tag-red { background: var(--red-dim); color: var(--red); border: 1px solid rgba(192,57,43,0.3); }
+.tag-orange { background: rgba(230,126,34,0.1); color: var(--orange); border: 1px solid rgba(230,126,34,0.3); }
+.tag-green { background: rgba(39,174,96,0.08); color: var(--green); border: 1px solid rgba(39,174,96,0.25); }
+
+.alert-box {
+  border-left: 3px solid var(--red);
+  background: var(--red-dim);
+  padding: 10px 14px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: #ccc;
+  line-height: 1.65;
+}
+.alert-box.orange {
+  border-color: var(--orange);
+  background: rgba(230,126,34,0.07);
+}
+.alert-box.green {
+  border-color: var(--green);
+  background: rgba(39,174,96,0.06);
+}
+.alert-ttl {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 13px;
+  letter-spacing: 2px;
+  color: var(--red);
+  margin-bottom: 4px;
+}
+.alert-box.orange .alert-ttl { color: var(--orange); }
+.alert-box.green .alert-ttl { color: var(--green); }
+
+/* RULE LIST */
+.rule-list { list-style: none; margin: 10px 0; }
+.rule-list li {
+  padding: 7px 0 7px 18px;
+  position: relative;
+  font-size: 12px;
+  color: #bbb;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  line-height: 1.55;
+}
+.rule-list li::before { content: '→'; position: absolute; left: 0; color: var(--red); }
+.rule-list li strong { color: var(--wht); }
+
+/* SECTION TITLE */
+.sec-ttl {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--red);
+  margin: 18px 0 10px;
+}
+.sec-ttl:first-child { margin-top: 0; }
+
+/* STRETCH ITEM */
+.stretch-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.stretch-item:last-child { border-bottom: none; }
+.stretch-name { font-size: 12px; color: var(--wht); font-weight: 500; flex: 1; }
+.stretch-note { font-size: 10px; color: var(--muted); margin-top: 2px; }
+.stretch-dur {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--orange);
+  white-space: nowrap;
+}
+
+/* VIDEO LINK */
+.vid-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--card);
+  border: 1px solid var(--brd);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  text-decoration: none;
+  color: var(--wht);
+}
+.vid-link:hover { border-color: var(--red); }
+.vid-icon { font-size: 16px; flex-shrink: 0; }
+.vid-info { flex: 1; }
+.vid-title { font-size: 12px; font-weight: 500; color: var(--wht); }
+.vid-sub { font-size: 10px; color: var(--muted); margin-top: 1px; }
+.vid-arr { font-size: 14px; color: var(--red); }
+
+/* PROGRESS BOX */
+.prog-box {
+  background: var(--card);
+  border: 1px solid var(--brd);
+  border-left: 3px solid var(--red);
+  padding: 12px 14px;
+  margin-bottom: 10px;
+}
+.prog-label { font-size: 9px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+.prog-val { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--red); }
+.prog-note { font-size: 11px; color: #999; margin-top: 4px; line-height: 1.5; }
+
+/* HOME BADGE */
+.home-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(39,174,96,0.1);
+  border: 1px solid rgba(39,174,96,0.3);
+  border-radius: 3px;
+  padding: 3px 10px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 14px;
+}
+
+/* DIVIDER */
+.divider {
+  border: none;
+  border-top: 1px solid var(--brd);
+  margin: 14px 0;
+}
+
+/* SUPERSET TAG */
+.superset {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--orange);
+  border: 1px solid rgba(230,126,34,0.35);
+  padding: 1px 5px;
+  margin-left: 5px;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT</div>
+    <div class="hdr-name">Quick Ref · Alexandru</div>
+  </div>
+  <div class="budget-bar">
+    <span>Buget Sală</span>
+    <strong>1h10 MAX</strong>
+    <span>Stretching → Acasă</span>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('saptamana')">Săptămâna</div>
+  <div class="tab" onclick="showTab('upperA')">Upper A</div>
+  <div class="tab" onclick="showTab('lower')">Lower</div>
+  <div class="tab" onclick="showTab('upperB')">Upper B</div>
+  <div class="tab" onclick="showTab('warmup')">Mobilitate</div>
+  <div class="tab" onclick="showTab('stretch')">Stretching</div>
+</div>
+
+<!-- ==================== TAB: SĂPTĂMÂNA ==================== -->
+<div class="panel active" id="tab-saptamana">
+
+  <div class="wgrid">
+    <div class="wd on"><div class="wd-n">Lun</div><div class="wd-t">UPPER A</div><div class="wd-s">Vâslit</div></div>
+    <div class="wd"><div class="wd-n">Mar</div><div class="wd-t">Rest</div><div class="wd-s">8k pași</div></div>
+    <div class="wd on"><div class="wd-n">Mie</div><div class="wd-t">LOWER</div><div class="wd-s">Mers încl.</div></div>
+    <div class="wd"><div class="wd-n">Joi</div><div class="wd-t">Rest</div><div class="wd-s">8k pași</div></div>
+    <div class="wd on"><div class="wd-n">Vin</div><div class="wd-t">UPPER B</div><div class="wd-s">Vâslit</div></div>
+    <div class="wd"><div class="wd-n">Sâm</div><div class="wd-t">Liber</div><div class="wd-s">Familie</div></div>
+    <div class="wd"><div class="wd-n">Dum</div><div class="wd-t">Liber</div><div class="wd-s">Recovery</div></div>
+  </div>
+
+  <div class="alert-box">
+    <div class="alert-ttl">Structura Sesiunii</div>
+    Mobilitate pre: <strong>10 min</strong> → Exerciții: <strong>35 min</strong> → Cardio Zone 2: <strong>15 min</strong><br>
+    = <strong>60 min în sală</strong> + 10 min buffer<br><br>
+    Stretching post: <strong>7 min acasă</strong> (după mic dejun)
+  </div>
+
+  <div class="sec-ttl">Reguli de Sistem</div>
+  <ul class="rule-list">
+    <li><strong>Minim 1 zi de odihnă</strong> între sesiuni — întotdeauna.</li>
+    <li>Ratezi o zi? <strong>Nu compensa.</strong> Treci la ziua următoare din split.</li>
+    <li>Nu faci 2 sesiuni consecutive niciodată.</li>
+    <li>Intri la <strong>8:30–8:45</strong> → ieși până la <strong>9:30–9:45</strong>.</li>
+    <li>Stretchingul se face <strong>acasă</strong>, după micul dejun, nu în sală.</li>
+  </ul>
+
+  <div class="sec-ttl">NEAT — Pași Zilnici</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+    <div class="prog-box">
+      <div class="prog-label">Target normal</div>
+      <div class="prog-val">8.000</div>
+      <div class="prog-note">Pași/zi, distribuit pe tot parcursul zilei</div>
+    </div>
+    <div class="prog-box" style="border-color: var(--orange);">
+      <div class="prog-label">Zi cu haos</div>
+      <div class="prog-val" style="color:var(--orange);">4.000</div>
+      <div class="prog-note">Minimul absolut. Sub asta = sedentarism complet.</div>
+    </div>
+  </div>
+
+  <div class="alert-box green">
+    <div class="alert-ttl">Progresie — Regula Simplă</div>
+    Dacă la ultimele 2 rep din ultima serie tehnica e bună și efortul e <strong>7/10 sau mai mic</strong> → la următorul antrenament:<br><br>
+    Picioare: <strong>+2.5 kg</strong> · Trenul Superior: <strong>+1–2 kg</strong> · Accesorii: <strong>+1 kg sau +rep</strong>
+  </div>
+
+</div>
+
+<!-- ==================== TAB: UPPER A ==================== -->
+<div class="panel" id="tab-upperA">
+
+  <div class="tag tag-red">Zi 1 — Luni · Piept · Umeri · Spate · Brațe</div>
+
+  <!-- MOBILITATE PRE -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🔥 Mobilitate Pre</div>
+      <div class="phase-time">10 min</div>
+    </div>
+    <div class="phase-title">Warm-Up Cardiac + Activare</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Bicicletă staționară ușoară</div>
+        <div class="ex-sets">5 min</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Rotații de umeri față + spate</div>
+        <div class="ex-sets">2 × 10</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Band pull-aparts cu elastic</div>
+        <div class="ex-sets">2 × 15</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Cat-Cow + rotații toracice pe genunchi</div>
+        <div class="ex-sets">2 × 8</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCIȚII PRINCIPALE -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">💪 Exerciții</div>
+      <div class="phase-time">35 min</div>
+    </div>
+    <div class="phase-title">Piept · Spate · Umeri · Brațe</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">1. Bench Press (bara sau gantere)</div>
+          <div class="ex-cue">Cobori la piept, coatele la 45°. Nu arcuiești spatele. Excentric 3 sec jos.</div>
+        </div>
+        <div>
+          <div class="ex-sets">4 × 8–10</div>
+          <div class="ex-rest">Rest 90 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">2. Lat Pulldown</div>
+          <div class="ex-cue">Bara spre piept, nu ceafă. Coatele spre șolduri. Controlezi coborârea.</div>
+        </div>
+        <div>
+          <div class="ex-sets">4 × 10–12</div>
+          <div class="ex-rest">Rest 90 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">3. Overhead Press cu gantere</div>
+          <div class="ex-cue">Core tensionat, nu arcuiești coloana. Coatele ușor în față.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 10–12</div>
+          <div class="ex-rest">Rest 75 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">4. Seated Cable Row sau Bent-over Row</div>
+          <div class="ex-cue">Cotul spre șold, nu spre tavan. Spatele drept tot timpul.</div>
+        </div>
+        <div>
+          <div class="ex-sets">4 × 10</div>
+          <div class="ex-rest">Rest 90 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">5. Face Pulls la cablu</div>
+          <div class="ex-cue">Coatele sus, la nivelul umerilor. Trage spre față. Esențial pentru postură.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 15</div>
+          <div class="ex-rest">Rest 60 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">6. Curls + Triceps Pushdown <span class="superset">Superset</span></div>
+          <div class="ex-cue">Cotul fix la curl. Extensie completă la pushdown. Zero pauză între ele.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 12</div>
+          <div class="ex-rest">Rest 60 sec</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDIO -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🚣 Cardio Zone 2</div>
+      <div class="phase-time">15 min</div>
+    </div>
+    <div class="phase-title">Vâslit sau Bicicletă</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">Vâslă ergometru — pace constant</div>
+          <div class="ex-cue">Zone 2 = poți vorbi în propoziții întregi. Dacă gâfâi — prea intens.</div>
+        </div>
+        <div class="ex-sets">15 min</div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">SAU Bicicletă staționară</div>
+          <div class="ex-cue">Nivel 6–8, 70–75% FC max</div>
+        </div>
+        <div class="ex-sets">15 min</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-badge">🏠 Stretching → Tab Stretching → Acasă</div>
+
+</div>
+
+<!-- ==================== TAB: LOWER ==================== -->
+<div class="panel" id="tab-lower">
+
+  <div class="tag tag-red">Zi 2 — Miercuri · Cvadriceps · Fesieri · Ischiogambieri · Core</div>
+
+  <!-- MOBILITATE PRE LOWER -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🔥 Mobilitate Pre</div>
+      <div class="phase-time">10 min</div>
+    </div>
+    <div class="phase-title">Activare Șolduri + Mobilitate</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Hip 90/90 pe podea — mobilitate șolduri</div>
+        <div class="ex-sets">5 rep/parte</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Banded Clamshells cu elastic</div>
+        <div class="ex-sets">2 × 15/parte</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Goblet Squat bodyweight (ținut 3 sec jos)</div>
+        <div class="ex-sets">2 × 8</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">World's Greatest Stretch (fandare + rotație toracică)</div>
+        <div class="ex-sets">5 rep/parte</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCIȚII PRINCIPALE LOWER -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">💪 Exerciții</div>
+      <div class="phase-time">35 min</div>
+    </div>
+    <div class="phase-title">Picioare + Core</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">1. Squat (Goblet cu ganteră sau Barbell la Rack)</div>
+          <div class="ex-cue">Prioritate tehnică săpt. 1–3. Adâncime 90°+. Genunchii urmează degetele.</div>
+        </div>
+        <div>
+          <div class="ex-sets">4 × 8–10</div>
+          <div class="ex-rest">Rest 120 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">2. Romanian Deadlift cu gantere sau bara</div>
+          <div class="ex-cue">Spatele drept, genunchii  ușor îndoiți. Cobori de-a lungul picioarelor. Tensiune în ischiogambieri.</div>
+        </div>
+        <div>
+          <div class="ex-sets">4 × 10</div>
+          <div class="ex-rest">Rest 90 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">3. Leg Press la aparat / Leg Extension</div>
+          <div class="ex-cue warn">⚠ Pentru Leg Press: Picioarele depărtate · Genunchii în afară · Core încordat · Fără arcuire lombară</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 12</div>
+          <div class="ex-rest">Rest 90 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">4. Leg Curl la aparat</div>
+          <div class="ex-cue">Echilibru muscular pentru protecția genunchilor. Nu neglija.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 12</div>
+          <div class="ex-rest">Rest 75 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">5. Calf Raises (aparat sau treaptă)</div>
+          <div class="ex-cue">Extensie completă sus și jos. Excentric 3 sec. Gleznele = prioritate la 109 kg.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 15–20</div>
+          <div class="ex-rest">Rest 60 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">6. Core Circuit <span class="superset">Circuit</span></div>
+          <div class="ex-cue">Plank 45 sec → Dead Bug 8/parte → Pallof Press 12/parte. Fără pauze între exerciții.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 runde</div>
+          <div class="ex-rest">Rest 60 sec</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDIO LOWER -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🚶 Cardio Zone 2</div>
+      <div class="phase-time">15 min</div>
+    </div>
+    <div class="phase-title">Mers Înclinat pe Bandă</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">Bandă 12–15% înclinare, viteza 4.5–5.5 km/h</div>
+          <div class="ex-cue">Mâinile libere — nu te agăța de mânere. Maximizezi arderea. Mersul la 15% = echivalent alergare 8 km/h, zero impact.</div>
+        </div>
+        <div class="ex-sets">15 min</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-badge">🏠 Stretching → Tab Stretching → Acasă</div>
+
+</div>
+
+<!-- ==================== TAB: UPPER B ==================== -->
+<div class="panel" id="tab-upperB">
+
+  <div class="tag tag-red">Zi 3 — Vineri · Volum Spate · Umeri Accesorii · Brațe</div>
+
+  <!-- MOBILITATE PRE UPPER B -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🔥 Mobilitate Pre</div>
+      <div class="phase-time">10 min</div>
+    </div>
+    <div class="phase-title">Activare Romboid + Umăr</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Vâslă ergometru ușoară (warm-up cardiac)</div>
+        <div class="ex-sets">5 min</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Band pull-aparts — activare romboid + scapulă</div>
+        <div class="ex-sets">2 × 20</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Rotații externe umăr cu elastic</div>
+        <div class="ex-sets">2 × 15/parte</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCIȚII UPPER B -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">💪 Exerciții</div>
+      <div class="phase-time">35 min</div>
+    </div>
+    <div class="phase-title">Volum + Accesorii</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">1. Dumbbell Row Unilateral</div>
+          <div class="ex-cue">Cotul spre șold, nu spre tavan. Cel mai bun exercițiu pentru dezechilibre stânga-dreapta.</div>
+        </div>
+        <div>
+          <div class="ex-sets">4 × 10/parte</div>
+          <div class="ex-rest">Rest 75 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">2. Incline Dumbbell Press (30–45°)</div>
+          <div class="ex-cue">Volum piept superior. Gantere mai sigure ca bara la oboseală.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 12</div>
+          <div class="ex-rest">Rest 75 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">3. Lateral Raises (ridicări laterale)</div>
+          <div class="ex-cue">Cotul ușor îndoit. Ridici până la nivelul umărului — nu mai sus (risc rotator cuff). Greutate mică e normală.</div>
+        </div>
+        <div>
+          <div class="ex-sets">4 × 15</div>
+          <div class="ex-rest">Rest 60 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">4. Rear Delt Fly (fluturări inversate)</div>
+          <div class="ex-cue">Trunchi la 45°. Coatele spre lateral. Corectează postura de corporatist. Greutate mică e normală.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 15</div>
+          <div class="ex-rest">Rest 60 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">5. Hammer Curls + Overhead Triceps Extension <span class="superset">Superset</span></div>
+          <div class="ex-cue">Priza neutră la curl. Extensie completă la triceps. Zero pauză între ele.</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 × 12</div>
+          <div class="ex-rest">Rest 60 sec</div>
+        </div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">6. Side Plank + Hollow Body Hold <span class="superset">Superset Core</span></div>
+          <div class="ex-cue">Side plank → Hollow body. Fără pauză între ele.</div>
+          <div class="ex-cue warn" style="margin-top:4px;">⏱ Side Plank: 25 sec/parte · Hollow: 20 sec — progresie treptată</div>
+        </div>
+        <div>
+          <div class="ex-sets">3 runde</div>
+          <div class="ex-rest">Rest 60 sec</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDIO UPPER B -->
+  <div class="phase-block">
+    <div class="phase-hdr">
+      <div class="phase-label">🚣 Cardio Zone 2</div>
+      <div class="phase-time">15 min</div>
+    </div>
+    <div class="phase-title">Vâslit sau Bicicletă</div>
+    <div class="ex-list">
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">Vâslă ergometru — pace conversational constant</div>
+          <div class="ex-cue">Zone 2 = poți vorbi fără să gâfâi. 15 min constant.</div>
+        </div>
+        <div class="ex-sets">15 min</div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">SAU Bicicletă staționară</div>
+          <div class="ex-cue">Nivel 6–8, 70–75% FC max</div>
+        </div>
+        <div class="ex-sets">15 min</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="home-badge">🏠 Stretching → Tab Stretching → Acasă</div>
+
+</div>
+
+<!-- ==================== TAB: MOBILITATE ==================== -->
+<div class="panel" id="tab-warmup">
+
+  <div class="tag tag-red">Mobilitate Pre-Antrenament · În Sală · 10 min</div>
+
+  <div class="alert-box">
+    <div class="alert-ttl">De Ce Nu Se Sare</div>
+    Mobilitatea pre-antrenament nu este opțională. La 109 kg, articulațiile neîncălzite sub greutate = risc real. 10 minute care protejează de accidentări.
+  </div>
+
+  <div class="sec-ttl">Upper A — Luni</div>
+  <div class="phase-block">
+    <div class="ex-list">
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">Bicicletă staționară ușoară</div>
+          <div class="ex-cue">Warm-up cardiac. Ritmul cardiac ușor ridicat.</div>
+        </div>
+        <div class="ex-sets">5 min</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Rotații umeri față + spate</div>
+        <div class="ex-sets">2 × 10</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Band pull-aparts cu elastic (activare scapulă)</div>
+        <div class="ex-sets">2 × 15</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Cat-Cow + rotații toracice pe genunchi</div>
+        <div class="ex-sets">2 × 8</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-ttl">Lower — Miercuri</div>
+  <div class="phase-block">
+    <div class="ex-list">
+      <div class="ex-item">
+        <div class="ex-name">Hip 90/90 pe podea (mobilitate șolduri)</div>
+        <div class="ex-sets">5/parte</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Banded Clamshells cu elastic (activare fesieri)</div>
+        <div class="ex-sets">2 × 15/parte</div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">Goblet Squat bodyweight</div>
+          <div class="ex-cue">Ținut 3 sec jos. Adâncime maximă.</div>
+        </div>
+        <div class="ex-sets">2 × 8</div>
+      </div>
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">World's Greatest Stretch</div>
+          <div class="ex-cue">Fandare + rotație toracică. Cel mai complet warm-up de șold.</div>
+        </div>
+        <div class="ex-sets">5/parte</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-ttl">Upper B — Vineri</div>
+  <div class="phase-block">
+    <div class="ex-list">
+      <div class="ex-item">
+        <div>
+          <div class="ex-name">Vâslă ergometru ușoară</div>
+          <div class="ex-cue">Warm-up cardiac ușor, nu performanță.</div>
+        </div>
+        <div class="ex-sets">5 min</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Band pull-aparts (activare romboid + scapulă)</div>
+        <div class="ex-sets">2 × 20</div>
+      </div>
+      <div class="ex-item">
+        <div class="ex-name">Rotații externe umăr cu elastic</div>
+        <div class="ex-sets">2 × 15/parte</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-ttl">Video Referință</div>
+  <a class="vid-link" href="https://www.youtube.com/results?search_query=hip+90+90+mobility+warm+up" target="_blank">
+    <div class="vid-icon">▶</div>
+    <div class="vid-info">
+      <div class="vid-title">Hip 90/90 Mobility Drill</div>
+      <div class="vid-sub">Caută pe YouTube · Alege un clip sub 3 min</div>
+    </div>
+    <div class="vid-arr">→</div>
+  </a>
+  <a class="vid-link" href="https://www.youtube.com/results?search_query=world%27s+greatest+stretch+tutorial" target="_blank">
+    <div class="vid-icon">▶</div>
+    <div class="vid-info">
+      <div class="vid-title">World's Greatest Stretch</div>
+      <div class="vid-sub">Caută pe YouTube · Execuție completă</div>
+    </div>
+    <div class="vid-arr">→</div>
+  </a>
+  <a class="vid-link" href="https://www.youtube.com/results?search_query=band+pull+apart+shoulder+activation" target="_blank">
+    <div class="vid-icon">▶</div>
+    <div class="vid-info">
+      <div class="vid-title">Band Pull-Aparts — Activare Scapulă</div>
+      <div class="vid-sub">Caută pe YouTube</div>
+    </div>
+    <div class="vid-arr">→</div>
+  </a>
+  <a class="vid-link" href="https://www.youtube.com/results?search_query=hollow+body+hold+tutorial+beginner" target="_blank">
+    <div class="vid-icon">▶</div>
+    <div class="vid-info">
+      <div class="vid-title">Hollow Body Hold — Execuție Corectă</div>
+      <div class="vid-sub">Caută pe YouTube · Versiunea pentru începători</div>
+    </div>
+    <div class="vid-arr">→</div>
+  </a>
+
+</div>
+
+<!-- ==================== TAB: STRETCHING ==================== -->
+<div class="panel" id="tab-stretch">
+
+  <div class="home-badge">🏠 Se Face Acasă · După Mic Dejun · 7 min</div>
+
+  <div class="alert-box orange">
+    <div class="alert-ttl">⚠ Nu în Sală</div>
+    Stretchingul se face acasă, după micul dejun (10:00–10:20). Nu mai ocupă timp din bugetul de sală.
+  </div>
+
+  <div class="sec-ttl">Upper A + Upper B — Post Antrenament</div>
+  <div class="phase-block">
+    <div class="ex-list">
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Stretch piept (ușă sau bară fixă)</div>
+        </div>
+        <div class="stretch-dur">45 sec/parte</div>
+      </div>
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Stretch spate (la bară, mână sus)</div>
+        </div>
+        <div class="stretch-dur">45 sec/parte</div>
+      </div>
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Stretch umăr posterior (mână traversând pieptul)</div>
+        </div>
+        <div class="stretch-dur">30 sec/parte</div>
+      </div>
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Neck rolls + rotații toracice finale</div>
+        </div>
+        <div class="stretch-dur">60 sec</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-ttl">Lower — Post Antrenament</div>
+  <div class="phase-block">
+    <div class="ex-list">
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Stretch hip flexori (fandare profundă statică)</div>
+          <div class="stretch-note">Prioritar — șoldurile sunt strânse după leg press + squat</div>
+        </div>
+        <div class="stretch-dur">60 sec/parte</div>
+      </div>
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Pigeon pose sau 90/90 — fesieri + rotatori șold</div>
+        </div>
+        <div class="stretch-dur">90 sec/parte</div>
+      </div>
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Stretch ischiogambieri (picior ridicat, elastic)</div>
+        </div>
+        <div class="stretch-dur">60 sec/parte</div>
+      </div>
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Calf stretch la perete</div>
+        </div>
+        <div class="stretch-dur">45 sec/parte</div>
+      </div>
+      <div class="stretch-item">
+        <div>
+          <div class="stretch-name">Child's pose extins</div>
+        </div>
+        <div class="stretch-dur">90 sec</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-ttl">Video Referință</div>
+  <a class="vid-link" href="https://www.youtube.com/results?search_query=hip+flexor+stretch+after+workout" target="_blank">
+    <div class="vid-icon">▶</div>
+    <div class="vid-info">
+      <div class="vid-title">Stretch Hip Flexori — Fandare Statică</div>
+      <div class="vid-sub">Caută pe YouTube</div>
+    </div>
+    <div class="vid-arr">→</div>
+  </a>
+  <a class="vid-link" href="https://www.youtube.com/results?search_query=pigeon+pose+tutorial+hip+stretch" target="_blank">
+    <div class="vid-icon">▶</div>
+    <div class="vid-info">
+      <div class="vid-title">Pigeon Pose / 90/90 — Fesieri</div>
+      <div class="vid-sub">Caută pe YouTube</div>
+    </div>
+    <div class="vid-arr">→</div>
+  </a>
+  <a class="vid-link" href="https://www.youtube.com/results?search_query=chest+stretch+doorway+upper+body" target="_blank">
+    <div class="vid-icon">▶</div>
+    <div class="vid-info">
+      <div class="vid-title">Stretch Piept la Ușă — Upper Body</div>
+      <div class="vid-sub">Caută pe YouTube</div>
+    </div>
+    <div class="vid-arr">→</div>
+  </a>
+
+  <div class="alert-box green" style="margin-top:14px;">
+    <div class="alert-ttl">Regulă Fixă</div>
+    Dacă ai sub 7 minute → faci <strong>stretch hip flexori + child's pose</strong>. Dacă ai mai mult → faci tot. Nu sari niciodată complet.
+  </div>
+
+</div>
+
+<script>
+function showTab(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
