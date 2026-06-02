@@ -1,0 +1,1331 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Quick Ref · George</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--red-dim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;padding-bottom:120px;}
+
+/* HEADER */
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:14px 16px 10px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;}
+.budget-bar span{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--wht);}
+.countdown-bar{background:rgba(139,26,26,0.25);border:1px solid rgba(192,57,43,0.5);border-radius:4px;padding:5px 12px;display:flex;justify-content:space-between;align-items:center;margin-top:8px;}
+.cd-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);}
+.cd-val{font-family:'Bebas Neue',sans-serif;font-size:14px;color:#fff;}
+
+/* TABS */
+.tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:10px 14px;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all 0.15s;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+/* PANELS */
+.panel{display:none;padding:16px;}
+.panel.active{display:block;}
+
+/* STATS GRID */
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;}
+.stat-grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:14px;}
+.stat-card{background:var(--card);border:1px solid var(--brd);padding:12px 8px;text-align:center;border-radius:4px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);line-height:1;}
+.stat-unit{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.stat-lbl{font-size:10px;color:#aaa;margin-top:3px;}
+
+/* DAY SELECTOR */
+.day-selector{display:flex;gap:6px;margin-bottom:14px;background:var(--drk2);padding:6px;border-radius:6px;border:1px solid var(--brd);}
+.day-btn{flex:1;padding:10px 4px;text-align:center;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:var(--drk);border:1px solid var(--brd);border-radius:4px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.day-btn span{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;}
+.day-btn.active.antren{background:var(--red-dim);color:var(--red);border-color:var(--red);}
+.day-btn.active.antren span{color:var(--wht);}
+.day-btn.active.repaus{background:rgba(41,128,185,0.15);color:var(--blue);border-color:var(--blue);}
+.day-btn.active.repaus span{color:var(--wht);}
+.day-btn.active.refeed{background:rgba(39,174,96,0.15);color:var(--green);border-color:var(--green);}
+.day-btn.active.refeed span{color:var(--wht);}
+
+/* DYNAMIC SHOW/HIDE */
+body.day-antren .d-rep,.day-antren .d-ref{display:none!important;}
+body.day-antren .d-ant{display:inline!important;}
+body.day-repaus .d-ant,.day-repaus .d-ref{display:none!important;}
+body.day-repaus .d-rep{display:inline!important;}
+body.day-refeed .d-ant,.day-refeed .d-rep{display:none!important;}
+body.day-refeed .d-ref{display:inline!important;}
+.dyn-val{color:var(--orange);font-weight:600;background:rgba(230,126,34,0.1);padding:0 4px;border-radius:2px;border:1px dashed rgba(230,126,34,0.4);transition:all 0.3s;}
+
+/* ACCORDION */
+.acc-card{background:var(--drk);border:1px solid var(--brd);margin-bottom:12px;border-radius:6px;overflow:hidden;}
+.acc-card.open{border-color:var(--red);}
+.acc-card.open.orange{border-color:var(--orange);}
+.acc-card.open.blue{border-color:var(--blue);}
+.acc-card.open.green{border-color:var(--green);}
+.acc-card.open.purple{border-color:var(--purple);}
+.acc-hdr{padding:13px 14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;background:rgba(255,255,255,0.02);}
+.acc-hdr:hover{background:rgba(255,255,255,0.04);}
+.acc-title-area{flex:1;padding-right:10px;}
+.acc-name{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--wht);}
+.acc-sub-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);margin-top:2px;}
+.acc-icon{font-size:11px;color:var(--muted);transition:transform 0.3s ease;display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--card);border:1px solid var(--brd);border-radius:3px;}
+.acc-card.open .acc-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.acc-card.open.orange .acc-icon{color:var(--orange);border-color:var(--orange);}
+.acc-card.open.blue .acc-icon{color:var(--blue);border-color:var(--blue);}
+.acc-card.open.green .acc-icon{color:var(--green);border-color:var(--green);}
+.acc-card.open.purple .acc-icon{color:var(--purple);border-color:var(--purple);}
+.acc-content{max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);}
+.acc-card.open .acc-content{max-height:3000px;}
+.acc-sub{padding:8px 14px;background:rgba(255,255,255,0.01);font-size:11px;color:#aaa;border-bottom:1px solid var(--brd);border-top:1px solid var(--brd);line-height:1.5;}
+.acc-body{padding:12px 14px;}
+
+/* OPTION BLOCKS */
+.opt-block{background:var(--card);border:1px solid var(--brd);border-radius:4px;padding:12px;margin-bottom:10px;transition:all 0.2s;cursor:pointer;position:relative;}
+.opt-block:last-child{margin-bottom:0;}
+.opt-block:hover{border-color:var(--red);}
+.opt-block.selected{border-color:var(--green);background:rgba(39,174,96,0.06);box-shadow:0 0 15px rgba(39,174,96,0.12);}
+.opt-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.opt-num{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:700;background:rgba(230,126,34,0.12);padding:2px 6px;border-radius:2px;border:1px solid rgba(230,126,34,0.3);}
+.opt-block.selected .opt-num{color:var(--green);background:rgba(39,174,96,0.2);border-color:rgba(39,174,96,0.4);}
+.opt-p{font-family:'DM Mono',monospace;font-size:12px;color:var(--red);font-weight:600;}
+.opt-block.selected .opt-p{color:var(--green);}
+.opt-ttl{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:5px;}
+.opt-desc{font-size:11px;color:#ccc;line-height:1.5;margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.opt-btm{display:flex;justify-content:space-between;align-items:center;margin-top:6px;}
+.opt-cue{font-size:10px;color:var(--muted);font-style:italic;}
+.opt-check{font-size:10px;font-weight:700;color:var(--muted);background:var(--drk);padding:3px 8px;border-radius:3px;border:1px solid var(--brd);transition:all 0.2s;}
+.opt-block.selected .opt-check{color:#fff;background:var(--green);border-color:var(--green);}
+
+/* TAGS & ALERTS */
+.tag{display:inline-block;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:10px;}
+.tag-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(192,57,43,0.3);}
+.tag-orange{background:rgba(230,126,34,0.1);color:var(--orange);border:1px solid rgba(230,126,34,0.3);}
+.tag-green{background:rgba(39,174,96,0.08);color:var(--green);border:1px solid rgba(39,174,96,0.25);}
+.tag-blue{background:rgba(41,128,185,0.1);color:var(--blue);border:1px solid rgba(41,128,185,0.3);}
+
+.alert-box{border-left:3px solid var(--red);background:var(--red-dim);padding:10px 12px;margin-bottom:12px;font-size:12px;color:#ccc;line-height:1.65;border-radius:0 4px 4px 0;}
+.alert-box.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
+.alert-box.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
+.alert-box.blue{border-color:var(--blue);background:rgba(41,128,185,0.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--red);margin-bottom:3px;}
+.alert-box.orange .alert-ttl{color:var(--orange);}
+.alert-box.green .alert-ttl{color:var(--green);}
+.alert-box.blue .alert-ttl{color:var(--blue);}
+
+/* GUIDE BOX */
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--orange);padding:14px;margin-bottom:14px;border-radius:0 6px 6px 0;}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--orange);margin-bottom:6px;}
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+.g-item{background:var(--card);border:1px solid var(--brd);padding:10px;border-radius:4px;}
+.g-icon{font-size:22px;line-height:1;margin-bottom:2px;}
+.g-ttl{font-size:10px;font-weight:700;color:var(--wht);text-transform:uppercase;letter-spacing:1px;}
+.g-desc{font-size:10px;color:var(--muted);line-height:1.4;}
+.g-desc strong{color:var(--orange);font-family:'DM Mono',monospace;font-size:11px;}
+
+/* STICKY BOTTOM */
+.sticky-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(12,12,12,0.97);backdrop-filter:blur(10px);border-top:1px solid var(--brd);padding:10px 16px;display:flex;justify-content:space-between;align-items:center;z-index:1000;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);max-width:480px;margin:0 auto;box-shadow:0 -5px 25px rgba(0,0,0,0.7);}
+.sticky-bar.visible{transform:translateY(0);}
+.st-info{display:flex;flex-direction:column;}
+.st-ttl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:1px;}
+.st-vals{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--green);display:flex;align-items:baseline;gap:6px;line-height:1;}
+.st-btn{background:var(--green);color:#fff;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 14px;border-radius:4px;border:none;cursor:pointer;transition:background 0.2s;}
+
+/* WORKOUT BLOCKS */
+.ex-block{background:var(--card);border:1px solid var(--brd);border-radius:4px;padding:12px;margin-bottom:8px;}
+.ex-block.superset{border-left:3px solid var(--orange);}
+.ex-block.isolation{border-left:3px solid var(--blue);}
+.ex-ttl{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:4px;display:flex;align-items:center;gap:6px;}
+.ex-badge{font-size:8px;letter-spacing:2px;text-transform:uppercase;padding:1px 5px;border-radius:2px;}
+.ex-badge.ss{background:rgba(230,126,34,0.2);color:var(--orange);border:1px solid rgba(230,126,34,0.4);}
+.ex-badge.iso{background:rgba(41,128,185,0.2);color:var(--blue);border:1px solid rgba(41,128,185,0.4);}
+.ex-badge.warn{background:rgba(192,57,43,0.2);color:var(--red);border:1px solid rgba(192,57,43,0.4);}
+.ex-sets{font-family:'DM Mono',monospace;font-size:11px;color:var(--orange);margin-bottom:3px;}
+.ex-desc{font-size:11px;color:#aaa;line-height:1.5;}
+
+/* PROTOCOL STEPS */
+.proto-step{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.proto-step:last-child{border-bottom:none;}
+.proto-num{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--red);line-height:1;min-width:24px;}
+.proto-num.orange{color:var(--orange);}
+.proto-num.green{color:var(--green);}
+.proto-num.blue{color:var(--blue);}
+.proto-body{flex:1;}
+.proto-ttl{font-size:12px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.proto-desc{font-size:11px;color:#aaa;line-height:1.5;}
+
+/* SCENARIO BLOCK */
+.scenario{background:var(--card);border:1px solid var(--brd);border-radius:4px;padding:12px;margin-bottom:8px;}
+.sc-ttl{font-size:12px;font-weight:700;color:var(--orange);margin-bottom:4px;}
+.sc-body{font-size:11px;color:#ccc;line-height:1.6;}
+
+/* PEAK WEEK TIMELINE */
+.peak-row{display:flex;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.peak-day{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);min-width:50px;font-weight:700;}
+.peak-body{font-size:11px;color:#ccc;line-height:1.55;flex:1;}
+
+/* PILL STRIP */
+.pill-strip{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.pill{font-size:10px;padding:4px 10px;border-radius:20px;background:var(--drk2);border:1px solid var(--brd);color:#ccc;}
+.pill.red{background:var(--red-dim);border-color:rgba(192,57,43,0.4);color:var(--red);}
+.pill.orange{background:rgba(230,126,34,0.1);border-color:rgba(230,126,34,0.3);color:var(--orange);}
+.pill.green{background:rgba(39,174,96,0.08);border-color:rgba(39,174,96,0.3);color:var(--green);}
+.pill.blue{background:rgba(41,128,185,0.1);border-color:rgba(41,128,185,0.3);color:var(--blue);}
+
+/* SUPSET SEPARATOR */
+.ss-connector{text-align:center;font-size:10px;letter-spacing:3px;color:var(--orange);margin:3px 0;font-weight:700;}
+
+/* MODAL */
+.modal-backdrop{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(5px);z-index:1001;display:none;justify-content:center;align-items:flex-end;}
+.modal-backdrop.open{display:flex;}
+.modal-box{background:var(--drk);border:1px solid var(--brd);border-radius:14px 14px 0 0;width:100%;max-width:480px;padding:22px 18px;max-height:80vh;overflow-y:auto;animation:slideUp 0.3s cubic-bezier(0.4,0,0.2,1);}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;border-bottom:1px solid var(--brd);padding-bottom:12px;}
+.modal-ttl{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:var(--wht);}
+.modal-close{font-size:18px;color:var(--muted);cursor:pointer;border:none;background:none;}
+.modal-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;}
+.modal-row.highlight{background:rgba(39,174,96,0.1);padding:12px;border-radius:4px;border:1px solid rgba(39,174,96,0.3);margin:12px 0;font-weight:700;}
+.modal-meal-name{color:var(--wht);font-weight:600;flex:1;padding-right:8px;}
+.modal-meal-val{font-family:'DM Mono',monospace;color:var(--green);font-weight:600;}
+.modal-btn-reset{width:100%;background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);color:var(--red);padding:10px;border-radius:4px;font-weight:700;cursor:pointer;margin-top:14px;text-transform:uppercase;letter-spacing:1px;font-size:11px;}
+@media(min-width:768px){body{max-width:900px;font-size:15px;padding:0 32px 48px;}.sticky-bar{max-width:900px;}}
+
+</style>
+</head>
+<body class="day-antren">
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT</div>
+    <div class="hdr-name">Quick Ref · George Miclea</div>
+  </div>
+  <div class="budget-bar">
+    <span>Target Zi</span>
+    <strong id="hdr-target-val">2.650 KCAL</strong>
+    <span>220g Proteină Fixă</span>
+  </div>
+  <div class="countdown-bar">
+    <div class="cd-label">⏳ Cununia Civilă</div>
+    <div class="cd-val" id="countdown-val">calculez...</div>
+    <div class="cd-label">20 Iunie 2026</div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('mese')">🥩 Mese</div>
+  <div class="tab" onclick="showTab('reguli')">🧠 Reguli</div>
+  <div class="tab" onclick="showTab('urgenta')">⚡ Urgență</div>
+  <div class="tab" onclick="showTab('viata')">🌿 Viață</div>
+</div>
+
+<!-- ═══════════════════════════════ TAB 1: MESE & TRACKER ═══════════════════════════════ -->
+<div class="panel active" id="tab-mese">
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-kcal">2.650</div>
+      <div class="stat-unit">kcal / zi</div>
+      <div class="stat-lbl">Target Dinamic</div>
+    </div>
+    <div class="stat-card" style="border-color:var(--green);background:rgba(39,174,96,0.05);">
+      <div class="stat-val" style="color:var(--green);">220g</div>
+      <div class="stat-unit" style="color:var(--green);">proteină fixă</div>
+      <div class="stat-lbl" style="color:var(--green);">Ancora ✓</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--blue);">40g+</div>
+      <div class="stat-unit">fibre / zi</div>
+      <div class="stat-lbl">5L apă/zi</div>
+    </div>
+  </div>
+
+  <!-- GHID VIZUAL -->
+  <div class="guide-box">
+    <div class="guide-hdr">📐 Ghidul Vizual — Fără Cântar pe Șantier</div>
+    <div class="guide-grid">
+      <div class="g-item">
+        <div class="g-icon">✋</div>
+        <div class="g-ttl">1 Palmă</div>
+        <div class="g-desc"><strong>~150-180g carne/pește</strong> = 35-42g P</div>
+      </div>
+      <div class="g-item">
+        <div class="g-icon">✊</div>
+        <div class="g-ttl">1 Pumn Zi Antr.</div>
+        <div class="g-desc"><strong>2 pumni</strong> orez/cartofi fierte</div>
+      </div>
+      <div class="g-item">
+        <div class="g-icon">✊</div>
+        <div class="g-ttl">1 Pumn Zi Repaus</div>
+        <div class="g-desc"><strong>1 pumn</strong> orez/cartofi</div>
+      </div>
+      <div class="g-item">
+        <div class="g-icon">👍</div>
+        <div class="g-ttl">1 Deget Mare</div>
+        <div class="g-desc"><strong>~10g ulei/unt/nuci</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELECTOR ZI -->
+  <div class="tag tag-orange">Selectează tipul de zi (Calorie Cycling)</div>
+  <div class="day-selector">
+    <div class="day-btn antren active" data-day="antren" onclick="selectDayType('antren')">
+      Zi Antren.
+      <span>2.650 kcal</span>
+    </div>
+    <div class="day-btn repaus" data-day="repaus" onclick="selectDayType('repaus')">
+      Zi Repaus
+      <span>2.400 kcal</span>
+    </div>
+    <div class="day-btn refeed" data-day="refeed" onclick="selectDayType('refeed')">
+      Zi Refeed
+      <span>2.800 kcal</span>
+    </div>
+  </div>
+
+  <div class="alert-box green">
+    <div class="alert-ttl">Tracker Proteină Interactiv</div>
+    Apasă pe mesele de mai jos pentru a monitoriza. <strong>Carbohidrații marcați se ajustează automat cu tipul zilei.</strong> Ancora ta rămâne PROTEINA (220g).
+  </div>
+
+  <!-- MASA 1: PRE-WORKOUT -->
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">PRE-WORKOUT SHOT</div>
+        <div class="acc-sub-title">06:00 · Energie ATP fără stres gastric</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-sub">⚡ Nu mânca solid înainte de sală. Ai nevoie de sânge în mușchi, nu în stomac.</div>
+      <div class="acc-body">
+        <div class="opt-block" data-meal="preworkout" data-prot="5" data-name="Banană + 10g EAA" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Protocol Fix</span><span class="opt-p">~5g P</span></div>
+          <div class="opt-ttl">🍌 Banană medie + 10g EAA/BCAA</div>
+          <div class="opt-desc">1 banană sau 3 curmale (glucide simple rapid) + 10g EAA dizolvate în apă (aminoacizi direct în sânge, evită catabolismul).</div>
+          <div class="opt-btm"><span class="opt-cue">~100 kcal · Zero stres gastric</span><span class="opt-check">Bifat ○</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MASA 2: MIC DEJUN -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">MIC DEJUN — 5 VARIANTE</div>
+        <div class="acc-sub-title">08:30 (Post-Workout) · Target: ~60g P / ~750 kcal</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-sub">🎯 Fereastra anabolică principală. Prima masă solidă după sală. Niciodată sărită.</div>
+      <div class="acc-body">
+
+        <div class="opt-block" data-meal="micdejun" data-prot="62" data-name="🥚 Omletă + Iaurt + Pâine" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 1</span><span class="opt-p">62g P</span></div>
+          <div class="opt-ttl">🥚 Omletă 4 ouă + Șuncă + Iaurt + Pâine</div>
+          <div class="opt-desc">4 ouă mari + 100g șuncă curcan slabă + 150g iaurt grecesc 2% + <span class="dyn-val d-ant">2 felii pâine integrală (80g)</span><span class="dyn-val d-rep">1 felie pâine integrală</span><span class="dyn-val d-ref">2 felii + 1 banană</span> + spanac/roșii + 5g ulei</div>
+          <div class="opt-btm"><span class="opt-cue">Fibre maxime · Cel mai sațios</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="micdejun" data-prot="60" data-name="🥣 Bol Ovăz + Izolat" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 2</span><span class="opt-p">60g P</span></div>
+          <div class="opt-ttl">🥣 Bol Ovăz (80g) + 45g Proteină Izolat</div>
+          <div class="opt-desc"><span class="dyn-val d-ant">80g fulgi ovăz</span><span class="dyn-val d-rep">50g fulgi ovăz</span><span class="dyn-val d-ref">80g ovăz + 1 banană</span> + 45g izolat proteic + 20g semințe chia + 100g zmeură/afine</div>
+          <div class="opt-btm"><span class="opt-cue">Rapid · ~4 min preparare</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="micdejun" data-prot="68" data-name="🥛 Iaurt Bowl + Nuci" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 3</span><span class="opt-p">68g P</span></div>
+          <div class="opt-ttl">🥛 350g Iaurt Grecesc + Proteină + Nuci</div>
+          <div class="opt-desc">350g iaurt grecesc 2% + 30g proteină amestecat în el + 30g nuci/migdale + <span class="dyn-val d-ant">1 banană</span><span class="dyn-val d-rep">fără banană</span><span class="dyn-val d-ref">1 banană + miere</span></div>
+          <div class="opt-btm"><span class="opt-cue">Zero gătit · 2 min preparare</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="micdejun" data-prot="58" data-name="🥪 Sandviș Integral Dublu" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 4</span><span class="opt-p">58g P</span></div>
+          <div class="opt-ttl">🥪 Sandviș Secară — 3 Felii + 200g Mușchi</div>
+          <div class="opt-desc"><span class="dyn-val d-ant">3 felii pâine secară (120g)</span><span class="dyn-val d-rep">2 felii pâine secară</span><span class="dyn-val d-ref">3 felii + 1 felie extra</span> + 200g mușchi file/șuncă + 30g cremă brânză light + ardei gras</div>
+          <div class="opt-btm"><span class="opt-cue">Portabil · Se pregătește seara</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="micdejun" data-prot="61" data-name="🥞 Clătite Proteice Ovăz" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 5</span><span class="opt-p">61g P</span></div>
+          <div class="opt-ttl">🥞 Clătite Proteice din Ovăz (fără ulei)</div>
+          <div class="opt-desc">2 ouă + 1 banană mixer + 45g izolat proteic + <span class="dyn-val d-ant">50g făină ovăz</span><span class="dyn-val d-rep">20g făină ovăz</span><span class="dyn-val d-ref">60g făină ovăz + fructe</span> · Tigaie antiaderentă, zero ulei</div>
+          <div class="opt-btm"><span class="opt-cue">Weekend · Răsfăț curat</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MASA 3: PRANZ -->
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">PRÂNZUL — 5 VARIANTE</div>
+        <div class="acc-sub-title">13:00 (Ancora Zilei pe Șantier) · ~65g P / ~850 kcal</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-sub">🎯 Masa cu cel mai mare volum proteic. Prânz solid = rezistență la foamea de 16:30.</div>
+      <div class="acc-body">
+
+        <div class="opt-block" data-meal="pranz" data-prot="65" data-name="🍗 Caserolă Standard Șantier" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 1</span><span class="opt-p">65g P</span></div>
+          <div class="opt-ttl">🍗 Caserolă Standard (Meal Prep)</div>
+          <div class="opt-desc">250g piept pui/curcan + <span class="dyn-val d-ant">350g cartofi airfryer</span><span class="dyn-val d-rep">200g cartofi</span><span class="dyn-val d-ref">350g cartofi + 100g orez</span> + 150g broccoli + 10g ulei</div>
+          <div class="opt-btm"><span class="opt-cue">Cel mai ușor de pregătit în avans</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="pranz" data-prot="62" data-name="🥩 Orez 130g + Vită Slabă" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 2</span><span class="opt-p">62g P</span></div>
+          <div class="opt-ttl">🥩 Orez Basmati + 200g Vită Slabă</div>
+          <div class="opt-desc">200g vită slabă (mușchi/pulpă) + <span class="dyn-val d-ant">130g orez basmati crud</span><span class="dyn-val d-rep">80g orez crud</span><span class="dyn-val d-ref">160g orez crud</span> + salată uriașă varză/morcovi + 10g ulei</div>
+          <div class="opt-btm"><span class="opt-cue">Fier + B12 maxim</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="pranz" data-prot="64" data-name="🍝 Paste Integrale + Pui" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 3</span><span class="opt-p">64g P</span></div>
+          <div class="opt-ttl">🍝 Paste Integrale + Pui + Sos Roșii</div>
+          <div class="opt-desc">200g piept pui + <span class="dyn-val d-ant">130g paste integrale crude</span><span class="dyn-val d-rep">90g paste crude</span><span class="dyn-val d-ref">150g paste crude</span> + sos roșii pasate + usturoi + busuioc + 15g ulei</div>
+          <div class="opt-btm"><span class="opt-cue">Carbohidrat lent · Energie stabilă</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="pranz" data-prot="66" data-name="🥗 Super-Bowl Quinoa/Linte" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 4</span><span class="opt-p">66g P</span></div>
+          <div class="opt-ttl">🥗 Super-Bowl Quinoa/Linte + Curcan</div>
+          <div class="opt-desc">200g piept curcan + <span class="dyn-val d-ant">120g quinoa/linte crudă</span><span class="dyn-val d-rep">80g quinoa/linte</span><span class="dyn-val d-ref">150g quinoa/linte</span> + 60g avocado + roșii/castraveți</div>
+          <div class="opt-btm"><span class="opt-cue">Fibre maxime · 18g fibre per masă</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="pranz" data-prot="60" data-name="🚚 Restaurant / Delivery Urgență" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 5</span><span class="opt-p">60g P</span></div>
+          <div class="opt-ttl">🚚 Restaurant / Delivery Urgență</div>
+          <div class="opt-desc">Pulpă pui dezosată grătar (250g) + <span class="dyn-val d-ant">200g cartofi natur</span><span class="dyn-val d-rep">100g cartofi</span><span class="dyn-val d-ref">200g cartofi + pâine</span> + salată enormă (FĂRĂ sosuri dulci)</div>
+          <div class="opt-btm"><span class="opt-cue">Opțiune de avarie — zero pregătire</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- GUSTARE 16:30 -->
+  <div class="acc-card orange">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--orange);">GUSTAREA 16:30 — ANTI-BINGE ⚡</div>
+        <div class="acc-sub-title" style="color:var(--orange);">În mașină / pe drum spre casă · ~45g P / ~300 kcal</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-sub" style="color:#ccc;">⚠ Alarmă la 16:00. Filtrul tău anti-binge. Aceasta rămâne IDENTICĂ indiferent de tipul de zi.</div>
+      <div class="acc-body">
+
+        <div class="opt-block" data-meal="gustare" data-prot="40" data-name="🥤 Shake + Măr" onclick="selectMeal(this)" style="border-left:3px solid var(--orange);">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea A</span><span class="opt-p">40g P</span></div>
+          <div class="opt-ttl">🥤 1.5 cupe Izolat Proteic + 1 Măr</div>
+          <div class="opt-desc">Shake 1.5 cupe izolat (300ml apă) → mănânci mărul separat după. <strong>Proteina Prima.</strong></div>
+          <div class="opt-btm"><span class="opt-cue">Cel mai portabil · ~280 kcal</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="gustare" data-prot="48" data-name="🥄 Iaurt Grec Fortificat" onclick="selectMeal(this)" style="border-left:3px solid var(--orange);">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea B</span><span class="opt-p">48g P</span></div>
+          <div class="opt-ttl">🥄 250g Iaurt Grecesc + 1 cupă Izolat</div>
+          <div class="opt-desc">250g iaurt grecesc 2% + 1 cupă izolat amestecat direct în el → 1 banană mică feliată după.</div>
+          <div class="opt-btm"><span class="opt-cue">Cazeină + Zer · ~360 kcal</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="gustare" data-prot="35" data-name="🥣 Cottage + Migdale" onclick="selectMeal(this)" style="border-left:3px solid var(--orange);">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea C</span><span class="opt-p">35g P</span></div>
+          <div class="opt-ttl">🥣 250g Brânză Cottage + 20g Migdale</div>
+          <div class="opt-desc">250g brânză cottage light + 20g migdale crude + scorțișoară abundent. Zero preparare.</div>
+          <div class="opt-btm"><span class="opt-cue">Cazeină pură · ~310 kcal</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="gustare" data-prot="32" data-name="🍫 Baton Proteic + Kefir" onclick="selectMeal(this)" style="border-left:3px solid var(--orange);">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea D</span><span class="opt-p">32g P</span></div>
+          <div class="opt-ttl">🍫 Baton Proteic Premium + 300ml Kefir</div>
+          <div class="opt-desc">1 baton (min. 20g P, sub 5g zahăr) + 300ml kefir slab. Controlezi eticheta.</div>
+          <div class="opt-btm"><span class="opt-cue">Opțiunea rapidă din mașină · ~340 kcal</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="gustare" data-prot="35" data-name="🐟 Ton + Rondele Orez" onclick="selectMeal(this)" style="border-left:3px solid var(--orange);">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea E</span><span class="opt-p">35g P</span></div>
+          <div class="opt-ttl">🐟 Conservă Ton în Suc Propriu + Rondele</div>
+          <div class="opt-desc">1 conservă ton în apă (150g scurse net) → 4 rondele orez expandat după. Proteina Prima.</div>
+          <div class="opt-btm"><span class="opt-cue">Stoc din mașină/sertar · ~290 kcal</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CINA -->
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">CINA — 5 VARIANTE</div>
+        <div class="acc-sub-title">20:00 · ~60g P / ~750 kcal · Grăsimi prioritizate seara</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-sub">🎯 Cina de familie rămâne. Grăsimile sănătoase seara susțin testosteronul nocturn (vârf 03:00-05:00).</div>
+      <div class="acc-body">
+
+        <div class="opt-block" data-meal="cina" data-prot="50" data-name="🐟 Somon + Orez" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 1</span><span class="opt-p">50g P</span></div>
+          <div class="opt-ttl">🐟 200g Somon Cuptor + Sparanghel + Orez</div>
+          <div class="opt-desc">200g file somon + 250g sparanghel/zucchini grătar + <span class="dyn-val d-ant">80g orez crud</span><span class="dyn-val d-rep">40g orez crud</span><span class="dyn-val d-ref">100g orez crud</span></div>
+          <div class="opt-btm"><span class="opt-cue">Omega-3 + somn profund NREM</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="cina" data-prot="65" data-name="🥩 Grătar + Cartofi" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 2</span><span class="opt-p">65g P</span></div>
+          <div class="opt-ttl">🥩 250g Cotlet/Mușchiuleț Porc + Cartofi</div>
+          <div class="opt-desc">250g cotlet slab grătar + <span class="dyn-val d-ant">200g cartofi cuptor</span><span class="dyn-val d-rep">100g cartofi</span><span class="dyn-val d-ref">250g cartofi</span> + salată verde/roșii + 10g ulei</div>
+          <div class="opt-btm"><span class="opt-cue">Cina tradițională românească BUILT</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="cina" data-prot="58" data-name="🐟 Pește Alb + Cartofi" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 3</span><span class="opt-p">58g P</span></div>
+          <div class="opt-ttl">🐟 300g Cod/Ton + 400g Cartofi Fierți</div>
+          <div class="opt-desc">300g cod/merluciu sau 2 conserve ton + <span class="dyn-val d-ant">400g cartofi fierți</span><span class="dyn-val d-rep">250g cartofi</span><span class="dyn-val d-ref">400g cartofi</span> + salată mare + 15g ulei</div>
+          <div class="opt-btm"><span class="opt-cue">Volum imens · Calorii scăzute</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="cina" data-prot="65" data-name="🌮 Fajitas Pui" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 4</span><span class="opt-p">65g P</span></div>
+          <div class="opt-ttl">🌮 Fajitas Pui — Cheat Curat</div>
+          <div class="opt-desc">250g pui fâșii + ceapă/ardei tigaie + <span class="dyn-val d-ant">2 lipii integrale</span><span class="dyn-val d-rep">1 lipie integrală</span><span class="dyn-val d-ref">2 lipii + salsa</span> + 50g guacamole/avocado</div>
+          <div class="opt-btm"><span class="opt-cue">Profil aromatic puternic · Anti-fast food</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+        <div class="opt-block" data-meal="cina" data-prot="62" data-name="🥗 Salată Mare Vită/Pui" onclick="selectMeal(this)">
+          <div class="opt-hdr"><span class="opt-num">Opțiunea 5</span><span class="opt-p">62g P</span></div>
+          <div class="opt-ttl">🥗 Salată Uriașă Vită/Pui + Fasole</div>
+          <div class="opt-desc">200g carne grătar + fasole roșie (150g) + <span class="dyn-val d-ant">2 felii pâine integrală</span><span class="dyn-val d-rep">fără pâine</span><span class="dyn-val d-ref">2 felii pâine</span> + dressing iaurt 0% + muștar</div>
+          <div class="opt-btm"><span class="opt-cue">Fibre maxime · Digestie ușoară noaptea</span><span class="opt-check">Alege ○</span></div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- PM SLEEP BUFFER -->
+  <div class="acc-card blue">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--blue);">PM SLEEP BUFFER 🌙</div>
+        <div class="acc-sub-title" style="color:var(--blue);">22:00 · LA NEVOIE · ~20g P Cazeină / ~200 kcal</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-sub">Numai dacă există foame reală. Cazeina = digestie 6-8h → infuzează mușchii în somn. ZERO zahăr.</div>
+      <div class="acc-body">
+        <div class="opt-block" data-meal="sleep" data-prot="22" data-name="🧀 Cottage + Nuci" onclick="selectMeal(this)" style="border-left:3px solid var(--blue);">
+          <div class="opt-hdr"><span class="opt-num">Clasic</span><span class="opt-p">22g P</span></div>
+          <div class="opt-ttl">🧀 200g Brânză Cottage + 15g Nuci + Scorțișoară</div>
+          <div class="opt-desc">~195 kcal. Nucile conțin melatonină naturală + magneziu. Scorțișoara blochează minimal lactoza.</div>
+          <div class="opt-btm"><span class="opt-cue">Varianta numărul 1 recomandată</span><span class="opt-check">Alege ○</span></div>
+        </div>
+        <div class="opt-block" data-meal="sleep" data-prot="15" data-name="🥛 Iaurt + Unt Arahide" onclick="selectMeal(this)" style="border-left:3px solid var(--blue);">
+          <div class="opt-hdr"><span class="opt-num">Cremos</span><span class="opt-p">15g P</span></div>
+          <div class="opt-ttl">🥛 150g Iaurt Grecesc 2% + 15g Unt Arahide</div>
+          <div class="opt-desc">~180 kcal. Zero zahăr adăugat. Textura cremoasă declanșează dopamina fără spike glicemic.</div>
+          <div class="opt-btm"><span class="opt-cue">Dacă vrei senzație de recompensă</span><span class="opt-check">Alege ○</span></div>
+        </div>
+        <div class="opt-block" data-meal="sleep" data-prot="28" data-name="💊 Shake Cazeină + Semințe" onclick="selectMeal(this)" style="border-left:3px solid var(--blue);">
+          <div class="opt-hdr"><span class="opt-num">Maxim P</span><span class="opt-p">28g P</span></div>
+          <div class="opt-ttl">💊 1 Cupă Cazeină + 15g Semințe Dovleac</div>
+          <div class="opt-desc">~190 kcal. Protecție anti-catabolică maximă în somn. Ideal după antrenament greu de picioare.</div>
+          <div class="opt-btm"><span class="opt-cue">Post-Lower Day greu</span><span class="opt-check">Alege ○</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- end tab-mese -->
+
+<!-- ═══════════════════════════════ TAB 4: REGULI & MINDSET ═══════════════════════════════ -->
+<div class="panel" id="tab-reguli">
+
+  <div class="tag tag-red">Regulile Non-Negociabile — Metoda BUILT</div>
+
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name">R1 — Regula Celor 2 Zile</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.7;">
+      <strong>Niciodată 2 zile greșite consecutiv.</strong> Corecția se face la masa URMĂTOARE, nu „de luni" și nu „de mâine dimineață". 1 masă proastă = 2.8% din 35 mese/săptămână. Matematică, nu morală.
+    </div></div>
+  </div>
+
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name">R2 — Nu Există „A Strica Totul"</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.7;">
+      O masă liberă la grătar, la socri sau la o aniversare <strong>nu strică absolut nimic.</strong> Ceea ce strică este vinovăția toxică de după și decizia de a abandona tot planul. <strong>Principiul 80/20: 80% execuție militară absoarbe 20% relaxare (pălinca cu socrul inclusă).</strong>
+    </div></div>
+  </div>
+
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name">R3 — Sistemul bate Voința</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.7;">
+      La 19:30, după o zi pe șantier, voința ta este la zero. <strong>Frigiderul dictează decizia</strong> — nu capul tău. Dacă în frigider e mâncare bună pregătită → mănânci bine. Dacă nu e → comanzi pizza. Sistemul simplifică la zero deciziile de seară.
+    </div></div>
+  </div>
+
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name">R4 — Viteza Sustenabilă > Viteza Maximă</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.7;">
+      Target vizual 20 Iunie = <strong>-5 până la -6 kg</strong> (2 kg grăsime reală + 3-4 kg apă/inflamație eliminată). Deficit sustenabil, nu înfometare. Un deficit de 700+ kcal/zi cu cortizolul tău de pe șantier activează proteoliza — pierzi mușchi, nu grăsime.
+    </div></div>
+  </div>
+
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name">R5 — Apa Înaintea Oricărui Craving</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.7;">
+      60% din poftele de seară sunt deshidratare mascată. Când simți foame neprogramată: <strong>bea 400ml apă rece și setezi un timer de 10 minute.</strong> Dacă senzația dispare → era sete. Dacă rămâne → treci la Protocolul Anti-Binge (Tab Urgență).
+    </div></div>
+  </div>
+
+  <div class="tag tag-orange" style="margin-top:16px;">Biohacking Glicemic — Cele 4 Protocoale</div>
+
+  <div class="acc-card orange">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name" style="color:var(--orange);">BIO #1 — Cafeaua Fără Zahăr</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.7;">
+      Zahărul în cafea pe stomacul gol → vârf glicemic → insulină masivă → hipoglicemie reactivă la 30-45 min → foame dublată. <strong>Soluția: Eritritol sau Stevia (index glicemic = 0). Laptele rămâne permis</strong> — proteina + grăsimile din el încetinesc absorbția cofeinei.
+    </div></div>
+  </div>
+
+  <div class="acc-card orange">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name" style="color:var(--orange);">BIO #2 — Regula Împerecherii</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.7;">
+        <strong>Proteina Prima, Carbohidratul După</strong> → reduce răspunsul glicemic cu 28-37%.<br><br>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <div style="background:rgba(192,57,43,0.06);border:1px solid rgba(192,57,43,0.2);padding:10px;border-radius:4px;">
+            <div style="color:var(--red);font-size:10px;letter-spacing:2px;margin-bottom:6px;font-weight:700;">❌ GREȘIT</div>
+            <div style="font-size:11px;color:#999;line-height:1.6;">1 măr singur<br>Banană singură<br>Covrig pe drum<br>Suc portocale</div>
+          </div>
+          <div style="background:rgba(39,174,96,0.04);border:1px solid rgba(39,174,96,0.2);padding:10px;border-radius:4px;">
+            <div style="color:var(--green);font-size:10px;letter-spacing:2px;margin-bottom:6px;font-weight:700;">✓ CORECT</div>
+            <div style="font-size:11px;color:#999;line-height:1.6;">Shake → Măr<br>Cottage → Fruct<br>Iaurt → Banană<br>Ton → Rondele</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-card orange">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name" style="color:var(--orange);">BIO #3 — 3 Modulatori Naturali</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body">
+      <div class="proto-step">
+        <div class="proto-num orange">ACV</div>
+        <div class="proto-body"><div class="proto-ttl">Oțet de Mere (1 lingură diluat în apă)</div><div class="proto-desc">Înainte de mesele cu carbohidrați ridicați. Reduce glicemia post-prandială cu până la 30%.</div></div>
+      </div>
+      <div class="proto-step">
+        <div class="proto-num orange">P</div>
+        <div class="proto-body"><div class="proto-ttl">Proteina Prima (la fiecare masă)</div><div class="proto-desc">Stimulează GLP-1 → încetinește golirea gastrică → absorbție controlată a zaharurilor.</div></div>
+      </div>
+      <div class="proto-step">
+        <div class="proto-num orange">10</div>
+        <div class="proto-body"><div class="proto-ttl">10 Minute Mers Post-Prandial</div><div class="proto-desc">Contracția musculară consumă glucoza prin GLUT4 (independent de insulină). Cel mai simplu „medicament" glicemic.</div></div>
+      </div>
+    </div></div>
+  </div>
+
+  <div class="acc-card orange">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name" style="color:var(--orange);">BIO #4 — Berberina</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.7;">
+      <strong>500mg × 2/zi cu Prânzul și Cina.</strong> Activează AMPK (senzorul de energie celulară), direcționează nutrienții spre mușchi în loc de grăsime. Efect comparabil cu Metformin în studii comparative. ⚠ Discută cu medicul dacă ești pe altă medicație.
+    </div></div>
+  </div>
+
+  <div class="tag tag-green" style="margin-top:16px;">Suplimentele Zilnice — Stack Clinic</div>
+
+  <div class="acc-card green">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area"><div class="acc-name" style="color:var(--green);">Stack Complet — Când & Cât</div></div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body">
+      <div class="proto-step">
+        <div class="proto-num green">1</div>
+        <div class="proto-body"><div class="proto-ttl">Creatina Monohidrată — 10g/zi</div><div class="proto-desc">Cu apă, zilnic (inclusiv zilele de repaus). Nu ai nevoie de perioadă de încărcare.</div></div>
+      </div>
+      <div class="proto-step">
+        <div class="proto-num green">2</div>
+        <div class="proto-body"><div class="proto-ttl">Omega-3 (EPA + DHA) — 2-3g/zi</div><div class="proto-desc">Cu o masă grasă (Prânz sau Cină). Esențial pentru scolioză — reduce IL-6 și lubrifiază articulațiile.</div></div>
+      </div>
+      <div class="proto-step">
+        <div class="proto-num green">3</div>
+        <div class="proto-body"><div class="proto-ttl">Magneziu Bisglicinat — 300-400mg seara</div><div class="proto-desc">După cină. NU oxid de magneziu (absorbție 4%). Bisglicinat sau Citrat.</div></div>
+      </div>
+      <div class="proto-step">
+        <div class="proto-num green">4</div>
+        <div class="proto-body"><div class="proto-ttl">Electroliți Complex — intra-muncă</div><div class="proto-desc">1 cupă în apa din timpul efortului (șantier sau sală). Sodiu-potasiu → transmitere impuls nervos.</div></div>
+      </div>
+      <div class="proto-step">
+        <div class="proto-num green">5</div>
+        <div class="proto-body"><div class="proto-ttl">D3 (5000 IU) + K2 (100mcg) — dimineața</div><div class="proto-desc">Cu o sursă de grăsimi. D3 = sinteza testosteronului. K2 = calciul merge în oase, nu în artere.</div></div>
+      </div>
+      <div class="proto-step">
+        <div class="proto-num green">!</div>
+        <div class="proto-body"><div class="proto-ttl">Colagen Hidrolizat (Scolioză) — 15g + 500mg Vit C</div><div class="proto-desc"><strong>EXACT 60 min înainte de antrenament.</strong> Singurul moment în care fluxul sanguin împinge colagenul direct în ligamente și tendoane.</div></div>
+      </div>
+    </div></div>
+  </div>
+
+  <!-- MVE CIRCUIT -->
+  <div class="tag tag-blue" style="margin-top:16px;">Protocolul MVE — Circuitul de 20 Minute</div>
+
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">MVE — Când Nu Poți Ajunge la Sală</div>
+        <div class="acc-sub-title">45 sec lucru / 15 sec pauză × 5 exerciții = 4 min rundă · 5 runde = 20 min</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="proto-step">
+          <div class="proto-num" style="color:var(--blue);font-size:16px;">1</div>
+          <div class="proto-body"><div class="proto-ttl">Genuflexiuni Explozive (BW)</div><div class="proto-desc">45 sec · Jos lent, sus exploziv.</div></div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num" style="color:var(--blue);font-size:16px;">2</div>
+          <div class="proto-body"><div class="proto-ttl">Flotări la Podea</div><div class="proto-desc">45 sec · Dacă cedezi → treci pe genunchi, nu te oprești.</div></div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num" style="color:var(--blue);font-size:16px;">3</div>
+          <div class="proto-body"><div class="proto-ttl">Fandări Alternative</div><div class="proto-desc">45 sec alternând picioarele.</div></div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num" style="color:var(--blue);font-size:16px;">4</div>
+          <div class="proto-body"><div class="proto-ttl">Superman Holds + Ramat Improvizat</div><div class="proto-desc">45 sec cu mișcare de braț simulat la sol.</div></div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num" style="color:var(--blue);font-size:16px;">5</div>
+          <div class="proto-body"><div class="proto-ttl">Plank cu Atingere Umăr</div><div class="proto-desc">45 sec · Alternezi mâna dreaptă-stângă.</div></div>
+        </div>
+        <div style="background:rgba(41,128,185,0.08);border:1px solid rgba(41,128,185,0.2);padding:10px;border-radius:4px;margin-top:10px;font-size:11px;color:#aaa;">
+          <strong style="color:var(--blue);">Zi devastatoare fizic (șantier intens):</strong> 3 runde = 12 min<br>
+          <strong style="color:var(--blue);">Standard:</strong> 5 runde = 20 min<br>
+          <strong style="color:var(--blue);">Ai mâncat pizza:</strong> MVE imediat — arde zaharurile libere, oprește lipogeneza
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- end tab-reguli -->
+
+<!-- ═══════════════════════════════ TAB 5: URGENȚĂ & ANTI-BINGE ═══════════════════════════════ -->
+<div class="panel" id="tab-urgenta">
+
+  <div class="tag tag-orange">Protocoale de Urgență & Intervenție</div>
+
+  <!-- ANTI-BINGE 4 NIVELURI -->
+  <div class="acc-card orange open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--orange);">ARSENALUL ANTI-BINGE — 4 NIVELURI</div>
+        <div class="acc-sub-title">Execuți în ordine. Fără excepție.</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="proto-step">
+          <div class="proto-num orange">1</div>
+          <div class="proto-body">
+            <div class="proto-ttl">NIVEL 1 — Prevenție (16:00 în Mașină)</div>
+            <div class="proto-desc"><strong>Alarma la 16:00.</strong> Consumi gustarea anti-binge (45g Proteină). Blochezi Grelina înainte să ajungi acasă epuizat. Dacă o cauți când apare pofta → sistemul nervos limbic a preluat deja controlul.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num orange">2</div>
+          <div class="proto-body">
+            <div class="proto-ttl">NIVEL 2 — STOP-WAIT-ACT (Pattern Interrupt)</div>
+            <div class="proto-desc">
+              <strong>STOP</strong> — Nu faci niciun pas spre sertar/dulap.<br>
+              <strong>WAIT</strong> — Bea 500ml apă rece (șocul termic activează nervul vag).<br>
+              <strong>ACT</strong> — Timer 10 minute + o activitate (duș, haine, plimbare). 80% din cazuri urgența se disipează.
+            </div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num orange">3</div>
+          <div class="proto-body">
+            <div class="proto-ttl">NIVEL 3 — Damage Control (Dacă Cedezi)</div>
+            <div class="proto-desc"><strong>ÎNAINTE</strong> de prima mușcătură din dulce/junk: mănânci 200g iaurt grecesc sau un shake proteic. Matricea proteică reduce spike-ul glicemic cu 28-37% și te vei opri mult mai devreme.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num orange">4</div>
+          <div class="proto-body">
+            <div class="proto-ttl">NIVEL 4 — T.I.P.P. (Resetare Nervoasă Completă)</div>
+            <div class="proto-desc">
+              <strong>T — Temperature:</strong> Apă rece pe față/încheieturi 30 sec (reflex vagal, pulsul scade instant)<br>
+              <strong>I — Intense exercise:</strong> 20 genuflexiuni rapide (ard glucoza care provoacă starea de agitație)<br>
+              <strong>P — Paced breathing:</strong> 4 sec inspirat, 6 sec expirat × 5 repetări (opreşte axa HPA)<br>
+              <strong>P — Progressive relaxation:</strong> Strânge și eliberează pumnii de 5 ori consecutiv
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROTOCOALE SANTIER -->
+  <div class="acc-card orange">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--orange);">PROTOCOALE DE ȘANTIER — 4 Intervenții</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="proto-step">
+          <div class="proto-num orange">1</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Cascada Oboselii la 14:00 → Electroliți la 12:00</div>
+            <div class="proto-desc">Prăbușirea de la 14:00 nu e slăbiciune — e pierdere de sodiu → volum sanguin scăzut → inima +20% mai rapid. Fix la <strong>12:00 bei apă cu electroliți</strong> (nu apă simplă — aceea nu reface sodiul).</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num orange">2</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Biohacking Absorbție — 3 Respirații Înainte de Masă</div>
+            <div class="proto-desc">Corpul pe șantier e în stare de alertă (simpatic) — sânge în mușchi, nu în stomac. <strong>Înainte să deschizi caserola: 3 respirații diafragmatice profunde</strong> (comutare pe parasimpatic). Previi balonarea și maximizezi absorbția.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num orange">3</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Colagen Scolioză — 60 Min Pre-Workout</div>
+            <div class="proto-desc"><strong>15g Colagen Hidrolizat + 500mg Vitamina C exact 60 min înainte de antrenament.</strong> Acesta e singurul interval în care fluxul sanguin maxim împinge colagenul direct în ligamentele secătuite. Mai devreme sau mai târziu → ineficient.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num orange">4</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Scut Anti-Oxidant — Astaxantină + Vit C Dimineața</div>
+            <div class="proto-desc">Praf, noxe, soare = radicali liberi masivi care accelerează îmbătrânirea celulară și inflamația. <strong>Astaxantină + 1g Vitamina C dimineața</strong> creează un scut intern care neutralizează daunele oxidative ocupaționale.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCENARII DE URGENTA -->
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">URGENȚE ALIMENTARE — Stocul Minim</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-sub">Nu ai mâncare pregătită. Nu comanzi fast-food. Apelezi la stocul permanent:</div>
+      <div class="acc-body">
+        <div class="scenario">
+          <div class="sc-ttl">Varianta A — Rapid (6 min)</div>
+          <div class="sc-body">3 ouă fierte + 100g brânză cottage/telemea slabă + ridichi/ardei gras</div>
+        </div>
+        <div class="scenario">
+          <div class="sc-ttl">Varianta B — Din Cămară</div>
+          <div class="sc-body">1 conservă ton în apă (150g) + 1 roșie + 1 felie pâine integrală + 1 lingură ulei măsline</div>
+        </div>
+        <div class="scenario">
+          <div class="sc-ttl">Varianta C — Din Frigider</div>
+          <div class="sc-body">250g iaurt grecesc 2% + mână de nuci/migdale + 1 fruct</div>
+        </div>
+        <div class="alert-box orange" style="margin-top:10px;margin-bottom:0;">
+          <strong>Regula casei:</strong> Iaurt grecesc, ouă și conserve de ton nu trebuie să lipsească niciodată din frigider/cămară.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CRIZA 3 ZILE -->
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">AI PICAT 3 ZILE — Ce Faci</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="proto-step">
+          <div class="proto-num red">T</div>
+          <div class="proto-body"><div class="proto-ttl">Momentul T (Chiar acum)</div><div class="proto-desc">Te oprești. Nu termini ce mănânci. Pui restul în frigider. Nicio pedeapsă mentală.</div></div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num red">+1</div>
+          <div class="proto-body"><div class="proto-ttl">A doua zi dimineața</div><div class="proto-desc">Trimiți mesaj scurt, onest: <em>„Claudiu, aseară am picat pe fond de stres."</em> Verbalizarea distruge rușinea. Nu aștepți check-in-ul de weekend.</div></div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num red">+2</div>
+          <div class="proto-body"><div class="proto-ttl">Prânzul de după</div><div class="proto-desc">Te reîntorci imediat la ancoră: pui cu broccoli. <strong>FĂRĂ zi de detox, FĂRĂ înfometare, FĂRĂ alergat ca pedeapsă.</strong> Eșecul de 3 zile este doar un episod. Eșecul real e decizia de a abandona totul.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SITUATIONAL PLAYBOOK -->
+  <div class="acc-card">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">SITUATIONAL PLAYBOOK — 6 Scenarii</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="scenario">
+          <div class="sc-ttl">1. Prânz de afaceri / furnizori</div>
+          <div class="sc-body">Fii primul care comandă. Proteină curată + salată. Ignori coșul cu pâine. Apă minerală.</div>
+        </div>
+        <div class="scenario">
+          <div class="sc-ttl">2. Masa de duminică la socri</div>
+          <div class="sc-body">Accepți proteina (sarmale/friptură). Refuzi garniturile (mămăligă, pâine). La desert: <strong>Regula Unicei Felii</strong> — 1 felie mică, mănânci lent, refuzi a doua politicos.</div>
+        </div>
+        <div class="scenario">
+          <div class="sc-ttl">3. Deplasări auto lungi</div>
+          <div class="sc-body">Eviti benzinăriile (capcane de carbohidrați). Cumperi în avans: Beef Jerky + 1 pumn migdale + apă minerală + cafea neagră.</div>
+        </div>
+        <div class="scenario">
+          <div class="sc-ttl">4. Grătar / Eveniment social</div>
+          <div class="sc-body">70% farfurie = salată/legume, 30% = carne. Zero pâine. Apă minerală între mese. Regula alcoolului: asociezi EXCLUSIV cu proteină slabă + salată (fără cartofi, pâine, sosuri).</div>
+        </div>
+        <div class="scenario">
+          <div class="sc-ttl">5. Urgență de noapte (02:00 — Stres Facturi/Acte)</div>
+          <div class="sc-body">Foame la ore târzii → <strong>NU carbohidrați</strong> (blochează GH nocturn). Exclusiv proteic: shake cazeină sau brânză cottage.</div>
+        </div>
+        <div class="scenario">
+          <div class="sc-ttl">6. Răceală sau Accidentare</div>
+          <div class="sc-body">NU tai caloriile complet. Menții proteinele sus, scazi ușor carbohidrații. Focus 100% pe somn + hidratare. Zero sală în zilele acute.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- end tab-urgenta -->
+
+<!-- ═══════════════════════════════ TAB 6: VIAȚĂ & EVENIMENTE ═══════════════════════════════ -->
+<div class="panel" id="tab-viata">
+
+  <div class="tag tag-purple">Sistemul de Operare al Vieții (Lifestyle)</div>
+
+  <!-- ARHITECTURA SOMNULUI -->
+  <div class="acc-card purple open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--purple);">ARHITECTURA SOMNULUI 🌙</div>
+        <div class="acc-sub-title">Recuperare neurologică SNC</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="proto-step">
+          <div class="proto-num purple">1</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Protocol Wind-Down (90 min)</div>
+            <div class="proto-desc">Cu 90 minute înainte de somn: telefonul de muncă se ÎNCHIDE (nu doar silent). Ecranele personale pe Night Shift maxim. Cameră: 19-20°C, întuneric complet.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num purple">2</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Suplimentare Somn</div>
+            <div class="proto-desc">Magneziu Bisglicinat/Citrat (400mg) cu 45 min înainte de culcare. Traversează bariera hemato-encefalică și relaxează direct sistemul nervos.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num purple">3</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Regula Orei de Trezire: 07:30 FIX</div>
+            <div class="proto-desc">Indiferent dacă e zi lucrătoare sau weekend. <strong>Nu „recuperezi" somnul în weekend (se numește social jetlag).</strong> Dacă ești obosit duminica → mergi mai devreme la culcare sâmbătă seara, nu te trezești la 11:00.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DATE NIGHT -->
+  <div class="acc-card purple">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--purple);">DATE NIGHT PROTOCOL 🍷</div>
+        <div class="acc-sub-title">Restaurant cu logodnica</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="proto-step">
+          <div class="proto-num purple">A</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Pre-planificare (Economia calorică)</div>
+            <div class="proto-desc">Știi că seara ieșiți la un restaurant bun? <strong>Sari carbohidrații de la prânz.</strong> Prânz: o salată mare cu pui la grătar. Ai economisit instant ~800 kcal pentru cină.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num purple">B</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Regula Comenzii la Restaurant</div>
+            <div class="proto-desc">Ignori zona de paste/pizza. Comanzi: mușchi de vită / cotlet / pește (doradă/lavrac) pe grătar — ceri <em>„fără unt deasupra la final"</em>. Garnitură: legume la grătar. <strong>Refuzi din start coșul cu pâine.</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- VACANTA GRECIA -->
+  <div class="acc-card purple">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--purple);">VACANȚA ÎN GRECIA (August) 🏖️</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="proto-step">
+          <div class="proto-num purple">1</div>
+          <div class="proto-body">
+            <div class="proto-ttl">2 Mese / Zi (Intermittent Fasting Natural)</div>
+            <div class="proto-desc">Sari complet micul dejun de la hotel (plin de patiserie/zahăr). Bei cafea neagră și te hidratezi. Prima masă solidă va fi la ora 13:00 - 14:00.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num purple">2</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Baza: Pește și Salată (Atenție la ulei)</div>
+            <div class="proto-desc">Bazează-te pe Tsipoura, Lavraki, caracatiță, souvlaki pui. <strong>Capcana:</strong> Grecii toarnă extrem de mult ulei de măsline (900 kcal/100ml). Cere salata grecească „fără ulei" — uleiul să fie adus separat, și pui TU o singură lingură.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num purple">3</div>
+          <div class="proto-body">
+            <div class="proto-ttl">Zero Sală. NEAT Activ.</div>
+            <div class="proto-desc">Fără sală de forță în vacanță. Corpul are nevoie de deload. Activitate: 30 minute înot zilnic + plimbări lungi pe plajă dimineața și seara cu logodnica.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PEAK WEEK CUNUNIE -->
+  <div class="alert-box red" style="margin-top:20px; border-color:var(--red); background:rgba(192,57,43,0.15);">
+    <div class="alert-ttl" style="color:var(--red);font-size:16px;">🔥 THE PEAK WEEK (20 IUNIE)</div>
+    <div style="color:#fff;font-size:12px;margin-top:4px;">Protocolul de „Water Manipulation" pentru cununia civilă.<br>Obiectiv: <strong>„Whoosh Effect" (-3 până la -5 kg)</strong> — aspect dezumflat, conturat, uscat.</div>
+  </div>
+
+  <div class="acc-card red open" style="border-color:var(--red);">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--red);">WATER MANIPULATION TIMELINE</div>
+      </div>
+      <div class="acc-icon" style="color:var(--red);">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        
+        <div class="peak-row">
+          <div class="peak-day">ZIUA -7<br>până la<br>ZIUA -2</div>
+          <div class="peak-body"><strong>Water Loading: 5-6 Litri / zi apă plată.</strong> Corpul recunoaște excesul, suprimă aldosteronul și intră într-o stare de „flushing" constant (urinezi frecvent). Scazi carbohidrații la 50-80g/zi pentru a goli rezervele de glicogen. Zero sare adăugată. Zero murături.</div>
+        </div>
+        
+        <div class="peak-row">
+          <div class="peak-day">ZIUA -1<br>(Vineri)</div>
+          <div class="peak-body"><strong>Tăierea apei: 1.5 Litri MAXIM, consumați DOAR până la ora 18:00.</strong> Corpul continuă să elimine apa în același ritm (hormonii au lag de 24h), astfel trage ultima picătură de retenție subcutanată.</div>
+        </div>
+
+        <div class="peak-row">
+          <div class="peak-day">ZIUA -1<br>Seara</div>
+          <div class="peak-body"><strong>Masa de Reîncărcare (Carb-Up):</strong> Orez basmati curat + pui la grătar + <strong>sare normală</strong>. Carbohidrații și sarea trag toți nutrienții (și puținul lichid rămas) direct ÎN interiorul mușchiului. </div>
+        </div>
+
+        <div class="peak-row" style="border-bottom:none;">
+          <div class="peak-day">ZIUA 0<br>(Sâmbătă)</div>
+          <div class="peak-body"><strong>Cununia:</strong> Mușchi plini de glicogen, retenție de apă subcutanată ZERO, talie vizibil mai mică, față conturată. Bei apă moderat/normal.<br><br><span style="color:var(--red);font-weight:700;">⚠ RESTRICȚIE ABSOLUTĂ:</span> Zero alcool pe toată durata săptămânii Peak Week (inflamația anulează instantaneu efectul de flush).</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</div>
+<!-- end tab-viata -->
+
+<!-- ═══════════════════════════════ STICKY TRACKER (FOOTER) ═══════════════════════════════ -->
+<div class="sticky-bar" id="tracker-bar">
+  <div class="st-info">
+    <div class="st-ttl">Progres Proteină Azi</div>
+    <div class="st-vals">
+      <span id="prot-current">0</span> <span style="font-size:12px;color:var(--muted);">/ 220g</span>
+    </div>
+  </div>
+  <button class="st-btn" onclick="openModal()">VEZI STATUS</button>
+</div>
+
+<!-- ═══════════════════════════════ MODAL SUMMARY ═══════════════════════════════ -->
+<div class="modal-backdrop" id="modal" onclick="closeModal(event)">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-ttl">STATUS MESE ASTĂZI</div>
+      <button class="modal-close" onclick="closeModal(event)">✕</button>
+    </div>
+    
+    <div id="meal-list">
+      <div style="font-size:12px;color:var(--muted);text-align:center;padding:20px;">
+        Nu ai bifat nicio masă încă.<br>Apasă pe o opțiune din tab-ul 🥩 Mese.
+      </div>
+    </div>
+    
+    <div class="modal-row highlight">
+      <div class="modal-meal-name" style="color:var(--green);">TOTAL PROTEINĂ</div>
+      <div class="modal-meal-val" id="modal-total">0g / 220g</div>
+    </div>
+
+    <!-- ProgressBar -->
+    <div style="width:100%;height:8px;background:var(--card);border-radius:4px;margin-bottom:10px;overflow:hidden;border:1px solid var(--brd);">
+      <div id="modal-progress" style="width:0%;height:100%;background:var(--green);transition:width 0.3s;"></div>
+    </div>
+    
+    <button class="modal-btn-reset" onclick="resetDay()">Resetează Ziua</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════ JAVASCRIPT ═══════════════════════════════ -->
+<script>
+  let targetProt = 220;
+  let currentProt = 0;
+  let selections = {}; 
+  // { mealKey: { name: "...", prot: 0 } }
+
+  // 1. TABS
+  function showTab(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    
+    event.target.classList.add('active');
+    document.getElementById('tab-' + tabId).classList.add('active');
+    
+    // Hide tracker bar if not on 'mese'
+    const tb = document.getElementById('tracker-bar');
+    if(tabId === 'mese') {
+      if(currentProt > 0) tb.classList.add('visible');
+    } else {
+      tb.classList.remove('visible');
+    }
+  }
+
+  // 2. DAY SELECTOR
+  function selectDayType(day) {
+    document.querySelectorAll('.day-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelector('.day-btn.' + day).classList.add('active');
+    
+    document.body.className = 'day-' + day;
+    
+    const kcalEl = document.getElementById('stat-kcal');
+    const hdrVal = document.getElementById('hdr-target-val');
+    
+    if(day === 'antren') {
+      kcalEl.innerText = '2.650';
+      hdrVal.innerText = '2.650 KCAL';
+    } else if(day === 'repaus') {
+      kcalEl.innerText = '2.400';
+      hdrVal.innerText = '2.400 KCAL';
+    } else {
+      kcalEl.innerText = '2.800';
+      hdrVal.innerText = '2.800 KCAL';
+    }
+  }
+
+  // 3. ACCORDION
+  function toggleAcc(hdr) {
+    const card = hdr.parentElement;
+    card.classList.toggle('open');
+  }
+
+  // 4. MEAL SELECTION
+  function selectMeal(block) {
+    const mealKey = block.getAttribute('data-meal');
+    const protVal = parseInt(block.getAttribute('data-prot'));
+    const mealName = block.getAttribute('data-name');
+    
+    const parentBody = block.parentElement;
+    const isSelected = block.classList.contains('selected');
+    
+    // deselectează alte opțiuni din aceeași masă
+    parentBody.querySelectorAll('.opt-block').forEach(b => {
+      b.classList.remove('selected');
+      b.querySelector('.opt-check').innerText = 'Alege ○';
+    });
+    
+    if(!isSelected) {
+      // am selectat-o
+      block.classList.add('selected');
+      block.querySelector('.opt-check').innerText = 'Bifat ✓';
+      
+      selections[mealKey] = { name: mealName, prot: protVal };
+    } else {
+      // am deselectat-o
+      delete selections[mealKey];
+    }
+    
+    updateTracker();
+  }
+
+  function updateTracker() {
+    currentProt = 0;
+    for(let key in selections) {
+      currentProt += selections[key].prot;
+    }
+    
+    document.getElementById('prot-current').innerText = currentProt;
+    
+    const tb = document.getElementById('tracker-bar');
+    const activeTab = document.querySelector('.tab.active').innerText.toLowerCase();
+    
+    if(currentProt > 0 && activeTab.includes('mese')) {
+      tb.classList.add('visible');
+    } else {
+      tb.classList.remove('visible');
+    }
+    
+    updateModalUI();
+  }
+
+  // 5. MODAL LOGIC
+  function openModal() {
+    document.getElementById('modal').classList.add('open');
+    updateModalUI();
+  }
+  
+  function closeModal(e) {
+    if(e.target.id === 'modal' || e.target.classList.contains('modal-close')) {
+      document.getElementById('modal').classList.remove('open');
+    }
+  }
+
+  function updateModalUI() {
+    const list = document.getElementById('meal-list');
+    list.innerHTML = '';
+    
+    if(Object.keys(selections).length === 0) {
+      list.innerHTML = '<div style="font-size:12px;color:var(--muted);text-align:center;padding:20px;">Nu ai bifat nicio masă încă.</div>';
+    } else {
+      for(let key in selections) {
+        list.innerHTML += `
+          <div class="modal-row">
+            <div class="modal-meal-name">${selections[key].name}</div>
+            <div class="modal-meal-val">+${selections[key].prot}g P</div>
+          </div>
+        `;
+      }
+    }
+    
+    document.getElementById('modal-total').innerText = currentProt + 'g / 220g';
+    
+    let pct = (currentProt / targetProt) * 100;
+    if(pct > 100) pct = 100;
+    document.getElementById('modal-progress').style.width = pct + '%';
+  }
+
+  function resetDay() {
+    selections = {};
+    document.querySelectorAll('.opt-block').forEach(b => {
+      b.classList.remove('selected');
+      b.querySelector('.opt-check').innerText = 'Alege ○';
+    });
+    updateTracker();
+    closeModal({target: {id: 'modal'}});
+  }
+
+  // 6. COUNTDOWN CUNUNIE
+  function calcCountdown() {
+    const targetDate = new Date("2026-06-20T00:00:00").getTime();
+    const now = new Date().getTime();
+    const diff = targetDate - now;
+    
+    const cdEl = document.getElementById('countdown-val');
+    
+    if(diff <= 0) {
+      cdEl.innerText = "ZIUA Z";
+      cdEl.style.color = "var(--green)";
+      return;
+    }
+    
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    
+    if(days <= 7) {
+      cdEl.innerText = days + " ZILE (PEAK WEEK)";
+      cdEl.style.color = "var(--red)";
+    } else {
+      cdEl.innerText = days + " ZILE RĂMASE";
+    }
+  }
+  
+  calcCountdown();
+
+</script>
+</body>
+</html>
