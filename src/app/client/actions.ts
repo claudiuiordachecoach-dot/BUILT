@@ -118,11 +118,15 @@ export async function getWorkoutPlan() {
 const QUICKREF_NUTRITIE: Record<number, string> = {
   1: "/quickref/alex-nutritie.html",
   2: "/quickref/letitia-nutritie.html",
+  3: "/quickref/george-nutritie.html",
+  4: "/quickref/ciprian-nutritie.html",
 };
 
 const QUICKREF_ANTRENAMENT: Record<number, string> = {
   1: "/quickref/alex-antrenament.html",
   2: "/quickref/letitia-antrenament.html",
+  3: "/quickref/george-antrenament.html",
+  4: "/quickref/ciprian-antrenament.html",
 };
 
 export async function getNutritionPlan() {
