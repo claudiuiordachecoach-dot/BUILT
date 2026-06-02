@@ -175,7 +175,16 @@ body.day-usoara .d-usoar { display: inline !important; }
 .prog-bar-bg{background:var(--drk2);height:8px;border-radius:4px;overflow:hidden;margin:8px 0;}
 .prog-bar-fill{background:var(--green);height:100%;width:0%;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);}
 .prog-lbls{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
-@media(min-width:768px){body{max-width:900px!important;font-size:15px;padding:0 32px 48px;}}
+@media(min-width:768px){
+  body{max-width:960px!important;font-size:15px;padding:0 40px 48px;}
+  .stat-grid{grid-template-columns:repeat(3,1fr);}
+  .guide-grid{grid-template-columns:repeat(4,1fr);}
+  .day-selector{gap:16px;}
+  .day-btn{font-size:15px;padding:14px 20px;}
+  .opt-block{padding:14px 18px;}
+  .sticky-bar{max-width:960px!important;}
+  .hdr{padding:18px 24px 14px;}
+}
 </style>
 </head>
 <body class="day-normala">
@@ -187,7 +196,7 @@ body.day-usoara .d-usoar { display: inline !important; }
   </div>
   <div class="budget-bar">
     <span>Target Zi</span>
-    <strong id="hdr-target-val">3.000 KCAL</strong>
+    <strong id="hdr-target-val">2.800 KCAL</strong>
     <span>240g Proteină Fixă</span>
   </div>
 </div>
@@ -205,7 +214,7 @@ body.day-usoara .d-usoar { display: inline !important; }
 
   <div class="stat-grid">
     <div class="stat-card">
-      <div class="stat-val" id="stat-kcal">3.000</div>
+      <div class="stat-val" id="stat-kcal">2.800</div>
       <div class="stat-unit">kcal / zi</div>
       <div class="stat-lbl">Target Dinamic</div>
     </div>
@@ -252,15 +261,15 @@ body.day-usoara .d-usoar { display: inline !important; }
   <div class="day-selector">
     <div class="day-btn activa" data-day="activa" onclick="selectDayType('activa')">
       Zi Activă
-      <span>3.200 kcal</span>
+      <span>3.000 kcal</span>
     </div>
     <div class="day-btn normala active" data-day="normala" onclick="selectDayType('normala')">
       Zi Normală
-      <span>3.000 kcal</span>
+      <span>2.800 kcal</span>
     </div>
     <div class="day-btn usoara" data-day="usoara" onclick="selectDayType('usoara')">
       Zi Ușoară
-      <span>2.700 kcal</span>
+      <span>2.600 kcal</span>
     </div>
   </div>
 
@@ -968,7 +977,7 @@ body.day-usoara .d-usoar { display: inline !important; }
       <button class="modal-close" onclick="closeModal(event)">✕</button>
     </div>
 
-    <div class="tag tag-orange" id="modal-day-tag">ZI NORMALĂ (TARGET: 3.000 KCAL)</div>
+    <div class="tag tag-orange" id="modal-day-tag">ZI NORMALĂ (TARGET: 2.800 KCAL)</div>
 
     <div style="margin:14px 0 6px;font-size:11px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;">Mesele Selectate de Azi:</div>
     <div class="modal-row"><span class="modal-meal-name">Masa 1 (Mic Dejun):</span> <span class="modal-meal-val" id="lbl-md">Neselectat</span></div>
@@ -999,8 +1008,8 @@ body.day-usoara .d-usoar { display: inline !important; }
 
 <script>
 let currentDayType = 'normala'; // 'activa', 'normala', 'usoara'
-let dayTargets = { activa: 3200, normala: 3000, usoara: 2700 };
-let dayLabels = { activa: 'ZI ACTIVĂ (TARGET: 3.200 KCAL)', normala: 'ZI NORMALĂ (TARGET: 3.000 KCAL)', usoara: 'ZI UȘOARĂ (TARGET: 2.700 KCAL)' };
+let dayTargets = { activa: 3000, normala: 2800, usoara: 2600 };
+let dayLabels = { activa: 'ZI ACTIVĂ (TARGET: 3.000 KCAL)', normala: 'ZI NORMALĂ (TARGET: 2.800 KCAL)', usoara: 'ZI UȘOARĂ (TARGET: 2.600 KCAL)' };
 
 function showTab(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
