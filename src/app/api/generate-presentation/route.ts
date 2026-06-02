@@ -1,4 +1,7 @@
-export const PRESENTATION_TEMPLATE = `<!DOCTYPE html>
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseServer } from "@/lib/supabase/server";
+import { getAnthropicClient, MODELS } from "@/lib/anthropic";
+const PRESENTATION_TEMPLATE = `<!DOCTYPE html>
 <html lang="ro">
 <head>
 <meta charset="UTF-8">
@@ -44,35 +47,30 @@ nav button:hover{border-color:#C0392B;color:#C0392B}
 <body>
 <div class="prog" id="prog"></div>
 <div class="deck">
-
 <div class="slide active">
   <div class="eyebrow">Plan personalizat BUILT</div>
   <h1>{{prenume}}<br><span class="red">90 de Zile.</span></h1>
   <div class="bar"></div>
   <p class="body">Pregătit pe baza diagnosticului din {{data_generare}}.</p>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Diagnosticul tău</div>
   <h2>Unde Ești <span class="red">Acum</span></h2>
   <div class="bar"></div>
   <p class="body">{{situatie_actuala}}</p>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Ce am identificat</div>
   <h2>Ce Te-a Ținut <span class="red">pe Loc</span></h2>
   <div class="bar"></div>
   <ul class="items">{{obstacole_list}}</ul>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Obiectivul tău</div>
   <h2>Unde Vrei <span class="red">Să Fii</span></h2>
   <div class="bar"></div>
   <p class="body">{{obiectiv_90_zile}}</p>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Adevărul despre trecut</div>
   <h2>De Ce N-a <span class="red">Mers Înainte</span></h2>
@@ -80,7 +78,6 @@ nav button:hover{border-color:#C0392B;color:#C0392B}
   <p class="body">{{motiv_esec}}</p>
   <p class="sub">Nu a fost lipsă de voință. A fost lipsă de sistem.</p>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Sistemul</div>
   <h2>Cum Funcționează <span class="red">BUILT</span></h2>
@@ -93,14 +90,12 @@ nav button:hover{border-color:#C0392B;color:#C0392B}
     <li>Tough Mindset — identitate de om echilibrat, nu de om la dietă</li>
   </ul>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Despre mine</div>
   <h2>Cine <span class="red">Sunt Eu</span></h2>
   <div class="bar"></div>
   <p class="body">Iordache Claudiu — Hybrid Athlete, +7 ani experiență. Am trecut de la 120kg la vicecampion. Nu vând motivație — am construit un sistem reproductibil aplicat mai întâi pe mine, apoi pe clienții mei.</p>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Dovadă reală</div>
   <h2>Oameni Care Au <span class="red">Trecut Prin Asta</span></h2>
@@ -108,7 +103,6 @@ nav button:hover{border-color:#C0392B;color:#C0392B}
   <blockquote>"Am 39 de ani, job de PM, doi copii. Credeam că nu am timp. În 90 de zile am slăbit 12kg și am mai multă energie decât la 30 de ani."</blockquote>
   <p class="author">— Alex, 39 ani, Project Manager IT</p>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Investiția ta</div>
   <h2>Ce Primești + <span class="red">Cât Costă</span></h2>
@@ -132,7 +126,6 @@ nav button:hover{border-color:#C0392B;color:#C0392B}
     </div>
   </div>
 </div>
-
 <div class="slide">
   <div class="eyebrow">Pasul următor</div>
   <h2>Hai Să <span class="red">Construim</span></h2>
@@ -140,7 +133,6 @@ nav button:hover{border-color:#C0392B;color:#C0392B}
   <p class="body">Dacă ce ai citit în acest plan rezonează cu situația ta — știi ce e de făcut. BUILT nu convinge pe nimeni. Selectăm oameni gata să se reconstruiască.</p>
   <a href="mailto:claudiuiordache.coach@gmail.com" class="cta">Confirm participarea</a>
 </div>
-
 </div>
 <nav>
   <button onclick="prev()">← Înapoi</button>
@@ -148,10 +140,7 @@ nav button:hover{border-color:#C0392B;color:#C0392B}
   <button onclick="next()">Înainte →</button>
 </nav>
 <script>
-let cur=0;
-const slides=document.querySelectorAll('.slide');
-const ct=document.getElementById('ct');
-const prog=document.getElementById('prog');
+let cur=0;const slides=document.querySelectorAll('.slide');const ct=document.getElementById('ct');const prog=document.getElementById('prog');
 function show(n){slides[cur].classList.remove('active');cur=(n+slides.length)%slides.length;slides[cur].classList.add('active');ct.textContent=(cur+1)+'/'+slides.length;prog.style.width=((cur+1)/slides.length*100)+'%'}
 function next(){show(cur+1)}function prev(){show(cur-1)}
 document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')next();if(e.key==='ArrowLeft')prev()});
@@ -159,3 +148,88 @@ prog.style.width=(1/slides.length*100)+'%';
 </script>
 </body>
 </html>`;
+
+interface ExtractedData {
+  prenume: string;
+  situatie_actuala: string;
+  obstacole: string[];
+  obiectiv_90_zile: string;
+  motiv_esec: string;
+}
+
+async function extractFromTranscript(transcript: string): Promise<ExtractedData> {
+  const client = getAnthropicClient();
+  const response = await client.messages.create({
+    model: MODELS.routine,
+    max_tokens: 1024,
+    system: [
+      {
+        type: "text",
+        text: `Ești un asistent care analizează transcripturi de discovery call-uri pentru coaching fitness BUILT.
+Extrage câmpurile cerute direct din transcript. Scrie în română, concret, folosind cuvintele reale ale persoanei.
+Dacă un câmp nu e clar în transcript, formulează ceva credibil pe baza contextului.
+Returnează DOAR JSON valid, fără alte explicații sau markdown.`,
+        cache_control: { type: "ephemeral" },
+      },
+    ],
+    messages: [
+      {
+        role: "user",
+        content: `Transcript:\n${transcript}\n\nReturnează JSON cu exact această structură:\n{"prenume":"prenumele prospectului","situatie_actuala":"situația lui acum în 2-3 propoziții, în cuvintele lui","obstacole":["obstacol 1","obstacol 2","obstacol 3"],"obiectiv_90_zile":"ce vrea să obțină în 90 de zile, 1-2 propoziții","motiv_esec":"de ce n-a mers înainte, reîncadrat ca problemă de sistem, 1-2 propoziții"}`,
+      },
+    ],
+  });
+
+  const textBlock = response.content.find((b) => b.type === "text");
+  if (!textBlock || textBlock.type !== "text") throw new Error("Răspuns AI fără text.");
+  const text = textBlock.text.trim();
+  const start = text.indexOf("{");
+  const end = text.lastIndexOf("}");
+  if (start === -1 || end === -1) throw new Error("JSON invalid.");
+  return JSON.parse(text.slice(start, end + 1)) as ExtractedData;
+}
+
+function populateTemplate(data: ExtractedData): string {
+  const dataRo = new Date().toLocaleDateString("ro-RO", { day: "numeric", month: "long", year: "numeric" });
+  const obstacoleList = data.obstacole.map((o) => `<li>${o}</li>`).join("");
+  return PRESENTATION_TEMPLATE
+    .replace(/{{prenume}}/g, data.prenume)
+    .replace(/{{situatie_actuala}}/g, data.situatie_actuala)
+    .replace(/{{obstacole_list}}/g, obstacoleList)
+    .replace(/{{obiectiv_90_zile}}/g, data.obiectiv_90_zile)
+    .replace(/{{motiv_esec}}/g, data.motiv_esec)
+    .replace(/{{data_generare}}/g, dataRo);
+}
+
+function generateSlug(): string {
+  return Math.random().toString(36).substring(2, 10);
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const { transcript } = await req.json() as { transcript: string };
+    if (!transcript?.trim()) {
+      return NextResponse.json({ error: "Transcriptul este gol." }, { status: 400 });
+    }
+
+    const extracted = await extractFromTranscript(transcript.trim());
+    const html = populateTemplate(extracted);
+    const slug = generateSlug();
+    const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000).toISOString();
+
+    const supabase = getSupabaseServer({ useServiceRole: true });
+    const { error } = await supabase.from("presentations").insert({
+      slug,
+      prospect_name: extracted.prenume,
+      html_content: html,
+      expires_at: expiresAt,
+    });
+
+    if (error) throw new Error(error.message);
+
+    return NextResponse.json({ slug });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Eroare necunoscută";
+    return NextResponse.json({ error: message }, { status: 500 });
+  }
+}

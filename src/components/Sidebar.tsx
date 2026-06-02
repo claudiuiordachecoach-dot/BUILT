@@ -48,7 +48,6 @@ const MAIN_ITEMS: NavEntry[] = [
 ];
 
 const TOOLS_ITEMS: NavEntry[] = [
-  { label: "Prezentare Vânzare", href: "/vanzare", icon: <Icons.presentation /> },
   { label: "Analizor Reel", href: "/dashboard/reel-copy",     icon: <Icons.chart /> },
   { label: "Audit Profil",  href: "/dashboard/profile-audit", icon: <Icons.search /> },
   { label: "Profilul Meu",  href: "/dashboard/onboarding",    icon: <Icons.user /> },

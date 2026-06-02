@@ -27,7 +27,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Rute publice — trec liber
-  if (pathname.startsWith("/login") || pathname.startsWith("/api")) {
+  if (pathname.startsWith("/login") || pathname.startsWith("/api") || pathname.startsWith("/p/")) {
     return response;
   }
 

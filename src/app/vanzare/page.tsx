@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { generatePresentation } from "./actions";
 
 export default function VanzarePage() {
   const [transcript, setTranscript] = useState("");
@@ -15,12 +14,18 @@ export default function VanzarePage() {
     setError("");
     setLink("");
 
-    const result = await generatePresentation(transcript);
+    const res = await fetch("/api/generate-presentation", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ transcript }),
+    });
 
-    if (!result.ok) {
-      setError(result.error);
-    } else {
-      setLink(`${window.location.origin}/p/${result.slug}`);
+    const data = await res.json() as { slug?: string; error?: string };
+
+    if (!res.ok || data.error) {
+      setError(data.error ?? "Eroare necunoscută.");
+    } else if (data.slug) {
+      setLink(`${window.location.origin}/p/${data.slug}`);
     }
     setLoading(false);
   }
