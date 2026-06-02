@@ -18,7 +18,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;padding-bottom:80px;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:100%;margin:0;padding-bottom:80px;}
 
 /* HEADER */
 .hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
@@ -159,7 +159,8 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 /* SUPERSET TAG */
 .superset{display:inline-block;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);border:1px solid rgba(230,126,34,0.35);padding:1px 5px;margin-left:5px;vertical-align:middle;border-radius:2px;}
 }
-@media(min-width:768px){body{max-width:100%!important;margin:0!important;padding:0 40px 48px!important;font-size:15px!important;}}
+
+@media(max-width:767px){body{max-width:480px;margin:0 auto;}}
 </style>
 </head>
 <body>

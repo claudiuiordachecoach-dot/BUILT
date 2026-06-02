@@ -18,7 +18,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;padding-bottom:120px;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:100%;margin:0;padding-bottom:120px;}
 
 /* HEADER */
 .hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:14px 16px 10px;position:sticky;top:0;z-index:100;}
@@ -203,7 +203,8 @@ body.day-refeed .d-ref{display:inline!important;}
 .modal-btn-reset{width:100%;background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);color:var(--red);padding:10px;border-radius:4px;font-weight:700;cursor:pointer;margin-top:14px;text-transform:uppercase;letter-spacing:1px;font-size:11px;}
 .sticky-bar{max-width:900px;}}
 
-@media(min-width:768px){body{max-width:100%!important;margin:0!important;padding:0 40px 48px!important;font-size:15px!important;}}
+
+@media(max-width:767px){body{max-width:480px;margin:0 auto;}}
 </style>
 </head>
 <body class="day-antren">

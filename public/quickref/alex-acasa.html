@@ -30,13 +30,11 @@ body {
   font-size: 14px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
-  max-width: 480px;
-  margin: 0 auto;
+  max-width:100%;
+  margin:0;
   padding-bottom: 80px;
 }
-@media (min-width: 768px) {
-  body { max-width: 900px; font-size: 15px; padding: 0 32px 48px; }
-}
+
 
 /* HEADER */
 .hdr {
@@ -259,7 +257,8 @@ body {
 .btn-vid:hover { border-color: var(--red); }
 .btn-vid span { color: var(--red); font-size: 12px; }
 
-@media(min-width:768px){body{max-width:100%!important;margin:0!important;padding:0 40px 48px!important;font-size:15px!important;}}
+
+@media(max-width:767px){body{max-width:480px;margin:0 auto;}}
 </style>
 </head>
 <body>

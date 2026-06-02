@@ -27,7 +27,7 @@
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;padding-bottom:120px;}
+body{background:var(--bg);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:100%;margin:0;padding-bottom:120px;}
 
 /* HEADER */
 .hdr{background:var(--bg);border-bottom:1px solid var(--brd);padding:14px 16px 10px;position:sticky;top:0;z-index:100;}
@@ -112,7 +112,8 @@ body{background:var(--bg);color:var(--wht);font-family:'DM Sans',sans-serif;font
 .sum-btn{width:100%;background:rgba(230,126,34,0.15);border:1px solid rgba(230,126,34,0.4);color:var(--orange);padding:12px;font-weight:700;letter-spacing:1px;font-size:12px;border-radius:4px;cursor:pointer;text-transform:uppercase;margin-bottom:10px;transition:all 0.2s;}
 .sum-btn.cancel{background:transparent;border-color:var(--brd);color:var(--muted);margin-bottom:0;}
 .timer-bar{max-width:900px;}}
-@media(min-width:768px){body{max-width:100%!important;margin:0!important;padding:0 40px 48px!important;font-size:15px!important;}}
+
+@media(max-width:767px){body{max-width:480px;margin:0 auto;}}
 </style>
 </head>
 <body>
