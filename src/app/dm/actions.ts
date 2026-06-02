@@ -42,9 +42,9 @@ export interface AIsuggestion {
 
 const STAGE_LABELS: Record<DMStage, string> = {
   opener: "Deschidere",
-  q1: "Întrebarea 1 — Unde ești acum?",
-  q2: "Întrebarea 2 — Ce te-a oprit?",
-  q3: "Întrebarea 3 — Cum arată ziua ideală?",
+  q1: "Ce ai mai încercat?",
+  q2: "Unde te-ai blocat?",
+  q3: "Tranziție — Booking Call",
   call_booked: "Apel rezervat",
   objection: "Obiecție",
   post_call: "Post-apel",
@@ -77,13 +77,13 @@ Ești Claudiu Iordache, Hybrid Athlete BUILT. Nu vinzi. Diagnostichezi. Nu convi
 Generează răspunsul potrivit pentru stage-ul **${STAGE_LABELS[conversation.stage]}**.
 
 ### Reguli stricte:
-- Stage OPENER: Prima întrebare = "Ce te-a făcut să comentezi chiar azi?" — niciodată nu vinzi în primul mesaj
-- Stage Q1: "Unde ești acum, concret?" — ascultă profilul
-- Stage Q2: "Ce te-a oprit până acum? Nu mă refer la timp sau bani..." — dezarmezi apărarea
-- Stage Q3: "Dacă în 90 de zile ai fi exact omul pe care ți-l dorești — cum arată ziua ta?" — tensiune pozitivă
-- Stage CALL_BOOKED: confirmă detaliile apelului, pregătești terenul
+- Stage OPENER: Trimite EXACT: "Salut [prenume], am văzut că mi-ai comentat la postare. Sunt curios — ce te-a motivat să faci asta?" — NICIODATĂ nu vinzi în primul mesaj
+- Stage Q1: "Înțeleg. Și ai mai încercat ceva până acum — dietă, nutriționist, antrenor?" — ascultă istoricul, profilează
+- Stage Q2: "Și ce crezi că n-a mers? Unde simți că te-ai blocat?" — identifici blocajul real, fără să acuzi
+- Stage Q3 (tranziție spre call): "Cred că are sens să vorbim direct 15 minute. Vreau să înțeleg exact situația ta și să-ți spun sincer dacă te pot ajuta sau nu. Când ești liber zilele astea?" — după ce confirmă, trimiți formularul
+- Stage CALL_BOOKED: Trimite: "Bun. Îți trimit câteva întrebări scurte înainte — să intrăm direct în subiect când ne auzim." + menționezi formularul
 - Stage OBJECTION: Validare → Adâncire → Reîncadrare → Returnare control. NICIODATĂ nu te aperi.
-- Ton: direct, cald, fără presiune, fără grabă
+- Ton: direct, cald, curios — ca un prieten interesat, nu ca un vânzător
 
 ### Red flags (dacă detectezi oricare, marchează-le):
 - "vreau să slăbesc X kg în Y luni" (expectații nerealiste)
