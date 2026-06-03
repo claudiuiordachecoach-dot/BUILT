@@ -205,7 +205,7 @@ Răspunde STRICT cu JSON (fără text în afară):`;
         }
       }
     } catch (err) {
-      console.error("Format classification failed for chunk", err);
+      throw new Error(`Clasificare eșuată: ${err instanceof Error ? err.message : String(err)}`);
     }
   }
 
