@@ -5,7 +5,8 @@ import {
   analyzeContentLibraryReel,
   getTipOfWeek,
   listInstagramMedia,
-  syncMyReels,
+  syncAllReels,
+  syncRecentReels,
   saveReelAnalysis,
   getFollowersCount,
   classifyExistingReels,
@@ -26,6 +27,8 @@ type MediaItem = {
   posted_at: string | null;
   thumbnail_url: string | null;
   format_type?: string | null;
+  views_previous?: number | null;
+  last_synced_at?: string | null;
 };
 
 type ReelCard = {
@@ -437,6 +440,8 @@ export default function AnalyticsPage() {
   const [liveMedia, setLiveMedia] = useState<MediaItem[]>([]);
   const [mediaLoaded, setMediaLoaded] = useState(false);
   const [syncing, setSyncing] = useState(false);
+  const [syncingFull, setSyncingFull] = useState(false);
+  const [lastSyncedAt, setLastSyncedAt] = useState<string | null>(null);
   const [syncMsg, setSyncMsg] = useState<string | null>(null);
   const [aboutText, setAboutText] = useState<string | null>(null);
 
@@ -467,28 +472,49 @@ export default function AnalyticsPage() {
       else if (name) setAboutText(`${name} — Hybrid Athlete · Metoda BUILT`);
     }).catch(() => null);
     listInstagramMedia(200)
-      .then((d) => { setLiveMedia(d as MediaItem[]); setMediaLoaded(true); })
+      .then((d) => {
+        const media = d as MediaItem[];
+        setLiveMedia(media);
+        setMediaLoaded(true);
+        const mostRecent = media.find(m => m.last_synced_at);
+        if (mostRecent?.last_synced_at) setLastSyncedAt(mostRecent.last_synced_at);
+      })
       .catch(() => setMediaLoaded(true));
     getFollowersCount().then((n) => {
       if (n && n > 0) setFollowers(fmt(n));
     }).catch(() => null);
   }, []);
 
-  const handleSync = useCallback(async () => {
+  const handleSyncLight = useCallback(async () => {
     setSyncing(true);
     setSyncMsg(null);
-    const r = await syncMyReels();
-    if (r.ok) {
-      setSyncMsg(`✓ ${r.synced} reels sincronizate — clasificare formate...`);
-      await classifyExistingReels().catch(() => null);
-      const fresh = await listInstagramMedia(200).catch(() => [] as MediaItem[]);
+    const result = await syncRecentReels();
+    if (result.ok) {
+      const fresh = await listInstagramMedia(200);
       setLiveMedia(fresh as MediaItem[]);
-      if (r.followers && r.followers > 0) setFollowers(fmt(r.followers));
-      setSyncMsg(`✓ ${r.synced} reels sincronizate + formate clasificate`);
+      setLastSyncedAt(new Date().toISOString());
+      if (result.followers && result.followers > 0) setFollowers(fmt(result.followers));
+      setSyncMsg(`✓ Sync recent complet`);
     } else {
-      setSyncMsg(`⚠ ${r.error}`);
+      setSyncMsg(`⚠ ${result.error}`);
     }
     setSyncing(false);
+  }, []);
+
+  const handleSyncFull = useCallback(async () => {
+    setSyncingFull(true);
+    setSyncMsg(null);
+    const result = await syncAllReels();
+    if (result.ok) {
+      const fresh = await listInstagramMedia(200);
+      setLiveMedia(fresh as MediaItem[]);
+      setLastSyncedAt(new Date().toISOString());
+      if (result.followers && result.followers > 0) setFollowers(fmt(result.followers));
+      setSyncMsg(`✓ Sync complet finalizat`);
+    } else {
+      setSyncMsg(`⚠ ${result.error}`);
+    }
+    setSyncingFull(false);
   }, []);
 
   // ── Period filter ──────────────────────────────────────────────────────────
@@ -496,13 +522,22 @@ export default function AnalyticsPage() {
     if (liveMedia.length === 0) return [];
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - PERIOD_DAYS[period]);
-    return liveMedia.filter(m => m.posted_at ? new Date(m.posted_at) >= cutoff : false);
+    return liveMedia.filter(m => m.posted_at ? new Date(m.posted_at) >= cutoff : true);
   }, [liveMedia, period]);
 
   // ── Derived data ───────────────────────────────────────────────────────────
-  const totalViews = filteredMedia.length > 0 ? filteredMedia.reduce((s, m) => s + (m.views ?? 0), 0) : null;
-  const totalLikes = filteredMedia.length > 0 ? filteredMedia.reduce((s, m) => s + (m.likes ?? 0), 0) : null;
-  const totalComments = filteredMedia.length > 0 ? filteredMedia.reduce((s, m) => s + (m.comments ?? 0), 0) : null;
+  // KPI totals — suma din TOATE reels-urile din DB (snapshot la ultima sincronizare)
+  const totalViews = liveMedia.length > 0 ? liveMedia.reduce((s, m) => s + (m.views ?? 0), 0) : null;
+  const totalLikes = liveMedia.length > 0 ? liveMedia.reduce((s, m) => s + (m.likes ?? 0), 0) : null;
+  const totalComments = liveMedia.length > 0 ? liveMedia.reduce((s, m) => s + (m.comments ?? 0), 0) : null;
+
+  // Views câștigate față de sync-ul anterior
+  const viewsGained = liveMedia.length > 0
+    ? liveMedia.reduce((s, m) => {
+        if (m.views_previous == null) return s;
+        return s + Math.max(0, (m.views ?? 0) - m.views_previous);
+      }, 0)
+    : null;
 
   const viewsChartData = groupByDay(filteredMedia, (m) => m.views ?? 0);
   const engChartData = groupByDay(filteredMedia, (m) => m.likes ?? 0);
@@ -582,9 +617,24 @@ export default function AnalyticsPage() {
   const prevLikes = prevFilteredMedia.length > 0 ? prevFilteredMedia.reduce((s, m) => s + (m.likes ?? 0), 0) : null;
 
   const kpiCards = [
-    { key: "views", label: "TOTAL VIEWS", value: kpiViews, change: pctChange(totalViews, prevViews), sparkline: viewsSparkline },
-    { key: "eng", label: "ENGAGEMENTS", value: kpiEng, change: pctChange(totalLikes, prevLikes), sparkline: engSparkline },
-    { key: "followers", label: "FOLLOWERS", value: followers, change: null, sparkline: STATIC_SPARKLINE },
+    {
+      key: "views",
+      label: "TOTAL VIEWS",
+      value: mediaLoaded && totalViews !== null ? fmt(totalViews) : "—",
+      change: null,
+      sparkline: viewsSparkline,
+      sublabel: lastSyncedAt ? `La ${lastSyncedAt.split("T")[0]}` : undefined,
+    },
+    {
+      key: "gained",
+      label: "VIEWS CÂȘTIGATE",
+      value: mediaLoaded && viewsGained !== null && viewsGained > 0 ? fmt(viewsGained) : "—",
+      change: null,
+      sparkline: STATIC_SPARKLINE,
+      sublabel: "De la ultima sincronizare",
+    },
+    { key: "eng", label: "ENGAGEMENTS", value: kpiEng, change: pctChange(totalLikes, prevLikes), sparkline: engSparkline, sublabel: undefined },
+    { key: "followers", label: "FOLLOWERS", value: followers, change: null, sparkline: STATIC_SPARKLINE, sublabel: undefined },
   ];
 
   // ── Handlers ───────────────────────────────────────────────────────────────
@@ -645,22 +695,24 @@ export default function AnalyticsPage() {
             )}
           </p>
 
-          {/* Sync + Classify buttons */}
+          {/* Sync buttons */}
           <div className="flex items-center gap-3 mt-5 flex-wrap">
-            <button
-              onClick={handleSync}
-              disabled={syncing}
-              className="flex items-center gap-2 text-[12px] border border-white/10 bg-white/5 text-zinc-300 px-4 py-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
-            >
-              {syncing ? (
-                <>
-                  <span className="w-3 h-3 border border-zinc-400 border-t-transparent rounded-full animate-spin" />
-                  Sync în curs...
-                </>
-              ) : (
-                <>⟳ Sync Instagram (@iordacheclaudiu_)</>
-              )}
-            </button>
+            <div className="flex gap-2">
+              <button
+                onClick={handleSyncLight}
+                disabled={syncing || syncingFull}
+                className="text-xs px-3 py-1.5 rounded border border-white/10 hover:border-white/20 text-white/60 hover:text-white transition-colors disabled:opacity-40"
+              >
+                {syncing ? "Se sincronizează..." : "Sync acum"}
+              </button>
+              <button
+                onClick={handleSyncFull}
+                disabled={syncing || syncingFull}
+                className="bg-[#C0392B]/20 hover:bg-[#C0392B]/40 text-[#C0392B] border border-[#C0392B]/30 text-xs px-3 py-1.5 rounded transition-colors disabled:opacity-40"
+              >
+                {syncingFull ? "Sync complet..." : "Sync complet"}
+              </button>
+            </div>
             <button
               onClick={async () => {
                 setSyncMsg("Clasificare formate...");
@@ -673,7 +725,7 @@ export default function AnalyticsPage() {
                   setSyncMsg(`⚠ ${r.error}`);
                 }
               }}
-              disabled={syncing}
+              disabled={syncing || syncingFull}
               className="flex items-center gap-2 text-[12px] border border-white/10 bg-white/5 text-zinc-300 px-4 py-2 rounded-lg hover:bg-white/10 transition-colors disabled:opacity-50"
             >
               ◈ Clasifică formate
@@ -752,16 +804,20 @@ export default function AnalyticsPage() {
       </div>
 
       {/* ── KPI CARDS ─────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-4 gap-4">
         {kpiCards.map((kpi) => {
           const badge = formatPctBadge(kpi.change);
           return (
             <div key={kpi.key} className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
               <p className="text-[11px] text-zinc-500 uppercase tracking-wider mb-2">{kpi.label}</p>
 
-              <p className="text-3xl font-semibold text-zinc-100 mb-3 font-mono-stats">
+              <p className="text-3xl font-semibold text-zinc-100 mb-1 font-mono-stats">
                 {kpi.key === "followers" ? followers : kpi.value}
               </p>
+
+              {kpi.sublabel && (
+                <p className="text-white/40 text-xs mt-1 mb-2">{kpi.sublabel}</p>
+              )}
 
               <div className="flex items-center gap-2 mb-3">
                 <span
@@ -773,7 +829,7 @@ export default function AnalyticsPage() {
                 >
                   {badge.label}
                 </span>
-                <span className="text-[11px] text-zinc-600">vs perioadă anterioară</span>
+                {kpi.change !== null && <span className="text-[11px] text-zinc-600">vs perioadă anterioară</span>}
               </div>
 
               <div className="h-10">
