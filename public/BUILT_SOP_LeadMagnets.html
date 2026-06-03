@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SOP — Lead Magnets BUILT</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root { --red: #C0392B; --black: #0A0A0A; --g1: #F5F5F5; --g2: #E8E8E8; --g3: #999; --g4: #444; }
+
+  body {
+    background: #fff;
+    color: var(--black);
+    font-family: 'Barlow', sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page { max-width: 794px; margin: 0 auto; }
+
+  /* HEADER */
+  .header { background: var(--black); padding: 40px 56px 32px; }
+  .tag { font-family: 'Barlow Condensed', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 0.25em; text-transform: uppercase; color: var(--red); margin-bottom: 8px; }
+  .title { font-family: 'Bebas Neue', sans-serif; font-size: 42px; color: #fff; letter-spacing: 0.04em; line-height: 1; }
+  .subtitle { font-family: 'Barlow Condensed', sans-serif; font-size: 13px; font-weight: 400; color: #666; letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; }
+  .red-bar { height: 4px; background: var(--red); }
+
+  /* BODY */
+  .body { padding: 44px 56px 56px; }
+
+  /* ARSENAL */
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 12px;
+  }
+
+  .arsenal {
+    border: 1px solid var(--g2);
+    margin-bottom: 44px;
+  }
+
+  .arsenal-row {
+    display: grid;
+    grid-template-columns: 32px 1fr 110px 1fr;
+    gap: 0;
+    border-bottom: 1px solid var(--g2);
+    align-items: stretch;
+  }
+  .arsenal-row:last-child { border-bottom: none; }
+  .arsenal-row.header-row {
+    background: var(--g1);
+    border-bottom: 2px solid var(--black);
+  }
+
+  .arsenal-cell {
+    padding: 10px 14px;
+    font-size: 12px;
+    border-right: 1px solid var(--g2);
+    display: flex;
+    align-items: center;
+  }
+  .arsenal-cell:last-child { border-right: none; }
+
+  .arsenal-row.header-row .arsenal-cell {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--g4);
+  }
+
+  .num {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700; font-size: 13px;
+    color: var(--red); justify-content: center;
+  }
+
+  .material-name { font-weight: 600; }
+  .material-name small { display: block; font-weight: 400; color: var(--g3); font-size: 11px; margin-top: 1px; }
+
+  .keyword-badge {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.1em;
+    background: var(--black); color: #fff;
+    padding: 3px 8px; display: inline-block;
+  }
+
+  .topic { color: var(--g4); font-size: 12px; }
+
+  /* STEPS */
+  .steps { margin-bottom: 0; }
+
+  .step {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 28px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--g2);
+  }
+  .step:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .step-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 36px;
+    color: var(--g2);
+    line-height: 1;
+    width: 36px;
+    flex-shrink: 0;
+    padding-top: 2px;
+  }
+
+  .step-body { flex: 1; }
+
+  .step-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--black); margin-bottom: 6px;
+  }
+
+  .step-desc { font-size: 13px; color: var(--g4); line-height: 1.65; }
+  .step-desc strong { color: var(--black); font-weight: 600; }
+  .step-desc code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px; background: var(--g1);
+    padding: 2px 6px; border: 1px solid var(--g2);
+    color: var(--red);
+  }
+
+  .step-options {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .option {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-size: 12.5px;
+    color: var(--g4);
+  }
+
+  .option-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    padding: 2px 6px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .option-tag.now { background: var(--black); color: #fff; }
+  .option-tag.later { background: var(--g2); color: var(--g4); }
+
+  .divider {
+    height: 1px; background: var(--g2);
+    margin: 36px 0;
+  }
+
+  /* NOTE BOX */
+  .note-box {
+    background: var(--g1);
+    border-left: 3px solid var(--red);
+    padding: 14px 18px;
+    font-size: 12.5px;
+    color: var(--g4);
+    margin-top: 28px;
+  }
+  .note-box strong { color: var(--black); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="header">
+    <div class="tag">Document intern · Nu se distribuie</div>
+    <div class="title">SOP — Lead Magnets</div>
+    <div class="subtitle">Workflow complet · Valabil pentru toate materialele</div>
+  </div>
+  <div class="red-bar"></div>
+
+  <div class="body">
+
+    <!-- ARSENAL -->
+    <div class="section-label">Arsenalul de materiale</div>
+    <div class="arsenal">
+      <div class="arsenal-row header-row">
+        <div class="arsenal-cell num">#</div>
+        <div class="arsenal-cell">Material</div>
+        <div class="arsenal-cell">Keyword trigger</div>
+        <div class="arsenal-cell">Topic reel asociat</div>
+      </div>
+      <div class="arsenal-row">
+        <div class="arsenal-cell num">1</div>
+        <div class="arsenal-cell"><span class="material-name">Lista de Cumpărături<small>✓ Făcut — BUILT_Lista_Cumparaturi.html</small></span></div>
+        <div class="arsenal-cell"><span class="keyword-badge">LISTĂ</span></div>
+        <div class="arsenal-cell topic">10 alimente pe care nu le mănânc</div>
+      </div>
+      <div class="arsenal-row">
+        <div class="arsenal-cell num">★</div>
+        <div class="arsenal-cell"><span class="material-name">Ghidul Deficitului Corect<small>✓ Făcut — BUILT_Ghid_Deficit_Caloric.html</small></span></div>
+        <div class="arsenal-cell"><span class="keyword-badge">SLĂBIRE</span></div>
+        <div class="arsenal-cell topic">7 semne că nu ești de fapt în deficit</div>
+      </div>
+      <div class="arsenal-row">
+        <div class="arsenal-cell num">2</div>
+        <div class="arsenal-cell"><span class="material-name">Ghid Fast-food<small>Ce comanzi din orice lanț</small></span></div>
+        <div class="arsenal-cell"><span class="keyword-badge">MENIU</span></div>
+        <div class="arsenal-cell topic">Ce mănânc pe autostradă / în deplasare</div>
+      </div>
+      <div class="arsenal-row">
+        <div class="arsenal-cell num">3</div>
+        <div class="arsenal-cell"><span class="material-name">Protocol Cortizol<small>5 acțiuni în 24h</small></span></div>
+        <div class="arsenal-cell"><span class="keyword-badge">CORTIZOL</span></div>
+        <div class="arsenal-cell topic">De ce ai burtă deși mănânci puțin</div>
+      </div>
+      <div class="arsenal-row">
+        <div class="arsenal-cell num">4</div>
+        <div class="arsenal-cell"><span class="material-name">Planul de masă 5 zile<small>Luni–Vineri, profesionist ocupat</small></span></div>
+        <div class="arsenal-cell"><span class="keyword-badge">PLAN</span></div>
+        <div class="arsenal-cell topic">Nu am timp să gătesc / nu știu ce să mănânc</div>
+      </div>
+      <div class="arsenal-row">
+        <div class="arsenal-cell num">5</div>
+        <div class="arsenal-cell"><span class="material-name">Antrenamentul de 25 minute<small>4 exerciții compound, zero echipament</small></span></div>
+        <div class="arsenal-cell"><span class="keyword-badge">25MIN</span></div>
+        <div class="arsenal-cell topic">Nu am timp de sală</div>
+      </div>
+      <div class="arsenal-row">
+        <div class="arsenal-cell num">6</div>
+        <div class="arsenal-cell"><span class="material-name">Ghidul Somnului<small>Protocol când ești stresat</small></span></div>
+        <div class="arsenal-cell"><span class="keyword-badge">SOMN</span></div>
+        <div class="arsenal-cell topic">Dorm prost, mă trezesc obosit</div>
+      </div>
+    </div>
+
+    <!-- STEPS -->
+    <div class="section-label">Workflow — același pentru toate materialele</div>
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">Obții materialul</div>
+          <div class="step-desc">
+            Spui lui Claude: <code>"fă materialul [număr/nume]"</code> → el creează fișierul HTML local în folderul <strong>public/</strong> al proiectului.<br><br>
+            Deschizi fișierul în browser → <strong>Cmd+P → Save as PDF</strong> → ai fișierul gata.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">Îl urci undeva accesibil</div>
+          <div class="step-desc">Alege una din variante:</div>
+          <div class="step-options">
+            <div class="option">
+              <span class="option-tag now">Acum</span>
+              <span><strong>Google Drive</strong> → upload PDF → "Anyone with link" → copiezi linkul scurt</span>
+            </div>
+            <div class="option">
+              <span class="option-tag later">Mai târziu</span>
+              <span><strong>Manychat</strong> → conectezi Google Drive → trimite automat la oricine comentează keyword-ul</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">Postezi reelul cu CTA</div>
+          <div class="step-desc">
+            La finalul reelului (voce + text pe ecran) și în descriere:<br><br>
+            <strong>"Comentează <code>[KEYWORD]</code> și îți trimit [materialul] în DM gratuit."</strong><br><br>
+            Keyword-ul trebuie să fie simplu, un singur cuvânt, scris cu majuscule.
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">Trimiți materialul în DM</div>
+          <div class="step-desc">Când cineva comentează keyword-ul:</div>
+          <div class="step-options">
+            <div class="option">
+              <span class="option-tag now">Acum (manual)</span>
+              <span>Intri în DM → trimiți linkul PDF → trimiți <strong>Mesajul 2</strong> din secvența de calificare</span>
+            </div>
+            <div class="option">
+              <span class="option-tag later">Mai târziu (Manychat)</span>
+              <span>Automatizat: keyword detectat → DM cu PDF trimis instant → tu intri manual abia la Mesajul 2</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">Urmărești secvența DM</div>
+          <div class="step-desc">
+            La 30–60 min după ce ai trimis materialul, trimiți <strong>Mesajul 2</strong> (întrebarea de deschidere).<br><br>
+            Secvența completă per material o găsești cerând: <code>"dă-mi secvența DM pentru [keyword]"</code>.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="note-box">
+      <strong>Regula de bază:</strong> Materialul e momeala. Scopul nu e să trimiți PDF-uri — e să începi o conversație calificată. Oricine răspunde la Mesajul 2 e un lead real.
+    </div>
+
+  </div>
+</div>
+</body>
+</html>

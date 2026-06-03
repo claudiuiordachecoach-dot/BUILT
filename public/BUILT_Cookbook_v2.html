@@ -1,0 +1,2648 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BUILT 50 — Performance Cookbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0A0A0A;
+      --red: #C0392B;
+      --white: #FFFFFF;
+      --soft: #F5F5F5;
+      --border: #E5E5E5;
+      --mid: #888888;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #C8C8C8;
+      font-family: 'Barlow', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .page {
+      width: 900px;
+      background: var(--white);
+      margin: 32px auto;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+    }
+
+    /* ─── COVER ─── */
+    .cover { height: 1200px; position: relative; }
+    .cover img { width: 100%; height: 100%; object-fit: cover; }
+    .cover-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.97) 0%, rgba(0,0,0,0.92) 38%, rgba(0,0,0,0.80) 55%, rgba(0,0,0,0.35) 75%, rgba(0,0,0,0.08) 100%);
+    }
+    .cover-content { position: absolute; bottom: 72px; left: 64px; right: 64px; }
+    .cover-eyebrow {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 6px;
+      color: var(--red); text-transform: uppercase; margin-bottom: 14px;
+    }
+    .cover-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 138px; line-height: 0.82;
+      color: var(--white); letter-spacing: -3px; margin-bottom: 22px;
+    }
+    .cover-title span { color: var(--red); display: block; }
+    .cover-rule { width: 56px; height: 3px; background: var(--red); margin-bottom: 18px; }
+    .cover-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; font-weight: 400; letter-spacing: 5px;
+      color: rgba(255,255,255,0.45); text-transform: uppercase;
+    }
+    .cover-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 4px; background: var(--red); }
+
+    /* ─── INDEX ─── */
+    .index-page { padding: 80px 70px 60px; min-height: 1200px; }
+    .index-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 78px; line-height: 0.85;
+      letter-spacing: -1px; margin-bottom: 52px;
+    }
+    .index-title span { color: var(--red); }
+    .index-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .index-section-label {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px; letter-spacing: 3px; color: var(--red);
+      padding-bottom: 10px; border-bottom: 2px solid var(--ink);
+      margin-bottom: 16px;
+    }
+    .index-row {
+      display: flex; align-items: baseline;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
+    }
+    .i-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 700; color: var(--red); min-width: 26px;
+    }
+    .i-name { font-size: 13px; font-weight: 500; flex: 1; color: var(--ink); }
+    .i-pg { font-family: 'Bebas Neue', sans-serif; font-size: 17px; color: #BBBBBB; }
+    .index-footer {
+      margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--border);
+      font-family: 'Barlow Condensed', sans-serif; font-size: 11px;
+      letter-spacing: 4px; color: var(--mid); text-transform: uppercase; text-align: center;
+    }
+
+    /* ─── SECTION HEADER ─── */
+    .section-header {
+      height: 700px; background: var(--ink);
+      display: flex; align-items: center; justify-content: center;
+      flex-direction: column; position: relative;
+    }
+    .sh-accent { position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--red); }
+    .sh-num {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 12px; font-weight: 700; letter-spacing: 8px;
+      color: var(--red); margin-bottom: 18px; text-transform: uppercase;
+    }
+    .sh-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 155px; line-height: 0.82;
+      color: var(--white); letter-spacing: -4px; text-align: center;
+    }
+    .sh-sub {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 13px; letter-spacing: 8px;
+      color: rgba(255,255,255,0.22); margin-top: 26px; text-transform: uppercase;
+    }
+    .sh-rule { width: 38px; height: 2px; background: var(--red); margin: 18px auto 0; }
+
+    /* ─── RECIPE PAGE ─── */
+    .rp { display: flex; flex-direction: column; min-height: 1100px; }
+
+    .rp-photo { position: relative; height: 420px; background: #111; overflow: hidden; flex-shrink: 0; }
+    .rp-photo img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.88) contrast(1.06); }
+    .rp-photo-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.12) 0%, rgba(0,0,0,0) 38%, rgba(10,10,10,0.72) 100%);
+    }
+    .rp-badge {
+      position: absolute; top: 26px; left: 26px;
+      background: var(--red); color: var(--white);
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 14px; letter-spacing: 2px; padding: 6px 15px;
+    }
+    .rp-diff { position: absolute; top: 30px; right: 30px; display: flex; gap: 5px; }
+    .rp-diff span { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.22); }
+    .rp-diff span.on { background: rgba(255,255,255,0.9); }
+
+    .rp-body { padding: 36px 52px 0; flex: 1; display: flex; flex-direction: column; }
+    .rp-head { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 6px; }
+    .rp-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 66px; line-height: 0.85;
+      letter-spacing: -1px; color: var(--ink); flex: 1;
+    }
+    .rp-tags { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; padding-bottom: 6px; }
+    .tag-p {
+      background: var(--ink); color: var(--white);
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      padding: 5px 11px; text-transform: uppercase;
+    }
+    .tag-m {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 10px; font-weight: 700; letter-spacing: 2px;
+      color: var(--red); border: 1px solid var(--red);
+      padding: 4px 10px; text-transform: uppercase;
+    }
+    .tag-t {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 11px; font-weight: 600; letter-spacing: 1px;
+      color: #999; text-transform: uppercase;
+    }
+
+    /* Nutrition strip */
+    .rp-nut { display: grid; grid-template-columns: 1.25fr 1fr 1fr 1fr; border: 1.5px solid var(--ink); margin: 18px 0 24px; }
+    .nut { padding: 13px 16px; border-right: 1.5px solid var(--ink); }
+    .nut:last-child { border-right: none; }
+    .nut.cal { background: var(--ink); }
+    .nut-l {
+      font-family: 'Barlow Condensed', sans-serif;
+      font-size: 9px; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: #999; display: block; margin-bottom: 3px;
+    }
+    .nut.cal .nut-l { color: rgba(255,255,255,0.4); }
+    .nut-v { font-family: 'Bebas Neue', sans-serif; font-size: 34px; line-height: 1; color: var(--ink); }
+    .nut.cal .nut-v { color: var(--white); }
+
+    /* Content grid */
+    .rp-content { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 44px; flex: 1; padding-bottom: 34px; }
+    .col-h {
+      font-family: 'Bebas Neue', sans-serif; font-size: 15px;
+      letter-spacing: 3px; margin-bottom: 14px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .col-h::after { content: ''; flex: 1; height: 1.5px; background: var(--ink); }
+
+    .ing { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+    .ing-n { font-weight: 500; color: var(--ink); }
+    .ing-q { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 13px; color: var(--red); letter-spacing: 0.5px; }
+
+    .step { display: flex; gap: 13px; margin-bottom: 13px; }
+    .sn { font-family: 'Bebas Neue', sans-serif; font-size: 36px; line-height: 1; color: var(--red); opacity: 0.12; min-width: 30px; flex-shrink: 0; }
+    .st { font-size: 13.5px; line-height: 1.65; color: #1A1A1A; padding-top: 4px; }
+    .st strong { font-weight: 600; color: var(--ink); }
+
+    /* System Logic */
+    .rp-logic { background: var(--ink); padding: 20px 52px; display: flex; align-items: flex-start; gap: 18px; flex-shrink: 0; }
+    .sl-tag { font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 3px; color: var(--red); white-space: nowrap; padding-top: 2px; min-width: 120px; }
+    .sl-div { width: 1px; align-self: stretch; background: rgba(255,255,255,0.12); flex-shrink: 0; }
+    .sl-txt { font-size: 12.5px; line-height: 1.65; color: rgba(255,255,255,0.62); font-style: italic; }
+    .sl-txt strong { color: rgba(255,255,255,0.95); font-style: normal; font-weight: 600; }
+
+    @media print {
+      body { background: white; }
+      .page { margin: 0; box-shadow: none; width: 100%; page-break-after: always; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════ COVER -->
+<div class="page cover">
+  <img src="/cookbook-images/built_cookbook_cover_official_1778944555300.png" alt="Cover">
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ INDEX -->
+<div class="page index-page">
+  <div class="index-title">THE<br><span>INDEX</span></div>
+  <div class="index-grid">
+    <div>
+      <div class="index-section-label">SAVORY PERFORMANCE</div>
+      <div class="index-row"><span class="i-num">01</span><span class="i-name">Omletă Spanac & Feta</span><span class="i-pg">04</span></div>
+      <div class="index-row"><span class="i-num">02</span><span class="i-name">Beef Bowl Post-Workout</span><span class="i-pg">05</span></div>
+      <div class="index-row"><span class="i-num">03</span><span class="i-name">Somon la Cuptor</span><span class="i-pg">06</span></div>
+      <div class="index-row"><span class="i-num">04</span><span class="i-name">Steak & Sparanghel</span><span class="i-pg">07</span></div>
+      <div class="index-row"><span class="i-num">05</span><span class="i-name">Pui & Cartof Dulce Anabolic</span><span class="i-pg">08</span></div>
+      <div class="index-row"><span class="i-num">06</span><span class="i-name">Salată Ton Amino-Dense</span><span class="i-pg">09</span></div>
+      <div class="index-row"><span class="i-num">07</span><span class="i-name">Curcan Stir-Fry</span><span class="i-pg">10</span></div>
+      <div class="index-row"><span class="i-num">08</span><span class="i-name">Biban de Mare la Cuptor</span><span class="i-pg">11</span></div>
+      <div class="index-row"><span class="i-num">09</span><span class="i-name">Creveți la Grill</span><span class="i-pg">12</span></div>
+      <div class="index-row"><span class="i-num">10</span><span class="i-name">Tofu Scramble Vegan Elite</span><span class="i-pg">13</span></div>
+      <div class="index-row"><span class="i-num">11</span><span class="i-name">Paste Integrale Ultra-Protein</span><span class="i-pg">14</span></div>
+      <div class="index-row"><span class="i-num">12</span><span class="i-name">Ochiuri & Avocado Fiber</span><span class="i-pg">15</span></div>
+      <div class="index-row"><span class="i-num">13</span><span class="i-name">Burrito Proteic Vită</span><span class="i-pg">16</span></div>
+      <div class="index-row"><span class="i-num">14</span><span class="i-name">Cod la Abur & Legume</span><span class="i-pg">17</span></div>
+      <div class="index-row"><span class="i-num">15</span><span class="i-name">Burger BUILT Lean Beef</span><span class="i-pg">18</span></div>
+      <div class="index-row"><span class="i-num">16</span><span class="i-name">Salată Caesar BUILT Style</span><span class="i-pg">19</span></div>
+      <div class="index-row"><span class="i-num">17</span><span class="i-name">Shakshuka de Performanță</span><span class="i-pg">20</span></div>
+      <div class="index-row"><span class="i-num">18</span><span class="i-name">Chifteluțe de Curcan</span><span class="i-pg">21</span></div>
+      <div class="index-row"><span class="i-num">19</span><span class="i-name">Păstrăv la Grătar</span><span class="i-pg">22</span></div>
+      <div class="index-row"><span class="i-num">20</span><span class="i-name">Bowl Halloumi & Quinoa</span><span class="i-pg">23</span></div>
+      <div class="index-row"><span class="i-num">21</span><span class="i-name">Supă Cremă de Linte</span><span class="i-pg">24</span></div>
+      <div class="index-row"><span class="i-num">22</span><span class="i-name">Wrap Pui & Hummus</span><span class="i-pg">25</span></div>
+      <div class="index-row"><span class="i-num">23</span><span class="i-name">Frittata cu Ciuperci</span><span class="i-pg">26</span></div>
+      <div class="index-row"><span class="i-num">24</span><span class="i-name">Somon Poke Style</span><span class="i-pg">27</span></div>
+      <div class="index-row"><span class="i-num">25</span><span class="i-name">Vită Sotée cu Caju</span><span class="i-pg">28</span></div>
+    </div>
+    <div>
+      <div class="index-section-label">SWEET RECOVERY</div>
+      <div class="index-row"><span class="i-num">26</span><span class="i-name">Pancakes Proteice cu Banană</span><span class="i-pg">30</span></div>
+      <div class="index-row"><span class="i-num">27</span><span class="i-name">Iaurt Grecesc & Fructe de Pădure</span><span class="i-pg">31</span></div>
+      <div class="index-row"><span class="i-num">28</span><span class="i-name">Chia Pudding Proteic</span><span class="i-pg">32</span></div>
+      <div class="index-row"><span class="i-num">29</span><span class="i-name">BUILT Muscle Smoothie</span><span class="i-pg">33</span></div>
+      <div class="index-row"><span class="i-num">30</span><span class="i-name">Cottage Pancakes</span><span class="i-pg">34</span></div>
+      <div class="index-row"><span class="i-num">31</span><span class="i-name">Recovery Shake Bowl</span><span class="i-pg">35</span></div>
+      <div class="index-row"><span class="i-num">32</span><span class="i-name">Overnight Oats Ultra-Protein</span><span class="i-pg">36</span></div>
+      <div class="index-row"><span class="i-num">33</span><span class="i-name">Budincă de Orez Performance</span><span class="i-pg">37</span></div>
+      <div class="index-row"><span class="i-num">34</span><span class="i-name">Nice Cream Banană & Whey</span><span class="i-pg">38</span></div>
+      <div class="index-row"><span class="i-num">35</span><span class="i-name">Brioșe cu Afine Total System</span><span class="i-pg">39</span></div>
+      <div class="index-row"><span class="i-num">36</span><span class="i-name">Smoothie Green Muscle</span><span class="i-pg">40</span></div>
+      <div class="index-row"><span class="i-num">37</span><span class="i-name">Pancakes Cacao Anabolic</span><span class="i-pg">41</span></div>
+      <div class="index-row"><span class="i-num">38</span><span class="i-name">Bowl Vaci & Nuci</span><span class="i-pg">42</span></div>
+      <div class="index-row"><span class="i-num">39</span><span class="i-name">Măr Copt & Quark Protein</span><span class="i-pg">43</span></div>
+      <div class="index-row"><span class="i-num">40</span><span class="i-name">Smoothie Berry Anti-Inflam</span><span class="i-pg">44</span></div>
+      <div class="index-row"><span class="i-num">41</span><span class="i-name">Protein Fluff Casein</span><span class="i-pg">45</span></div>
+      <div class="index-row"><span class="i-num">42</span><span class="i-name">Clătite Whey Macro-Elite</span><span class="i-pg">46</span></div>
+      <div class="index-row"><span class="i-num">43</span><span class="i-name">Granola BUILT Crunchy System</span><span class="i-pg">47</span></div>
+      <div class="index-row"><span class="i-num">44</span><span class="i-name">Coffee Kick Pre-Workout</span><span class="i-pg">48</span></div>
+      <div class="index-row"><span class="i-num">45</span><span class="i-name">Parfait Iaurt & Mango</span><span class="i-pg">49</span></div>
+      <div class="index-row"><span class="i-num">46</span><span class="i-name">Budincă Vegană Cacao</span><span class="i-pg">50</span></div>
+      <div class="index-row"><span class="i-num">47</span><span class="i-name">Energy Balls Total Protein</span><span class="i-pg">51</span></div>
+      <div class="index-row"><span class="i-num">48</span><span class="i-name">Smoothie Tropical Anabolic</span><span class="i-pg">52</span></div>
+      <div class="index-row"><span class="i-num">49</span><span class="i-name">Lava Cake Proteic</span><span class="i-pg">53</span></div>
+      <div class="index-row"><span class="i-num">50</span><span class="i-name">Cheesecake No-Bake</span><span class="i-pg">54</span></div>
+    </div>
+  </div>
+  <div class="index-footer">BUILT 50 // INTELLIGENT FUELING // ARHITECTURA CORPULUI PE 90 DE ZILE</div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 01 -->
+<div class="page section-header">
+  <div class="sh-accent"></div>
+  <div class="sh-num">Secțiunea 01</div>
+  <div class="sh-title">SAVORY<br>PERFORMANCE</div>
+  <div class="sh-sub">Combustibil pentru forță, rezistență și reconstrucție</div>
+  <div class="sh-rule"></div>
+</div>
+
+<!-- ─── R1 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/recipe_omelet_bright_premium_1778756295256.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">01 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OMLETĂ TOTAL<br>SPANAC & FETA</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 8 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">12G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">22G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ouă bio</span><span class="ing-q">2 buc</span></div>
+        <div class="ing"><span class="ing-n">Albuș lichid</span><span class="ing-q">150 ml</span></div>
+        <div class="ing"><span class="ing-n">Spanac proaspăt</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Feta</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe cânepă</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Sare, piper negru</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Pune tigaia anti-aderentă la foc mediu și lasă-o să se încălzească 2 minute înainte de orice. <strong>O tigaie rece = omletă lipită și inegală.</strong></div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Bate ouăle cu albușul lichid, sare și piper. Adaugă spanacul direct în amestec — se va înmuia la contactul cu căldura, fără gătire separată.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Toarnă și nu atinge 30 secunde. Când marginile se solidifică, ridică ușor cu spatula și înclină tigaia ca ouăle lichide să curgă dedesubt.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Presară feta sfărâmată și semințele de cânepă. <strong>Pliază, trage de pe foc</strong> — căldura reziduală termină gătitul în 30 secunde.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Combinația albuș + semințe de cânepă completează <strong>profilul complet de aminoacizi esențiali</strong>. Feta aduce calciu absorbit eficient de organism. Spanacul — fier non-hemic absorbit mai eficient alături de proteina animală.</div>
+  </div>
+</div>
+
+<!-- ─── R2 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/beef_bowl_strength_max_editorial_1778876051531.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">02 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BEEF BOWL</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 10 min pregătire · 40 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">520</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">16G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Mușchi de vită</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Orez negru</span><span class="ing-q">60 g crud</span></div>
+        <div class="ing"><span class="ing-n">Broccoli</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Fasole verde</span><span class="ing-q">80 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe dovleac</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Ulei cocos, usturoi</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fierbe orezul negru în apă cu sare, raport 1:2.5, <strong>35-40 minute</strong>. Indicele glicemic mai mic față de orezul alb — ideal post-efort pentru refacere fără creștere bruscă a zahărului din sânge.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Feliază mușchiul perpendicular pe fibră în fâșii de 1 cm. Condimentează cu sare, piper, usturoi praf. <strong>Tăiatul contra fibrei</strong> = textură fragedă, nu elastică.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Încinge tigaia la <strong>foc maxim</strong>. Adaugă carnea în strat subțire — supraîncărcarea tigăii = carnea fierbe în loc să se rumenească. 3-4 minute, fără amestecare.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Sotează broccoli și fasolea verde în același vas, 3-4 minute al dente. Asamblează: orez → vită → legume → semințe de dovleac.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Vita aduce <strong>creatina naturală și fier hem</strong> — cel mai bine absorbit de organism. Orezul negru conține antioxidanți de 10x mai mulți față de cel alb. Semințele de dovleac completează cu magneziu pentru relaxarea mușchilor după efort.</div>
+  </div>
+</div>
+
+<!-- ─── R3 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/salmon_performance_editorial_1778758645266.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">03 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SOMON &<br>SPARANGHEL</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 5 min pregătire · 15 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">510</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">8G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">34G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">File somon</span><span class="ing-q">220 g</span></div>
+        <div class="ing"><span class="ing-n">Sparanghel</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe in (măcinate)</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Muștar Dijon</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Unt clarificat</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Lămâie, sare, piper</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Preîncălzește cuptorul la 200°C. <strong>Tamponează fileul uscat</strong> cu hârtie absorbantă — umiditatea excesivă împiedică formarea crustei crocante.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Amestecă semințele de in măcinate cu muștarul, coajă de lămâie rasă, sare și piper. Aplică crusta uniform pe fața superioară a fileului.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Coace 12-14 minute. Somonul este gata când <strong>se desprinde în fulgi</strong> la apăsare ușoară. Nu depăși — somonul supracopt pierde umiditatea și toți acizii grași activi.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Sotează sparanghelul în unt clarificat la foc mare, 3 minute. Servește imediat — somonul nu se ține la cald.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt"><strong>Omega-3 din somon + fibrele din semințele de in</strong> reduc markerii inflamatori articulari cu până la 30%. Sparanghelul aduce vitamina K2 esențială pentru metabolismul calciului osos. Ideal în zilele cu antrenamente grele.</div>
+  </div>
+</div>
+
+<!-- ─── R4 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/steak_asparagus_premium_1778759452913.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">04 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">STEAK &<br>SPARANGHEL</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 5 min pregătire · 15 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">490</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">46G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">6G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Antricot de vită</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Sparanghel</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Nuci walnut</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Sare grunjoasă, piper</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Ulei de avocado</span><span class="ing-q">5 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Scoate carnea din frigider cu 30 min înainte</strong> — carnea la temperatura camerei gătește uniform. Condimentează cu sare grunjoasă și piper cu 5 minute înainte.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Încinge tigaia de fontă la foc maxim până apare ușor fum. <strong>Unge carnea cu ulei, nu tigaia.</strong> Prăjește 3 minute pe fiecare parte pentru medium-rare.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st"><strong>Timp de odihnă obligatoriu: 5 minute</strong> pe tocătorul de lemn. Tăiatul imediat eliberează toți sucurile și carnea devine uscată. Feliază contra fibrei.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Sotează sparanghelul în aceeași tigaie cu nucile walnut, 2-3 minute la foc mare. Asezonează cu zeamă de lămâie proaspătă.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Vita aduce <strong>seleniu și vitamina B12</strong> — critice pentru funcția tiroidiană și sistemul nervos. Nucile walnut conțin polifenoli care protejează fibra musculară de stresul oxidativ post-antrenament.</div>
+  </div>
+</div>
+
+<!-- ─── R5 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/chicken_sweet_potato_editorial_1778758701417.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">05 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PUI &<br>CARTOF DULCE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 10 min pregătire · 30 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">480</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">220 g</span></div>
+        <div class="ing"><span class="ing-n">Cartof dulce</span><span class="ing-q">180 g</span></div>
+        <div class="ing"><span class="ing-n">Mix legume</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe dovleac</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Paprika afumată, scorțișoară</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Preîncălzește cuptorul la 200°C. Taie cartoful dulce în cuburi de 2 cm, asezonează cu ulei de cocos, scorțișoară, sare, piper. Coace <strong>25 minute</strong>, întoarce la jumătate.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st"><strong>Turtește pieptul de pui la grosime uniformă</strong> (1.5 cm) lovind ușor cu fundul unui castron. Carnea neuniformă nu gătește egal — un capăt va fi uscat când celălalt e crud.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Condimentează cu paprika afumată, usturoi praf, sare, piper. Grillează 6-7 min pe fiecare parte până temperatura internă atinge 74°C. <strong>Lasă la odihnit 3 minute</strong> înainte de tăiat.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Asamblează: cartof dulce → pui tăiat fâșii → mix legume sotate → semințe de dovleac deasupra pentru textură și magneziu.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Combinația <strong>carbohidrați complecși + 45g de proteine</strong> asigură refacerea optimă a glicogenului muscular în primele 30-60 de minute după antrenament. Semințele de dovleac completează cu magneziu pentru relaxarea musculară nocturnă.</div>
+  </div>
+</div>
+
+<!-- ─── R6 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/tuna_salad_premium_editorial_1778759324344.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">06 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SALATĂ<br>CU TON</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 5 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">380</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">12G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">16G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ton în apă (2 conserve)</span><span class="ing-q">240 g</span></div>
+        <div class="ing"><span class="ing-n">Ou fiert tare</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Semințe chia</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Muștar Dijon</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Lămâie, rucola</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Scurge tonul complet</strong> din conservă — lichidul adaugă sodiu fără valoare nutritivă. Pune-l pe hârtie absorbantă 2 minute.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Amestecă tonul cu semințele chia și lasă 3 minute. <strong>Chia absoarbe umiditatea</strong> din ton și formează o textură cremă care înlocuiește maioneza fără o calorie în plus.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Adaugă oul tăiat cuburi, muștarul, zeama de lămâie și piper negru proaspăt. Nu adăuga maioneză — 45g de proteine la 380 calorii este raportul corect și nu merită compromis.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Servește pe pat de rucola proaspătă. Rucola adaugă vitamina K2 și compuși sulfurici detoxifianți fără calorii relevante.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Tonul și chia oferă <strong>cel mai bun raport proteina/calorie din cookbook</strong>. Chia adaugă 4g omega-3 și 4g fibre fără a modifica gustul. Ideal în perioadele de deficit caloric controlat.</div>
+  </div>
+</div>
+
+<!-- ─── R7 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/turkey_stir_fry_luxury_1778759338351.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">07 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CURCAN<br>STIR-FRY</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 15 min pregătire · 10 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">48G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">10G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Piept curcan</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Mix legume fiber</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe in (măcinate)</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Sos soia light, ghimbir, usturoi</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Feliază curcanul în fâșii uniform de 1 cm. Marinează <strong>10 minute în sos de soia, usturoi și ghimbir ras</strong> — curcanul absoarbe aromele rapid și ghimbirul are efect digestiv.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st"><strong>Încinge wok-ul la foc maxim</strong> — stir-fry-ul funcționează exclusiv la temperaturi înalte. La temperaturi mici, legumele fierb în sucul propriu în loc să se caramelizeze.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Sotează curcanul 3-4 minute până devine auriu. Scoate-l din wok, adaugă legumele și sotează 3 minute. Returnează curcanul și amestecă totul energic.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Adaugă semințele de in <strong>în ultima 30 de secunde</strong> — nu se gătesc, se integrează la final pentru a păstra acizii grași omega-3 nealterați de căldură.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Curcanul conține cel mai mult <strong>triptofan din carnea albă</strong> — ajută la producția hormonilor de somn. Consumat seara, susține calitatea somnului și recuperarea nocturnă. 48g de proteine la 420 calorii.</div>
+  </div>
+</div>
+
+<!-- ─── R8 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/sea_bass_herbs_editorial_1778759409474.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">08 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BIBAN DE MARE<br>LA CUPTOR</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 5 min pregătire · 12 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">340</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">4G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">14G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">File biban de mare</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Ierburi proaspete (cimbru, busuioc)</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Ulei de măsline EV</span><span class="ing-q">10 ml</span></div>
+        <div class="ing"><span class="ing-n">Lămâie, sare, piper alb</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Preîncălzește cuptorul la 200°C. Fă <strong>3 incizii diagonale</strong> pe fiecare parte a fileului — condimentele penetrează mai adânc și gătitul este uniform.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st"><strong>Tamponează peștele uscat</strong>, unge cu ulei de măsline, asezonează cu sare, piper alb, cimbru proaspăt. Pune feliuțe de lămâie direct pe file.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Coace 12 minute. <strong>Nu deschide cuptorul în primele 10 minute</strong> — fluctuațiile de temperatură usucă peștele. Gata când se desprinde de pe os la atingere.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Lasă la odihnit 2 minute înainte de servit. Ierburile aromatice adaugă micronutrienți și compuși antifungici fără o calorie relevantă.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Bibanul de mare oferă <strong>proteina cea mai completă din peștii albi</strong> — calitate maximă. Conținut redus de mercur față de peștii mari. Ulei de măsline adaugă un compus antiinflamator cu efect comparabil cu ibuprofenul.</div>
+  </div>
+</div>
+
+<!-- ─── R9 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/shrimp_zucchini_editorial_1778759357997.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">09 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CREVEȚI LA GRILL<br>CU DOVLECEI</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 20 min pregătire · 8 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">370</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">43G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">8G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">14G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Creveți tiger (curățați)</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Dovlecel</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Usturoi</span><span class="ing-q">3 căței</span></div>
+        <div class="ing"><span class="ing-n">Chilli flakes, lămâie</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Ulei măsline</span><span class="ing-q">10 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Decongelare corectă</strong>: apă rece 20 minute, nu microunde. Apa caldă pre-gătește proteina — creveții devin gumoși înainte să atingă tigaia.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Marinează 10 minute cu usturoi tocat, zeamă de lămâie, chilli, ulei de măsline. Creveții absorb aromele rapid datorită structurii poroase.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Grillează la foc mare, <strong>2 minute pe fiecare parte</strong>. Indicatorul vizual: creveții formează litera "C" = gata. Dacă formează "O" = supragătiți și gumoși.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Grillează dovlecelul în rondele în aceeași sesiune, 3 minute pe parte. Servește imediat — creveții nu se reîncălzesc.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Creveții oferă <strong>zinc și seleniu</strong> concentrate — esențiale pentru producția de testosteron și funcția imunitară. 43g de proteine la 370 calorii. Usturoiul din marinadă conține substanța activă din usturoi cu efect antimicrobian și cardiovascular.</div>
+  </div>
+</div>
+
+<!-- ─── R10 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/tofu_scramble_vibrant_1778759495484.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">10 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">TOFU<br>SCRAMBLE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 15 min pregătire · 10 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">410</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Tofu ferm</span><span class="ing-q">300 g</span></div>
+        <div class="ing"><span class="ing-n">Drojdie inactivă</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Spanac proaspăt</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe cânepă</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Turmeric, usturoi, ulei cocos</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Presează tofu</strong>: învelește în hârtie absorbantă, pune o greutate deasupra 15 minute. Fără presare, tofu rămâne apos și nu se rumenește — va fierbe, nu se va prăji.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st"><strong>Fărâmă cu mâna</strong> în bucăți neuniforme — textura variată imită mai bine scrambled eggs decât tăiatul cu cuțitul.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Sotează la foc mediu-mare cu ulei de cocos, usturoi, turmeric (pentru culoare galbenă) și drojdie inactivă pentru gustul de "brânză-umami". Adaugă spanacul în ultimul minut.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Presară semințele de cânepă <strong>la final, fără gătire</strong>. Cânepă + tofu + drojdie inactivă = profil complet de aminoacizi esențiali din surse exclusiv vegetale.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Drojdia inactivă oferă <strong>vitamina B12 completă</strong> — deficitară în dieta vegană. Turmericul activat de grăsimile din cânepă crește absorbția substanței active din turmeric cu 2000%.</div>
+  </div>
+</div>
+
+<!-- ─── R11 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/pesto_chicken_pasta_editorial_1778759467266.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">11 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PASTE<br>INTEGRALE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 5 min pregătire · 20 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">590</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">48G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">55G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Paste integrale</span><span class="ing-q">80 g crud</span></div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Pesto bazillic</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe in măcinate</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Parmezan, busuioc proaspăt</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fierbe pastele cu <strong>1-2 minute mai puțin decât pe ambalaj</strong> — vor continua să gătească în sosul cald. Al dente menține indicele glicemic mai mic cu 20%.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Grillează pieptul de pui condimentat 6-7 minute pe fiecare parte. Lasă la odihnit 3 minute, taie cuburi de 2 cm.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Amestecă pastele scurse cu pesto și semințele de in. <strong>Nu pune pesto la foc direct</strong> — căldura distruge clorofila și vitaminele din bazillic.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Adaugă puiul, un praf de parmezan și busuioc proaspăt. Inul adaugă 3g fibre fără a modifica gustul — reglează digestia carbohidraților.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Pastele integrale au <strong>de 3x mai multe fibre</strong> față de cele albe și un profil de vitamine B superior. 48g de proteine + 55g carbohidrați complecși = masa perfectă pentru refacerea glicogenului după antrenamentele de rezistență.</div>
+  </div>
+</div>
+
+<!-- ─── R12 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/avocado_toast_eggs_luxury_1778825605420.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">12 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OCHIURI &<br>AVOCADO</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 8 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">510</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">26G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ouă bio</span><span class="ing-q">3 buc</span></div>
+        <div class="ing"><span class="ing-n">Albuș lichid</span><span class="ing-q">150 ml</span></div>
+        <div class="ing"><span class="ing-n">Avocado copt</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Pâine integrală</span><span class="ing-q">60 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe in măcinate</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Lămâie, chilli flakes</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Pasează avocadul cu zeamă de lămâie, sare, piper și semințele de in. <strong>Lămâia previne oxidarea</strong> — avocadul rămâne verde și activ nutritiv până la consum.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Prăjește pâinea integrală. Caută variante cu <strong>minim 6g fibre / 100g</strong> pe ambalaj — aceasta e diferența reală față de pâinea "pseudo-integrală".</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Gătește ouăle cu albușul suplimentar în tigaie anti-aderentă cu capac la foc mic, 3-4 minute. Albușul adăugat urcă proteina la 32g fără a modifica gustul.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Asamblează: pâine → avocado → ouă → chilli flakes. <strong>Servește imediat</strong> — avocadul oxidat și ouăle reci nu sunt aceeași mâncare.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Grăsimile mononesaturate din avocado <strong>cresc absorbția vitaminelor liposolubile</strong> din ouă cu până la 400%. Semințele de in adaugă omega-3 vegetal și reglează tranzitul intestinal.</div>
+  </div>
+</div>
+
+<!-- ─── R13 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/beef_burrito_luxury_editorial_1778825627283.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">13 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BURRITO<br>PROTEIC</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 10 min pregătire · 15 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">540</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Vită tocată 5% grăsime</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Tortilla integrală</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Fasole neagră</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Iaurt grec (sos)</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Chimion, paprika, usturoi praf</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Condimentează vita cu sare, piper, chimion măcinat, paprika și usturoi praf. Sotează la foc mare, <strong>sfărâmând continuu</strong> — bulgării mari nu se gătesc uniform.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Adaugă fasolea neagră scursă și clătită, reduce focul la mediu. Amestecă 3-4 minute — fasolea trebuie să absoarbă aromele din carne.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Adaugă iaurtul grec direct în compoziție ca <strong>înlocuitor de smântână</strong> — aceeași textură cremă, 70% mai puțin grăsime și 8g de proteine adăugate.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Încălzește tortilla 30 secunde în tigaie seacă. Umple, rulează strâns și taie diagonal. Fasole + vită = <strong>15g fibre + 45g de proteine</strong> per porție.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Fasolea neagră aduce <strong>zinc și magneziu</strong> concentrate alături de 15g fibre prebiotice care hrănesc microbiomul intestinal. Vita macră oferă tot complexul de vitamine B și fier hem.</div>
+  </div>
+</div>
+
+
+<!-- ─── R14 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/steamed_cod_luxury_editorial_1778825641356.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">14 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">COD LA ABUR<br>& LEGUME</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 5 min pregătire · 10 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">340</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">44G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">10G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">5G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Cod file</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Broccoli</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Morcovi</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Coriandru, sare, piper alb</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Lămâie proaspătă</span><span class="ing-q">1/2 buc</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Asezonează fileul cu sare, piper alb, coriandru și coajă de lămâie rasă. <strong>Nu adăuga lămâie înainte</strong> — acidul "gătește" proteina și modifică textura (principiul ceviche).</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Pune fileul la aburi — dacă nu ai vas dedicat, <strong>o sită metalică peste o oală cu apă clocotită</strong> acoperită cu capac funcționează perfect. Zero grăsime adăugată.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Gătește 8-10 minute. Codul este gata când trece de la <strong>translucid la alb opac complet</strong>. Supragătitul îl face sfărâmicios și lipsit de savoare.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Gătește la aburi broccoli și morcovii separat, 5-6 minute al dente. Stropește totul cu zeamă de lămâie proaspătă la final.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Codul are <strong>cel mai ușor de digerat proteina din pești</strong> — ideal în serile cu antrenament intens când sistemul digestiv e suprasolicitat. 340 calorii pentru 44g de proteine = masa de seară fără greutate.</div>
+  </div>
+</div>
+
+<!-- ─── R15 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/premium_beef_burger_editorial_1778825656454.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">15 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BURGER DE<br>VITĂ</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 10 min pregătire · 12 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">520</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">38G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Vită tocată 5% grăsime</span><span class="ing-q">220 g</span></div>
+        <div class="ing"><span class="ing-n">Chiflă integrală</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Semințe in (în compoziție)</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Rucola, roșie</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Iaurt grec (sos)</span><span class="ing-q">20 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Amestecă vita tocată cu semințele de in măcinate, sare grunjoasă și piper negru. <strong>Nu frământa compoziția</strong> — mixatul excesiv activează glutenul din proteina cărnii și face burgeri tari.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Formează chifteaua de 200g. <strong>Fă o adâncitură de 1 cm la mijloc</strong> — dispare la gătit, dar previne bombarea clasică a burgerilor.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Grillează la foc maxim 4-5 minute pe fiecare parte. <strong>Nu apăsa cu spatula</strong> — pierzi toți sucurile. Temperatura internă 70°C pentru siguranță.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Lasă la odihnit 2 minute în chiflă. Rucola în loc de salată verde = de 10x mai multă vitamina K. Sosul de iaurt înlocuiește ketchup-ul cu zahăr.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Vita 5% grăsime elimină <strong>grăsimile trans din carnea procesată</strong> și oferă tot complexul de vitamine B. Semințele de in în compoziție adaugă 3g omega-3 și fibre fără a modifica textura sau gustul.</div>
+  </div>
+</div>
+
+<!-- ─── R16 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/caesar_salad_luxury_editorial_1778825678568.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">16 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SALATĂ<br>CAESAR</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 10 min pregătire · 15 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">380</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">12G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">180 g</span></div>
+        <div class="ing"><span class="ing-n">Salată Romaine</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Iaurt grec 0%</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Parmezan</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Muștar Dijon, usturoi, worcestershire</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Prepară sosul: iaurt grec + muștar Dijon + zeamă de lămâie + usturoi zdrobit + worcestershire + parmezan ras fin. <strong>Textura corectă: curge lent de pe lingură</strong>, nu pică în picături.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Grillează puiul condimentat 6-7 minute pe fiecare parte. Lasă la odihnit 3 minute, taie <strong>fâșii diagonale</strong> — tăiatul diagonal crește suprafața de contact cu sosul.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st"><strong>Rupe salata cu mâna în bucăți mari</strong> — tăierea cu cuțitul oxidează marginile. Amestecă sosul cu salata imediat înainte de servit, niciodată cu ore înainte.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Asamblează: salată îmbrăcată în sos → pui → parmezan ras. Înlocuirea maionezei cu iaurt grec economisește 200+ calorii și adaugă 8g de proteine suplimentară.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Salata Romaine are <strong>de 8x mai multă vitamina K față de iceberg</strong>. Parmezan + usturoi + worcestershire = profil complet de umami care satisface nevoia de "ceva consistent" fără calorii goale.</div>
+  </div>
+</div>
+
+<!-- ─── R17 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/shakshuka_premium_editorial_1778825694835.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">17 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SHAKSHUKA</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 20 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">28G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ouă</span><span class="ing-q">4 buc</span></div>
+        <div class="ing"><span class="ing-n">Roșii decojite (conservă)</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Ardei kapia</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Feta sfărâmată</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Chimion, paprika afumată</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Pătrunjel proaspăt</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Sotează ardeiul kapia tăiat cuburi la foc mediu, 5 minute. Adaugă roșiile, chimionul, paprika afumată, sare, piper. <strong>Fierbe 10 minute</strong> la foc mic până sosul se îngroașă.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Creează 3 adâncituri în sos cu o lingură. <strong>Sparge câte un ou în fiecare adâncitură</strong> cu grijă — gălbenușul trebuie să rămână intact pentru textura finală.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Pune capac și lasă la foc mic 5-7 minute pentru gălbenuș semi-lichid, 8 minute pentru gătit complet. <strong>Nu amesteca odată ce ouăle sunt adăugate.</strong></div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Presară pătrunjel proaspăt la final. Servește direct din tigaie cu pâine integrală pentru carbohidrați suplimentari dacă e zi de antrenament.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Antioxidantul din roșii <strong>gătite este de 2-3x mai bine absorbit de organism</strong> decât din roșiile crude. Combinat cu grăsimile din gălbenușuri, absorbția crește suplimentar. Paprika afumată conține substanța activă din ardei iute cu efect de accelerare a metabolismului.</div>
+  </div>
+</div>
+
+<!-- ─── R18 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/turkey_meatballs_luxury_editorial_1778825712122.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">18 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CHIFTELUȚE<br>DE CURCAN</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 15 min pregătire · 22 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">10G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Curcan tocat</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Ou</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Usturoi, ceapă rasă fin</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Ierburi italiene</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Sare, piper negru</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Amestecă carnea cu oul bătut, usturoiul zdrobit, ceapa rasă fin, ierburile, sare și piper. <strong>Oul leagă compoziția</strong> — fără el, chiftelele se sfărâmă la copt.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Formează chiftele de <strong>35-40g fiecare</strong> (mărimea mingii de golf). Uniformizarea dimensiunii asigură gătit egal — cele mici vor fi uscate când cele mari sunt crude.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Coace pe hârtie de copt la 190°C, <strong>20-22 minute</strong>. Nu le întoarce — cuptorul gătește uniform din toate direcțiile, spre deosebire de prăjit.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Temperatura internă: <strong>74°C pentru siguranță alimentară</strong>. Verifică cu termometru sau taie una — carnea trebuie să fie albă complet, fără roz.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Curcanul tocat este <strong>cea mai slabă sursă de proteina animală</strong> — 1.5g grăsime per 100g. Triptofanul prezent în concentrații mai mari decât în orice altă carne albă susține producția de serotonina pentru recuperare nocturnă optimă.</div>
+  </div>
+</div>
+
+<!-- ─── R19 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/grilled_trout_luxury_editorial_1778825740828.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">19 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PĂSTRĂV<br>LA GRĂTAR</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 3 min pregătire · 10 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">360</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">44G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">2G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">16G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Păstrăv file</span><span class="ing-q">300 g</span></div>
+        <div class="ing"><span class="ing-n">Lămâie</span><span class="ing-q">1/2 buc</span></div>
+        <div class="ing"><span class="ing-n">Rozmarin proaspăt</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Sare, piper alb</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Ulei de avocado</span><span class="ing-q">5 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Asezonează cu sare, piper alb și rozmarin. <strong>Nu adăuga lămâie înainte de gătit</strong> — acidul "gătește" proteina (principiul ceviche) și textura finală va fi granuloasă.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Unge fileul cu ulei de avocado. Grillează <strong>pe partea cu pielea la foc mediu-mare, 6 minute fără a mișca</strong> — pielea aderă natural dacă tigaia e bine încinsă.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Întoarce <strong>o singură dată</strong> și grillează 2-3 minute pe cealaltă parte. Gata când carnea e opacă până la mijloc și se desprinde ușor.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Adaugă zeama de lămâie <strong>abia la final</strong>, după ce ai tras de pe foc. Gătitul pe piele menține toți acizii grași omega-3 activi.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Păstrăvul are <strong>seleniu concentrat</strong> — antioxidantul critic pentru funcția tiroidiană și metabolismul bazal. 44g de proteine la 360 calorii, zero carbohidrați. Ideal în fazele de deficit caloric sau la mese de seară.</div>
+  </div>
+</div>
+
+<!-- ─── R20 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/halloumi_quinoa_bowl_premium_1778825755247.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">20 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BOWL HALLOUMI<br>& QUINOA</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 5 min pregătire · 18 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">560</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">28G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Halloumi light</span><span class="ing-q">120 g</span></div>
+        <div class="ing"><span class="ing-n">Quinoa (crudă)</span><span class="ing-q">70 g</span></div>
+        <div class="ing"><span class="ing-n">Castraveți</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Roșii cherry</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Edamame decojit</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Ulei măsline, lămâie, mentă</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Spală quinoa obligatoriu</strong> înainte de gătit — stratul exterior amar al quinoei trebuie îndepărtat. Fierbe raport 1:2, 15 minute. Gata când apar "cozile" albe transparente.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Feliază halloumi în felii de 1 cm. <strong>Nu adăuga ulei în tigaie</strong> — halloumi conține suficientă grăsime proprie. Grillează la foc mediu-mare, 2-3 minute pe fiecare parte.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Amestecă quinoa cu castraveții și roșiile cherry, strop de ulei de măsline, zeamă de lămâie, sare, piper și mentă proaspătă.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Aranjează bowl-ul: quinoa și legume → halloumi la grătar deasupra. Quinoa este una din <strong>puținele surse vegetale cu toți cei 9 aminoacizi esențiali</strong>.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Quinoa + halloumi = <strong>profil complet de aminoacizi din surse vegetariene</strong>. Quinoa are un indice glicemic de 53 — eliberare lentă de energie fără crashul post-masă. Ideal pentru zilele de muncă intensă.</div>
+  </div>
+</div>
+
+<!-- ─── R21 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/lentil_soup_luxury_editorial_1778825769090.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">21 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SUPĂ CREMĂ<br>DE LINTE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 10 min pregătire · 30 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">55G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Linte roșie</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Ceapă, țelină</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Turmeric, coriandru măcinat</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Oțet de mere (la final)</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Ulei măsline, sare, piper</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Drojdie inactivă</span><span class="ing-q">30 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Sotează ceapa și țelina în ulei de măsline la foc mediu, <strong>5 minute</strong>. Caramelizarea ușoară aduce profunzime de gust — focul prea mare = ardere, nu caramelizare.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Adaugă lintea roșie (nu necesită înmuiere prealabilă), turmericul, coriandrul și <strong>700ml apă sau supă de oase</strong>. Fierbe la foc mic 25 minute și drojdia inactivă.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Blendează complet cu blenderul vertical până obții textură fină. Dacă e prea groasă, adaugă apă fierbinte lingurița cu lingurița.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Adaugă <strong>oțetul de mere la final</strong> — acidul activează substanța activă din turmeric, multiplicând efectul anti-inflamator cu 2000%.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Fibrele solubile din linte <strong>mențin glicemia stabilă 4-5 ore</strong>, eliminând "crash-ul" de energie de după-amiază. Turmericul activat de acid inhibă inflamația la nivel celular — reducând inflamația sistemică.</div>
+  </div>
+</div>
+
+<!-- ─── R22 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/chicken_hummus_wrap_luxury_1778825800473.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">22 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">WRAP PUI<br>& HUMMUS</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 10 min pregătire · 15 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">480</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">15G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Pui la grill</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Tortilla integrală</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Hummus</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Spanac proaspăt</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Ardei grill (opțional)</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Grillează puiul condimentat cu sare, piper, coriandru — 6-7 minute pe fiecare parte. Lasă la odihnit 3 minute, taie <strong>fâșii subțiri contra fibrei</strong>.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Întinde hummus-ul <strong>generos pe toată suprafața</strong> tortillei, inclusiv spre margini. Hummus-ul acționează și ca "adeziv" care ține wrapul strâns, nu doar ca ingredient.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Adaugă spanacul, puiul, ardeiul grill. Rulează <strong>strâns din ambele capete</strong>, ca un burrito — marginile sigilate împiedică desfacerea.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Prăjește wrapul în tigaie seacă <strong>1 minut pe fiecare parte</strong> — devine crocant la exterior și se ține mai bine. Ideal pentru prânzul la birou sau în mișcare.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Hummus-ul din năut aduce <strong>grăsimi mononesaturate și 4g fibre per porție</strong> — sațietate prelungită și tranzit reglat. Combinația pui + hummus acoperă toți aminoacizii esențiali.</div>
+  </div>
+</div>
+
+<!-- ─── R23 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/frittata_ciuperci_editorial_1778944102363.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">23 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">FRITTATA CU<br>CIUPERCI</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 15 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">370</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">8G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ouă</span><span class="ing-q">4 buc</span></div>
+        <div class="ing"><span class="ing-n">Ciuperci champignon</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Ceapă verde</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Lapte, sare, piper</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Albuș lichid</span><span class="ing-q">100 ml</span></div>
+        <div class="ing"><span class="ing-n">Ulei de cocos</span><span class="ing-q">5 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Sotează ciupercile la foc mare <strong>fără sare inițial</strong> — sarea extrage apa și ciupercile vor fierbe în loc să se rumenească. Adaugă sarea abia după ce sunt aurii.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Reduce focul la mediu. Bate ouăle cu sare, piper, puțin lapte și ceapa verde. Toarnă amestecul peste ciuperci <strong>uniform</strong>.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Gătește la foc mic cu capac <strong>8-10 minute</strong> până marginile sunt solide și centrul e aproape gătit. Finalizează 3 minute la grillul cuptorului pentru crustă aurie.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Taie în felii ca o pizza și servește direct din tigaie. Se poate prepara cu o zi înainte — se reîncălzește excelent.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Ciupercile expuse la soare sintetizează <strong>vitamina D2 bine absorbită de organism</strong> — singura sursă vegetală reală. Fibrele solubile din ciuperci activează celulele NK ale sistemului imunitar.</div>
+  </div>
+</div>
+
+<!-- ─── R24 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/somon_poke_bowl_editorial_1778944122054.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">24 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SOMON<br>POKE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Prânz</span>
+        <span class="tag-t">⏱ 15 min pregătire · 15 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">510</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Somon proaspăt sau afumat</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Orez sushi</span><span class="ing-q">100 g crud</span></div>
+        <div class="ing"><span class="ing-n">Edamame</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Alge nori, semințe susan</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Sos soia light, ulei susan, lime</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Pregătește dressingul: sos soia light + ulei de susan prăjit + zeamă de lime. Marinează somonul cubulețe <strong>maxim 10 minute</strong> — acidul din lime "gătește" proteina dacă depășești.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Fierbe orezul de sushi. La final adaugă 1 lingurița oțet de orez și puțin eritritol — sushi-rice-ul corect are acest echilibru acrișor-dulce.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Gătește edamamele în apă cu sare <strong>5 minute dacă e congelată</strong>, 3 minute proaspătă. Scurge și răcește rapid.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Asamblează: orez → somon marinat → edamame → alge nori rupte → semințe de susan. Peștele crud menține <strong>toți acizii grași omega-3 nealterați de căldură</strong>.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Omega-3 din somonul crud are <strong>absorbție maximă</strong> — gătitul reduce eficiența acizilor grași omega-3 activi cu 20-30%. Algele nori adaugă iod esențial pentru funcția tiroidiană.</div>
+  </div>
+</div>
+
+<!-- ─── R25 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/vita_sote_caju_editorial_1778944144671.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">25 // SAVORY</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">VITĂ SOTÉE<br>CU CAJU</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 15 min pregătire · 12 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">530</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">12G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">30G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Vită (mușchi sau antricot)</span><span class="ing-q">180 g</span></div>
+        <div class="ing"><span class="ing-n">Caju brut</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Broccoli</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Ghimbir, usturoi, sos soia</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Ulei de cocos</span><span class="ing-q">10 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Taie vita în fâșii de 1 cm, uniform. Marinează <strong>15 minute în sos soia + ghimbir ras + usturoi</strong> — ghimbirul are efect digestiv puternic și antiinflamator.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Blanchează broccoli-ul 2 minute în apă clocotită cu sare, transferă imediat în <strong>apă cu gheață</strong>. Verde aprins = clorofila intactă = nutrienți maximizați.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Prăjește cajul sec la foc mediu 2-3 minute până devine auriu. <strong>Scoate-l imediat</strong> — cajul ars devine amar și pierde cuprul și magneziul.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Sotează vita marinată la foc maxim 3-4 minute. Adaugă broccoli, un strop de sos soia, cajul la final. Servește imediat.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Cuprul din caju participă direct la <strong>sinteza colagenului articular</strong> — esențial în fazele de antrenament intens. Vita aduce creatina naturală și fier hem. Ghimbirul reduce durerea musculară de a doua zi cu până la 25%.</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════ SECTION 02 -->
+<div class="page section-header">
+  <div class="sh-accent"></div>
+  <div class="sh-num">Secțiunea 02</div>
+  <div class="sh-title">SWEET<br>RECOVERY</div>
+  <div class="sh-sub">Dulce fără compromis — refacere, sațietate și plăcere controlată</div>
+  <div class="sh-rule"></div>
+</div>
+
+<!-- ─── R26 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/protein_pancakes_luxury_1778758674594.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">26 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PANCAKES PROTEICE<br>CU BANANĂ</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 12 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Banană coaptă (cu pete negre)</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Whey vanilie</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Albuș lichid</span><span class="ing-q">150 ml</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară</span><span class="ing-q">1/2 linguriță</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Alege banane cu <strong>pete negre pe coajă</strong> — mai dulci natural, amidon transformat în zaharuri simple. Nu mai ai nevoie de îndulcitor adăugat.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Pasează banana complet, adaugă albușul, whey și scorțișoara. Bate cu furculița până obții compoziție fără cocoloașe. <strong>Consistența corectă: curge lent de pe lingură.</strong></div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Tigaie anti-aderentă la foc <strong>mic-mediu</strong> — pancakes-urile proteice ard la foc mare. 3-4 linguri per pancake, acoperi cu capac 30 secunde. Întoarce când marginile sunt uscate și apar bule.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st"><strong>Nu apăsa cu spatula</strong> — structura proteică e mai fragilă decât cea cu gluten. Servește cu iaurt grec și fructe de pădure proaspete.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Scorțișoara <strong>crește sensibilitatea la insulina</strong> — reduce creșterea bruscă a zahărului din sânge cauzată de banană. Albușul adăugat triplează conținutul de proteina față de rețeta clasică.</div>
+  </div>
+</div>
+
+<!-- ─── R27 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/greek_yogurt_bowl_premium_1778758718649.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">27 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT GRECESC<br>& FRUCTE DE PĂDURE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața / Post-Workout</span>
+        <span class="tag-t">⏱ 3 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">370</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">20G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Iaurt grec 2%</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Afine / Zmeură</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Migdale feliate</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Whey vanilie</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Miere (opțional, post-workout)</span><span class="ing-q">5 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Scoate iaurtul din frigider cu <strong>10 minute înainte</strong> — la temperatura camerei are textură mai cremă și absorbția calciului e mai eficientă.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Fructele <strong>congelate la momentul recoltei</strong> au mai mulți antioxidanți decât cele proaspete cumpărate în extrasezon. Dezgheți seara sau folosești direct congelate.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Stratifică în bowl: iaurt → fructe → migdale feliate. Migdalele adaugă textură, vitamina E și <strong>grăsimi mononesaturate care prelungesc sațietatea</strong>.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Dacă adaugi miere, pune-o pe fructe, nu în iaurt — <strong>profilul bacterian al iaurtului este sensibil la zahăr</strong> și se degradează dacă amesteci.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Iaurtul grec are <strong>de 2x mai multă proteina față de iaurtul obișnuit</strong> datorită filtrării zerului. Probioticele vii susțin microbiomul intestinal care reglează inflamația sistemică. Pigmenții antioxidanți din fructe de pădure — efect neuroprotector.</div>
+  </div>
+</div>
+
+<!-- ─── R28 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/chia_pudding_protein_luxury_1778759482215.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">28 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CHIA PUDDING<br>PROTEIC</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 6 ore hidratare</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Semințe chia</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Lapte de migdale</span><span class="ing-q">150 ml</span></div>
+        <div class="ing"><span class="ing-n">Whey vanilie</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Extract vanilie</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Semințe in măcinate (dimineața)</span><span class="ing-q">5 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Dizolvă whey separat</strong> în 2-3 lingurițe de apă rece înainte să-l adaugi — dizolvarea directă în lapte creează cocoloașe care rămân.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Combină chia, laptele de migdale, whey dizolvat și vanilia. Amestecă intens 2 minute. <strong>Chia absoarbe de 10x greutatea sa în lichid</strong> — la 6 ore e pudding, la 2 ore e lichid.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Refrigerează minimum 6 ore, ideal overnight. Dimineața, agită sau amestecă — stratificarea e normală. Prea dens? Adaugă puțin lapte de migdale.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Adaugă semințele de in <strong>dimineața, nu seara</strong> — omega-3 din in se oxidează rapid după măcinare. Top cu fructe de pădure proaspete.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Chia are <strong>cel mai ridicat conținut de omega-3 vegetal din plante</strong> — 5g per 30g semințe. Gelul format din fibre solubile hrănește bacteriile benefice din colon. Preparat seara = mic dejun gata în 30 secunde.</div>
+  </div>
+</div>
+
+<!-- ─── R29 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/built_muscle_smoothie_luxury_1778759377496.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">29 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SMOOTHIE<br>PROTEIC</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 3 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">10G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Whey ciocolată</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Unt de arahide natural</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Fulgi de ovăz</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Apă / gheată</span><span class="ing-q">200 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Ordinea în blender contează:</strong> mai întâi lichidul și gheața, apoi ovăzul, untul de arahide, whey ultimul. Lama nu va fi blocată și nu va rămâne proteine nedizolvate pe pereți.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Blendează la viteză maximă <strong>60-90 secunde</strong>. Ovăzul neprelucrat poate rămâne granular — pre-macini ovăzul 30 secunde separat dacă te deranjează textura.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Consistența corectă: <strong>dens, nu lichid</strong>. Dacă curge prea repede, adaugă mai multă gheață sau ovăz. Prea dens = mai multă apă.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Consumă în <strong>maxim 30 minute post-workout</strong> pentru a maximiza perioada de refacere post-antrenament. Nu conserva în frigider — proteina strică textura.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Ovăzul oferă <strong>carbohidrați cu eliberare treptată pentru refacerea glicogenului muscular</strong>. Untul de arahide natural (fără adaosuri) aduce acizi grași mononesaturați și magneziu. 35g whey = pragul pentru sinteza proteinelor musculare.</div>
+  </div>
+</div>
+
+<!-- ─── R30 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/cottage_pancakes_strength_max_editorial_1778876071396.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">30 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PANCAKES<br>CU BRÂNZĂ</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 12 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">25G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">16G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Brânză de vaci 2%</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Făină de ovăz</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Ou întreg</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Eritritol / stevie</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Scorțișară, vanilie</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Scurge excesul de lichid din brânza de vaci</strong> folosind o sită fină 5 minute — brânza prea umedă face compoziția prea lichidă și pancakes-urile nu se vor solidifica.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Mixează brânza cu oul, făina de ovăz și îndulcitorul. Consistența corectă: se poate turna dar <strong>nu curge instantaneu</strong>. Prea gros = 1-2 lingurițe de lapte.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Tigaie anti-aderentă la <strong>foc mic</strong> — mai sensibile decât pancakes-urile clasice, necesită temperatură mai mică. 3-4 minute pe prima parte, 2 minute pe a doua.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">La final, așază-le una peste alta cu fructe proaspete și un strop de miere sau sirop de arțar. Brânza de vaci 2% = cazeina în concentrație ridicată pentru recuperare prelungită.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Cazeina din brânza de vaci se digeră lent (7-8 ore) față de whey (1-2 ore). <strong>Ideal dimineața după o noapte de post</strong> — furnizează aminoacizi constant și previne pierderea masei musculare.</div>
+  </div>
+</div>
+
+<!-- ─── R31 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/recovery_shake_bowl_editorial_1778944074216.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">31 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SHAKE<br>BOWL</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 5 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">420</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Izolat proteic</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Fructe de pădure congelate</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Granola (rețeta 43)</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Apă</span><span class="ing-q">50 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fructele trebuie <strong>complet congelate</strong> (nu reci, nu parțial dezghețate). La congelare totală dau textura de înghețată — apa adăugată îl diluează.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Blendează fructele cu izolatul și 50ml apă folosind <strong>food processor sau blender puternic</strong> — blenderul de smoothie standard nu poate procesa fructe complet înghețate.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Toarnă în bowl imediat. <strong>Lucrează rapid</strong> — se topește în 5-8 minute la temperatura camerei.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Decorează cu granola, semințe, bucăți de fructe proaspete. 40g izolat proteic = <strong>calitate biologică maximă</strong> — cel mai bun scor posibil.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Izolatul proteic are <strong>absorbție maximă în 30-45 minute</strong> — perfectă pentru primele 30-60 de minute după antrenament. Fructele congelate adaugă carbohidrați simpli pentru refacerea rapidă a glicogenului.</div>
+  </div>
+</div>
+
+<!-- ─── R32 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/overnight_oats_peanuts_premium_1778791117335.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">32 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OVERNIGHT<br>OATS</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 6 ore hidratare</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">520</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">44G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Fulgi de ovăz</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Izolat de whey cu vanilie</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Iaurt grec 0%</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe chia</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Unt de arahide natural</span><span class="ing-q">15 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Dizolvă whey în 3-4 lingurițe de apă caldă</strong> (nu fierbinte — coagularea denaturează proteina). Amestecă bine să dispară cocoloașele.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Combină ovăzul, chia, iaurtul și untul de arahide într-un borcan de 500ml. Adaugă whey dizolvat și amestecă uniform.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Refrigerează <strong>minimum 6 ore</strong>. Chia și ovăzul absorb lichidul — dimineața găsești o textură compactă și cremoasă.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Adaugă topping-uri dimineața: fructe proaspete, semințe suplimentare. <strong>38g de proteine dimineața susține refacerea musculară pe tot parcursul zilei.</strong></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Ovăzul hidratat overnight are <strong>amidon care hrănește bacteriile benefice</strong> — crește senzația de sațietate. Fibrele solubile din ovăz reduc colesterolul LDL. Mic dejun complet preparat în seara anterioară.</div>
+  </div>
+</div>
+
+<!-- ─── R33 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/protein_rice_pudding_luxury_1778791135709.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">33 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BUDINCĂ DE<br>OREZ</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 5 min pregătire · 25 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">55G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">6G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Orez alb</span><span class="ing-q">50 g crud</span></div>
+        <div class="ing"><span class="ing-n">Lapte 1.5%</span><span class="ing-q">200 ml</span></div>
+        <div class="ing"><span class="ing-n">Whey vanilie</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Migdale feliate</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară, vanilie</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fierbe orezul în <strong>lapte</strong> (nu apă) la foc mic, amestecând des. Laptele coagulat creează textura cremă de budincă — în apă obții orez fiert banal.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Gătești 20-25 minute, amestecând la fiecare 3-4 minute. Gata când orezul a absorbit <strong>80% din lichid</strong> și are textură cremoasă — nu tare, nu apos.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Ia de pe foc și lasă să se răcească <strong>5-7 minute</strong>. Adaugă whey în orezul ușor răcit — temperatura prea ridicată denaturează proteina și reduce valoarea biologică.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Toarnă în bol, adaugă migdalele feliate și scorțișoară. <strong>Carbohidrați rapizi + 42g de proteine</strong> = combinația ideală în primele 30 de minute după antrenament.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Carbohidrații cu <strong>absorbție rapidă din orez alb transportă aminoacizii direct în celula musculară</strong> post-efort via insulina. Scorțișoara crește sensibilitatea la insulina și optimizează transportul glucozei.</div>
+  </div>
+</div>
+
+<!-- ─── R34 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/banana_whey_nice_cream_vibrant_1778791153669.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">34 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">NICE CREAM</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 5 min pregătire · 4 ore congelare</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">360</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">4G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Banane congelate</span><span class="ing-q">1.5 buc</span></div>
+        <div class="ing"><span class="ing-n">Whey ciocolată</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Cacao neagră (pudra)</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe dovleac (topping)</span><span class="ing-q">10 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Congelează bananele <strong>minimum 4 ore</strong>, ideal overnight. Bananele proaspete nu dau textura corectă — trebuie să fie solide complet.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Procesează bananele în food processor 2-3 minute. Inițial par sfărâmicioase — <strong>continuă fără să adaugi lichid</strong>, vor deveni cremoase. Adaugă whey și cacaoa.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st"><strong>Nu adăuga lapte sau apă</strong> — bananele au suficientă umiditate. Dacă blenderul se blochează, adaugă 1-2 lingurițe de lapte de migdale, nu mai mult.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Consumă imediat sau congelează <strong>maxim 15 minute</strong> pentru consistența fermă. Adaugă semințele de dovleac la servire — magneziu pentru relaxarea mușchilor după efort.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">35g de whey post-workout + carbohidrații naturali din banane = <strong>refacerea musculară maximizată</strong>. Cacao neagra 100% aduce flavonoide cu efect de îmbunătățire a circulației sângelui — cresc fluxul sanguin către mușchi.</div>
+  </div>
+</div>
+
+<!-- ─── R35 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/protein_blueberry_muffins_premium_1778791172713.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">35 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BRIOȘE<br>CU AFINE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Snack / Dimineața</span>
+        <span class="tag-t">⏱ 10 min pregătire · 18 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">400</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">25G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">10G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Făină de ovăz</span><span class="ing-q">60 g</span></div>
+        <div class="ing"><span class="ing-n">Albuș lichid</span><span class="ing-q">200 ml</span></div>
+        <div class="ing"><span class="ing-n">Whey / cazeină</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Afine proaspete</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Bicarbonat, scorțișoară</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Preîncălzește cuptorul la 175°C. <strong>Combină ingredientele uscate separat de cele umede</strong> — regula de bază în patiserie pentru textură uniformă.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Bate albușul 30 secunde pentru a-l aerisi ușor. Adaugă ingredientele uscate treptat, amestecând ușor. <strong>Nu bate agresiv</strong> — glutenul activat = brioșe tari.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Pliază afinele <strong>la final, cu mișcări din jos în sus</strong>. Afinele sfărâmate colorează tot aluatul — le vrei întregi.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Umple formele <strong>3/4 din capacitate</strong>. Coace 16-18 minute. Testul scobitorii: iese curată. Cazeina menține umiditatea brioșelor după răcire.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Afinele au <strong>cea mai mare putere antioxidantă din fructele comune</strong> — neutralizează radicalii liberi post-antrenament. Mixul albuș + cazeina = 42g de proteine la un snack de 400 calorii.</div>
+  </div>
+</div>
+
+<!-- ─── R36 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/green_energy_smoothie_vibrant_1778791194541.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">36 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SMOOTHIE<br>VERDE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">360</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">25G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">6G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Spanac baby</span><span class="ing-q">2 mâini</span></div>
+        <div class="ing"><span class="ing-n">Măr verde</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Izolat de whey</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe de in</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Ghimbir proaspăt</span><span class="ing-q">2 cm</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Blendează mai întâi spanacul cu 50ml apă</strong> la viteză maximă 30 secunde — spanacul trebuie complet lichidat înainte de adăugarea celorlalte ingrediente pentru textură fină.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Adaugă mărul verde tăiat cuburi, ghimbirul ras proaspăt și semințele de in. Blendează 60 secunde.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Adaugă izolatul proteic <strong>ultimul, la viteză medie</strong> — viteza mare aerează excesiv proteina și creează spumă. 15-20 secunde sunt suficiente.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st"><strong>Consumă imediat</strong> — clorofila din spanac se oxidează rapid la contactul cu aerul și culoarea se schimbă în 15-20 minute.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Spanacul conține <strong>nitrati naturali care cresc eficiența celulelor la nivel energetic</strong> cu 5% — mai multă energie din același combustibil. Ghimbirul + omega-3 din in = efect antiinflamator sinergic. 32g izolat cu absorbție maximă.</div>
+  </div>
+</div>
+
+<!-- ─── R37 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/chocolate_protein_pancakes_luxury_1778791217591.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">37 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PANCAKES<br>CU CACAO</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 12 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">470</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">44G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">14G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Whey ciocolată</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Ouă bio întregi</span><span class="ing-q">2 buc</span></div>
+        <div class="ing"><span class="ing-n">Făină de migdale</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe de cânepă</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Cacao neagră, sare</span><span class="ing-q">5 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Combină whey cu cacaoa mai întâi</strong> — asigura distribuția uniformă și evita petele negre în pancakes.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Bate ouăle separat, adaugă făina de migdale și compoziția de whey + cacao. Semințele de cânepă se adaugă la final, fără amestecare agresivă.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Tigaie la <strong>foc mic-mediu</strong>. Pancakes-urile cu almond flour sunt mai delicate. 3 minute pe prima parte cu capac, 90 secunde pe a doua.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Servește cu o lingura de <strong>unt de arahide topit</strong> (30 secunde la microunde) în loc de sirop. Grăsimile din migdale + arahide + 36g de proteine = combustibil complet pentru sistemul nervos.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Făina de migdale aduce <strong>vitamina E — cel mai puternic antioxidant liposolubil</strong>. Cânepă + ouă + whey = profil complet de aminoacizi esențiali cu trei surse diferite. Cacao stimulează producția de serotonina matinală.</div>
+  </div>
+</div>
+
+<!-- ─── R38 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/cottage_cheese_walnuts_premium_1778791238349.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">38 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BOWL VACI<br>& NUCI</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 3 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">390</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">10G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Brânza de vaci 2%</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Nuci românești</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Eritritol / stevie</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Brânza de vaci 2% — nu 0%. <strong>Versiunea 0% reduce sațietatea</strong> și absorbția vitaminelor liposolubile. Scoate-o din frigider 10 minute înainte.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st"><strong>Zdrobește nucile grosier cu mâna sau într-un prosop</strong> — bucăți mari adaugă mai multă textură decât pulberea fină.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Amestecă brânza cu eritritolul și scorțișoară. Eritritolul are <strong>gustul cel mai apropriat de zahăr</strong> fără niciun impact glicemic — insulina nu reacționează.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Adaugă nucile deasupra. <strong>Ultima masă înainte de somn</strong>: cazeina din brânza de vaci se digeră 7-8 ore, menținând mușchii în refacere activă pe tot parcursul nopții.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Nucile românești au <strong>cel mai ridicat conținut de omega-3 vegetal din nucile clasice</strong> + compuși bioactivi cu efect protector. Cazeina din brânza de vaci = proteina cu digerare lentă ideală pentru recuperare nocturnă.</div>
+  </div>
+</div>
+
+
+<!-- ─── R39 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/baked_apple_quark_luxury_1778791260032.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">39 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">MĂR COPT<br>CU QUARK</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 5 min pregătire · 20 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">410</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">38G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">6G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Măr mare (Jonagold / Fuji)</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Brânza quark</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Whey vanilie</span><span class="ing-q">35 g</span></div>
+        <div class="ing"><span class="ing-n">Nuci măcinate</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară</span><span class="ing-q">1/2 linguriță</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Scoate cotorul mărului cu un cuțit ascuțit, creând o cavitate centrală. <strong>Nu tăia complet fundul</strong> — baza trebuie să susțină umplutura în cuptor.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Combină quark-ul cu whey și nucile măcinate. <strong>Quark-ul are textură mai densă decât iaurtul</strong> și nu va curge în cuptor — înlocuiesc ricotta cu 3x mai multe proteine.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Umple cavitatea mărului dens cu amestecul de quark. Adaugă scorțișoară deasupra — scorțișoară reglează glicemia (studii clinice cu efect la 1-6g/zi).</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Coace la 180°C, <strong>18-20 minute</strong>. Mărul trebuie să fie moale dar să nu se desfacă. Pectina din coajă devine prebiotică prin gătit.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Pectina din coaja mărului copt devine <strong>prebiotic solubil</strong> — hrănește bacteriile Bifidobacterium și Lactobacillus. 42g de proteine completă dintr-un desert care nu arată și nu are gust de mâncare de regim.</div>
+  </div>
+</div>
+
+<!-- ─── R40 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/berry_blast_smoothie_vibrant_1778791327344.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">40 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SMOOTHIE<br>FRUCTE DE PĂDURE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 5 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">380</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Mix fructe de pădure congelate</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Izolat de whey</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe dovleac</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Kefir 0.1%</span><span class="ing-q">100 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Fructele congelate la vârf de sezon</strong> au mai mulți antioxidanți decât cele proaspete cumpărate în extrasezon — pigmenții antioxidanți se concentrează la congelare.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Blendează fructele cu kefirul la viteză mică 30 secunde pentru a sparge bucățile mari. Adaugă izolatul și semințele de dovleac.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Blendează la <strong>viteză maximă 60 secunde</strong>. Consistența corectă: dens, nu lichid apos. Kefirul aduce cremozitate fără calorii extra.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Consumă imediat. Kefirul aduce <strong>10-15 tulpini de probiotice vii</strong> care modulează inflamația sistemică — sinergic cu pigmenții antioxidanți din fructe.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Pigmenții antioxidanți din fructele de pădure <strong>blochează inflamația la nivel celular</strong> — protejând fibrele musculare post-antrenament. Kefirul + izolat = probiotice + proteina maximă absorbită eficient de organism.</div>
+  </div>
+</div>
+
+<!-- ─── R41 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/protein_fluff_luxury_1778791350579.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">41 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PROTEIN<br>FLUFF</div>
+      <div class="rp-tags">
+        <span class="tag-p">Base Strength</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 5 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">320</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">44G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">4G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Cazeina vanilla</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Fructe de pădure congelate</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Guma xanthan</span><span class="ing-q">3 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe chia</span><span class="ing-q">10 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Dezgheață parțial fructele — la <strong>50% dezghețate</strong> dau textura optimă. Prea congelate = blenderul se blochează. Prea dezghețate = textură lichidă, nu fluff.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Combină cazeina, fructele parțial dezghețate și <strong>guma xanthan</strong> în blender. Guma xanthan este elementul cheie — fără ea, proteina nu capturează aerul și nu crește în volum.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Blendează la viteză maximă <strong>2-3 minute</strong>. Volumul crește de 2-3x — normal. Cazeina are particule speciale care capturează aerul la viteze mari.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Transferă imediat în bol, adaugă chia-ul. <strong>Consumă în 15 minute</strong> — fluff-ul se stabilizează și pierde volumul. 44g de proteine la 320 calorii = cel mai bun raport din cookbook.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Volumul masiv <strong>semnalizează creierului sațietatea</strong> înainte ca caloriile să fie procesate. 38g cazeina cu digerare lentă = flux constant de aminoacizi pe 7-8 ore. Soluția BUILT pentru poftele de seara.</div>
+  </div>
+</div>
+
+<!-- ─── R42 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/whey_crepes_luxury_1778791372220.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">42 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CLĂTITE<br>CU WHEY</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 12 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">430</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">20G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Izolat de whey</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Ouă bio</span><span class="ing-q">2 buc</span></div>
+        <div class="ing"><span class="ing-n">Lapte de migdale</span><span class="ing-q">50 ml</span></div>
+        <div class="ing"><span class="ing-n">Semințe in măcinate</span><span class="ing-q">10 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Bate ouăle și adaugă treptat izolatul proteic și inul măcinat. Inul absoarbe lichid și îngroașă compoziția — dacă e prea dens, adaugă laptele de migdale <strong>lingurița cu lingurița</strong>.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Consistența corectă: <strong>curge lent de pe lingură</strong>. Prea dens = se rupe la întoarcere. Prea lichid = foaie prea subțire.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Tigaie non-stick la foc mediu, <strong>0.5 ml ulei de cocos pe foaie</strong>. Toarnă 4-5 linguri și rotești rapid tigaia pentru foaie subțire și uniformă.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Întoarce după 90 secunde, gătit 45 secunde pe cealaltă parte. Umple cu <strong>iaurt grec + fructe + drizzle de unt de arahide</strong> — 42g de proteine per porție (2-3 clătite).</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Izolatul proteic are <strong>absorbție 100%</strong> — scorul biologic maxim din toate sursele proteice. Inul din compoziție adaugă omega-3 și reglează tranzitul, eliminând balonarea asociată deserturilor proteice.</div>
+  </div>
+</div>
+
+<!-- ─── R43 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/low_sugar_granola_luxury_1778791396161.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">43 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">GRANOLA<br>BUILT</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Dimineața</span>
+        <span class="tag-t">⏱ 5 min pregătire · 18 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">510</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">22G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Mix nuci și semințe</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Izolat de whey</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Iaurt grec 0%</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Ulei cocos, scorțișoară</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Amestecă nucile și semințele cu ulei de cocos topit și scorțișoară. <strong>Nu adăuga whey acum</strong> — proteina nu se coace, se adaugă după.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Coace la <strong>160°C, 15-18 minute</strong>, amestecând la jumătate. Temperatura mică = granola crocantă uniform. Temperatura mare = exterior ars, interior neprelucrat.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st"><strong>Lasă să se răcească complet</strong> pe tavă — devine crocant la răcire, nu în cuptor. Nu grăbi cu frigiderul.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Amestecă whey cu iaurtul grec la momentul servirii. <strong>Nu stoca granola cu whey deja adăugat</strong> — absoarbe umiditatea și devine moale în ore.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Grăsimile din nuci + proteina din iaurt = <strong>eliberare susținută de energie pe 4 ore</strong>. Granola comercială are 30-50g zahăr per 100g — aceasta are zero. Pregătit în lot = mic dejun gata 5-7 zile.</div>
+  </div>
+</div>
+
+<!-- ─── R44 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/coffee_kick_smoothie_luxury_1778791419068.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">44 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">COFFEE KICK</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Pre-Workout</span>
+        <span class="tag-t">⏱ 5 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">340</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">20G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">6G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Espresso dublu</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Izolat de whey</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Banană congelată</span><span class="ing-q">1/2 buc</span></div>
+        <div class="ing"><span class="ing-n">Semințe cânepă</span><span class="ing-q">10 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Prepară espresso dublu și lasă să se răcească <strong>5-7 minute</strong> — nu pune cafeaua fierbinte direct în blender cu proteina. Temperatura ridicată denaturează parțial whey și adaugă amărăciune.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Blendează banana congelată cu cafeaua răcită. <strong>Banana congelată "răcește" cafeaua</strong> suplimentar și creează textura de frapé cremă.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Adaugă izolatul proteic și semințele de cânepă. Blendează <strong>45 secunde la viteză medie</strong> — viteza mare aerează excesiv.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Consumă cu <strong>20-30 minute înainte de antrenament</strong>. Cafeina + potasiu din banana + 42g de proteine = activare completă neurologică și musculară.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Cafeina <strong>crește rata metabolică bazală cu 3-11%</strong> și mobilizează acizii grași liberi din țesut adipos. Pre-workout cu proteina — protejează masa musculară în antrenamentele de intensitate ridicată.</div>
+  </div>
+</div>
+
+<!-- ─── R45 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/yogurt_mango_parfait_luxury_1778791463934.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">45 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PARFAIT CU<br>MANGO</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Prânz / Post-Workout</span>
+        <span class="tag-t">⏱ 5 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">440</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Iaurt grec 0%</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Mango proaspăt</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Whey vanilie</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe dovleac</span><span class="ing-q">10 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Alege mango <strong>copt — cedează ușor la apăsare</strong>. Mango verde = acid, lipsit de dulceața naturală. Taie cuburi mici de 1 cm.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Combina iaurtul cu whey cu aromă de vanilie. Dacă apar cocoloașe, adaugă <strong>1 linguriță de apă rece și amestecă din nou</strong> — nu bate agresiv.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Construiește parfait-ul în straturi într-un pahar înalt: <strong>iaurt-proteic → mango → repetă</strong>. Finalizează cu semințe de dovleac deasupra.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Servește imediat sau refrigerează maxim 30 minute. Enzimele din mango rămân active în produsul <strong>neamestecat</strong> — de aceea stratificăm, nu amestecăm.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Amilaza și proteaza din mango proaspăt <strong>accelerează digestia carbohidraților și proteinei</strong> cu 15-20%. Semințele de dovleac adaugă zinc — esențial pentru producția de testosteron.</div>
+  </div>
+</div>
+
+<!-- ─── R46 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/vegan_chocolate_pudding_luxury_1778791529581.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">46 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BUDINCĂ<br>VEGANĂ</div>
+      <div class="rp-tags">
+        <span class="tag-p">Intelligent Fueling</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 5 min pregătire · 60 min răcire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">430</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">25G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">16G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Tofu mătăsos</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Vegan protein (mazăre/orez)</span><span class="ing-q">45 g</span></div>
+        <div class="ing"><span class="ing-n">Cacao neagra 100%</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Unt de arahide natural</span><span class="ing-q">15 g</span></div>
+        <div class="ing"><span class="ing-n">Eritritol</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Presează tofu mătăsos 10 minute în hârtie absorbantă — <strong>chiar și tofu mătăsos are umiditate excesivă</strong> care diluează gustul final.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Blendează tofu-ul cu proteina vegana și cacaoa la viteză maximă <strong>60-90 secunde</strong>. Tofu mătăsos se blendează ușor dar necesită timp pentru a elimina granulele.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Adaugă untul de arahide și eritritolul, blendează 30 secunde. <strong>Textura finala: mousse de ciocolată</strong> — cremă, densă, fără granule.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Refrigerează <strong>minimum 1 oră</strong> pentru o textură mai fermă. Se poate stoca 3-4 zile în frigider.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Proteina din mazăre + orez acoperă <strong>profilul complet de aminoacizi esențiali</strong> (mazărea e deficitara în metionina, orezul completează). Izoflavonele din soia au efect hormonal moderat.</div>
+  </div>
+</div>
+
+<!-- ─── R47 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/date_energy_balls_luxury_1778791556040.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">47 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">ENERGY<br>BALLS</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Snack / Pre-Workout</span>
+        <span class="tag-t">⏱ 10 min pregătire · 30 min răcire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">470</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">38G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">15G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Curmale Medjool (fără sâmburi)</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Izolat de whey</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Făină de migdale</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe dovleac (înveliș)</span><span class="ing-q">10 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Procesează curmalele Medjool în food processor <strong>60 secunde</strong> până formează o pastă lipicioasă. Medjool = mai moi și mai dulci, necesitând mai puțin procesat decât curmalele obișnuite.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Adaugă whey și făina de migdale. Procesează <strong>30-45 secunde</strong>. Compoziția corectă: se lipește ușor între degete fără să fie umedă.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st"><strong>Refrigerează compoziția 15 minute</strong> — ușurează formarea bilelor. La temperatura camerei se lipește prea mult de mâini.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Formează bile de <strong>25-30g</strong> și rulează în semințele de dovleac. Refrigerează minimum 30 minute. Fiecare bilă = ~8g de proteine. 5 bile = 42g de proteine.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Curmalele Medjool au <strong>indexul glicemic de 42 — scăzut</strong>, datorită fibrelor și fructozei. Semințele de migdale reduc creșterea bruscă a zahărului din sânge. Snack portabil fără refrigerare — ideal în mișcare.</div>
+  </div>
+</div>
+
+<!-- ─── R48 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/tropical_smoothie_vibrant_1778791585325.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">48 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SMOOTHIE<br>TROPICAL</div>
+      <div class="rp-tags">
+        <span class="tag-p">Unbreakable Capacity</span>
+        <span class="tag-m">Post-Workout</span>
+        <span class="tag-t">⏱ 5 min pregătire · 0 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">360</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">44G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">6G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ananas proaspăt</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Izolat de whey</span><span class="ing-q">50 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe cânepă</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Apă de cocos</span><span class="ing-q">200 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st"><strong>Ananasul proaspăt este esențial</strong> — enzimele digestive din ananas sunt active doar în ananasul proaspăt. Ananasul din conservă e pasteurizat = enzimele sunt distruse. Taie cuburi și congelează 2 ore pentru textură mai bună.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Blendează ananasul cu <strong>apa de cocos mai întâi</strong> — apa de cocos conține electroliti naturali (potasiu, sodiu, magneziu) care nu se regăsesc în apa obișnuită.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Adaugă izolatul și semintele de cânepă. Blendează la <strong>viteză medie 60 secunde</strong>.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Consumă în <strong>20 minute post-workout</strong>. Enzimele digestive din ananas accelerează digestia proteinei din izolat — maximizezi asimilarea celor 36g.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Enzimele digestive din ananasul proaspăt <strong>cresc absorbția proteinei cu 15-20%</strong>. Apa de cocos rehidratează mai eficient decât apa simplă post-antrenament datorită electrolitilor naturali.</div>
+  </div>
+</div>
+
+<!-- ─── R49 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/protein_lava_cake_luxury_1778825576718.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">49 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">LAVA CAKE<br>PROTEIC</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Seară</span>
+        <span class="tag-t">⏱ 3 min pregătire · 1 min gătire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">380</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">20G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Whey ciocolată</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Ou întreg</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Cacao pudra 100%</span><span class="ing-q">5 g</span></div>
+        <div class="ing"><span class="ing-n">Apă</span><span class="ing-q">2 lingurițe</span></div>
+        <div class="ing"><span class="ing-n">Albuș lichid</span><span class="ing-q">50 ml</span></div>
+        <div class="ing"><span class="ing-n">Sare (un praf)</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Amestecă whey cu cacaoa, <strong>un praf de sare</strong> (sarea intensifică gustul de ciocolată cu 20%) și 2 lingurițe de apă. Adaugă oul bătut și amestecă intens.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Toarnă într-o cană de <strong>ceramică sau silicon</strong> (nu plastic). Umple 2/3 din capacitate — va crește în microunde.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Microunde la <strong>700-800W, 45-50 secunde exact</strong>. La 60 secunde lava dispare și obții un muffin uscat. Testul: margini solide, centru care se mișcă ușor la scuturat.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st"><strong>Lasă la odihnit 1 minut</strong> — exteriorul continuă să se întărească. 40g de proteine + efect vizual premium = soluția BUILT pentru nevoia de dulce de seara.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Un desert de <strong>380 calorii cu 40g de proteine</strong> elimina pofta de dulce fără creștere bruscă a zahărului din sânge și fără compromis muscular. Satisfacția senzorială (textură, căldură, ciocolată) <strong>reduce cortizolul de seara</strong> și susține somnul.</div>
+  </div>
+</div>
+
+<!-- ─── R50 ─── -->
+<div class="page rp">
+  <div class="rp-photo">
+    <img src="/cookbook-images/no_bake_cheesecake_luxury_editorial_1778856035451.png" alt="">
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">50 // SWEET</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CHEESECAKE<br>NO-BAKE</div>
+      <div class="rp-tags">
+        <span class="tag-p">Lifestyle Integration</span>
+        <span class="tag-m">Seară / Desert</span>
+        <span class="tag-t">⏱ 10 min pregătire · 4 ore răcire</span>
+      </div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">480</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">20G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Brânza quark</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Biscuiți digestivi (baza)</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Whey vanilie</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Gelatina alimentară</span><span class="ing-q">5 g</span></div>
+        <div class="ing"><span class="ing-n">Eritritol, esenta vanilie</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Zdrobește biscuiții în ziplock cu un pahar. Dimensiunea corectă: <strong>între nisip grosier și pietriș mic</strong> — nu pulbere fină. Presează baza în formă cu spatele lingurii.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Hidratează gelatina în <strong>3 lingurițe de apă rece 5 minute</strong>, apoi apoi topește-o 20 secunde la microunde. Nu adăuga gelatina uscată direct — formează cocoloașe.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Amestecă quark-ul cu whey, eritritolul și gelatina <strong>răcită la temperatura camerei</strong> (nu fierbinte — distruge proteina). Bate 2 minute cu telul.</div></div>
+        <div class="step"><span class="sn">04</span><div class="st">Toarnă crema peste biscuiți și refrigerează <strong>minimum 4 ore, ideal overnight</strong>. 42g de proteine per portie face din cheesecake o masa completa cu macronutrienți perfecți.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-logic">
+    <span class="sl-tag">De ce funcționează</span><div class="sl-div"></div>
+    <div class="sl-txt">Cheesecake-ul clasic are 450-600 calorii per portie cu 8-12g de proteine. <strong>Versiunea BUILT: 480 calorii, 42g de proteine</strong> — aceeași experiență vizuală și senzorială, macronutrienți complet diferiți. Principiul BUILT aplicat: nu sacrifici plăcerea, redesenezi sistemul.</div>
+  </div>
+</div>
+
+</body>
+</html>
+
+
+
+

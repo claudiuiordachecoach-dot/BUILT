@@ -2,7 +2,8 @@
 
 import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
-import { submitCheckin, updateClientStatus, inviteClient, type Client, type CheckIn, type ClientStatus, type ClientModule, getClientModules, saveClientModule, deleteClientModule } from "../actions";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+import { submitCheckin, updateClientStatus, inviteClient, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, type Client, type CheckIn, type ClientStatus, type ClientModule, getClientModules, saveClientModule, deleteClientModule } from "../actions";
 import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages, setAdminViewClient } from "@/app/client/actions";
 
 const STATUS_OPTIONS: { id: ClientStatus; label: string }[] = [
@@ -13,6 +14,7 @@ const STATUS_OPTIONS: { id: ClientStatus; label: string }[] = [
 const weeksSince = (start: string) => Math.max(1, Math.floor((Date.now() - new Date(start).getTime()) / (7 * 24 * 3600 * 1000)));
 
 const TABS = [
+  { id: "profile", label: "Profil & Progres" },
   { id: "checkin", label: "Check-in" },
   { id: "workout", label: "Plan Antrenament" },
   { id: "nutrition", label: "Plan Nutrițional" },
@@ -22,7 +24,7 @@ const TABS = [
 
 export function ClientDetail({ client, initialCheckins }: { client: Client; initialCheckins: CheckIn[] }) {
   const [checkins, setCheckins] = useState(initialCheckins);
-  const [form, setForm] = useState({ training: 80, nutrition: 80, energy: 7, mood: 7, sleep: 7.5, hydration: 2.5, stress: 4, notes: "" });
+  const [form, setForm] = useState({ training: 80, nutrition: 80, energy: 7, sleep: 7.5, hydration: 2.5, stress: 4, notes: "" });
   const [feedback, setFeedback] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -30,6 +32,7 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
   const [activeTab, setActiveTab] = useState("checkin");
   const [inviting, setInviting] = useState(false);
   const [inviteMsg, setInviteMsg] = useState<string | null>(null);
+  const [draftState, setDraftState] = useState<Record<number, { loading: boolean; text: string; sent: boolean }>>({});
 
   const numericClientId = client.id;
   const currentWeek = weeksSince(client.start_date);
@@ -37,8 +40,8 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
   function handleCheckin() {
     setError(null); setFeedback(null);
     startTransition(async () => {
-      const r = await submitCheckin(client.id, { week: currentWeek, training: form.training, nutrition: form.nutrition, energy: form.energy, mood: form.mood, sleep: form.sleep, hydration: form.hydration, stress: form.stress, notes: form.notes });
-      if (r.ok) { setFeedback(r.feedback); setCheckins((prev) => [{ id: Date.now(), client_id: client.id, week_number: currentWeek, training_adherence: form.training, nutrition_adherence: form.nutrition, energy_level: form.energy, mood: form.mood, sleep_hours: form.sleep, hydration_l: form.hydration, stress_level: form.stress, notes: form.notes, ai_feedback: r.feedback, created_at: new Date().toISOString() }, ...prev]); }
+      const r = await submitCheckin(client.id, { week: currentWeek, training: form.training, nutrition: form.nutrition, energy: form.energy, sleep: form.sleep, hydration: form.hydration, stress: form.stress, notes: form.notes });
+      if (r.ok) { setFeedback(r.feedback); setCheckins((prev) => [{ id: Date.now(), client_id: client.id, week_number: currentWeek, training_adherence: form.training, nutrition_adherence: form.nutrition, energy_level: form.energy, sleep_hours: form.sleep, hydration_l: form.hydration, stress_level: form.stress, notes: form.notes, ai_feedback: r.feedback, created_at: new Date().toISOString() } as CheckIn, ...prev]); }
       else setError(r.error);
     });
   }
@@ -48,47 +51,70 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
     startTransition(async () => { await updateClientStatus(client.id, s); });
   }
 
+  async function handleGenerateDraft(checkin: CheckIn) {
+    setDraftState(prev => ({ ...prev, [checkin.id]: { loading: true, text: "", sent: false } }));
+    const r = await generateCheckinFeedbackDraft(client.id, checkin);
+    setDraftState(prev => ({
+      ...prev,
+      [checkin.id]: { loading: false, text: r.ok && r.draft ? r.draft : "Eroare la generare.", sent: false },
+    }));
+  }
+
+  async function handleSendFeedback(checkinId: number) {
+    const draft = draftState[checkinId];
+    if (!draft?.text) return;
+    const r = await saveCheckinFeedback(checkinId, client.id, draft.text);
+    if (r.ok) {
+      setDraftState(prev => ({ ...prev, [checkinId]: { ...prev[checkinId], sent: true } }));
+      setCheckins(prev => prev.map(c => c.id === checkinId ? { ...c, ai_feedback: draft.text } : c));
+    }
+  }
+
   return (
     <div className="max-w-4xl mx-auto px-8 pb-12">
-      <div className="flex items-end justify-between mb-6">
+      <div className="flex items-start justify-between mb-6">
         <div>
-          <h1 className="font-display text-4xl tracking-wider text-built-white">{client.name}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="font-display text-4xl tracking-wider text-built-white">{client.name}</h1>
+            <select
+              value={status}
+              onChange={(e) => handleStatusChange(e.target.value as ClientStatus)}
+              className="bg-[#111111] border border-white/10 text-zinc-400 text-xs px-2 py-1 rounded focus:outline-none focus:border-built-red font-condensed uppercase tracking-wider cursor-pointer"
+            >
+              {STATUS_OPTIONS.map(s => <option key={s.id} value={s.id}>{s.label}</option>)}
+            </select>
+          </div>
           {client.email && <p className="text-built-gray-text text-sm mt-1">{client.email}</p>}
-          {client.objectives && <p className="text-sm text-built-white/70 mt-1">{client.objectives}</p>}
+        </div>
+        <div className="flex gap-2 items-center">
           <a
             href={`/api/admin/view-as-client?clientId=${numericClientId}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 px-3 py-1.5 font-condensed text-[10px] border border-built-red/40 text-built-red hover:bg-built-red/10 transition-colors flex items-center gap-1.5"
+            className="px-3 py-1.5 font-condensed text-[10px] border border-built-red/40 text-built-red hover:bg-built-red/10 transition-colors flex items-center gap-1.5 uppercase"
           >
             <span>◈</span> View as Client
           </a>
-        </div>
-        <div className="flex gap-2 items-center">
-          <button
-            onClick={async () => {
-              setInviting(true); setInviteMsg(null);
-              const r = await inviteClient(client.id);
-              setInviting(false);
-              setInviteMsg(r.ok ? `✓ Invitație trimisă la ${client.email}` : `✖ ${r.error}`);
-              setTimeout(() => setInviteMsg(null), 5000);
-            }}
-            disabled={inviting}
-            className="px-3 py-1.5 font-condensed text-[10px] border border-zinc-600 text-zinc-400 hover:border-built-red hover:text-built-red transition-colors disabled:opacity-50"
-          >
-            {inviting ? "Se trimite..." : "✉ Trimite Invitație"}
-          </button>
+          {(!client.status || client.status === "active") && (
+            <button
+              onClick={async () => {
+                setInviting(true); setInviteMsg(null);
+                const r = await inviteClient(client.id);
+                setInviting(false);
+                setInviteMsg(r.ok ? `✓ Invitație trimisă` : `✖ Eroare`);
+                setTimeout(() => setInviteMsg(null), 5000);
+              }}
+              disabled={inviting}
+              className="px-3 py-1.5 font-condensed text-[10px] border border-zinc-600 text-zinc-400 hover:border-built-red hover:text-built-red transition-colors disabled:opacity-50 uppercase"
+            >
+              {inviting ? "Se trimite..." : "✉ Invită"}
+            </button>
+          )}
           {inviteMsg && (
             <span className={`text-[10px] font-condensed ${inviteMsg.startsWith("✓") ? "text-emerald-400" : "text-orange-400"}`}>
               {inviteMsg}
             </span>
           )}
-          {STATUS_OPTIONS.map((s) => (
-            <button key={s.id} type="button" onClick={() => handleStatusChange(s.id)}
-              className={`px-3 py-1.5 font-condensed text-[10px] border transition-colors ${status === s.id ? "bg-built-red border-built-red text-built-white" : "border-built-gray-2 text-built-gray-text hover:border-built-red"}`}>
-              {s.label}
-            </button>
-          ))}
         </div>
       </div>
 
@@ -110,6 +136,72 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
           </button>
         ))}
       </div>
+
+      {/* Tab: Profil & Progres */}
+      {activeTab === "profile" && (
+        <div className="p-6 bg-built-gray-1 border border-built-gray-2 rounded-sm space-y-8 mb-6">
+          <div>
+            <h3 className="font-display text-xl tracking-wider mb-3">Foaia de Parcurs (Obiective)</h3>
+            <div className="bg-[#111111] border border-white/10 rounded-lg p-5">
+              <p className="text-sm text-zinc-300 leading-relaxed">
+                {client.objectives || "Niciun obiectiv setat încă."}
+              </p>
+            </div>
+          </div>
+          
+          {checkins.length > 0 && (
+            <div>
+              <h3 className="font-display text-xl tracking-wider mb-4">Trend Progres</h3>
+              <div className="bg-[#111111] border border-white/10 rounded-sm p-4" style={{ height: 220 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={[...checkins].reverse()} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="week_number" tick={{ fill: "#71717a", fontSize: 10 }} tickFormatter={(v: number) => `S${v}`} />
+                    <YAxis domain={[0, 100]} tick={{ fill: "#71717a", fontSize: 10 }} />
+                    <Tooltip
+                      contentStyle={{ background: "#111111", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4 }}
+                      labelStyle={{ color: "#a1a1aa", fontSize: 10 }}
+                      itemStyle={{ fontSize: 11 }}
+                      labelFormatter={(v) => `Săptămâna ${v}`}
+                    />
+                    <Line type="monotone" dataKey="training_adherence" stroke="#C0392B" strokeWidth={2} dot={{ r: 3, fill: "#C0392B" }} name="Antrenament %" />
+                    <Line type="monotone" dataKey="nutrition_adherence" stroke="#a1a1aa" strokeWidth={2} dot={{ r: 3, fill: "#a1a1aa" }} name="Nutriție %" />
+                    <Line type="monotone" dataKey={(d: CheckIn) => d.energy_level * 10} stroke="#e4e4e7" strokeWidth={2} dot={{ r: 3, fill: "#e4e4e7" }} name="Energie ×10" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+          )}
+
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="font-display text-xl tracking-wider">Galeria de Progres (Foto)</h3>
+              <button onClick={() => alert('Pentru MVP, adaugă direct link-ul foto în câmpul text. Mai târziu vom face upload în Supabase.')} className="text-[10px] font-condensed text-built-red uppercase hover:underline tracking-wider">+ Adaugă Foto Nouă</button>
+            </div>
+            
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {/* Mockup for photos */}
+              <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group">
+                 <p className="text-zinc-600 text-[10px] text-center px-4 font-condensed uppercase tracking-wider">Lipește link URL poză<br/><input type="text" placeholder="https://..." className="mt-2 w-full bg-black/50 border border-white/10 rounded text-[9px] p-1.5 text-zinc-300 focus:outline-none focus:border-built-red transition-colors" /></p>
+                 <div className="absolute bottom-0 inset-x-0 bg-black/80 py-2 px-2 border-t border-white/10">
+                   <p className="text-[9px] font-condensed text-built-gray-text uppercase tracking-widest text-center">Poza Inițială (Ziua 1)</p>
+                 </div>
+              </div>
+
+              <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group">
+                 <p className="text-zinc-600 text-[10px] text-center px-4 font-condensed uppercase tracking-wider">Lipește link URL poză<br/><input type="text" placeholder="https://..." className="mt-2 w-full bg-black/50 border border-white/10 rounded text-[9px] p-1.5 text-zinc-300 focus:outline-none focus:border-built-red transition-colors" /></p>
+                 <div className="absolute bottom-0 inset-x-0 bg-black/80 py-2 px-2 border-t border-white/10">
+                   <p className="text-[9px] font-condensed text-built-gray-text uppercase tracking-widest text-center">Săptămâna 2</p>
+                 </div>
+              </div>
+              
+              <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex items-center justify-center border-dashed border-built-gray-2 hover:border-built-red/50 transition-colors cursor-pointer">
+                 <p className="text-built-gray-text text-2xl font-light">+</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tab: Check-in */}
       {activeTab === "checkin" && (
@@ -187,8 +279,8 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
               <h3 className="font-condensed text-[11px] text-built-gray-text uppercase tracking-wider mb-3">Istoric check-in-uri</h3>
               <div className="space-y-3">
                 {checkins.map((c) => (
-                  <div key={c.id} className="p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
-                    <div className="flex items-center flex-wrap gap-3 mb-2">
+                  <div key={c.id} className="p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm relative">
+                    <div className="flex items-center flex-wrap gap-3 mb-2 pr-6">
                       <span className="font-condensed text-xs text-built-red">Săpt. {c.week_number}</span>
                       <span className="font-condensed text-[10px] text-built-gray-text">Antren: {c.training_adherence}%</span>
                       <span className="font-condensed text-[10px] text-built-gray-text">Nutriție: {c.nutrition_adherence}%</span>
@@ -197,8 +289,49 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
                       {c.hydration_l != null && <span className="font-condensed text-[10px] text-built-gray-text">Hidratare: {c.hydration_l}L</span>}
                       {c.stress_level != null && <span className="font-condensed text-[10px] text-built-gray-text">Stres: {c.stress_level}/10</span>}
                     </div>
+                    <button onClick={async () => {
+                      if (confirm("Sigur vrei să ștergi acest check-in?")) {
+                        const r = await deleteCheckin(c.id, client.id);
+                        if (r.ok) setCheckins(prev => prev.filter(x => x.id !== c.id));
+                        else alert("Eroare la ștergere: " + r.error);
+                      }
+                    }} className="absolute top-4 right-4 text-zinc-500 hover:text-built-red text-xs">
+                      ✕
+                    </button>
                     {c.notes && <p className="text-xs text-built-white/70 mb-2">Note: {c.notes}</p>}
-                    {c.ai_feedback && <p className="text-xs text-built-gray-text border-t border-built-gray-2/50 pt-2">{c.ai_feedback}</p>}
+                    {c.ai_feedback ? (
+                      <p className="text-xs text-built-gray-text border-t border-built-gray-2/50 pt-2">{c.ai_feedback}</p>
+                    ) : (
+                      <div className="border-t border-built-gray-2/50 pt-2">
+                        {!draftState[c.id] ? (
+                          <button
+                            onClick={() => handleGenerateDraft(c)}
+                            className="font-condensed text-[10px] text-built-red uppercase hover:underline tracking-wider"
+                          >
+                            Draft AI →
+                          </button>
+                        ) : draftState[c.id].loading ? (
+                          <p className="font-condensed text-[10px] text-built-gray-text animate-pulse">Generează draft...</p>
+                        ) : draftState[c.id].sent ? (
+                          <p className="font-condensed text-[10px] text-emerald-400">✓ Trimis clientului</p>
+                        ) : (
+                          <div className="space-y-2">
+                            <textarea
+                              value={draftState[c.id].text}
+                              onChange={e => setDraftState(prev => ({ ...prev, [c.id]: { ...prev[c.id], text: e.target.value } }))}
+                              rows={4}
+                              className="w-full bg-built-black border border-built-gray-2 text-built-white text-xs p-2 resize-none focus:outline-none focus:border-built-red"
+                            />
+                            <button
+                              onClick={() => handleSendFeedback(c.id)}
+                              className="font-condensed text-[10px] bg-built-red text-white px-3 py-1.5 uppercase tracking-wider hover:bg-built-red/80 transition-colors"
+                            >
+                              Trimite clientului →
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

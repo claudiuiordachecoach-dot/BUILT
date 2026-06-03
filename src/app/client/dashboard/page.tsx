@@ -47,12 +47,14 @@ export default async function ClientDashboardPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-5">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
         {[
-          { label: "Aderență antrenament", value: `${latestCheckin?.training_adherence ?? "--"}%`, sub: "Săptămâna trecută" },
-          { label: "Aderență nutriție", value: `${latestCheckin?.nutrition_adherence ?? "--"}%`, sub: "Săptămâna trecută" },
-          { label: "Energie", value: `${latestCheckin?.energy_level ?? "--"}/10`, sub: "" },
-          { label: "Dispoziție", value: `${latestCheckin?.mood ?? "--"}/10`, sub: "" },
+          { label: "Antrenament", value: `${latestCheckin?.training_adherence ?? "--"}%`, sub: "Săptămâna trecută" },
+          { label: "Nutriție", value: `${latestCheckin?.nutrition_adherence ?? "--"}%`, sub: "Săptămâna trecută" },
+          { label: "Energie", value: `${latestCheckin?.energy_level ?? "--"}/10`, sub: "Nivel zilnic" },
+          { label: "Somn", value: `${latestCheckin?.sleep_hours ?? "--"}h`, sub: "Ore pe noapte" },
+          { label: "Hidratare", value: `${latestCheckin?.hydration_l ?? "--"}L`, sub: "Litri pe zi" },
+          { label: "Stres", value: `${latestCheckin?.stress_level ?? "--"}/10`, sub: "Nivel general" },
         ].map((s) => (
           <div key={s.label} className="bg-[#111111] border border-white/10 rounded-xl p-4">
             <p className="text-xs text-zinc-500 mb-1">{s.label}</p>
@@ -68,6 +70,7 @@ export default async function ClientDashboardPage({
           { href: `/client/checkin${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "✓", title: "Check-in săptămânal", sub: "Trimite raportul săptămânii" },
           { href: `/client/nutritie${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "◉", title: "Plan nutrițional", sub: "Macros + mese zilnice" },
           { href: `/client/module${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "📚", title: "Academia BUILT", sub: "Module educaționale" },
+          { href: `/client/bonusuri${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "🎁", title: "Bonusuri", sub: "Materiale exclusive" },
         ].map((item) => (
           <Link
             key={item.href}

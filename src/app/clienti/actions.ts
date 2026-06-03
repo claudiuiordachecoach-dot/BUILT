@@ -66,12 +66,12 @@ export async function createClient(name: string, startDate: string, objectives: 
 
 export type CheckInResult = { ok: true; feedback: string } | { ok: false; error: string };
 
-export async function submitCheckin(clientId: number, data: { week: number; training: number; nutrition: number; energy: number; mood: number; sleep: number; hydration: number; stress: number; notes: string }): Promise<CheckInResult> {
+export async function submitCheckin(clientId: number, data: { week: number; training: number; nutrition: number; energy: number; sleep: number; hydration: number; stress: number; notes: string }): Promise<CheckInResult> {
   const s = getSupabaseServer();
   const client = await getClient(clientId);
   if (!client) return { ok: false, error: "Client negăsit." };
 
-  const avg = (data.training + data.nutrition + data.energy * 10 + data.mood * 10) / 4;
+  const avg = (data.training + data.nutrition + data.energy * 10) / 3;
   const newStatus: ClientStatus = avg < 40 ? "at_risk" : client.status === "at_risk" ? "active" : client.status;
 
   const task = `# TASK: Generează feedback check-in client BUILT
@@ -110,7 +110,7 @@ Răspunde cu un mesaj scurt (3-5 propoziții) în vocea BUILT. Direct, uman, fă
     const textBlock = message.content.find((b) => b.type === "text");
     const feedback = textBlock?.type === "text" ? textBlock.text : "Check-in înregistrat.";
 
-    await s.from("client_checkins").insert({ client_id: clientId, week_number: data.week, training_adherence: data.training, nutrition_adherence: data.nutrition, energy_level: data.energy, mood: data.mood, sleep_hours: data.sleep, hydration_l: data.hydration, stress_level: data.stress, notes: data.notes || null, ai_feedback: feedback });
+    await s.from("client_checkins").insert({ client_id: clientId, week_number: data.week, training_adherence: data.training, nutrition_adherence: data.nutrition, energy_level: data.energy, sleep_hours: data.sleep, hydration_l: data.hydration, stress_level: data.stress, notes: data.notes || null, ai_feedback: feedback });
     await s.from("clients").update({ status: newStatus }).eq("id", clientId);
 
     revalidatePath(`/clienti/${clientId}`);
@@ -126,6 +126,14 @@ export async function updateClientStatus(id: number, status: ClientStatus) {
   await s.from("clients").update({ status }).eq("id", id);
   revalidatePath("/clienti");
   revalidatePath(`/clienti/${id}`);
+}
+
+export async function deleteCheckin(checkinId: number, clientId: number) {
+  const s = getSupabaseServer();
+  const { error } = await s.from("client_checkins").delete().eq("id", checkinId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/clienti/${clientId}`);
+  return { ok: true };
 }
 
 // ── MODULE actions ──
@@ -200,5 +208,72 @@ export async function inviteClient(clientId: number): Promise<InviteResult> {
   });
 
   if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}
+
+export async function generateCheckinFeedbackDraft(
+  clientId: number,
+  checkin: CheckIn
+): Promise<{ ok: boolean; draft?: string; error?: string }> {
+  const client = await getClient(clientId);
+  if (!client) return { ok: false, error: "Client negăsit." };
+
+  const avg = (checkin.training_adherence + checkin.nutrition_adherence + checkin.energy_level * 10) / 3;
+
+  const task = `# TASK: Generează feedback check-in client BUILT
+
+## Client: ${client.name}
+## Săptămâna: ${checkin.week_number}
+## Date check-in:
+- Antrenament: ${checkin.training_adherence}% aderență
+- Nutriție: ${checkin.nutrition_adherence}% aderență
+- Energie: ${checkin.energy_level}/10
+- Somn: ${checkin.sleep_hours ?? "—"} ore
+- Hidratare: ${checkin.hydration_l ?? "—"}L
+- Stres: ${checkin.stress_level ?? "—"}/10
+- Note: "${checkin.notes || "—"}"
+
+## Obiective client: ${client.objectives || "—"}
+
+## Misiunea ta (Skill 3 — Manager de Succes Client)
+${avg < 40
+  ? "Client la risc de abandon. Aplică MVR. Elimini vinovăția, dai UN singur pas mic."
+  : avg < 60
+  ? "Săptămână sub medie. Validezi progresul, identifici blocajul, recalibrezi."
+  : "Săptămână bună. Celebrezi specific, ancorezi comportamentul, anticipezi săptămâna viitoare."
+}
+
+Răspunde cu un mesaj scurt (3-5 propoziții) în vocea BUILT. Direct, uman, fără clișee.`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const ai = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({ creierJson: JSON.stringify(creier, null, 2), taskContext: task });
+    const message = await ai.messages.create({
+      model: MODELS.routine,
+      max_tokens: 400,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Generează feedback-ul de check-in. Răspunde direct cu mesajul, fără introducere." }],
+    });
+    const textBlock = message.content.find((b) => b.type === "text");
+    const draft = textBlock?.type === "text" ? textBlock.text : "Check-in înregistrat.";
+    return { ok: true, draft };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
+}
+
+export async function saveCheckinFeedback(
+  checkinId: number,
+  clientId: number,
+  feedback: string
+): Promise<{ ok: boolean; error?: string }> {
+  const s = getSupabaseServer();
+  const { error } = await s
+    .from("client_checkins")
+    .update({ ai_feedback: feedback })
+    .eq("id", checkinId);
+  if (error) return { ok: false, error: error.message };
+  revalidatePath(`/clienti/${clientId}`);
   return { ok: true };
 }

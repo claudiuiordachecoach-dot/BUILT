@@ -56,12 +56,14 @@ export default async function ProgressReportsPage() {
             </div>
 
             {last ? (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
                 {[
                   { label: "Antrenament", value: last.training_adherence },
                   { label: "Nutriție", value: last.nutrition_adherence },
                   { label: "Energie", value: last.energy_level },
-                  { label: "Mental", value: last.mood },
+                  { label: "Somn", value: last.sleep_hours },
+                  { label: "Hidratare", value: last.hydration_l },
+                  { label: "Stres", value: last.stress_level },
                 ].map((item) => (
                   <div key={item.label} className="bg-[#0a0a0a] rounded-lg p-3 text-center">
                     <p className={`text-2xl font-mono font-bold ${SCORE_COLOR(item.value ?? 0)}`}>

@@ -8,10 +8,12 @@ import { UserDisplay } from "./UserDisplay";
 
 const NAV = [
   { label: "Dashboard", href: "/client/dashboard", icon: "◈" },
+  { label: "Profilul Meu", href: "/client/profil", icon: "👤" },
   { label: "Antrenamente", href: "/client/antrenamente", icon: "⚡" },
   { label: "Nutriție", href: "/client/nutritie", icon: "◉" },
   { label: "Academia", href: "/client/module", icon: "📚" },
   { label: "Check-in", href: "/client/checkin", icon: "✓" },
+  { label: "Bonusuri", href: "/client/bonusuri", icon: "🎁" },
   { label: "Mesaje", href: "/client/mesaje", icon: "◎" },
 ];
 

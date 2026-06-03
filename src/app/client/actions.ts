@@ -146,7 +146,9 @@ export async function submitCheckin(formData: {
   training_adherence: number;
   nutrition_adherence: number;
   energy_level: number;
-  mood: number;
+  sleep_hours: number;
+  hydration_l: number;
+  stress_level: number;
   notes: string;
 }) {
   const clientId = await getClientId();
@@ -323,4 +325,30 @@ export async function linkAuthToClient(): Promise<void> {
       .update({ auth_user_id: user.id })
       .eq("id", clientId);
   }
+}
+
+export type ClientCheckin = {
+  id: number;
+  week_number: number;
+  training_adherence: number;
+  nutrition_adherence: number;
+  energy_level: number;
+  sleep_hours: number | null;
+  hydration_l: number | null;
+  stress_level: number | null;
+  notes: string | null;
+  ai_feedback: string | null;
+  created_at: string;
+};
+
+export async function getClientCheckinsForClient(): Promise<ClientCheckin[]> {
+  const clientId = await getClientId();
+  if (!clientId) return [];
+  const db = getSupabaseServer();
+  const { data } = await db
+    .from("client_checkins")
+    .select("id, week_number, training_adherence, nutrition_adherence, energy_level, sleep_hours, hydration_l, stress_level, notes, ai_feedback, created_at")
+    .eq("client_id", clientId)
+    .order("week_number", { ascending: true });
+  return (data ?? []) as ClientCheckin[];
 }

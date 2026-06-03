@@ -48,6 +48,7 @@ const MAIN_ITEMS: NavEntry[] = [
 ];
 
 const TOOLS_ITEMS: NavEntry[] = [
+  { label: "Generator Carusele", href: "/carusele", icon: <Icons.book /> },
   { label: "Prezentare Vânzare", href: "/vanzare", icon: <Icons.presentation /> },
   { label: "Analizor Reel", href: "/dashboard/reel-copy",     icon: <Icons.chart /> },
   { label: "Audit Profil",  href: "/dashboard/profile-audit", icon: <Icons.search /> },
