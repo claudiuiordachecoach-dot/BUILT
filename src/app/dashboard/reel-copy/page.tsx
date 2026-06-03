@@ -102,17 +102,33 @@ export default function ReelCopyPage() {
         </p>
       </div>
 
-      {/* Tabs */}
-      <div className="flex border-b border-white/8 mb-6">
-        <button className={tabStyle("url")} onClick={() => setTab("url")}>
-          ✦ URL Instagram
-        </button>
-        <button className={tabStyle("transcript")} onClick={() => setTab("transcript")}>
-          Lipește Transcript
-        </button>
-        <button className={tabStyle("audio")} onClick={() => setTab("audio")}>
-          Încarcă Audio
-        </button>
+      {/* Tabs and Reset */}
+      <div className="flex items-center justify-between border-b border-white/8 mb-6">
+        <div className="flex">
+          <button className={tabStyle("url")} onClick={() => setTab("url")}>
+            ✦ URL Instagram
+          </button>
+          <button className={tabStyle("transcript")} onClick={() => setTab("transcript")}>
+            Lipește Transcript
+          </button>
+          <button className={tabStyle("audio")} onClick={() => setTab("audio")}>
+            Încarcă Audio
+          </button>
+        </div>
+        {(analysis || transcript || reelUrl) && (
+          <button
+            onClick={() => {
+              setAnalysis(null);
+              setReelUrl("");
+              setTranscript("");
+              setError("");
+              setAudioFile(null);
+            }}
+            className="text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors px-3 py-1.5 border border-white/10 rounded-lg hover:bg-white/5 mb-2"
+          >
+            ✕ Nouă Analiză
+          </button>
+        )}
       </div>
 
       {/* Input panel */}
