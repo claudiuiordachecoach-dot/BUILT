@@ -212,29 +212,42 @@ Răspunde STRICT cu JSON (fără text în afară):`;
   return result;
 }
 
+// --- Helpers private ---
+
+async function fetchCurrentViews(supabase: ReturnType<typeof getSupabaseServer>, ids: string[]): Promise<Record<string, number>> {
+  if (ids.length === 0) return {};
+  const { data } = await supabase
+    .from("instagram_media")
+    .select("instagram_id, views")
+    .in("instagram_id", ids);
+  const map: Record<string, number> = {};
+  for (const row of data ?? []) {
+    map[row.instagram_id] = row.views ?? 0;
+  }
+  return map;
+}
+
+async function upsertFollowers(supabase: ReturnType<typeof getSupabaseServer>, count: number | null): Promise<void> {
+  if (!count || count <= 0) return;
+  await supabase.from("creier_metadata").upsert({
+    key: "instagram_followers",
+    value: { count, updated_at: new Date().toISOString() }
+  });
+}
+
+// --- End helpers ---
+
 export async function syncAllReels(): Promise<{ ok: true; synced: number; followers: number | null } | { ok: false; error: string }> {
   try {
     const { reels, followersCount } = await scrapeInstagramProfile("iordacheclaudiu_", 0);
     if (reels.length === 0) return { ok: false, error: "Apify a returnat 0 reels — verifică APIFY_API_KEY." };
     const supabase = getSupabaseServer({ useServiceRole: true });
 
-    if (followersCount && followersCount > 0) {
-      await supabase.from("creier_metadata").upsert({
-        key: "instagram_followers",
-        value: { count: followersCount, updated_at: new Date().toISOString() }
-      });
-    }
+    await upsertFollowers(supabase, followersCount);
 
     // Citim views curente din DB pentru a salva delta
     const ids = reels.map(r => r.id || "").filter(Boolean);
-    const { data: existing } = await supabase
-      .from("instagram_media")
-      .select("instagram_id, views")
-      .in("instagram_id", ids);
-    const currentViews: Record<string, number> = {};
-    for (const row of existing ?? []) {
-      currentViews[row.instagram_id] = row.views ?? 0;
-    }
+    const currentViews = await fetchCurrentViews(supabase, ids);
 
     const toClassify = reels
       .filter(r => r.caption?.trim())
@@ -277,28 +290,19 @@ export async function syncRecentReels(): Promise<{ ok: true; synced: number; fol
     if (reels.length === 0) return { ok: false, error: "Apify a returnat 0 reels." };
     const supabase = getSupabaseServer({ useServiceRole: true });
 
-    if (followersCount && followersCount > 0) {
-      await supabase.from("creier_metadata").upsert({
-        key: "instagram_followers",
-        value: { count: followersCount, updated_at: new Date().toISOString() }
-      });
-    }
+    await upsertFollowers(supabase, followersCount);
 
     const ids = reels.map(r => r.id || "").filter(Boolean);
-    const { data: existing } = await supabase
-      .from("instagram_media")
-      .select("instagram_id, views")
-      .in("instagram_id", ids);
-    const currentViews: Record<string, number> = {};
-    for (const row of existing ?? []) {
-      currentViews[row.instagram_id] = row.views ?? 0;
-    }
+    const currentViews = await fetchCurrentViews(supabase, ids);
 
     let synced = 0;
+    let lastError = "";
     const now = new Date().toISOString();
     for (const reel of reels) {
       const id = reel.id || `apify_${Date.now()}_${synced}`;
       const item = reel as typeof reel & { savesCount?: number; sharesCount?: number };
+      // format_type omis intenționat — syncRecentReels nu face clasificare;
+      // Supabase upsert cu onConflict nu suprascrie coloane absente din payload.
       const { error } = await supabase.from("instagram_media").upsert({
         instagram_id: id,
         thumbnail_url: reel.thumbnailUrl,
@@ -313,7 +317,9 @@ export async function syncRecentReels(): Promise<{ ok: true; synced: number; fol
         last_synced_at: now,
       }, { onConflict: "instagram_id" });
       if (!error) synced++;
+      else lastError = error.message;
     }
+    if (synced === 0 && lastError) return { ok: false, error: `DB: ${lastError}` };
     return { ok: true, synced, followers: followersCount };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Eroare necunoscută" };
