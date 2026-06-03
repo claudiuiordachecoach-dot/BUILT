@@ -162,7 +162,12 @@ async function classifyFormats(captions: { id: string; caption: string }[]): Pro
   if (captions.length === 0) return {};
   const client = getAnthropicClient();
 
-  const prompt = `Clasifică fiecare reel de Instagram după format. Răspunde STRICT cu un JSON obiect { "id": "FORMAT" }.
+  const chunkSize = 20;
+  const result: Record<string, FormatType> = {};
+
+  for (let i = 0; i < captions.length; i += chunkSize) {
+    const chunk = captions.slice(i, i + chunkSize);
+    const prompt = `Clasifică fiecare reel de Instagram după format. Răspunde STRICT cu un JSON obiect { "id": "FORMAT" }.
 
 Formate valide: ${FORMAT_TYPES.join(", ")}
 
@@ -178,29 +183,31 @@ Reguli:
 - Q&A: răspuns la întrebare, "m-ai întrebat...", feedback la comentarii
 
 Reels de clasificat:
-${captions.map(r => `ID: ${r.id}\nCaption: ${r.caption.slice(0, 200)}`).join("\n\n")}
+${chunk.map(r => `ID: ${r.id}\nCaption: ${r.caption.slice(0, 200)}`).join("\n\n")}
 
 Răspunde STRICT cu JSON (fără text în afară):`;
 
-  try {
-    const resp = await client.messages.create({
-      model: "claude-haiku-4-5-20251001",
-      max_tokens: 1024,
-      messages: [{ role: "user", content: prompt }],
-    });
-    const text = resp.content[0].type === "text" ? resp.content[0].text : "";
-    const match = text.match(/\{[\s\S]*\}/);
-    if (!match) return {};
-    const raw = JSON.parse(match[0]) as Record<string, string>;
-    const result: Record<string, FormatType> = {};
-    for (const [id, fmt] of Object.entries(raw)) {
-      const upper = (fmt as string).toUpperCase() as FormatType;
-      result[id] = FORMAT_TYPES.includes(upper) ? upper : "TALKING HEAD";
+    try {
+      const resp = await client.messages.create({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 1024,
+        messages: [{ role: "user", content: prompt }],
+      });
+      const text = resp.content[0].type === "text" ? resp.content[0].text : "";
+      const match = text.match(/\{[\s\S]*\}/);
+      if (match) {
+        const raw = JSON.parse(match[0]) as Record<string, string>;
+        for (const [id, fmt] of Object.entries(raw)) {
+          const upper = (fmt as string).toUpperCase() as FormatType;
+          result[id] = FORMAT_TYPES.includes(upper) ? upper : "TALKING HEAD";
+        }
+      }
+    } catch (err) {
+      console.error("Format classification failed for chunk", err);
     }
-    return result;
-  } catch {
-    return {};
   }
+
+  return result;
 }
 
 export async function syncMyReels(): Promise<{ ok: true; synced: number; followers: number | null } | { ok: false; error: string }> {
