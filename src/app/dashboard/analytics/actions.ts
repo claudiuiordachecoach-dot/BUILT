@@ -128,7 +128,7 @@ export async function listInstagramMedia(limit = 200) {
   const supabase = getSupabaseServer({ useServiceRole: true });
   const { data } = await supabase
     .from("instagram_media")
-    .select("instagram_id, caption, views, likes, comments, saves, shares, posted_at, thumbnail_url, format_type")
+    .select("instagram_id, caption, views, likes, comments, saves, shares, posted_at, thumbnail_url, format_type, views_previous, last_synced_at")
     .order("posted_at", { ascending: false })
     .limit(limit);
   return (data ?? []).map((m) => ({
@@ -142,6 +142,8 @@ export async function listInstagramMedia(limit = 200) {
     posted_at: m.posted_at,
     thumbnail_url: m.thumbnail_url,
     format_type: m.format_type,
+    views_previous: m.views_previous ?? null,
+    last_synced_at: m.last_synced_at ?? null,
   }));
 }
 
@@ -210,7 +212,7 @@ Răspunde STRICT cu JSON (fără text în afară):`;
   return result;
 }
 
-export async function syncMyReels(): Promise<{ ok: true; synced: number; followers: number | null } | { ok: false; error: string }> {
+export async function syncAllReels(): Promise<{ ok: true; synced: number; followers: number | null } | { ok: false; error: string }> {
   try {
     const { reels, followersCount } = await scrapeInstagramProfile("iordacheclaudiu_", 0);
     if (reels.length === 0) return { ok: false, error: "Apify a returnat 0 reels — verifică APIFY_API_KEY." };
@@ -223,7 +225,17 @@ export async function syncMyReels(): Promise<{ ok: true; synced: number; followe
       });
     }
 
-    // Clasifică formatele în batch (un singur call Claude Haiku)
+    // Citim views curente din DB pentru a salva delta
+    const ids = reels.map(r => r.id || "").filter(Boolean);
+    const { data: existing } = await supabase
+      .from("instagram_media")
+      .select("instagram_id, views")
+      .in("instagram_id", ids);
+    const currentViews: Record<string, number> = {};
+    for (const row of existing ?? []) {
+      currentViews[row.instagram_id] = row.views ?? 0;
+    }
+
     const toClassify = reels
       .filter(r => r.caption?.trim())
       .map(r => ({ id: r.id || "", caption: r.caption }));
@@ -231,6 +243,7 @@ export async function syncMyReels(): Promise<{ ok: true; synced: number; followe
 
     let synced = 0;
     let lastError = "";
+    const now = new Date().toISOString();
     for (const reel of reels) {
       const id = reel.id || `apify_${Date.now()}_${synced}`;
       const item = reel as typeof reel & { savesCount?: number; sharesCount?: number };
@@ -238,13 +251,15 @@ export async function syncMyReels(): Promise<{ ok: true; synced: number; followe
         instagram_id: id,
         thumbnail_url: reel.thumbnailUrl,
         caption: reel.caption,
+        views_previous: currentViews[id] ?? null,
         views: reel.viewsCount,
         likes: reel.likesCount,
         comments: reel.commentsCount,
         saves: item.savesCount ?? null,
         shares: item.sharesCount ?? null,
-        posted_at: reel.timestamp || new Date().toISOString(),
+        posted_at: reel.timestamp || now,
         format_type: formats[reel.id || ""] ?? "TALKING HEAD",
+        last_synced_at: now,
       }, { onConflict: "instagram_id" });
       if (!error) synced++;
       else lastError = error.message;
@@ -255,6 +270,58 @@ export async function syncMyReels(): Promise<{ ok: true; synced: number; followe
     return { ok: false, error: err instanceof Error ? err.message : "Eroare necunoscută" };
   }
 }
+
+export async function syncRecentReels(): Promise<{ ok: true; synced: number; followers: number | null } | { ok: false; error: string }> {
+  try {
+    const { reels, followersCount } = await scrapeInstagramProfile("iordacheclaudiu_", 20);
+    if (reels.length === 0) return { ok: false, error: "Apify a returnat 0 reels." };
+    const supabase = getSupabaseServer({ useServiceRole: true });
+
+    if (followersCount && followersCount > 0) {
+      await supabase.from("creier_metadata").upsert({
+        key: "instagram_followers",
+        value: { count: followersCount, updated_at: new Date().toISOString() }
+      });
+    }
+
+    const ids = reels.map(r => r.id || "").filter(Boolean);
+    const { data: existing } = await supabase
+      .from("instagram_media")
+      .select("instagram_id, views")
+      .in("instagram_id", ids);
+    const currentViews: Record<string, number> = {};
+    for (const row of existing ?? []) {
+      currentViews[row.instagram_id] = row.views ?? 0;
+    }
+
+    let synced = 0;
+    const now = new Date().toISOString();
+    for (const reel of reels) {
+      const id = reel.id || `apify_${Date.now()}_${synced}`;
+      const item = reel as typeof reel & { savesCount?: number; sharesCount?: number };
+      const { error } = await supabase.from("instagram_media").upsert({
+        instagram_id: id,
+        thumbnail_url: reel.thumbnailUrl,
+        caption: reel.caption,
+        views_previous: currentViews[id] ?? null,
+        views: reel.viewsCount,
+        likes: reel.likesCount,
+        comments: reel.commentsCount,
+        saves: item.savesCount ?? null,
+        shares: item.sharesCount ?? null,
+        posted_at: reel.timestamp || now,
+        last_synced_at: now,
+      }, { onConflict: "instagram_id" });
+      if (!error) synced++;
+    }
+    return { ok: true, synced, followers: followersCount };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "Eroare necunoscută" };
+  }
+}
+
+/** @deprecated Use syncAllReels instead */
+export const syncMyReels = syncAllReels;
 
 // Reclasifică reels existente care nu au format_type setat
 export async function classifyExistingReels(): Promise<{ ok: true; classified: number } | { ok: false; error: string }> {
