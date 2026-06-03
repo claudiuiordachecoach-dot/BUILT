@@ -104,27 +104,65 @@ body {
 }
 
 /* Splash Screen Animations */
-@keyframes barUnite1 {
-  0% { transform: translate(-30px, -20px); opacity: 0; }
-  100% { transform: translate(0, 0); opacity: 1; }
+.splash-bar {
+  position: absolute;
+  transform: scaleY(0);
+  transform-origin: bottom center;
+}
+.splash-bar-1 {
+  left: 10%; bottom: 15%; width: 15%; height: 70%;
+  background: var(--color-built-red); opacity: 0.9;
+  animation: splashBarRise .5s cubic-bezier(.2, .7, .2, 1) .1s forwards;
+}
+.splash-bar-2 {
+  left: 42.5%; bottom: 4%; width: 15%; height: 92%;
+  background: var(--color-foreground);
+  animation: splashBarRise .5s cubic-bezier(.2, .7, .2, 1) .25s forwards;
+}
+.splash-bar-3 {
+  left: 75%; bottom: 23%; width: 15%; height: 62%;
+  background: var(--color-built-red); opacity: 0.6;
+  animation: splashBarRise .5s cubic-bezier(.2, .7, .2, 1) .4s forwards;
+}
+@keyframes splashBarRise {
+  to { transform: scaleY(1); }
 }
 
-@keyframes barUnite2 {
-  0% { transform: translateY(40px); opacity: 0; }
-  100% { transform: translate(0, 0); opacity: 1; }
+.splash-bar-top {
+  position: absolute; left: 10%; top: 12%; width: 0; height: 6%;
+  background: var(--color-built-red);
+  animation: splashBarGrow .4s cubic-bezier(.2, .7, .2, 1) .6s forwards;
+}
+.splash-bar-bottom {
+  position: absolute; left: 10%; bottom: 12%; width: 0; height: 6%;
+  background: var(--color-built-red); opacity: 0.3;
+  animation: splashBarGrow .4s cubic-bezier(.2, .7, .2, 1) .8s forwards;
+}
+@keyframes splashBarGrow {
+  to { width: 80%; }
 }
 
-@keyframes barUnite3 {
-  0% { transform: translate(30px, -20px); opacity: 0; }
-  100% { transform: translate(0, 0); opacity: 1; }
+.splash-mark::after {
+  content: ''; position: absolute; inset: -25%;
+  background: radial-gradient(circle, rgba(192, 57, 43, 0.28) 0%, transparent 60%);
+  opacity: 0; pointer-events: none;
+  animation: splashMarkGlow 1.4s ease 1.25s forwards;
+}
+@keyframes splashMarkGlow {
+  0% { opacity: 0; transform: scale(0.85); }
+  30% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.2); }
+}
+
+.splash-wordmark {
+  opacity: 0; transform: translateY(12px);
+  animation: splashWordIn .5s cubic-bezier(.2, .7, .2, 1) 1.40s forwards;
+}
+@keyframes splashWordIn {
+  to { opacity: 1; transform: none; }
 }
 
 @keyframes splashFadeOut {
   0% { opacity: 1; }
   100% { opacity: 0; visibility: hidden; }
-}
-
-@keyframes wordFadeIn {
-  0% { opacity: 0; filter: blur(4px); }
-  100% { opacity: 1; filter: blur(0); }
 }

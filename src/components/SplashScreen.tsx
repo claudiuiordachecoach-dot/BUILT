@@ -6,7 +6,7 @@ export function SplashScreen() {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
-    // Check if we already showed it in this session to prevent annoyance on every navigation
+    // Check if we already showed it in this session
     const hasSeenSplash = sessionStorage.getItem("built_splash_seen");
     if (hasSeenSplash) {
       setShow(false);
@@ -16,8 +16,8 @@ export function SplashScreen() {
     // Set flag
     sessionStorage.setItem("built_splash_seen", "true");
 
-    // Hide splash after 2.2 seconds
-    const timer = setTimeout(() => setShow(false), 2200);
+    // Hide splash after 2.8 seconds (landing page animation is longer)
+    const timer = setTimeout(() => setShow(false), 2800);
     return () => clearTimeout(timer);
   }, []);
 
@@ -27,73 +27,27 @@ export function SplashScreen() {
     <div
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#0A0A0A]"
       style={{
-        animation: "splashFadeOut 0.5s ease-in forwards",
-        animationDelay: "1.8s",
+        animation: "splashFadeOut 0.6s cubic-bezier(.7, 0, .3, 1) forwards",
+        animationDelay: "2.2s",
       }}
     >
-      <div className="flex flex-col items-center gap-6">
-        {/* Animated Bars that "unite" */}
-        <svg
-          width="48"
-          height="60"
-          viewBox="0 0 32 40"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          aria-hidden="true"
-        >
-          {/* Left bar */}
-          <rect
-            x="0"
-            y="10"
-            width="8"
-            height="30"
-            rx="1"
-            fill="#C0392B"
-            style={{
-              animation: "barUnite1 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-            }}
-          />
-          {/* Center bar */}
-          <rect
-            x="12"
-            y="0"
-            width="8"
-            height="40"
-            rx="1"
-            fill="#C0392B"
-            style={{
-              animation: "barUnite2 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-              animationDelay: "0.1s",
-              opacity: 0,
-            }}
-          />
-          {/* Right bar */}
-          <rect
-            x="24"
-            y="16"
-            width="8"
-            height="24"
-            rx="1"
-            fill="#C0392B"
-            style={{
-              animation: "barUnite3 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards",
-              animationDelay: "0.2s",
-              opacity: 0,
-            }}
-          />
-        </svg>
+      <div className="flex flex-col items-center gap-7">
+        
+        {/* Animated Mark */}
+        <div className="relative w-[140px] h-[140px] splash-mark">
+          <div className="splash-bar splash-bar-1"></div>
+          <div className="splash-bar splash-bar-2"></div>
+          <div className="splash-bar splash-bar-3"></div>
+          
+          <div className="splash-bar-top"></div>
+          <div className="splash-bar-bottom"></div>
+        </div>
 
-        {/* Text */}
-        <span
-          className="font-display text-4xl tracking-[0.2em] text-white leading-none"
-          style={{
-            animation: "wordFadeIn 0.8s ease-out forwards",
-            animationDelay: "0.6s",
-            opacity: 0,
-          }}
-        >
-          BUILT
-        </span>
+        {/* Wordmark */}
+        <div className="splash-wordmark flex gap-1 justify-center font-display text-[64px] text-white leading-none">
+          B U I L T
+        </div>
+        
       </div>
     </div>
   );
