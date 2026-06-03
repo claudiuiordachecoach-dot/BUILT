@@ -185,7 +185,7 @@ Reguli:
 - Q&A: răspuns la întrebare, "m-ai întrebat...", feedback la comentarii
 
 Reels de clasificat:
-${chunk.map((r, i) => `${i + 1}. ID="${r.id}" | Caption: ${r.caption.replace(/"/g, "'").slice(0, 150)}`).join("\n")}
+${chunk.map((r, i) => `${i + 1}. ID="${r.id}" | Caption: ${r.caption.replace(/[\uD800-\uDFFF]/g, "").replace(/"/g, "'").slice(0, 150)}`).join("\n")}
 
 Răspunde DOAR cu un JSON object pe o singură linie, fără text înainte sau după. Exemplu: {"id1":"TUTORIAL","id2":"TALKING HEAD"}`;
 
