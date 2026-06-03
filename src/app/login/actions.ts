@@ -32,3 +32,13 @@ export async function signOut() {
   await supabase.auth.signOut();
   redirect('/login');
 }
+
+export async function resetPassword(email: string): Promise<{ error?: string }> {
+  const supabase = await getSupabaseAuth();
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${appUrl}/auth/callback?next=/login/reset`,
+  });
+  if (error) return { error: error.message };
+  return {};
+}

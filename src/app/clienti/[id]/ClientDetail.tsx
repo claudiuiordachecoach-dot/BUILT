@@ -150,9 +150,11 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
           </div>
           
           {checkins.length > 0 && (
-            <div>
-              <h3 className="font-display text-xl tracking-wider mb-4">Trend Progres</h3>
-              <div className="bg-[#111111] border border-white/10 rounded-sm p-4" style={{ height: 220 }}>
+            <div className="space-y-4">
+              <h3 className="font-display text-xl tracking-wider">Trend Progres</h3>
+
+              <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wider">Performanță</p>
+              <div className="bg-[#111111] border border-white/10 rounded-sm p-4" style={{ height: 200 }}>
                 <ResponsiveContainer width="100%" height="100%">
                   <LineChart data={[...checkins].reverse()} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -163,12 +165,56 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
                       labelStyle={{ color: "#a1a1aa", fontSize: 10 }}
                       itemStyle={{ fontSize: 11 }}
                       labelFormatter={(v) => `Săptămâna ${v}`}
+                      formatter={(value: unknown, name: unknown) => [`${value}%`, name as string]}
                     />
-                    <Line type="monotone" dataKey="training_adherence" stroke="#C0392B" strokeWidth={2} dot={{ r: 3, fill: "#C0392B" }} name="Antrenament %" />
-                    <Line type="monotone" dataKey="nutrition_adherence" stroke="#a1a1aa" strokeWidth={2} dot={{ r: 3, fill: "#a1a1aa" }} name="Nutriție %" />
-                    <Line type="monotone" dataKey={(d: CheckIn) => d.energy_level * 10} stroke="#e4e4e7" strokeWidth={2} dot={{ r: 3, fill: "#e4e4e7" }} name="Energie ×10" />
+                    <Line type="monotone" dataKey="training_adherence" stroke="#C0392B" strokeWidth={2} dot={{ r: 3, fill: "#C0392B" }} name="Antrenament" />
+                    <Line type="monotone" dataKey="nutrition_adherence" stroke="#a1a1aa" strokeWidth={2} dot={{ r: 3, fill: "#a1a1aa" }} name="Nutriție" />
+                    <Line type="monotone" dataKey={(d: CheckIn) => d.energy_level * 10} stroke="#e4e4e7" strokeWidth={2} dot={{ r: 3, fill: "#e4e4e7" }} name="Energie" />
                   </LineChart>
                 </ResponsiveContainer>
+              </div>
+              <div className="flex gap-4">
+                {([["#C0392B", "Antrenament %"], ["#a1a1aa", "Nutriție %"], ["#e4e4e7", "Energie ×10"]] as [string, string][]).map(([color, label]) => (
+                  <div key={label} className="flex items-center gap-1.5">
+                    <div className="w-3 h-0.5" style={{ backgroundColor: color }} />
+                    <span className="text-[10px] text-zinc-500">{label}</span>
+                  </div>
+                ))}
+              </div>
+
+              <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wider pt-2">Lifestyle</p>
+              <div className="bg-[#111111] border border-white/10 rounded-sm p-4" style={{ height: 200 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={[...checkins].reverse()} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                    <XAxis dataKey="week_number" tick={{ fill: "#71717a", fontSize: 10 }} tickFormatter={(v: number) => `S${v}`} />
+                    <YAxis domain={[0, 100]} tick={{ fill: "#71717a", fontSize: 10 }} />
+                    <Tooltip
+                      contentStyle={{ background: "#111111", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 4 }}
+                      labelStyle={{ color: "#a1a1aa", fontSize: 10 }}
+                      itemStyle={{ fontSize: 11 }}
+                      labelFormatter={(v) => `Săptămâna ${v}`}
+                      formatter={(value: unknown, name: unknown) => {
+                        const v = Number(value);
+                        if (name === "Somn") return [`${(v * 12 / 100).toFixed(1)}h`, name as string];
+                        if (name === "Hidratare") return [`${(v * 6 / 100).toFixed(1)}L`, name as string];
+                        if (name === "Stres") return [`${(v / 10).toFixed(0)}/10`, name as string];
+                        return [`${v}`, name as string];
+                      }}
+                    />
+                    <Line type="monotone" dataKey={(d: CheckIn) => d.sleep_hours != null ? (d.sleep_hours / 12) * 100 : null} stroke="#60a5fa" strokeWidth={2} dot={{ r: 3, fill: "#60a5fa" }} name="Somn" connectNulls={false} />
+                    <Line type="monotone" dataKey={(d: CheckIn) => d.hydration_l != null ? (d.hydration_l / 6) * 100 : null} stroke="#34d399" strokeWidth={2} dot={{ r: 3, fill: "#34d399" }} name="Hidratare" connectNulls={false} />
+                    <Line type="monotone" dataKey={(d: CheckIn) => d.stress_level != null ? d.stress_level * 10 : null} stroke="#f97316" strokeWidth={2} dot={{ r: 3, fill: "#f97316" }} name="Stres" connectNulls={false} />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex gap-4">
+                {([["#60a5fa", "Somn (max 12h)"], ["#34d399", "Hidratare (max 6L)"], ["#f97316", "Stres /10"]] as [string, string][]).map(([color, label]) => (
+                  <div key={label} className="flex items-center gap-1.5">
+                    <div className="w-3 h-0.5" style={{ backgroundColor: color }} />
+                    <span className="text-[10px] text-zinc-500">{label}</span>
+                  </div>
+                ))}
               </div>
             </div>
           )}
