@@ -185,9 +185,9 @@ Reguli:
 - Q&A: răspuns la întrebare, "m-ai întrebat...", feedback la comentarii
 
 Reels de clasificat:
-${chunk.map(r => `ID: ${r.id}\nCaption: ${r.caption.slice(0, 200)}`).join("\n\n")}
+${chunk.map((r, i) => `${i + 1}. ID="${r.id}" | Caption: ${r.caption.replace(/"/g, "'").slice(0, 150)}`).join("\n")}
 
-Răspunde STRICT cu JSON (fără text în afară):`;
+Răspunde DOAR cu un JSON object pe o singură linie, fără text înainte sau după. Exemplu: {"id1":"TUTORIAL","id2":"TALKING HEAD"}`;
 
     try {
       const resp = await client.messages.create({
@@ -196,9 +196,23 @@ Răspunde STRICT cu JSON (fără text în afară):`;
         messages: [{ role: "user", content: prompt }],
       });
       const text = resp.content[0].type === "text" ? resp.content[0].text : "";
-      const match = text.match(/\{[\s\S]*\}/);
-      if (match) {
-        const raw = JSON.parse(match[0]) as Record<string, string>;
+      // Extrage JSON robust: încearcă code block, apoi primul obiect complet
+      let raw: Record<string, string> | null = null;
+      const codeBlock = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+      if (codeBlock) {
+        try { raw = JSON.parse(codeBlock[1].trim()); } catch {}
+      }
+      if (!raw) {
+        // Caută primul obiect JSON complet (non-nested greedy poate prinde prea mult)
+        const lines = text.split("\n").join(" ");
+        const match = lines.match(/\{[^{}]*\}/);
+        if (match) { try { raw = JSON.parse(match[0]); } catch {} }
+      }
+      if (!raw) {
+        const match = text.match(/\{[\s\S]*\}/);
+        if (match) { try { raw = JSON.parse(match[0]); } catch {} }
+      }
+      if (raw) {
         for (const [id, fmt] of Object.entries(raw)) {
           const upper = (fmt as string).toUpperCase() as FormatType;
           result[id] = FORMAT_TYPES.includes(upper) ? upper : "TALKING HEAD";
