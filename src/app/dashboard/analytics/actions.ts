@@ -336,7 +336,6 @@ export async function classifyExistingReels(): Promise<{ ok: true; classified: n
     const { data } = await supabase
       .from("instagram_media")
       .select("instagram_id, caption")
-      .or("format_type.is.null,format_type.eq.REEL,format_type.eq.reel")
       .not("caption", "is", null)
       .limit(100);
 
