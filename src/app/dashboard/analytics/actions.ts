@@ -345,7 +345,13 @@ export async function classifyExistingReels(): Promise<{ ok: true; classified: n
       .filter(r => r.caption?.trim())
       .map(r => ({ id: r.instagram_id, caption: r.caption as string }));
 
+    if (toClassify.length === 0) return { ok: false, error: "Niciun reel cu caption găsit în DB." };
+
     const formats = await classifyFormats(toClassify);
+
+    if (Object.keys(formats).length === 0) {
+      return { ok: false, error: "Clasificarea AI a eșuat — verifică ANTHROPIC_API_KEY pe Vercel." };
+    }
 
     let classified = 0;
     for (const row of data) {
