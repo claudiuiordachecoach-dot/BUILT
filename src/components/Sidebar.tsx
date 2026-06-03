@@ -48,7 +48,10 @@ const MAIN_ITEMS: NavEntry[] = [
 ];
 
 const TOOLS_ITEMS: NavEntry[] = [
+  { label: "Repurpose Engine", href: "/dashboard/repurpose", icon: <Icons.star /> },
   { label: "Generator Carusele", href: "/carusele", icon: <Icons.book /> },
+  { label: "Generator Story-uri", href: "/stories", icon: <Icons.message /> },
+  { label: "Bancă de Hook-uri", href: "/dashboard/hooks", icon: <Icons.arrow /> },
   { label: "Prezentare Vânzare", href: "/vanzare", icon: <Icons.presentation /> },
   { label: "Analizor Reel", href: "/dashboard/reel-copy",     icon: <Icons.chart /> },
   { label: "Audit Profil",  href: "/dashboard/profile-audit", icon: <Icons.search /> },
