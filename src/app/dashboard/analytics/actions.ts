@@ -351,7 +351,7 @@ export async function classifyExistingReels(): Promise<{ ok: true; classified: n
       .from("instagram_media")
       .select("instagram_id, caption")
       .not("caption", "is", null)
-      .limit(100);
+      .limit(500);
 
     if (!data || data.length === 0) return { ok: true, classified: 0 };
 
