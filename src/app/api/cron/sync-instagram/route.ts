@@ -6,8 +6,8 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
   try {
-    const { syncMyReels } = await import("@/app/dashboard/analytics/actions");
-    const result = await syncMyReels();
+    const { syncRecentReels } = await import("@/app/dashboard/analytics/actions");
+    const result = await syncRecentReels();
     return NextResponse.json({ success: result.ok, synced: result.ok ? result.synced : 0 });
   } catch (e) {
     return NextResponse.json({ error: String(e) }, { status: 500 });
