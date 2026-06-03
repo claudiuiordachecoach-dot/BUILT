@@ -476,7 +476,8 @@ export default function AnalyticsPage() {
         const media = d as MediaItem[];
         setLiveMedia(media);
         setMediaLoaded(true);
-        const mostRecent = media.find(m => m.last_synced_at);
+        const mostRecent = media.reduce((best, m) =>
+          (m.last_synced_at ?? "") > (best?.last_synced_at ?? "") ? m : best, media[0]);
         if (mostRecent?.last_synced_at) setLastSyncedAt(mostRecent.last_synced_at);
       })
       .catch(() => setMediaLoaded(true));
