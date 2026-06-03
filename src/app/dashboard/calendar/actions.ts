@@ -6,6 +6,7 @@ import { readCreierFromSupabase } from "@/lib/creier";
 export interface GeneratedIdea {
   date: string; // "2026-05-12" format
   hook: string;
+  brief?: string;
   format: string;
   cta: string;
   content_pillar: string;
@@ -52,13 +53,14 @@ export async function generateMonthPlan(
 
 Generează un plan de conținut Instagram pentru zilele de mai jos. Fiecare zi primește: hook (opritor de scroll), format, CTA, pilon de conținut (B/U/I/L/T).
 
-Zile libere: ${freeDates.slice(0, 20).join(", ")}
+Zile libere: ${freeDates.join(", ")}
 
 Returnează JSON strict (array, fără markdown):
 [
   {
     "date": "2026-05-12",
     "hook": "Hook-ul complet — max 2 propoziții, contraintuitiv sau cu cifră",
+    "brief": "Ideea detaliată pe scurt sau scheletul script-ului (2-3 propoziții clare)",
     "format": "TALKING HEAD",
     "cta": "DM ARHITECTURĂ",
     "content_pillar": "B — Base Strength"
@@ -67,7 +69,7 @@ Returnează JSON strict (array, fără markdown):
 
 Formate disponibile: TALKING HEAD, RANT, TUTORIAL, STORY TIME, TREND, BEHIND SCENES, CLIENT PROOF.
 Piloni BUILT: B — Base Strength, U — Unbreakable Capacity, I — Intelligent Fueling, L — Lifestyle Integration, T — Tough Mindset.
-Generează maxim ${Math.min(freeDates.length, 20)} idei.`;
+Generează idei pentru TOATE zilele libere cerute (${freeDates.length} zile).`;
 
   try {
     const response = await client.messages.create({
