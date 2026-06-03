@@ -40,6 +40,7 @@ const Icons = {
 type NavEntry = { label: string; href: string; icon: React.ReactNode; exact?: boolean; badge?: number };
 
 const MAIN_ITEMS: NavEntry[] = [
+  { label: "Azi",                 href: "/dashboard/azi",             icon: <Icons.star /> },
   { label: "Dashboard",           href: "/dashboard/analytics",       icon: <Icons.grid />,     exact: true },
   { label: "Studio Conținut",     href: "/dashboard/content",         icon: <Icons.star /> },
   { label: "Calendar Conținut",   href: "/dashboard/calendar",        icon: <Icons.calendar /> },
