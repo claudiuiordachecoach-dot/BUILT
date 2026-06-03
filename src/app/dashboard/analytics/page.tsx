@@ -522,7 +522,7 @@ export default function AnalyticsPage() {
     if (liveMedia.length === 0) return [];
     const cutoff = new Date();
     cutoff.setDate(cutoff.getDate() - PERIOD_DAYS[period]);
-    return liveMedia.filter(m => m.posted_at ? new Date(m.posted_at) >= cutoff : true);
+    return liveMedia.filter(m => m.posted_at ? new Date(m.posted_at) >= cutoff : false);
   }, [liveMedia, period]);
 
   // ── Derived data ───────────────────────────────────────────────────────────
@@ -592,7 +592,6 @@ export default function AnalyticsPage() {
   });
 
   // KPI values cu % change față de perioada anterioară
-  const kpiViews = mediaLoaded && totalViews !== null ? fmt(totalViews) : "—";
   const kpiEng = mediaLoaded && totalLikes !== null ? fmt(totalLikes) : "—";
 
   const prevFilteredMedia = useMemo(() => {
@@ -623,12 +622,12 @@ export default function AnalyticsPage() {
       value: mediaLoaded && totalViews !== null ? fmt(totalViews) : "—",
       change: null,
       sparkline: viewsSparkline,
-      sublabel: lastSyncedAt ? `La ${lastSyncedAt.split("T")[0]}` : undefined,
+      sublabel: lastSyncedAt ? `La ${new Date(lastSyncedAt).toLocaleDateString('ro-RO')}` : undefined,
     },
     {
       key: "gained",
       label: "VIEWS CÂȘTIGATE",
-      value: mediaLoaded && viewsGained !== null && viewsGained > 0 ? fmt(viewsGained) : "—",
+      value: mediaLoaded && viewsGained !== null ? fmt(viewsGained) : "—",
       change: null,
       sparkline: STATIC_SPARKLINE,
       sublabel: "De la ultima sincronizare",
@@ -804,7 +803,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* ── KPI CARDS ─────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {kpiCards.map((kpi) => {
           const badge = formatPctBadge(kpi.change);
           return (
