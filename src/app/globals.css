@@ -102,3 +102,29 @@ body {
   border-radius: 0.5rem;
   background: var(--color-card);
 }
+
+/* Splash Screen Animations */
+@keyframes barUnite1 {
+  0% { transform: translate(-30px, -20px); opacity: 0; }
+  100% { transform: translate(0, 0); opacity: 1; }
+}
+
+@keyframes barUnite2 {
+  0% { transform: translateY(40px); opacity: 0; }
+  100% { transform: translate(0, 0); opacity: 1; }
+}
+
+@keyframes barUnite3 {
+  0% { transform: translate(30px, -20px); opacity: 0; }
+  100% { transform: translate(0, 0); opacity: 1; }
+}
+
+@keyframes splashFadeOut {
+  0% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+@keyframes wordFadeIn {
+  0% { opacity: 0; filter: blur(4px); }
+  100% { opacity: 1; filter: blur(0); }
+}
