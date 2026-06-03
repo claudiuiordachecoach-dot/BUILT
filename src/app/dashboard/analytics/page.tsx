@@ -970,7 +970,7 @@ export default function AnalyticsPage() {
                 {reel.thumbnail_url ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
-                    src={reel.thumbnail_url}
+                    src={`/api/image-proxy?url=${encodeURIComponent(reel.thumbnail_url)}`}
                     alt=""
                     className="absolute inset-0 w-full h-full object-cover"
                     onError={(e) => { (e.target as HTMLImageElement).style.display = "none"; }}
