@@ -128,7 +128,7 @@ function Checklist({ items, placeholder, onToggle, onEdit, onRemove, onAdd }: {
 
 const START_HOUR = 6;
 const END_HOUR = 22;
-const HOUR_PX = 64; // px per oră
+const HOUR_PX = 50; // px per oră
 
 function timeToMinutes(t: string): number {
   const [h, m] = t.split(":").map(Number);
@@ -192,8 +192,8 @@ function AppointmentForm({
     setForm((f) => ({ ...f, [k]: v }));
 
   return (
-    <div className="absolute z-30 left-14 w-80 bg-[#1a1a1a] border border-white/15 rounded-2xl shadow-2xl p-5 space-y-3"
-      style={{ top: minutesToPx(timeToMinutes(form.time)) - 8 }}
+    <div
+      className="bg-[#1a1a1a] border border-white/15 rounded-2xl shadow-2xl p-5 space-y-3"
       onClick={(e) => e.stopPropagation()}
     >
       <p className="text-[11px] font-condensed uppercase tracking-widest text-zinc-500 mb-1">
@@ -223,7 +223,6 @@ function AppointmentForm({
         </div>
       </div>
 
-      {/* Nume */}
       <div>
         <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Nume</label>
         <input
@@ -235,7 +234,6 @@ function AppointmentForm({
         />
       </div>
 
-      {/* Telefon */}
       <div>
         <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Telefon</label>
         <input
@@ -247,7 +245,6 @@ function AppointmentForm({
         />
       </div>
 
-      {/* Email */}
       <div>
         <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Email</label>
         <input
@@ -259,7 +256,6 @@ function AppointmentForm({
         />
       </div>
 
-      {/* Note */}
       <div>
         <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Notițe</label>
         <textarea
@@ -271,7 +267,6 @@ function AppointmentForm({
         />
       </div>
 
-      {/* Butoane */}
       <div className="flex items-center gap-2 pt-1">
         <button
           onClick={() => form.name.trim() && onSave(form)}
@@ -311,10 +306,9 @@ function CalendarDay({
   onDelete: (id: string) => void;
   onToggle: (id: string) => void;
 }) {
-  const [newForm, setNewForm] = useState<string | null>(null); // "HH:MM" când e deschis
+  const [newForm, setNewForm] = useState<string | null>(null);
   const [editId, setEditId] = useState<string | null>(null);
   const [nowMin, setNowMin] = useState(nowMinutes());
-  const gridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const id = setInterval(() => setNowMin(nowMinutes()), 60000);
@@ -337,10 +331,13 @@ function CalendarDay({
   }
 
   const showNow = nowMin >= 0 && nowMin <= totalHours * 60;
+  const activeForm = newForm !== null || editId !== null;
+  const editAppt = editId ? appointments.find((a) => a.id === editId) : null;
 
   return (
-    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
-      <div className="flex items-center gap-2 mb-4">
+    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] flex flex-col h-full">
+      {/* Header */}
+      <div className="flex items-center gap-2 px-5 pt-5 pb-3 shrink-0">
         <span className="text-base">📅</span>
         <p className="text-[11px] font-condensed uppercase tracking-widest text-zinc-400">Programări & Apeluri</p>
         <button
@@ -351,95 +348,89 @@ function CalendarDay({
         </button>
       </div>
 
-      <div className="relative" style={{ height: gridHeight }} ref={gridRef}>
-        {/* Hour grid lines + labels */}
-        {Array.from({ length: totalHours + 1 }, (_, i) => {
-          const hour = START_HOUR + i;
-          return (
-            <div key={hour} className="absolute left-0 right-0 flex items-start" style={{ top: i * HOUR_PX }}>
-              <span className="text-[10px] text-zinc-700 font-mono w-10 shrink-0 -translate-y-2 select-none">
-                {String(hour).padStart(2, "0")}:00
-              </span>
-              <div className={`flex-1 h-px ${i === 0 ? "bg-white/10" : "bg-white/[0.04]"}`} />
-            </div>
-          );
-        })}
-
-        {/* Half-hour light lines */}
-        {Array.from({ length: totalHours }, (_, i) => (
-          <div key={`h${i}`} className="absolute left-10 right-0 h-px bg-white/[0.02]"
-            style={{ top: i * HOUR_PX + HOUR_PX / 2 }} />
-        ))}
-
-        {/* Clickable grid area */}
-        <div
-          className="absolute left-10 right-0 top-0 bottom-0 cursor-pointer"
-          style={{ height: gridHeight }}
-          onClick={handleGridClick}
-        />
-
-        {/* Now indicator */}
-        {showNow && (
-          <div className="absolute left-10 right-0 flex items-center pointer-events-none z-10"
-            style={{ top: minutesToPx(nowMin) }}>
-            <div className="w-2 h-2 rounded-full bg-built-red shrink-0 -ml-1" />
-            <div className="flex-1 h-px bg-built-red" />
-          </div>
-        )}
-
-        {/* Appointments */}
-        {appointments.map((appt, idx) => {
-          const topPx = minutesToPx(timeToMinutes(appt.time));
-          const heightPx = Math.max(minutesToPx(appt.duration), 28);
-          const color = apptColor(idx);
-          return (
-            <div
-              key={appt.id}
-              className={`absolute left-10 right-0 rounded-lg border px-2.5 py-1.5 cursor-pointer transition-opacity z-20 ${color} ${appt.done ? "opacity-50" : "opacity-100"}`}
-              style={{ top: topPx, height: heightPx }}
-              onClick={(e) => { e.stopPropagation(); setEditId(appt.id); setNewForm(null); }}
-            >
-              <div className="flex items-center gap-2 min-w-0">
-                <button
-                  onClick={(e) => { e.stopPropagation(); onToggle(appt.id); }}
-                  className={`w-3.5 h-3.5 shrink-0 rounded border ${appt.done ? "bg-white/60 border-white/60" : "border-white/50 hover:bg-white/20"} flex items-center justify-center transition-colors`}
-                >
-                  {appt.done && <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
-                </button>
-                <span className="text-white text-[11px] font-semibold truncate">{appt.time} · {appt.name || "Fără nume"}</span>
-              </div>
-              {heightPx > 42 && appt.phone && (
-                <p className="text-white/70 text-[10px] mt-0.5 truncate pl-5">📞 {appt.phone}</p>
-              )}
-              {heightPx > 58 && appt.email && (
-                <p className="text-white/60 text-[10px] truncate pl-5">✉ {appt.email}</p>
-              )}
-            </div>
-          );
-        })}
-
-        {/* New appointment form */}
-        {newForm && (
-          <AppointmentForm
-            initial={{ time: newForm, duration: 60 }}
-            onSave={(a) => { onAdd(a); setNewForm(null); }}
-            onCancel={() => setNewForm(null)}
-          />
-        )}
-
-        {/* Edit appointment form */}
-        {editId && (() => {
-          const appt = appointments.find((a) => a.id === editId);
-          if (!appt) return null;
-          return (
+      {/* Form — apare deasupra grilei când e activ */}
+      {activeForm && (
+        <div className="px-5 pb-3 shrink-0">
+          {newForm !== null && (
             <AppointmentForm
-              initial={appt}
-              onSave={(a) => { onEdit(editId, a); setEditId(null); }}
-              onCancel={() => setEditId(null)}
-              onDelete={() => { onDelete(editId); setEditId(null); }}
+              initial={{ time: newForm, duration: 60 }}
+              onSave={(a) => { onAdd(a); setNewForm(null); }}
+              onCancel={() => setNewForm(null)}
             />
-          );
-        })()}
+          )}
+          {editAppt && (
+            <AppointmentForm
+              initial={editAppt}
+              onSave={(a) => { onEdit(editId!, a); setEditId(null); }}
+              onCancel={() => setEditId(null)}
+              onDelete={() => { onDelete(editId!); setEditId(null); }}
+            />
+          )}
+        </div>
+      )}
+
+      {/* Grid — scrollable intern */}
+      <div className="flex-1 overflow-y-auto px-5 pb-5">
+        <div className="relative" style={{ height: gridHeight }} onClick={handleGridClick}>
+          {/* Hour lines + labels */}
+          {Array.from({ length: totalHours + 1 }, (_, i) => {
+            const hour = START_HOUR + i;
+            return (
+              <div key={hour} className="absolute left-0 right-0 flex items-start" style={{ top: i * HOUR_PX }}>
+                <span className="text-[10px] text-zinc-700 font-mono w-10 shrink-0 -translate-y-2 select-none">
+                  {String(hour).padStart(2, "0")}:00
+                </span>
+                <div className={`flex-1 h-px ${i === 0 ? "bg-white/10" : "bg-white/[0.04]"}`} />
+              </div>
+            );
+          })}
+
+          {/* Half-hour lines */}
+          {Array.from({ length: totalHours }, (_, i) => (
+            <div key={`h${i}`} className="absolute left-10 right-0 h-px bg-white/[0.02]"
+              style={{ top: i * HOUR_PX + HOUR_PX / 2 }} />
+          ))}
+
+          {/* Cursor hint on hover */}
+          <div className="absolute left-10 right-0 top-0 bottom-0 cursor-pointer" style={{ height: gridHeight }} />
+
+          {/* Now indicator */}
+          {showNow && (
+            <div className="absolute left-10 right-0 flex items-center pointer-events-none z-10"
+              style={{ top: minutesToPx(nowMin) }}>
+              <div className="w-2 h-2 rounded-full bg-built-red shrink-0 -ml-1" />
+              <div className="flex-1 h-px bg-built-red" />
+            </div>
+          )}
+
+          {/* Appointment cards */}
+          {appointments.map((appt, idx) => {
+            const topPx = minutesToPx(timeToMinutes(appt.time));
+            const heightPx = Math.max(minutesToPx(appt.duration), 30);
+            const color = apptColor(idx);
+            return (
+              <div
+                key={appt.id}
+                className={`absolute left-10 right-0 rounded-lg border px-2.5 py-1.5 cursor-pointer transition-opacity z-20 ${color} ${appt.done ? "opacity-40" : "opacity-100"}`}
+                style={{ top: topPx, height: heightPx }}
+                onClick={(e) => { e.stopPropagation(); setEditId(appt.id); setNewForm(null); }}
+              >
+                <div className="flex items-center gap-2 min-w-0">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); onToggle(appt.id); }}
+                    className={`w-3.5 h-3.5 shrink-0 rounded border ${appt.done ? "bg-white/60 border-white/60" : "border-white/50 hover:bg-white/20"} flex items-center justify-center transition-colors`}
+                  >
+                    {appt.done && <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                  </button>
+                  <span className="text-white text-[11px] font-semibold truncate">{appt.time} · {appt.name || "—"}</span>
+                </div>
+                {heightPx > 44 && appt.phone && (
+                  <p className="text-white/70 text-[10px] mt-0.5 truncate pl-5">📞 {appt.phone}</p>
+                )}
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
@@ -531,138 +522,146 @@ export default function AziPage() {
   if (!plan) return <div className="p-8"><p className="text-zinc-600">Se încarcă...</p></div>;
 
   return (
-    <div className="p-8 max-w-2xl">
+    <div className="p-8">
+      <div className="grid grid-cols-[minmax(0,520px)_minmax(0,420px)] gap-6 items-start">
 
-      {/* ── Header ── */}
-      <div className="flex items-start justify-between mb-8">
+        {/* ── Coloana stângă: jurnal ── */}
         <div>
-          <p className="font-condensed text-[10px] text-built-red uppercase tracking-widest mb-2">Jurnalul zilei</p>
-          <h1 className="font-display text-6xl tracking-[0.06em] text-white leading-none mb-2">
-            {isToday(dateStr) ? "AZI" : prettyDate(dateStr).split(",")[0].toUpperCase()}
-          </h1>
-          <p className="text-zinc-500 text-sm capitalize">{prettyDate(dateStr)}</p>
-        </div>
-        <div className="flex flex-col items-end gap-3 pt-1">
-          {totalCount > 0 && (
-            <div className="flex items-center gap-2.5">
-              <div className="w-28 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                <div className="h-full bg-built-red rounded-full transition-all duration-500"
-                  style={{ width: `${Math.round((doneCount / totalCount) * 100)}%` }} />
-              </div>
-              <span className="text-xs text-zinc-500 tabular-nums">{doneCount}/{totalCount}</span>
+          {/* Header */}
+          <div className="flex items-start justify-between mb-8">
+            <div>
+              <p className="font-condensed text-[10px] text-built-red uppercase tracking-widest mb-2">Jurnalul zilei</p>
+              <h1 className="font-display text-6xl tracking-[0.06em] text-white leading-none mb-2">
+                {isToday(dateStr) ? "AZI" : prettyDate(dateStr).split(",")[0].toUpperCase()}
+              </h1>
+              <p className="text-zinc-500 text-sm capitalize">{prettyDate(dateStr)}</p>
             </div>
-          )}
-          <div className="flex items-center gap-1.5">
-            <button type="button" onClick={() => setDateStr((d) => shiftDate(d, -1))}
-              className="w-8 h-8 rounded-lg border border-white/10 text-zinc-500 hover:text-white hover:border-white/20 transition-colors text-sm flex items-center justify-center">◄</button>
-            {!isToday(dateStr) && (
-              <button type="button" onClick={() => setDateStr(todayStr())}
-                className="px-3 h-8 text-[11px] rounded-lg border border-built-red/30 text-built-red hover:bg-built-red/10 transition-colors">Azi</button>
-            )}
-            <button type="button" onClick={() => setDateStr((d) => shiftDate(d, 1))}
-              className="w-8 h-8 rounded-lg border border-white/10 text-zinc-500 hover:text-white hover:border-white/20 transition-colors text-sm flex items-center justify-center">►</button>
+            <div className="flex flex-col items-end gap-3 pt-1">
+              {totalCount > 0 && (
+                <div className="flex items-center gap-2.5">
+                  <div className="w-28 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+                    <div className="h-full bg-built-red rounded-full transition-all duration-500"
+                      style={{ width: `${Math.round((doneCount / totalCount) * 100)}%` }} />
+                  </div>
+                  <span className="text-xs text-zinc-500 tabular-nums">{doneCount}/{totalCount}</span>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5">
+                <button type="button" onClick={() => setDateStr((d) => shiftDate(d, -1))}
+                  className="w-8 h-8 rounded-lg border border-white/10 text-zinc-500 hover:text-white hover:border-white/20 transition-colors text-sm flex items-center justify-center">◄</button>
+                {!isToday(dateStr) && (
+                  <button type="button" onClick={() => setDateStr(todayStr())}
+                    className="px-3 h-8 text-[11px] rounded-lg border border-built-red/30 text-built-red hover:bg-built-red/10 transition-colors">Azi</button>
+                )}
+                <button type="button" onClick={() => setDateStr((d) => shiftDate(d, 1))}
+                  className="w-8 h-8 rounded-lg border border-white/10 text-zinc-500 hover:text-white hover:border-white/20 transition-colors text-sm flex items-center justify-center">►</button>
+              </div>
+              <span className="text-[11px] text-zinc-700 h-4">
+                {status === "saving" ? "Salvez..." : status === "saved" ? "✓ Salvat" : ""}
+              </span>
+            </div>
           </div>
-          <span className="text-[11px] text-zinc-700 h-4">
-            {status === "saving" ? "Salvez..." : status === "saved" ? "✓ Salvat" : ""}
-          </span>
-        </div>
-      </div>
 
-      {/* ── DIMINEAȚĂ ── */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="h-px flex-1 bg-white/[0.06]" />
-        <p className="font-condensed text-[10px] uppercase tracking-widest text-zinc-600">Dimineață</p>
-        <div className="h-px flex-1 bg-white/[0.06]" />
-      </div>
+          {/* Dimineată */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px flex-1 bg-white/[0.06]" />
+            <p className="font-condensed text-[10px] uppercase tracking-widest text-zinc-600">Dimineață</p>
+            <div className="h-px flex-1 bg-white/[0.06]" />
+          </div>
 
-      <div className="space-y-3 mb-8">
-        <Section emoji="🎯" label="Top 3 ale zilei" hint="Dacă faci doar astea, ziua a fost un succes.">
-          <Top3
-            items={plan.top3 ?? ["", "", ""]}
-            onChange={(v) => mutate((p) => ({ ...p, top3: v }))}
-          />
-        </Section>
-
-        <CalendarDay
-          appointments={(plan.appointments ?? []).slice().sort((a, b) => a.time.localeCompare(b.time))}
-          onAdd={addAppointment}
-          onEdit={editAppointment}
-          onDelete={deleteAppointment}
-          onToggle={toggleAppointment}
-        />
-
-        <Section emoji="📲" label="Conținut de postat">
-          <div className="space-y-2.5 mb-2">
-            {plan.posts.map((it) => (
-              <PostRow key={it.id} item={it}
-                onToggle={() => togglePost(it.id)}
-                onEdit={(t) => editPost(it.id, t)}
-                onCycleType={() => cycleType(it.id, it.type ?? "Alt")}
-                onRemove={() => removePost(it.id)}
+          <div className="space-y-3 mb-8">
+            <Section emoji="🎯" label="Top 3 ale zilei" hint="Dacă faci doar astea, ziua a fost un succes.">
+              <Top3
+                items={plan.top3 ?? ["", "", ""]}
+                onChange={(v) => mutate((p) => ({ ...p, top3: v }))}
               />
-            ))}
+            </Section>
+
+            <Section emoji="📲" label="Conținut de postat">
+              <div className="space-y-2.5 mb-2">
+                {plan.posts.map((it) => (
+                  <PostRow key={it.id} item={it}
+                    onToggle={() => togglePost(it.id)}
+                    onEdit={(t) => editPost(it.id, t)}
+                    onCycleType={() => cycleType(it.id, it.type ?? "Alt")}
+                    onRemove={() => removePost(it.id)}
+                  />
+                ))}
+              </div>
+              <button type="button" onClick={addPost}
+                className="text-[11px] text-zinc-600 hover:text-zinc-400 transition-colors">+ adaugă</button>
+            </Section>
+
+            <Section emoji="✅" label="De făcut">
+              <Checklist items={plan.tasks} placeholder="Adaugă și apasă Enter"
+                onToggle={(id) => toggle("tasks", id)}
+                onEdit={(id, t) => editItem("tasks", id, t)}
+                onRemove={(id) => removeItem("tasks", id)}
+                onAdd={(t) => addItem("tasks", t)}
+              />
+            </Section>
+
+            <Section emoji="💬" label="Clienți">
+              <Checklist items={plan.clients} placeholder="Cui scrii / check-in (Enter)"
+                onToggle={(id) => toggle("clients", id)}
+                onEdit={(id, t) => editItem("clients", id, t)}
+                onRemove={(id) => removeItem("clients", id)}
+                onAdd={(t) => addItem("clients", t)}
+              />
+            </Section>
+
+            <Section emoji="📝" label="Notițe">
+              <textarea
+                value={plan.notes ?? ""}
+                onChange={(e) => mutate((p) => ({ ...p, notes: e.target.value }))}
+                placeholder="Orice altceva — gânduri, idei, context..."
+                rows={4}
+                className="w-full bg-transparent border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-white/15 transition-colors resize-none"
+              />
+            </Section>
           </div>
-          <button type="button" onClick={addPost}
-            className="text-[11px] text-zinc-600 hover:text-zinc-400 transition-colors">+ adaugă</button>
-        </Section>
 
-        <Section emoji="✅" label="De făcut">
-          <Checklist items={plan.tasks} placeholder="Adaugă și apasă Enter"
-            onToggle={(id) => toggle("tasks", id)}
-            onEdit={(id, t) => editItem("tasks", id, t)}
-            onRemove={(id) => removeItem("tasks", id)}
-            onAdd={(t) => addItem("tasks", t)}
-          />
-        </Section>
+          {/* Seară */}
+          <div className="flex items-center gap-3 mb-4">
+            <div className="h-px flex-1 bg-white/[0.06]" />
+            <p className="font-condensed text-[10px] uppercase tracking-widest text-zinc-600">Seară</p>
+            <div className="h-px flex-1 bg-white/[0.06]" />
+          </div>
 
-        <Section emoji="💬" label="Clienți">
-          <Checklist items={plan.clients} placeholder="Cui scrii / check-in (Enter)"
-            onToggle={(id) => toggle("clients", id)}
-            onEdit={(id, t) => editItem("clients", id, t)}
-            onRemove={(id) => removeItem("clients", id)}
-            onAdd={(t) => addItem("clients", t)}
-          />
-        </Section>
+          <div className="space-y-3">
+            <Section emoji="→" label="Ce mut pe mâine" hint="Ce n-a mers azi. Fără vinovăție.">
+              <Checklist items={plan.tomorrow ?? []} placeholder="Adaugă și apasă Enter"
+                onToggle={(id) => toggle("tomorrow", id)}
+                onEdit={(id, t) => editItem("tomorrow", id, t)}
+                onRemove={(id) => removeItem("tomorrow", id)}
+                onAdd={(t) => addItem("tomorrow", t)}
+              />
+            </Section>
 
-        <Section emoji="📝" label="Notițe">
-          <textarea
-            value={plan.notes ?? ""}
-            onChange={(e) => mutate((p) => ({ ...p, notes: e.target.value }))}
-            placeholder="Orice altceva — gânduri, idei, context..."
-            rows={4}
-            className="w-full bg-transparent border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-white/15 transition-colors resize-none"
+            <Section emoji="💡" label="Un gând / lecție" hint="O propoziție. Ce ai învățat azi.">
+              <textarea
+                value={plan.lesson ?? ""}
+                onChange={(e) => mutate((p) => ({ ...p, lesson: e.target.value }))}
+                placeholder="..."
+                rows={3}
+                className="w-full bg-transparent border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-white/15 transition-colors resize-none"
+              />
+            </Section>
+          </div>
+        </div>
+
+        {/* ── Coloana dreaptă: calendar sticky ── */}
+        <div className="sticky top-6" style={{ height: "calc(100vh - 80px)" }}>
+          <CalendarDay
+            appointments={(plan.appointments ?? []).slice().sort((a, b) => a.time.localeCompare(b.time))}
+            onAdd={addAppointment}
+            onEdit={editAppointment}
+            onDelete={deleteAppointment}
+            onToggle={toggleAppointment}
           />
-        </Section>
+        </div>
+
       </div>
-
-      {/* ── SEARĂ ── */}
-      <div className="flex items-center gap-3 mb-4">
-        <div className="h-px flex-1 bg-white/[0.06]" />
-        <p className="font-condensed text-[10px] uppercase tracking-widest text-zinc-600">Seară</p>
-        <div className="h-px flex-1 bg-white/[0.06]" />
-      </div>
-
-      <div className="space-y-3">
-        <Section emoji="→" label="Ce mut pe mâine" hint="Ce n-a mers azi. Fără vinovăție.">
-          <Checklist items={plan.tomorrow ?? []} placeholder="Adaugă și apasă Enter"
-            onToggle={(id) => toggle("tomorrow", id)}
-            onEdit={(id, t) => editItem("tomorrow", id, t)}
-            onRemove={(id) => removeItem("tomorrow", id)}
-            onAdd={(t) => addItem("tomorrow", t)}
-          />
-        </Section>
-
-        <Section emoji="💡" label="Un gând / lecție" hint="O propoziție. Ce ai învățat azi.">
-          <textarea
-            value={plan.lesson ?? ""}
-            onChange={(e) => mutate((p) => ({ ...p, lesson: e.target.value }))}
-            placeholder="..."
-            rows={3}
-            className="w-full bg-transparent border border-white/[0.06] rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-700 focus:outline-none focus:border-white/15 transition-colors resize-none"
-          />
-        </Section>
-      </div>
-
     </div>
   );
 }
