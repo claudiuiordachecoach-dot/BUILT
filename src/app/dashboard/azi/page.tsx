@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { getDailyPlan, saveDailyPlan, type DailyPlan, type DailyItem } from "./actions";
+import { getDailyPlan, saveDailyPlan, type DailyPlan, type DailyItem, type Appointment } from "./actions";
 
 function todayStr() { return new Date().toISOString().split("T")[0]; }
 function shiftDate(d: string, n: number) {
@@ -124,6 +124,327 @@ function Checklist({ items, placeholder, onToggle, onEdit, onRemove, onAdd }: {
   );
 }
 
+// ─── Calendar Day View ───────────────────────────────────────────────────────
+
+const START_HOUR = 6;
+const END_HOUR = 22;
+const HOUR_PX = 64; // px per oră
+
+function timeToMinutes(t: string): number {
+  const [h, m] = t.split(":").map(Number);
+  return (h - START_HOUR) * 60 + (m ?? 0);
+}
+
+function minutesToPx(min: number): number {
+  return (min / 60) * HOUR_PX;
+}
+
+function nowMinutes(): number {
+  const now = new Date();
+  return (now.getHours() - START_HOUR) * 60 + now.getMinutes();
+}
+
+const APPT_COLORS = [
+  "bg-blue-600/80 border-blue-500/40",
+  "bg-violet-600/80 border-violet-500/40",
+  "bg-emerald-600/80 border-emerald-500/40",
+  "bg-amber-600/80 border-amber-500/40",
+  "bg-pink-600/80 border-pink-500/40",
+  "bg-cyan-600/80 border-cyan-500/40",
+];
+
+function apptColor(idx: number) {
+  return APPT_COLORS[idx % APPT_COLORS.length];
+}
+
+const EMPTY_APPT: Omit<Appointment, "id" | "done"> = {
+  time: "09:00",
+  duration: 60,
+  name: "",
+  phone: "",
+  email: "",
+  notes: "",
+};
+
+function AppointmentForm({
+  initial,
+  onSave,
+  onCancel,
+  onDelete,
+}: {
+  initial: Partial<Appointment>;
+  onSave: (a: Omit<Appointment, "id" | "done">) => void;
+  onCancel: () => void;
+  onDelete?: () => void;
+}) {
+  const [form, setForm] = useState<Omit<Appointment, "id" | "done">>({
+    ...EMPTY_APPT,
+    ...initial,
+    duration: initial.duration ?? 60,
+    phone: initial.phone ?? "",
+    email: initial.email ?? "",
+    notes: initial.notes ?? "",
+  });
+  const nameRef = useRef<HTMLInputElement>(null);
+  useEffect(() => { nameRef.current?.focus(); }, []);
+
+  const set = (k: keyof typeof form, v: string | number) =>
+    setForm((f) => ({ ...f, [k]: v }));
+
+  return (
+    <div className="absolute z-30 left-14 w-80 bg-[#1a1a1a] border border-white/15 rounded-2xl shadow-2xl p-5 space-y-3"
+      style={{ top: minutesToPx(timeToMinutes(form.time)) - 8 }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <p className="text-[11px] font-condensed uppercase tracking-widest text-zinc-500 mb-1">
+        {initial.id ? "Editează programare" : "Programare nouă"}
+      </p>
+
+      {/* Rând Oră + Durată */}
+      <div className="flex gap-3">
+        <div className="flex-1">
+          <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Oră</label>
+          <input
+            type="time"
+            value={form.time}
+            onChange={(e) => set("time", e.target.value)}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[13px] text-white focus:outline-none focus:border-built-red/50 transition-colors"
+          />
+        </div>
+        <div className="w-24">
+          <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Durată (min)</label>
+          <input
+            type="number"
+            min={15} max={480} step={15}
+            value={form.duration}
+            onChange={(e) => set("duration", Number(e.target.value))}
+            className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[13px] text-white focus:outline-none focus:border-built-red/50 transition-colors"
+          />
+        </div>
+      </div>
+
+      {/* Nume */}
+      <div>
+        <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Nume</label>
+        <input
+          ref={nameRef}
+          value={form.name}
+          onChange={(e) => set("name", e.target.value)}
+          placeholder="Ex: Ion Popescu"
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[13px] text-white placeholder-zinc-700 focus:outline-none focus:border-built-red/50 transition-colors"
+        />
+      </div>
+
+      {/* Telefon */}
+      <div>
+        <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Telefon</label>
+        <input
+          type="tel"
+          value={form.phone}
+          onChange={(e) => set("phone", e.target.value)}
+          placeholder="07xx xxx xxx"
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[13px] text-white placeholder-zinc-700 focus:outline-none focus:border-built-red/50 transition-colors"
+        />
+      </div>
+
+      {/* Email */}
+      <div>
+        <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Email</label>
+        <input
+          type="email"
+          value={form.email}
+          onChange={(e) => set("email", e.target.value)}
+          placeholder="email@exemplu.ro"
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[13px] text-white placeholder-zinc-700 focus:outline-none focus:border-built-red/50 transition-colors"
+        />
+      </div>
+
+      {/* Note */}
+      <div>
+        <label className="text-[10px] text-zinc-600 uppercase tracking-wider block mb-1">Notițe</label>
+        <textarea
+          value={form.notes}
+          onChange={(e) => set("notes", e.target.value)}
+          placeholder="Context, subiect apel..."
+          rows={2}
+          className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-[13px] text-white placeholder-zinc-700 focus:outline-none focus:border-built-red/50 transition-colors resize-none"
+        />
+      </div>
+
+      {/* Butoane */}
+      <div className="flex items-center gap-2 pt-1">
+        <button
+          onClick={() => form.name.trim() && onSave(form)}
+          className="flex-1 bg-built-red hover:bg-built-red/90 text-white text-[12px] font-medium py-1.5 rounded-lg transition-colors"
+        >
+          Salvează
+        </button>
+        <button
+          onClick={onCancel}
+          className="px-3 py-1.5 text-[12px] text-zinc-500 border border-white/10 rounded-lg hover:bg-white/5 transition-colors"
+        >
+          Anulează
+        </button>
+        {onDelete && (
+          <button
+            onClick={onDelete}
+            className="px-2 py-1.5 text-[12px] text-red-400/70 border border-red-500/20 rounded-lg hover:bg-red-500/10 transition-colors"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CalendarDay({
+  appointments,
+  onAdd,
+  onEdit,
+  onDelete,
+  onToggle,
+}: {
+  appointments: Appointment[];
+  onAdd: (a: Omit<Appointment, "id" | "done">) => void;
+  onEdit: (id: string, a: Omit<Appointment, "id" | "done">) => void;
+  onDelete: (id: string) => void;
+  onToggle: (id: string) => void;
+}) {
+  const [newForm, setNewForm] = useState<string | null>(null); // "HH:MM" când e deschis
+  const [editId, setEditId] = useState<string | null>(null);
+  const [nowMin, setNowMin] = useState(nowMinutes());
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const id = setInterval(() => setNowMin(nowMinutes()), 60000);
+    return () => clearInterval(id);
+  }, []);
+
+  const totalHours = END_HOUR - START_HOUR;
+  const gridHeight = totalHours * HOUR_PX;
+
+  function handleGridClick(e: React.MouseEvent<HTMLDivElement>) {
+    if (editId || newForm) { setEditId(null); setNewForm(null); return; }
+    const rect = e.currentTarget.getBoundingClientRect();
+    const yPx = e.clientY - rect.top;
+    const totalMin = Math.floor((yPx / HOUR_PX) * 60);
+    const hour = START_HOUR + Math.floor(totalMin / 60);
+    const min = Math.floor(totalMin % 60 / 15) * 15;
+    const h = String(Math.min(hour, END_HOUR - 1)).padStart(2, "0");
+    const m = String(min).padStart(2, "0");
+    setNewForm(`${h}:${m}`);
+  }
+
+  const showNow = nowMin >= 0 && nowMin <= totalHours * 60;
+
+  return (
+    <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
+      <div className="flex items-center gap-2 mb-4">
+        <span className="text-base">📅</span>
+        <p className="text-[11px] font-condensed uppercase tracking-widest text-zinc-400">Programări & Apeluri</p>
+        <button
+          onClick={() => { setNewForm("09:00"); setEditId(null); }}
+          className="ml-auto text-[11px] text-built-red border border-built-red/25 bg-built-red/10 px-2.5 py-1 rounded-lg hover:bg-built-red/20 transition-colors"
+        >
+          + Adaugă
+        </button>
+      </div>
+
+      <div className="relative" style={{ height: gridHeight }} ref={gridRef}>
+        {/* Hour grid lines + labels */}
+        {Array.from({ length: totalHours + 1 }, (_, i) => {
+          const hour = START_HOUR + i;
+          return (
+            <div key={hour} className="absolute left-0 right-0 flex items-start" style={{ top: i * HOUR_PX }}>
+              <span className="text-[10px] text-zinc-700 font-mono w-10 shrink-0 -translate-y-2 select-none">
+                {String(hour).padStart(2, "0")}:00
+              </span>
+              <div className={`flex-1 h-px ${i === 0 ? "bg-white/10" : "bg-white/[0.04]"}`} />
+            </div>
+          );
+        })}
+
+        {/* Half-hour light lines */}
+        {Array.from({ length: totalHours }, (_, i) => (
+          <div key={`h${i}`} className="absolute left-10 right-0 h-px bg-white/[0.02]"
+            style={{ top: i * HOUR_PX + HOUR_PX / 2 }} />
+        ))}
+
+        {/* Clickable grid area */}
+        <div
+          className="absolute left-10 right-0 top-0 bottom-0 cursor-pointer"
+          style={{ height: gridHeight }}
+          onClick={handleGridClick}
+        />
+
+        {/* Now indicator */}
+        {showNow && (
+          <div className="absolute left-10 right-0 flex items-center pointer-events-none z-10"
+            style={{ top: minutesToPx(nowMin) }}>
+            <div className="w-2 h-2 rounded-full bg-built-red shrink-0 -ml-1" />
+            <div className="flex-1 h-px bg-built-red" />
+          </div>
+        )}
+
+        {/* Appointments */}
+        {appointments.map((appt, idx) => {
+          const topPx = minutesToPx(timeToMinutes(appt.time));
+          const heightPx = Math.max(minutesToPx(appt.duration), 28);
+          const color = apptColor(idx);
+          return (
+            <div
+              key={appt.id}
+              className={`absolute left-10 right-0 rounded-lg border px-2.5 py-1.5 cursor-pointer transition-opacity z-20 ${color} ${appt.done ? "opacity-50" : "opacity-100"}`}
+              style={{ top: topPx, height: heightPx }}
+              onClick={(e) => { e.stopPropagation(); setEditId(appt.id); setNewForm(null); }}
+            >
+              <div className="flex items-center gap-2 min-w-0">
+                <button
+                  onClick={(e) => { e.stopPropagation(); onToggle(appt.id); }}
+                  className={`w-3.5 h-3.5 shrink-0 rounded border ${appt.done ? "bg-white/60 border-white/60" : "border-white/50 hover:bg-white/20"} flex items-center justify-center transition-colors`}
+                >
+                  {appt.done && <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                </button>
+                <span className="text-white text-[11px] font-semibold truncate">{appt.time} · {appt.name || "Fără nume"}</span>
+              </div>
+              {heightPx > 42 && appt.phone && (
+                <p className="text-white/70 text-[10px] mt-0.5 truncate pl-5">📞 {appt.phone}</p>
+              )}
+              {heightPx > 58 && appt.email && (
+                <p className="text-white/60 text-[10px] truncate pl-5">✉ {appt.email}</p>
+              )}
+            </div>
+          );
+        })}
+
+        {/* New appointment form */}
+        {newForm && (
+          <AppointmentForm
+            initial={{ time: newForm, duration: 60 }}
+            onSave={(a) => { onAdd(a); setNewForm(null); }}
+            onCancel={() => setNewForm(null)}
+          />
+        )}
+
+        {/* Edit appointment form */}
+        {editId && (() => {
+          const appt = appointments.find((a) => a.id === editId);
+          if (!appt) return null;
+          return (
+            <AppointmentForm
+              initial={appt}
+              onSave={(a) => { onEdit(editId, a); setEditId(null); }}
+              onCancel={() => setEditId(null)}
+              onDelete={() => { onDelete(editId); setEditId(null); }}
+            />
+          );
+        })()}
+      </div>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AziPage() {
@@ -163,6 +484,30 @@ export default function AziPage() {
     mutate((p) => ({ ...p, [list]: (p[list] ?? []).filter((it) => it.id !== id) }));
   const addItem = (list: "tasks" | "clients" | "tomorrow", text: string) =>
     mutate((p) => ({ ...p, [list]: [...(p[list] ?? []), { id: newId(), text, done: false }] }));
+
+  // ── Appointment handlers ────────────────────────────────────────────────────
+  const addAppointment = useCallback((a: Omit<Appointment, "id" | "done">) => {
+    const id = newId();
+    mutate((p) => ({ ...p, appointments: [...(p.appointments ?? []), { ...a, id, done: false }] }));
+  }, [mutate]);
+
+  const editAppointment = useCallback((id: string, a: Omit<Appointment, "id" | "done">) => {
+    mutate((p) => ({
+      ...p,
+      appointments: (p.appointments ?? []).map((ap) => ap.id === id ? { ...ap, ...a } : ap),
+    }));
+  }, [mutate]);
+
+  const deleteAppointment = useCallback((id: string) => {
+    mutate((p) => ({ ...p, appointments: (p.appointments ?? []).filter((ap) => ap.id !== id) }));
+  }, [mutate]);
+
+  const toggleAppointment = useCallback((id: string) => {
+    mutate((p) => ({
+      ...p,
+      appointments: (p.appointments ?? []).map((ap) => ap.id === id ? { ...ap, done: !ap.done } : ap),
+    }));
+  }, [mutate]);
 
   const togglePost = (id: string) =>
     mutate((p) => ({ ...p, posts: p.posts.map((it) => it.id === id ? { ...it, done: !it.done } : it) }));
@@ -237,6 +582,14 @@ export default function AziPage() {
             onChange={(v) => mutate((p) => ({ ...p, top3: v }))}
           />
         </Section>
+
+        <CalendarDay
+          appointments={(plan.appointments ?? []).slice().sort((a, b) => a.time.localeCompare(b.time))}
+          onAdd={addAppointment}
+          onEdit={editAppointment}
+          onDelete={deleteAppointment}
+          onToggle={toggleAppointment}
+        />
 
         <Section emoji="📲" label="Conținut de postat">
           <div className="space-y-2.5 mb-2">
