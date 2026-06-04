@@ -83,7 +83,7 @@ export default function CalendarPage() {
   // Add idea form state
   const [hook, setHook] = useState("");
   const [format, setFormat] = useState("RANT");
-  const [cta, setCta] = useState("DM CULT");
+  const [cta, setCta] = useState("");
   const [contentBrief, setContentBrief] = useState("");
   const [contentPillar, setContentPillar] = useState("");
   const [hookLoading, setHookLoading] = useState(false);
@@ -149,7 +149,7 @@ export default function CalendarPage() {
     setModalDate(dateStr);
     setHook("");
     setFormat("RANT");
-    setCta("DM CULT");
+    setCta("");
     setContentBrief("");
     setContentPillar("");
     setShowAddModal(true);
@@ -561,7 +561,7 @@ export default function CalendarPage() {
                     type="text"
                     value={cta}
                     onChange={(e) => setCta(e.target.value)}
-                    placeholder="DM CULT"
+                    placeholder="Ex: Link în bio, DM INFO etc."
                     className="w-full bg-[#1a1a1a] border border-white/10 text-zinc-200 text-[13px] px-3 py-2.5 rounded-lg focus:outline-none focus:border-[#C0392B]/40 placeholder:text-zinc-700 transition-colors"
                   />
                 </div>
