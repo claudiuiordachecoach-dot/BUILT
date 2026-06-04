@@ -205,7 +205,7 @@ export const BONUSURI: BonusProtocol[] = [
       "Împins: flotări standard, trecând treptat spre flotări cu brațele asimetrice (arcaș) pentru dificultate. Tempo: 3 secunde la coborâre, o secundă sus.",
       "Tras: tracțiuni (dacă ai bară) sau ramat invers pe sub un birou sau o masă stabilă.",
       "Picioare: genuflexiuni bulgărești, îngreunate cu un rucsac cu cărți, combinate cu îndreptări pe un picior pentru coordonare.",
-      "Core: balans hollow body (3 seturi) sau planșe cu tensiune maximă pe abdomen.",
+      "Core: balans hollow body (3 seturi) sau plank cu tensiune maximă pe abdomen.",
       "Cardio opțional: 3-5 runde de sprint pe loc cu ridicarea genunchilor (30 secunde lucru, 30 secunde pauză)."
     ],
     forbidden: [
