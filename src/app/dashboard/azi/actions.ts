@@ -12,22 +12,28 @@ export interface DailyItem {
 }
 
 export interface DailyPlan {
-  date: string; // YYYY-MM-DD
-  posts: DailyItem[];
-  tasks: DailyItem[];
-  clients: DailyItem[];
+  date: string;
+  top3: string[];        // Top 3 ale zilei (dimineață)
+  posts: DailyItem[];    // Conținut de postat
+  tasks: DailyItem[];    // De făcut
+  clients: DailyItem[];  // Clienți
+  tomorrow: DailyItem[]; // Ce mut pe mâine (seară)
+  lesson: string;        // Un gând / lecție (seară)
   notes: string;
 }
 
 function emptyPlan(date: string): DailyPlan {
   return {
     date,
+    top3: ["", "", ""],
     posts: [
       { id: "story", text: "", done: false, type: "Story" },
       { id: "reel", text: "", done: false, type: "Reel" },
     ],
     tasks: [],
     clients: [],
+    tomorrow: [],
+    lesson: "",
     notes: "",
   };
 }
@@ -48,9 +54,12 @@ export async function getDailyPlan(date: string): Promise<DailyPlan> {
     if (v && Array.isArray(v.posts)) {
       return {
         date,
+        top3: Array.isArray(v.top3) ? v.top3 : ["", "", ""],
         posts: v.posts ?? [],
         tasks: v.tasks ?? [],
         clients: v.clients ?? [],
+        tomorrow: v.tomorrow ?? [],
+        lesson: v.lesson ?? "",
         notes: v.notes ?? "",
       };
     }
