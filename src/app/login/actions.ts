@@ -20,8 +20,8 @@ export async function signIn(formData: FormData) {
     .eq('id', user.id)
     .single();
 
-  // Admin explicit → centrul de comandă zilnic (Azi)
-  if (profile?.role === 'admin') redirect('/dashboard/azi');
+  // Admin explicit → dashboard admin
+  if (profile?.role === 'admin') redirect('/dashboard/analytics');
 
   // Client sau user nou fără profil → portal client
   redirect('/client/dashboard');
