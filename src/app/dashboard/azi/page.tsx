@@ -1,166 +1,239 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import { getTodayBrief, getWeekPlan, type TodayBrief, type WeekPlan } from "./actions";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { getDailyPlan, saveDailyPlan, type DailyPlan, type DailyItem } from "./actions";
 
-function Copy({ text, label = "Copiază" }: { text: string; label?: string }) {
-  const [copied, setCopied] = useState(false);
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+function todayStr(): string {
+  return new Date().toISOString().split("T")[0];
+}
+
+function shiftDate(dateStr: string, days: number): string {
+  const d = new Date(dateStr + "T12:00:00");
+  d.setDate(d.getDate() + days);
+  return d.toISOString().split("T")[0];
+}
+
+function prettyDate(dateStr: string): string {
+  return new Date(dateStr + "T12:00:00").toLocaleDateString("ro-RO", {
+    weekday: "long", day: "numeric", month: "long",
+  });
+}
+
+function newId(): string {
+  try { return crypto.randomUUID(); } catch { return `id_${Date.now()}_${Math.random().toString(36).slice(2)}`; }
+}
+
+const POST_TYPES = ["Story", "Reel", "Carusel", "Alt"];
+
+// ─── Checkbox ─────────────────────────────────────────────────────────────────
+
+function Check({ done, onToggle }: { done: boolean; onToggle: () => void }) {
   return (
     <button
       type="button"
-      onClick={async () => { await navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
-      className="text-[10px] font-condensed uppercase tracking-wider px-2.5 py-1 rounded border border-built-gray-2 text-built-gray-text hover:text-built-white hover:border-built-red/50 transition-colors"
+      onClick={onToggle}
+      className={`w-5 h-5 shrink-0 rounded border flex items-center justify-center transition-colors ${
+        done ? "bg-built-red border-built-red text-white" : "border-built-gray-2 hover:border-built-red/60"
+      }`}
     >
-      {copied ? "✓ Copiat" : label}
+      {done && <span className="text-[11px] leading-none">✓</span>}
     </button>
   );
 }
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function AziPage() {
-  const [brief, setBrief] = useState<TodayBrief | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [week, setWeek] = useState<WeekPlan | null>(null);
-  const [weekLoading, setWeekLoading] = useState(false);
-  const [weekOpen, setWeekOpen] = useState(false);
+  const [dateStr, setDateStr] = useState(todayStr());
+  const [plan, setPlan] = useState<DailyPlan | null>(null);
+  const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const skipSave = useRef(true);
 
-  async function load(force = false) {
-    setLoading(true);
-    setError(null);
-    const r = await getTodayBrief(force);
-    setLoading(false);
-    if (r.ok) setBrief(r.brief); else setError(r.error);
-  }
+  // Load on date change
+  useEffect(() => {
+    skipSave.current = true;
+    setPlan(null);
+    getDailyPlan(dateStr).then((p) => { setPlan(p); skipSave.current = false; });
+  }, [dateStr]);
 
-  async function loadWeek(force = false) {
-    setWeekLoading(true);
-    const r = await getWeekPlan(force);
-    setWeekLoading(false);
-    if (r.ok) setWeek(r.plan);
-  }
+  // Debounced autosave
+  useEffect(() => {
+    if (!plan || skipSave.current) return;
+    setStatus("saving");
+    if (saveTimer.current) clearTimeout(saveTimer.current);
+    saveTimer.current = setTimeout(async () => {
+      await saveDailyPlan(plan);
+      setStatus("saved");
+      setTimeout(() => setStatus("idle"), 1500);
+    }, 700);
+    return () => { if (saveTimer.current) clearTimeout(saveTimer.current); };
+  }, [plan]);
 
-  function toggleWeek() {
-    const next = !weekOpen;
-    setWeekOpen(next);
-    if (next && !week) loadWeek(false);
-  }
+  const mutate = useCallback((fn: (p: DailyPlan) => DailyPlan) => {
+    setPlan((prev) => (prev ? fn(prev) : prev));
+  }, []);
 
-  useEffect(() => { load(false); }, []);
+  // ── Item operations ──
+  const updateItem = (list: "posts" | "tasks" | "clients", id: string, patch: Partial<DailyItem>) =>
+    mutate((p) => ({ ...p, [list]: p[list].map((it) => (it.id === id ? { ...it, ...patch } : it)) }));
 
-  const today = new Date().toLocaleDateString("ro-RO", { weekday: "long", day: "numeric", month: "long" });
+  const removeItem = (list: "posts" | "tasks" | "clients", id: string) =>
+    mutate((p) => ({ ...p, [list]: p[list].filter((it) => it.id !== id) }));
+
+  const addItem = (list: "posts" | "tasks" | "clients", item: DailyItem) =>
+    mutate((p) => ({ ...p, [list]: [...p[list], item] }));
+
+  const cyclePostType = (id: string, current: string) => {
+    const next = POST_TYPES[(POST_TYPES.indexOf(current) + 1) % POST_TYPES.length];
+    updateItem("posts", id, { type: next });
+  };
+
+  // ── Progress ──
+  const checkable = plan ? [...plan.posts.filter((p) => p.text.trim()), ...plan.tasks, ...plan.clients] : [];
+  const doneCount = checkable.filter((i) => i.done).length;
 
   return (
-    <div className="p-8 max-w-4xl">
-      <div className="flex items-end justify-between mb-6">
+    <div className="p-8 max-w-3xl">
+      {/* Header + navigare zi */}
+      <div className="flex items-end justify-between mb-2">
         <div>
-          <p className="font-condensed text-xs text-built-red uppercase tracking-wider mb-1">Centrul de Comandă</p>
-          <h1 className="font-display text-5xl tracking-[0.06em] text-built-white mb-1">AZI</h1>
-          <p className="text-built-gray-text capitalize">{today}{brief ? ` · ${brief.cadence.format}` : ""}</p>
+          <p className="font-condensed text-xs text-built-red uppercase tracking-wider mb-1">Jurnalul zilei</p>
+          <h1 className="font-display text-5xl tracking-[0.06em] text-built-white">AZI</h1>
         </div>
-        <button
-          type="button"
-          onClick={() => load(true)}
-          disabled={loading}
-          className="text-xs px-3 py-1.5 rounded border border-built-gray-2 text-built-gray-text hover:text-built-white hover:border-built-red/50 transition-colors disabled:opacity-50"
-        >
-          {loading ? "Generez..." : "↻ Regenerează"}
-        </button>
+        <div className="flex items-center gap-2">
+          <button type="button" onClick={() => setDateStr((d) => shiftDate(d, -1))} className="px-2.5 py-1 rounded border border-built-gray-2 text-built-gray-text hover:text-built-white transition-colors">◄</button>
+          {dateStr !== todayStr() && (
+            <button type="button" onClick={() => setDateStr(todayStr())} className="px-3 py-1 text-xs rounded border border-built-red/40 text-built-red hover:bg-built-red/10 transition-colors">Azi</button>
+          )}
+          <button type="button" onClick={() => setDateStr((d) => shiftDate(d, 1))} className="px-2.5 py-1 rounded border border-built-gray-2 text-built-gray-text hover:text-built-white transition-colors">►</button>
+        </div>
+      </div>
+      <div className="flex items-center justify-between mb-6">
+        <p className="text-built-gray-text capitalize">{prettyDate(dateStr)}</p>
+        <div className="flex items-center gap-3">
+          {checkable.length > 0 && <span className="text-xs text-built-gray-text">{doneCount}/{checkable.length} bifate</span>}
+          <span className="text-[11px] text-built-gray-text w-14 text-right">
+            {status === "saving" ? "Salvez..." : status === "saved" ? "✓ Salvat" : ""}
+          </span>
+        </div>
       </div>
 
-      {error && <p className="text-built-red text-sm mb-6">⚠ {error}</p>}
+      {!plan && <p className="text-built-gray-text">Se încarcă ziua...</p>}
 
-      {loading && !brief && (
-        <p className="text-built-gray-text">Îți pregătesc briefingul de azi...</p>
-      )}
-
-      {brief && (
-        <div className="space-y-5">
-          {/* Cadența zilei */}
-          <div className="bg-built-red/10 border border-built-red/30 rounded-xl p-5">
-            <p className="text-[10px] font-condensed uppercase tracking-widest text-built-red mb-1">Focusul zilei</p>
-            <p className="font-display text-2xl text-built-white tracking-wide mb-1">{brief.cadence.format}</p>
-            <p className="text-built-gray-text text-sm">{brief.cadence.focus}</p>
-          </div>
-
-          {/* Ce postezi azi */}
-          <div className="bg-built-gray-1 border border-built-gray-2 rounded-xl p-5">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-display text-xl text-built-white tracking-wide">📲 Ce postezi azi</h3>
-              <Copy text={`${brief.ready_hook}\n\n${brief.caption_starter}`} label="Copiază hook+caption" />
+      {plan && (
+        <div className="space-y-6">
+          {/* De postat */}
+          <section className="bg-built-gray-1 border border-built-gray-2 rounded-xl p-5">
+            <h2 className="font-display text-xl text-built-white tracking-wide mb-3">📲 De postat azi</h2>
+            <div className="space-y-2">
+              {plan.posts.map((it) => (
+                <div key={it.id} className="flex items-center gap-2 group">
+                  <Check done={it.done} onToggle={() => updateItem("posts", it.id, { done: !it.done })} />
+                  <button
+                    type="button"
+                    onClick={() => cyclePostType(it.id, it.type ?? "Alt")}
+                    className="text-[10px] font-condensed uppercase tracking-wider px-2 py-1 rounded border border-built-gray-2 text-built-red w-16 shrink-0 hover:border-built-red/60 transition-colors"
+                    title="Schimbă tipul"
+                  >
+                    {it.type ?? "Alt"}
+                  </button>
+                  <input
+                    value={it.text}
+                    onChange={(e) => updateItem("posts", it.id, { text: e.target.value })}
+                    placeholder="Ce pui..."
+                    className={`flex-1 bg-transparent border-b border-built-gray-2 focus:border-built-red/50 px-1 py-1 text-sm focus:outline-none transition-colors ${it.done ? "line-through text-built-gray-text" : "text-built-white"}`}
+                  />
+                  <button type="button" onClick={() => removeItem("posts", it.id)} className="text-built-gray-text hover:text-built-red opacity-0 group-hover:opacity-100 transition-opacity px-1">×</button>
+                </div>
+              ))}
             </div>
-            <p className="text-built-gray-text text-sm mb-3">{brief.content_idea}</p>
-            <div className="bg-built-black border border-built-gray-2 rounded-lg p-3 mb-2">
-              <p className="text-[10px] font-condensed uppercase tracking-widest text-built-red mb-1">Hook gata de folosit</p>
-              <p className="text-built-white">{brief.ready_hook}</p>
-            </div>
-            <div className="bg-built-black border border-built-gray-2 rounded-lg p-3">
-              <p className="text-[10px] font-condensed uppercase tracking-widest text-built-gray-text mb-1">Început de caption</p>
-              <p className="text-built-white/90 text-sm">{brief.caption_starter}</p>
-            </div>
-            <div className="flex gap-2 mt-3">
-              <Link href="/dashboard/repurpose" className="text-xs px-3 py-1.5 rounded bg-built-red/15 border border-built-red/30 text-built-red hover:bg-built-red/25 transition-colors">Extinde în 4 piese →</Link>
-              <Link href="/dashboard/hooks" className="text-xs px-3 py-1.5 rounded border border-built-gray-2 text-built-gray-text hover:text-built-white transition-colors">Alte hook-uri</Link>
-            </div>
-          </div>
+            <button type="button" onClick={() => addItem("posts", { id: newId(), text: "", done: false, type: "Alt" })} className="mt-3 text-xs text-built-gray-text hover:text-built-white transition-colors">+ Adaugă conținut</button>
+          </section>
 
-          {/* Ce faci azi (business) */}
-          <div className="bg-built-gray-1 border border-built-gray-2 rounded-xl p-5">
-            <h3 className="font-display text-xl text-built-white tracking-wide mb-3">🎯 Ce faci azi (clienți)</h3>
-            <p className="text-built-white mb-1">{brief.business_action}</p>
-            <p className="text-built-gray-text text-sm mb-3">{brief.business_why}</p>
-            <Link href="/dashboard/outreach" className="text-xs px-3 py-1.5 rounded border border-built-gray-2 text-built-gray-text hover:text-built-white transition-colors">Deschide DM Sales →</Link>
-          </div>
+          {/* De făcut */}
+          <ChecklistSection
+            title="🎯 Ce îmi propun azi"
+            placeholder="Adaugă un obiectiv și apasă Enter"
+            items={plan.tasks}
+            onToggle={(id, done) => updateItem("tasks", id, { done })}
+            onEdit={(id, text) => updateItem("tasks", id, { text })}
+            onRemove={(id) => removeItem("tasks", id)}
+            onAdd={(text) => addItem("tasks", { id: newId(), text, done: false })}
+          />
 
-          {/* Mindset */}
-          <div className="border-l-2 border-built-red pl-4 py-1">
-            <p className="text-[10px] font-condensed uppercase tracking-widest text-built-gray-text mb-1">Nota de azi</p>
-            <p className="text-built-white/90 italic">{brief.mindset_note}</p>
-          </div>
+          {/* Clienți */}
+          <ChecklistSection
+            title="💬 Clienți"
+            placeholder="Cui scrii / check-in (Enter)"
+            items={plan.clients}
+            onToggle={(id, done) => updateItem("clients", id, { done })}
+            onEdit={(id, text) => updateItem("clients", id, { text })}
+            onRemove={(id) => removeItem("clients", id)}
+            onAdd={(text) => addItem("clients", { id: newId(), text, done: false })}
+          />
+
+          {/* Jurnal */}
+          <section className="bg-built-gray-1 border border-built-gray-2 rounded-xl p-5">
+            <h2 className="font-display text-xl text-built-white tracking-wide mb-3">📝 Jurnal</h2>
+            <textarea
+              value={plan.notes}
+              onChange={(e) => mutate((p) => ({ ...p, notes: e.target.value }))}
+              placeholder="Ce s-a întâmplat azi, gânduri, ce urmează..."
+              rows={5}
+              className="w-full bg-built-black border border-built-gray-2 rounded-lg px-4 py-3 text-built-white placeholder-built-gray-text/50 focus:outline-none focus:border-built-red/50 transition-colors resize-y text-sm"
+            />
+          </section>
         </div>
       )}
-
-      {/* Planul săptămânii */}
-      <div className="mt-6">
-        <button
-          type="button"
-          onClick={toggleWeek}
-          className="w-full flex items-center justify-between bg-built-gray-1 border border-built-gray-2 rounded-xl px-5 py-4 hover:border-built-red/40 transition-colors"
-        >
-          <span className="font-display text-xl text-built-white tracking-wide">📅 Planul săptămânii</span>
-          <span className="text-built-gray-text text-sm">{weekOpen ? "▲" : "▼ vezi toate 6 zilele"}</span>
-        </button>
-
-        {weekOpen && (
-          <div className="mt-3">
-            <div className="flex justify-end mb-2">
-              <button
-                type="button"
-                onClick={() => loadWeek(true)}
-                disabled={weekLoading}
-                className="text-xs px-3 py-1.5 rounded border border-built-gray-2 text-built-gray-text hover:text-built-white hover:border-built-red/50 transition-colors disabled:opacity-50"
-              >
-                {weekLoading ? "Generez..." : "↻ Regenerează săptămâna"}
-              </button>
-            </div>
-            {weekLoading && !week && <p className="text-built-gray-text text-sm">Îți pregătesc planul săptămânii...</p>}
-            {week && (
-              <div className="space-y-2">
-                {week.days.map((d, i) => (
-                  <div key={i} className="bg-built-gray-1 border border-built-gray-2 rounded-lg p-4">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-display text-base text-built-white tracking-wide w-20">{d.day}</span>
-                      <span className="text-[10px] font-condensed uppercase tracking-wider text-built-red">{d.format}</span>
-                    </div>
-                    <p className="text-built-gray-text text-sm mb-1">{d.idea}</p>
-                    <p className="text-built-white text-sm">🎬 {d.hook}</p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
     </div>
+  );
+}
+
+// ─── Checklist section (tasks / clients) ──────────────────────────────────────
+
+function ChecklistSection({
+  title, placeholder, items, onToggle, onEdit, onRemove, onAdd,
+}: {
+  title: string;
+  placeholder: string;
+  items: DailyItem[];
+  onToggle: (id: string, done: boolean) => void;
+  onEdit: (id: string, text: string) => void;
+  onRemove: (id: string) => void;
+  onAdd: (text: string) => void;
+}) {
+  const [draft, setDraft] = useState("");
+  function commit() {
+    const t = draft.trim();
+    if (t) { onAdd(t); setDraft(""); }
+  }
+  return (
+    <section className="bg-built-gray-1 border border-built-gray-2 rounded-xl p-5">
+      <h2 className="font-display text-xl text-built-white tracking-wide mb-3">{title}</h2>
+      <div className="space-y-2">
+        {items.map((it) => (
+          <div key={it.id} className="flex items-center gap-2 group">
+            <Check done={it.done} onToggle={() => onToggle(it.id, !it.done)} />
+            <input
+              value={it.text}
+              onChange={(e) => onEdit(it.id, e.target.value)}
+              className={`flex-1 bg-transparent border-b border-transparent hover:border-built-gray-2 focus:border-built-red/50 px-1 py-1 text-sm focus:outline-none transition-colors ${it.done ? "line-through text-built-gray-text" : "text-built-white"}`}
+            />
+            <button type="button" onClick={() => onRemove(it.id)} className="text-built-gray-text hover:text-built-red opacity-0 group-hover:opacity-100 transition-opacity px-1">×</button>
+          </div>
+        ))}
+      </div>
+      <input
+        value={draft}
+        onChange={(e) => setDraft(e.target.value)}
+        onKeyDown={(e) => { if (e.key === "Enter") commit(); }}
+        onBlur={commit}
+        placeholder={placeholder}
+        className="mt-3 w-full bg-transparent border-b border-built-gray-2 focus:border-built-red/50 px-1 py-1.5 text-sm text-built-white placeholder-built-gray-text/50 focus:outline-none transition-colors"
+      />
+    </section>
   );
 }
