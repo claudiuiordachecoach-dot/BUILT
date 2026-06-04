@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { getTodayBrief, type TodayBrief } from "./actions";
+import { getTodayBrief, getWeekPlan, type TodayBrief, type WeekPlan } from "./actions";
 
 function Copy({ text, label = "Copiază" }: { text: string; label?: string }) {
   const [copied, setCopied] = useState(false);
@@ -21,6 +21,9 @@ export default function AziPage() {
   const [brief, setBrief] = useState<TodayBrief | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [week, setWeek] = useState<WeekPlan | null>(null);
+  const [weekLoading, setWeekLoading] = useState(false);
+  const [weekOpen, setWeekOpen] = useState(false);
 
   async function load(force = false) {
     setLoading(true);
@@ -28,6 +31,19 @@ export default function AziPage() {
     const r = await getTodayBrief(force);
     setLoading(false);
     if (r.ok) setBrief(r.brief); else setError(r.error);
+  }
+
+  async function loadWeek(force = false) {
+    setWeekLoading(true);
+    const r = await getWeekPlan(force);
+    setWeekLoading(false);
+    if (r.ok) setWeek(r.plan);
+  }
+
+  function toggleWeek() {
+    const next = !weekOpen;
+    setWeekOpen(next);
+    if (next && !week) loadWeek(false);
   }
 
   useEffect(() => { load(false); }, []);
@@ -103,6 +119,48 @@ export default function AziPage() {
           </div>
         </div>
       )}
+
+      {/* Planul săptămânii */}
+      <div className="mt-6">
+        <button
+          type="button"
+          onClick={toggleWeek}
+          className="w-full flex items-center justify-between bg-built-gray-1 border border-built-gray-2 rounded-xl px-5 py-4 hover:border-built-red/40 transition-colors"
+        >
+          <span className="font-display text-xl text-built-white tracking-wide">📅 Planul săptămânii</span>
+          <span className="text-built-gray-text text-sm">{weekOpen ? "▲" : "▼ vezi toate 6 zilele"}</span>
+        </button>
+
+        {weekOpen && (
+          <div className="mt-3">
+            <div className="flex justify-end mb-2">
+              <button
+                type="button"
+                onClick={() => loadWeek(true)}
+                disabled={weekLoading}
+                className="text-xs px-3 py-1.5 rounded border border-built-gray-2 text-built-gray-text hover:text-built-white hover:border-built-red/50 transition-colors disabled:opacity-50"
+              >
+                {weekLoading ? "Generez..." : "↻ Regenerează săptămâna"}
+              </button>
+            </div>
+            {weekLoading && !week && <p className="text-built-gray-text text-sm">Îți pregătesc planul săptămânii...</p>}
+            {week && (
+              <div className="space-y-2">
+                {week.days.map((d, i) => (
+                  <div key={i} className="bg-built-gray-1 border border-built-gray-2 rounded-lg p-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="font-display text-base text-built-white tracking-wide w-20">{d.day}</span>
+                      <span className="text-[10px] font-condensed uppercase tracking-wider text-built-red">{d.format}</span>
+                    </div>
+                    <p className="text-built-gray-text text-sm mb-1">{d.idea}</p>
+                    <p className="text-built-white text-sm">🎬 {d.hook}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

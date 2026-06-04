@@ -151,3 +151,94 @@ export async function getTodayBrief(force = false): Promise<TodayBriefResult> {
     return { ok: false, error: e instanceof Error ? e.message : "Eroare necunoscută." };
   }
 }
+
+// ─── Planificator săptămânal ──────────────────────────────────────────────────
+
+export interface WeekDayPlan {
+  day: string;
+  format: string;
+  idea: string;
+  hook: string;
+}
+
+export interface WeekPlan {
+  week_start: string;
+  days: WeekDayPlan[];
+  generated_at: string;
+}
+
+function mondayOf(d: Date): string {
+  const copy = new Date(d);
+  const day = copy.getDay();
+  const diff = (day === 0 ? -6 : 1) - day; // luni ca început de săptămână
+  copy.setDate(copy.getDate() + diff);
+  return copy.toISOString().split("T")[0];
+}
+
+export type WeekPlanResult = { ok: true; plan: WeekPlan } | { ok: false; error: string };
+
+export async function getWeekPlan(force = false): Promise<WeekPlanResult> {
+  try {
+    const weekStart = mondayOf(new Date());
+    const supabase = getSupabaseServer({ useServiceRole: true });
+
+    if (!force) {
+      const { data: cached } = await supabase
+        .from("creier_metadata").select("value").eq("key", "week_plan").single();
+      const v = cached?.value as WeekPlan | undefined;
+      if (v && v.week_start === weekStart) return { ok: true, plan: v };
+    }
+
+    const cadenceList = [1, 2, 3, 4, 5, 6].map((d) => CADENCE[d]);
+    const task = `# TASK: Planul de conținut BUILT pentru săptămâna asta
+
+Generează o idee + un hook gata de folosit pentru fiecare zi, respectând cadența:
+${cadenceList.map((c) => `- ${c.day}: ${c.format} (${c.focus})`).join("\n")}
+
+Variază pilonii BUILT (B/U/I/L/T) de-a lungul săptămânii. Vocea lui Claudiu, zero clișee.
+
+## Format răspuns — JSON strict, fără markdown:
+{
+  "days": [
+    { "day": "Luni", "format": "Reel", "idea": "string (1 propoziție)", "hook": "string (gata de folosit)" }
+  ]
+}
+Exact 6 zile (Luni-Sâmbătă), în ordine.`;
+
+    const creier = await readCreierFromSupabase();
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({ creierJson: JSON.stringify(creier, null, 2), taskContext: task });
+
+    const message = await client.messages.create({
+      model: MODELS.routine,
+      max_tokens: 2000,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Generează planul săptămânii. JSON strict." }],
+    });
+
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns AI fără text." };
+
+    let parsed: unknown;
+    try { parsed = extractJson(textBlock.text); }
+    catch (e) { return { ok: false, error: `Parse eșuat: ${e instanceof Error ? e.message : "necunoscut"}` }; }
+
+    const arr = Array.isArray((parsed as Record<string, unknown>).days) ? (parsed as { days: unknown[] }).days : [];
+    const days: WeekDayPlan[] = arr.map((d, i) => {
+      const r = d as Record<string, unknown>;
+      return {
+        day: String(r.day ?? cadenceList[i]?.day ?? ""),
+        format: String(r.format ?? cadenceList[i]?.format ?? ""),
+        idea: String(r.idea ?? ""),
+        hook: String(r.hook ?? ""),
+      };
+    });
+
+    const plan: WeekPlan = { week_start: weekStart, days, generated_at: new Date().toISOString() };
+    try { await supabase.from("creier_metadata").upsert({ key: "week_plan", value: plan }); } catch { /* best effort */ }
+
+    return { ok: true, plan };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare necunoscută." };
+  }
+}
