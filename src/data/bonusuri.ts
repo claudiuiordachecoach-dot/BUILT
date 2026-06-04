@@ -175,7 +175,7 @@ export const BONUSURI: BonusProtocol[] = [
     subtitle: "Călătorie, aparate diferite, lipsă de repere",
     shortDescription: "Concentrează-te pe tiparele de mișcare: împins, tras și picioare. Aparatele specifice sunt doar detalii.",
     icon: "🏋️",
-    mechanism: "O sală nefamiliară poate provoca paralizie decizională — ajungi să pierzi 20 de minute căutând aparatele cu care ești obișnuit. Soluția este să aplici tiparele fundamentale de mișcare (împingere orizontală, tragere, flexia șoldului) folosind orice este disponibil (gantere, cabluri, bare).",
+    mechanism: "O sală nefamiliară poate provoca paralizie decizională — ajungi să pierzi 20 de minute căutând aparatele cu care ești obișnuit. Soluția este să aplici tiparele fundamentale de mișcare (împins, tras, picioare) folosind simplu ce ai la îndemână (gantere, cabluri sau bare).",
     goldenRule: "3 tipare mari de mișcare: împins, tras, picioare. Echipamentul e doar instrumentul.",
     protocol: [
       "Identifică rapid: o zonă de împins (presă, gantere, bare), o stație de tras (cabluri, bară de tracțiuni) și un loc pentru picioare.",
