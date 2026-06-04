@@ -27,8 +27,6 @@ export async function analyzeContentLibraryReel(
   likes: string,
   comments: string
 ): Promise<LibraryAnalysisResult> {
-  const client = getAnthropicClient();
-
   const prompt = `Ești expert în analiza performanței conținutului Instagram pentru BUILT (fitness coaching, bărbați 28-42 ani).
 
 Analizezi un reel bazat pe metadata lui:
@@ -55,6 +53,7 @@ Returnează JSON strict (fără markdown):
 Verdict: Exceptional (90-100), Strong (75-89), Good (60-74), Weak (sub 60).`;
 
   try {
+    const client = getAnthropicClient();
     const response = await client.messages.create({
       model: MODELS.routine,
       max_tokens: 1200,

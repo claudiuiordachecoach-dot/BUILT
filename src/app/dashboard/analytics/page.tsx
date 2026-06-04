@@ -460,6 +460,7 @@ export default function AnalyticsPage() {
   const [analysedId, setAnalysedId] = useState<string | null>(null);
   const [analysisData, setAnalysisData] = useState<ContentLibraryAnalysis | null>(null);
   const [analysingId, setAnalysingId] = useState<string | null>(null);
+  const [analysisError, setAnalysisError] = useState<string | null>(null);
 
   // ── Data loading ───────────────────────────────────────────────────────────
   useEffect(() => {
@@ -643,22 +644,30 @@ export default function AnalyticsPage() {
     if (analysedId === reel.id) {
       setAnalysedId(null);
       setAnalysisData(null);
+      setAnalysisError(null);
       return;
     }
     setAnalysingId(reel.id);
-    const result = await analyzeContentLibraryReel(
-      reel.title,
-      reel.format,
-      reel.views,
-      reel.likes,
-      reel.comments
-    );
-    setAnalysingId(null);
-    if (result.ok) {
-      setAnalysedId(reel.id);
-      setAnalysisData(result.analysis);
-      // Feedback loop: salvează learning-ul în DB pentru generare scripturi
-      saveReelAnalysis(reel.id, result.analysis).catch(() => {});
+    setAnalysisError(null);
+    try {
+      const result = await analyzeContentLibraryReel(
+        reel.title,
+        reel.format,
+        reel.views,
+        reel.likes,
+        reel.comments
+      );
+      if (result.ok) {
+        setAnalysedId(reel.id);
+        setAnalysisData(result.analysis);
+        saveReelAnalysis(reel.id, result.analysis).catch(() => {});
+      } else {
+        setAnalysisError(result.error);
+      }
+    } catch (err) {
+      setAnalysisError(err instanceof Error ? err.message : "Eroare necunoscută.");
+    } finally {
+      setAnalysingId(null);
     }
   }
 
@@ -1093,6 +1102,19 @@ export default function AnalyticsPage() {
             </div>
           ))}
         </div>
+
+        {/* Error panel */}
+        {analysisError && (
+          <div className="mt-4 flex items-center gap-3 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+            <span className="text-red-400 text-[12px] flex-1">⚠ {analysisError}</span>
+            <button
+              onClick={() => setAnalysisError(null)}
+              className="text-[11px] text-zinc-500 hover:text-zinc-300 transition-colors"
+            >
+              Închide
+            </button>
+          </div>
+        )}
 
         {/* Inline analysis panel */}
         {analysedId && analysisData && (
