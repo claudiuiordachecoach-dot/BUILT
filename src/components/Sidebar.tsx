@@ -58,6 +58,7 @@ const TOOLS_ITEMS: NavEntry[] = [
   { label: "Audit Profil",  href: "/dashboard/profile-audit", icon: <Icons.search /> },
   { label: "Profilul Meu",  href: "/dashboard/onboarding",    icon: <Icons.user /> },
   { label: "Flux Conversie", href: "/dashboard/flow",          icon: <Icons.chart /> },
+  { label: "Plugin Figma",   href: "/dashboard/figma",         icon: <Icons.presentation /> },
 ];
 
 const ADMIN_ITEMS: NavEntry[] = [
