@@ -57,6 +57,7 @@ const TOOLS_ITEMS: NavEntry[] = [
   { label: "Analizor Reel", href: "/dashboard/reel-copy",     icon: <Icons.chart /> },
   { label: "Audit Profil",  href: "/dashboard/profile-audit", icon: <Icons.search /> },
   { label: "Profilul Meu",  href: "/dashboard/onboarding",    icon: <Icons.user /> },
+  { label: "Flux Conversie", href: "/dashboard/flow",          icon: <Icons.chart /> },
 ];
 
 const ADMIN_ITEMS: NavEntry[] = [
