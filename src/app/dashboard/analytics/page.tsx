@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import {
   analyzeContentLibraryReel,
   getTipOfWeek,
@@ -461,6 +461,14 @@ export default function AnalyticsPage() {
   const [analysisData, setAnalysisData] = useState<ContentLibraryAnalysis | null>(null);
   const [analysingId, setAnalysingId] = useState<string | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
+  const analysisPanelRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to analysis panel when it appears
+  useEffect(() => {
+    if (analysisData && analysisPanelRef.current) {
+      analysisPanelRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [analysisData]);
 
   // ── Data loading ───────────────────────────────────────────────────────────
   useEffect(() => {
@@ -1045,15 +1053,10 @@ export default function AnalyticsPage() {
                     <svg className="w-8 h-8 text-white/10" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
                   </div>
                 )}
-                {/* Platform + Format badges on thumbnail */}
-                <div className="absolute top-2 left-2 flex items-center gap-1 z-10">
-                  <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-black/60 text-white/80 backdrop-blur-sm">
-                    instagram
-                  </span>
-                  <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded text-white z-10 ${formatBadgeClass(reel.format)}`}>
-                    {reel.format}
-                  </span>
-                </div>
+                {/* Format badge */}
+                <span className={`absolute top-2 left-2 text-[9px] font-bold px-1.5 py-0.5 rounded text-white z-10 ${formatBadgeClass(reel.format)}`}>
+                  {reel.format}
+                </span>
                 {/* Date */}
                 <span className="absolute top-2 right-2 text-[9px] text-white/60 font-mono z-10 bg-black/40 px-1 rounded">
                   {reel.date}
@@ -1118,10 +1121,12 @@ export default function AnalyticsPage() {
 
         {/* Inline analysis panel */}
         {analysedId && analysisData && (
-          <AnalysisPanel
-            data={analysisData}
-            onClose={() => { setAnalysedId(null); setAnalysisData(null); }}
-          />
+          <div ref={analysisPanelRef}>
+            <AnalysisPanel
+              data={analysisData}
+              onClose={() => { setAnalysedId(null); setAnalysisData(null); }}
+            />
+          </div>
         )}
       </div>
 
