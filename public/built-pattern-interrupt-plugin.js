@@ -1,7 +1,6 @@
 // ═══════════════════════════════════════════════════════════════
-// BUILT — Pattern Interrupt Strategy · Figma Plugin
-// Bazat pe: "Pattern Interrupt Walkthrough" transcript
-// Run once → 6 frame-uri pe canvas
+// BUILT — Pattern Interrupt Flowchart · Figma Plugin
+// Structura exactă din video: flowchart ORIZONTAL Miro-style
 // ═══════════════════════════════════════════════════════════════
 
 (async function () {
@@ -9,610 +8,515 @@
 await figma.loadFontAsync({ family: "Inter", style: "Regular" });
 await figma.loadFontAsync({ family: "Inter", style: "Bold" });
 
+// ── Helpers ──────────────────────────────────────────────────────
 function rgb(h) {
   return { r: parseInt(h.slice(1,3),16)/255, g: parseInt(h.slice(3,5),16)/255, b: parseInt(h.slice(5,7),16)/255 };
 }
-function solid(c) { return [{ type:"SOLID", color:c }]; }
-
+function solid(c, a) {
+  return [{ type:"SOLID", color:c, opacity: a ?? 1 }];
+}
 function FR(name, x, y, w, h, bg) {
   const f = figma.createFrame();
-  f.name = name; f.x = x; f.y = y; f.resize(w, h);
-  f.fills = solid(bg); f.clipsContent = true;
+  f.name = name; f.x = x; f.y = y;
+  f.resize(Math.max(w,1), Math.max(h,1));
+  f.fills = solid(bg); f.clipsContent = false;
   figma.currentPage.appendChild(f); return f;
 }
-function RCT(p, x, y, w, h, c, r) {
+function RCT(p, x, y, w, h, c, r, a) {
   const s = figma.createRectangle();
   s.x=x; s.y=y; s.resize(Math.max(w,1),Math.max(h,1));
-  s.fills=solid(c); if(r) s.cornerRadius=r; if(p) p.appendChild(s); return s;
+  s.fills = solid(c, a ?? 1);
+  if(r) s.cornerRadius=r;
+  if(p) p.appendChild(s); return s;
 }
-function TXT(p, x, y, str, sz, c, bold, mw) {
+function TXT(p, x, y, str, sz, c, bold, mw, center) {
   if(!str||!str.length) str=" ";
   const t = figma.createText();
   t.fontName={family:"Inter",style:bold?"Bold":"Regular"};
   t.fontSize=sz; t.fills=solid(c);
   if(mw){ t.textAutoResize="HEIGHT"; t.resize(mw, sz+4); }
+  if(center) t.textAlignHorizontal="CENTER";
   t.characters=str; t.x=x; t.y=y;
   if(p) p.appendChild(t); return t;
 }
 
-const BG=rgb("#080808"), CARD=rgb("#0F0F0F"), CARD2=rgb("#111111");
-const BDR=rgb("#1E1E1E"), RED=rgb("#C0392B"), WHT=rgb("#FFFFFF");
-const GRY=rgb("#A1A1AA"), MUT=rgb("#52525B"), DIM=rgb("#27272A");
-const PUR=rgb("#7C3AED"), BLU=rgb("#0891B2"), AMB=rgb("#D97706");
-const GRN=rgb("#059669"), ORG=rgb("#EA580C");
-
-const W=1440, H=900, G=80;
+// ── Colors ───────────────────────────────────────────────────────
+const BG   = rgb("#080808");
+const CARD  = rgb("#0F0F0F");
+const BDR   = rgb("#1E1E1E");
+const WHT   = rgb("#FFFFFF");
+const GRY   = rgb("#A1A1AA");
+const MUT   = rgb("#52525B");
+const DIM   = rgb("#27272A");
+const RED   = rgb("#C0392B");
+const GRN   = rgb("#059669");
+const BLU   = rgb("#0891B2");
+const PUR   = rgb("#7C3AED");
+const AMB   = rgb("#D97706");
+const ORG   = rgb("#EA580C");
 
 // ═══════════════════════════════════════════════════════════════
-// FRAME 01 — PROBLEMA: DE CE PIEZI OAMENII
+// FRAME 01 — FLOWCHART ORIZONTAL (structura exactă din video)
 // ═══════════════════════════════════════════════════════════════
 {
-  const f = FR("01 — Problema", 0, 0, W, H, BG);
+  const FW = 3200, FH = 1000;
+  const f = FR("01 — Pattern Interrupt Flowchart", 0, 0, FW, FH, BG);
 
-  TXT(f,80,52,"PATTERN INTERRUPT — DE CE AI NEVOIE DE EL",10,RED,true);
-  TXT(f,80,70,"Toți se concentrează pe hook. Nimeni nu ține oamenii acolo.",32,WHT,true);
-  TXT(f,80,116,"Sursa: Pattern Interrupt Walkthrough · aplicat pe BUILT by Iordache Claudiu",12,MUT,false,900);
-  RCT(f,80,144,W-160,1,BDR);
+  // Title
+  TXT(f, 80, 40, "PATTERN INTERRUPT — FLOWCHART COMPLET", 10, RED, true);
+  TXT(f, 80, 58, "Structura unui Reel BUILT care ține oamenii de la primul până la ultimul secund", 13, MUT, false, 900);
 
-  // The problem statement
-  RCT(f,80,164,W-160,88,CARD,14);
-  RCT(f,80,164,4,88,RED,4);
-  TXT(f,104,178,"PROBLEMA REALĂ",9,RED,true);
-  TXT(f,104,196,"Majoritatea creatorilor obțin engagement la hook, dar pierd oamenii imediat după.",16,WHT,true,W-200);
-  TXT(f,104,224,"Ei simt că: 'a pus efort la început, dar nu-i pasă de mijloc și final.' — și pleacă.",12,GRY,false,W-200);
-
-  // Retention graph — visual representation
-  TXT(f,80,276,"GRAFICUL DE RETENȚIE — FĂRĂ PATTERN INTERRUPT",9,RED,true);
-  RCT(f,80,292,W-160,200,CARD,14);
-
-  // Graph background grid
-  for(let i=0;i<5;i++){
-    RCT(f,80,292+i*40,W-160,1,BDR);
+  // ── Node drawing helpers ──────────────────────────────────────
+  // Action node (galben în original → amber în BUILT)
+  function actionNode(px, py, w, h, label, color) {
+    RCT(f, px, py, w, h, CARD, 12);
+    RCT(f, px, py, w, 3, color, 12);
+    RCT(f, px, py+h-3, w, 3, color, 12);
+    RCT(f, px, py, 3, h, color, 3);
+    RCT(f, px+w-3, py, 3, h, color, 3);
+    const lines = label.split("\n");
+    const lineH = 16;
+    const totalH = lines.length * lineH;
+    const startY = py + (h - totalH) / 2;
+    lines.forEach((line, i) => {
+      TXT(f, px + 6, startY + i * lineH, line, 11, WHT, true, w - 12, false);
+    });
   }
 
-  // Y axis labels
-  TXT(f,84,296,"100%",9,MUT,false);
-  TXT(f,84,336,"75%",9,MUT,false);
-  TXT(f,84,376,"50%",9,MUT,false);
-  TXT(f,84,416,"25%",9,MUT,false);
-  TXT(f,84,456,"0%",9,MUT,false);
+  // Decision node (albastru în original)
+  function decisionNode(px, py, w, h, label, color) {
+    RCT(f, px, py, w, h, {r: color.r*0.08, g: color.g*0.08, b: color.b*0.08}, 12);
+    RCT(f, px, py, w, h, color, 12, 0.15);
+    RCT(f, px, py, w, 3, color, 12);
+    RCT(f, px, py+h-3, w, 3, color, 12);
+    RCT(f, px, py, 3, h, color, 3);
+    RCT(f, px+w-3, py, 3, h, color, 3);
+    const lines = label.split("\n");
+    const lineH = 16;
+    const totalH = lines.length * lineH;
+    const startY = py + (h - totalH) / 2;
+    lines.forEach((line, i) => {
+      TXT(f, px + 6, startY + i * lineH, line, 11, color, true, w - 12, false);
+    });
+  }
 
-  // X axis labels
-  TXT(f,140,472,"0s",9,MUT,false);
-  TXT(f,310,472,"5s",9,MUT,false);
-  TXT(f,490,472,"10s",9,MUT,false);
-  TXT(f,670,472,"15s",9,MUT,false);
-  TXT(f,850,472,"20s",9,MUT,false);
-  TXT(f,1030,472,"25s",9,MUT,false);
-  TXT(f,1210,472,"30s",9,MUT,false);
-  TXT(f,1360,472,"Final",9,MUT,false);
+  // Annotation sticky (portocaliu în original)
+  function stickyNote(px, py, w, label, color) {
+    const lines = label.split("\n");
+    const h = 16 + lines.length * 18 + 12;
+    RCT(f, px, py, w, h, {r: color.r*0.08, g: color.g*0.08, b: color.b*0.08}, 8);
+    RCT(f, px, py, 3, h, color, 4);
+    lines.forEach((line, i) => {
+      TXT(f, px + 10, py + 10 + i * 18, line, 10, color, false, w - 20);
+    });
+    return h;
+  }
 
-  // Retention curve — drops sharply after hook (red = bad)
-  // Simulate curve with rectangles of decreasing height
-  const pts=[100,90,72,55,42,34,28,24,20,18,16,15,14,13,12];
-  const barW=80, startX=140;
-  pts.forEach((pct,i)=>{
-    const barH=Math.round(160*pct/100);
-    const bx=startX+i*(barW+2);
-    RCT(f,bx,452-barH,barW,barH,rgb("#C0392B"),4);
-    // faded overlay
-    RCT(f,bx,452-barH,barW,barH,{r:0.75,g:0.22,b:0.17},4);
-  });
+  // Arrow →
+  function arrow(px, py, w, color) {
+    RCT(f, px, py + 1, w - 8, 2, color, 0);
+    // arrowhead
+    TXT(f, px + w - 12, py - 5, "›", 14, color, true);
+  }
 
-  // Highlight hook zone
-  RCT(f,140,292,168,180,{r:0.75,g:0.22,b:0.17},4);
-  TXT(f,148,298,"HOOK",8,WHT,true);
-  TXT(f,148,312,"Engagement\nmax",9,WHT,false);
+  // ── MAIN FLOW (Y center = 400) ────────────────────────────────
+  const NY = 360;  // Node Y
+  const NH = 80;   // Node Height
+  const AW = 52;   // Arrow Width
 
-  // Drop arrow annotation
-  TXT(f,340,340,"⬇ Pierdere masivă",11,RED,true);
-  TXT(f,340,358,"fără re-engagement",11,MUT,false);
-
-  // 3 consequence boxes
-  const cons=[
-    {c:RED,   t:"Retenție scăzută",   d:"Oamenii pleacă după primele 3-5s. Efortul tău la hook = zero ROI."},
-    {c:AMB,   t:"Algoritm penalizează",d:"Watch time mic → algoritm oprește distribuirea. Reach scade săptămânal."},
-    {c:MUT,   t:"Zero conversie",      d:"Dacă nu urmăresc, nu convertesc. Atenția = singurul drum spre vânzare."},
+  // Node widths
+  const nodes = [
+    { w: 180 }, // 1 Hook
+    { w: 200 }, // arrow
+    { w: 210 }, // 2 Deliver value
+    { w: 200 }, // arrow
+    { w: 210 }, // 3 Attention fading?
+    { w: 200 }, // arrow
+    { w: 230 }, // 4 Insert PI
+    { w: 200 }, // arrow
+    { w: 210 }, // 5 Deliver value
+    { w: 200 }, // arrow
+    { w: 230 }, // 6 Attention fading again?
+    { w: 200 }, // arrow
+    { w: 230 }, // 7 Add another interrupt
+    { w: 200 }, // arrow
+    { w: 260 }, // 8 Build anticipation
+    { w: 200 }, // arrow
+    { w: 230 }, // 9 Deliver payoff
+    { w: 200 }, // arrow
+    { w: 180 }, // 10 CTA
   ];
-  const cw=Math.floor((W-160-2*24)/3);
-  cons.forEach((cn,i)=>{
-    const cx=80+i*(cw+24), cy=500;
-    RCT(f,cx,cy,cw,112,CARD,12);
-    RCT(f,cx,cy,cw,4,cn.c,12);
-    TXT(f,cx+16,cy+20,cn.t,14,WHT,true,cw-32);
-    TXT(f,cx+16,cy+46,cn.d,11,GRY,false,cw-32);
+
+  let cx = 80;
+
+  // 1. HOOK (verde — start)
+  const n1x = cx, n1w = 200;
+  actionNode(n1x, NY, n1w, NH, "START\nCU HOOK", GRN);
+  TXT(f, n1x, NY - 28, "01", 9, GRN, true);
+  // Sticky below
+  stickyNote(n1x - 20, NY + NH + 12, n1w + 40,
+    "Angajezi audiența în\nprimele 3 secunde.\nHook vizual + verbal simultan.", AMB);
+  cx += n1w;
+
+  // Arrow 1
+  arrow(cx, NY + NH/2 - 1, AW, GRY);
+  cx += AW;
+
+  // 2. DELIVER VALUE
+  const n2x = cx, n2w = 220;
+  actionNode(n2x, NY, n2w, NH, "Livrezi\nvaloare/context", AMB);
+  TXT(f, n2x, NY - 28, "02", 9, AMB, true);
+  // Red annotation above
+  TXT(f, n2x, NY - 48, "Acum dai valoarea — aici pierd atenția.", 9, RED, false, n2w);
+  stickyNote(n2x - 10, NY + NH + 12, n2w + 20,
+    "Explici mecanismul.\nSpecificitate extremă.\nZero generalități.", GRY);
+  cx += n2w;
+
+  // Arrow 2
+  arrow(cx, NY + NH/2 - 1, AW, GRY);
+  cx += AW;
+
+  // 3. ATTENTION FADING?
+  const n3x = cx, n3w = 220;
+  decisionNode(n3x, NY, n3w, NH, "Atenția\nscade?", BLU);
+  TXT(f, n3x, NY - 28, "03", 9, BLU, true);
+  // Loop back annotation
+  TXT(f, n3x + 10, NY + NH + 14, "DA →", 9, BLU, true);
+  TXT(f, n3x + 10, NY + NH + 28, "Inserezi Pattern Interrupt", 9, GRY, false, n3w - 20);
+  TXT(f, n3x + 10, NY + NH + 44, "NU → Continui cu valoare", 9, GRY, false, n3w - 20);
+  cx += n3w;
+
+  // Arrow 3
+  arrow(cx, NY + NH/2 - 1, AW, RED);
+  TXT(f, cx, NY + NH/2 - 18, "DA", 8, RED, true);
+  cx += AW;
+
+  // 4. INSERT PATTERN INTERRUPT
+  const n4x = cx, n4w = 240;
+  actionNode(n4x, NY, n4w, NH, "Inserezi\nPattern Interrupt", PUR);
+  TXT(f, n4x, NY - 28, "04", 9, PUR, true);
+  RCT(f, n4x, NY - 14, n4w, 12, {r:PUR.r*0.15, g:PUR.g*0.15, b:PUR.b*0.15}, 4);
+  TXT(f, n4x + 4, NY - 13, "⚡ RE-ENGAGEMENT", 7, PUR, true);
+  const piTypesStr = "• Schimbare unghi cameră\n• Întoarcere cap/corp\n• Text bold pe ecran\n• Prop/obiect fizic\n• Zoom in/out brusc\n• Pauza intenționată 1s";
+  stickyNote(n4x - 10, NY + NH + 12, n4w + 20,
+    "Snaps them back in.\nCreează curiozitate/surpriză.\nÎi dai un motiv să rămână.", PUR);
+  cx += n4w;
+
+  // Arrow 4
+  arrow(cx, NY + NH/2 - 1, AW, GRY);
+  cx += AW;
+
+  // 5. DELIVER VALUE (again)
+  const n5x = cx, n5w = 220;
+  actionNode(n5x, NY, n5w, NH, "Livrezi\nvaloare/context", AMB);
+  TXT(f, n5x, NY - 28, "05", 9, AMB, true);
+  stickyNote(n5x - 10, NY + NH + 12, n5w + 20,
+    "Continui cu informația.\nAtenția va scădea din nou\ndupă 3-5 secunde.", GRY);
+  cx += n5w;
+
+  // Arrow 5
+  arrow(cx, NY + NH/2 - 1, AW, GRY);
+  cx += AW;
+
+  // 6. ATTENTION FADING AGAIN?
+  const n6x = cx, n6w = 240;
+  decisionNode(n6x, NY, n6w, NH, "Atenția scade\ndin nou?", BLU);
+  TXT(f, n6x, NY - 28, "06", 9, BLU, true);
+  TXT(f, n6x + 10, NY + NH + 14, "Un ultim re-engagement", 9, AMB, true);
+  TXT(f, n6x + 10, NY + NH + 30, "înainte de final", 9, GRY, false);
+  cx += n6w;
+
+  // Arrow 6
+  arrow(cx, NY + NH/2 - 1, AW, RED);
+  TXT(f, cx, NY + NH/2 - 18, "DA", 8, RED, true);
+  cx += AW;
+
+  // 7. ADD ANOTHER INTERRUPT
+  const n7x = cx, n7w = 240;
+  actionNode(n7x, NY, n7w, NH, "Adaugi alt\nPattern Interrupt", PUR);
+  TXT(f, n7x, NY - 28, "07", 9, PUR, true);
+  RCT(f, n7x, NY - 14, n7w, 12, {r:PUR.r*0.15, g:PUR.g*0.15, b:PUR.b*0.15}, 4);
+  TXT(f, n7x + 4, NY - 13, "⚡ RE-ENGAGEMENT", 7, PUR, true);
+  stickyNote(n7x - 10, NY + NH + 12, n7w + 20,
+    "Schimbi unghiul sau\nintroduci un element nou.\nÎi aduci atenția înapoi.", PUR);
+  cx += n7w;
+
+  // Arrow 7
+  arrow(cx, NY + NH/2 - 1, AW, GRY);
+  cx += AW;
+
+  // 8. BUILD ANTICIPATION
+  const n8x = cx, n8w = 260;
+  actionNode(n8x, NY, n8w, NH, "Construiești\nanticipation/tease", ORG);
+  TXT(f, n8x, NY - 28, "08", 9, ORG, true);
+  stickyNote(n8x - 10, NY + NH + 12, n8w + 20,
+    "Reamintești de ce să rămână.\nSpui ce urmează.\nTeaser pentru payoff.", ORG);
+  cx += n8w;
+
+  // Arrow 8
+  arrow(cx, NY + NH/2 - 1, AW, GRY);
+  cx += AW;
+
+  // 9. DELIVER PAYOFF
+  const n9x = cx, n9w = 240;
+  actionNode(n9x, NY, n9w, NH, "Livrezi\nPayoff-ul", GRN);
+  TXT(f, n9x, NY - 28, "09", 9, GRN, true);
+  stickyNote(n9x - 10, NY + NH + 12, n9w + 20,
+    "Dai ce ai promis.\nAici se construiește trust-ul.\nOamenii văd că ești consecvent.", GRN);
+  cx += n9w;
+
+  // Arrow 9
+  arrow(cx, NY + NH/2 - 1, AW, GRY);
+  cx += AW;
+
+  // 10. CTA (roșu — end)
+  const n10x = cx, n10w = 200;
+  actionNode(n10x, NY, n10w, NH, "CTA\nO singură acțiune", RED);
+  TXT(f, n10x, NY - 28, "10", 9, RED, true);
+  stickyNote(n10x - 10, NY + NH + 12, n10w + 20,
+    "Spui ce să facă next.\nFollow, DM, click —\norice e obiectivul tău.", RED);
+
+  // ── LOOP BACK ARROW (PI → back to value) ─────────────────────
+  // Visual indicator of the loop at the bottom
+  const loopY = NY + NH + 160;
+  RCT(f, n4x + n4w/2 - 2, loopY, 4, 20, PUR, 0);
+  RCT(f, n4x - 60, loopY + 20, n4x + n4w/2 - n4x + 60 + 2, 3, PUR, 0);
+  RCT(f, n4x - 60, loopY + 20, 3, -70, PUR, 0);
+  TXT(f, n4x - 120, loopY + 25, "← Loop: atenția scade din nou → inserezi alt PI", 9, PUR, false, 400);
+
+  // ── TIMING RULER ─────────────────────────────────────────────
+  const rulerY = NY - 80;
+  RCT(f, 80, rulerY, cx + n10w - 80, 2, DIM, 0);
+  const timeMarkers = [
+    {x: 80, t: "0s"},
+    {x: 80 + 200, t: "3s"},
+    {x: 80 + 200 + 52 + 220, t: "8s"},
+    {x: 80 + 200 + 52 + 220 + 52 + 220 + 52, t: "~13s"},
+    {x: 80 + 200 + 52 + 220 + 52 + 220 + 52 + 240, t: "~18s"},
+  ];
+  timeMarkers.forEach(m => {
+    RCT(f, m.x, rulerY - 6, 2, 14, DIM, 0);
+    TXT(f, m.x - 8, rulerY - 18, m.t, 8, MUT, false);
   });
+  TXT(f, 80, rulerY - 32, "TIMING (short form: PI la fiecare 3–5s)", 9, MUT, true);
 
-  // Quote from video
-  RCT(f,80,636,W-160,80,CARD,12);
-  RCT(f,80,636,4,80,PUR,4);
-  TXT(f,104,650,"DIN VIDEO",9,PUR,true);
-  TXT(f,104,668,'"Dacă nu incluzi motive repetate să continue să urmărească, vor pleca la mijloc. Nu contează cât de bun a fost hook-ul."',13,WHT,false,W-160);
-
-  RCT(f,80,740,W-160,1,BDR);
-  TXT(f,80,752,"BUILT — Pattern Interrupt Strategy · 1/6 · 2026",11,DIM,false);
+  // ── KEY INSIGHT BOX ───────────────────────────────────────────
+  RCT(f, 80, 840, FW - 160, 60, CARD, 12);
+  RCT(f, 80, 840, FW - 160, 3, RED, 12);
+  TXT(f, 104, 854, "REGULA DE AUR:", 10, RED, true);
+  TXT(f, 220, 854, "Short form (Reels ≤60s) → PI la fiecare 3–5 secunde.   Long form (YT, Podcast) → PI la fiecare 15–20 secunde.   Dacă nu urmăresc, nu convertesc.", 12, WHT, false, FW - 340);
+  TXT(f, 80, 876, "BUILT — Pattern Interrupt Flowchart · 1/3 · 2026", 11, DIM, false);
 }
 
 // ═══════════════════════════════════════════════════════════════
-// FRAME 02 — CE ESTE PATTERN INTERRUPT
+// FRAME 02 — RETENTION GRAPHS: ÎNAINTE vs DUPĂ
 // ═══════════════════════════════════════════════════════════════
 {
-  const f = FR("02 — Ce este PI", W+G, 0, W, H, BG);
+  const f = FR("02 — Retention: Înainte vs După", 0, 1080, 1440, 900, BG);
 
-  TXT(f,80,52,"CE ESTE PATTERN INTERRUPT",10,RED,true);
-  TXT(f,80,70,"Hook-uri multiple pe tot parcursul video-ului.",32,WHT,true);
-  TXT(f,80,116,"Nu e un singur hook la început. E un sistem de re-engagement continuu.",13,MUT,false,900);
-  RCT(f,80,144,W-160,1,BDR);
+  TXT(f, 80, 52, "GRAFICE DE RETENȚIE — CE SE ÎNTÂMPLĂ CU ȘI FĂRĂ PI", 10, RED, true);
+  TXT(f, 80, 70, "Datele reale din YouTube Analytics", 32, WHT, true);
+  TXT(f, 80, 114, "Fiecare cerc roșu din grafic = un Pattern Interrupt inserat.", 13, MUT, false, 900);
+  RCT(f, 80, 140, 1280, 1, BDR);
 
-  // Main definition
-  RCT(f,80,164,W-160,76,{r:0.06,g:0.02,b:0.02},14);
-  RCT(f,80,164,W-160,4,RED,14);
-  TXT(f,104,184,"DEFINIȚIE",9,RED,true);
-  TXT(f,104,202,"Pattern Interrupt = orice element care rupe fluxul așteptat și re-aduce atenția spectatorului înapoi la video.",14,WHT,true,W-200);
+  const gw = 560, gh = 260, gy = 200;
 
-  // The simple mental model
-  TXT(f,80,264,"MODELUL SIMPLU DE ÎNȚELES",9,BLU,true);
+  // ── GRAPH 1: FĂRĂ PI (pică brusc) ────────────────────────────
+  RCT(f, 80, gy, gw, gh, rgb("#1a1a1a"), 12);
+  RCT(f, 80, gy, gw, 3, RED, 12);
+  TXT(f, 80, gy - 28, "❌  FĂRĂ PATTERN INTERRUPT", 11, RED, true);
+  TXT(f, 80, gy - 14, "Retenție medie: ~12%", 10, MUT, false);
 
-  const model=[
-    {n:"1",c:RED,t:"HOOK inițial",d:"0–3 secunde. Îi captezi atenția. Ei înțeleg despre ce e video-ul."},
-    {n:"2",c:AMB,t:"Valoare + atenție scade",d:"Începi să livrezi conținut. Dar atenția începe să scadă după 3-5s."},
-    {n:"3",c:PUR,t:"PATTERN INTERRUPT #1",d:"Schimbi ceva — unghi, mișcare, text, prop. Îi snaps back în video."},
-    {n:"4",c:AMB,t:"Valoare + atenție scade",d:"Continui să livrezi. Atenția scade din nou după 3-5s."},
-    {n:"5",c:PUR,t:"PATTERN INTERRUPT #2",d:"Alt element de re-engagement. Îi ții acolo."},
-    {n:"6",c:BLU,t:"Build anticipation",d:"Teaser pentru payoff. Îi faci curioși ce urmează. Ex: arunci mingea."},
-    {n:"7",c:GRN,t:"PAYOFF",d:"Livrezi ce ai promis. Construiești trust prin consecvență."},
-    {n:"8",c:RED,t:"CTA",d:"DM un cuvânt / urmărește / link. O singură acțiune clară."},
+  // Grid lines
+  [0,25,50,75,100].forEach((pct, i) => {
+    const lineY = gy + gh - Math.round(gh * pct / 100);
+    RCT(f, 80, lineY, gw, 1, DIM, 0);
+    TXT(f, 86, lineY - 10, pct + "%", 8, MUT, false);
+  });
+
+  // Bad retention curve — drops sharply
+  const badPts = [100, 85, 60, 38, 28, 20, 16, 14, 12, 11, 11, 10, 10, 9, 9, 8, 8, 7, 7, 6];
+  const bSegW = Math.floor((gw - 60) / badPts.length);
+  badPts.forEach((pct, i) => {
+    const bh = Math.round((gh - 20) * pct / 100);
+    const bx = 100 + i * bSegW;
+    const by = gy + gh - bh - 10;
+    RCT(f, bx, by, Math.max(bSegW - 2, 1), bh, RED, 0, 0.7);
+  });
+  TXT(f, 100, gy + gh - 28, "0:00", 8, MUT, false);
+  TXT(f, 80 + gw - 40, gy + gh - 28, "0:33", 8, MUT, false);
+
+  // Drop annotation
+  RCT(f, 200, gy + 60, 120, 40, rgb("#2a0a0a"), 8);
+  TXT(f, 208, gy + 68, "⬇ Pică imediat", 9, RED, true);
+  TXT(f, 208, gy + 82, "după hook", 9, MUT, false);
+
+  // ── GRAPH 2: CU PI (rămâne sus) ──────────────────────────────
+  const g2x = 80 + gw + 80;
+  RCT(f, g2x, gy, gw, gh, rgb("#0a1a0a"), 12);
+  RCT(f, g2x, gy, gw, 3, GRN, 12);
+  TXT(f, g2x, gy - 28, "✓  CU PATTERN INTERRUPT", 11, GRN, true);
+  TXT(f, g2x, gy - 14, "Retenție medie: ~65%", 10, GRN, false);
+
+  // Grid lines
+  [0,25,50,75,100].forEach(pct => {
+    const lineY = gy + gh - Math.round(gh * pct / 100);
+    RCT(f, g2x, lineY, gw, 1, DIM, 0);
+    TXT(f, g2x + 6, lineY - 10, pct + "%", 8, MUT, false);
+  });
+
+  // Good retention with bumps at PI moments
+  const goodPts = [100, 92, 78, 68, 74, 68, 60, 66, 60, 54, 60, 55, 50, 55, 52, 48, 50, 48, 46, 44];
+  const gSegW = Math.floor((gw - 60) / goodPts.length);
+  goodPts.forEach((pct, i) => {
+    const bh = Math.round((gh - 20) * pct / 100);
+    const bx = g2x + 40 + i * gSegW;
+    const by = gy + gh - bh - 10;
+    RCT(f, bx, by, Math.max(gSegW - 2, 1), bh, GRN, 0, 0.7);
+  });
+  TXT(f, g2x + 40, gy + gh - 28, "0:00", 8, MUT, false);
+  TXT(f, g2x + gw - 40, gy + gh - 28, "0:33", 8, MUT, false);
+
+  // PI markers — cerculete roșii la momentele PI
+  [4, 8, 13].forEach((idx, i) => {
+    const bx = g2x + 40 + idx * gSegW + gSegW/2 - 10;
+    const pct = goodPts[idx];
+    const by = gy + gh - Math.round((gh - 20) * pct / 100) - 30;
+    RCT(f, bx, by, 20, 20, rgb("#1a1a1a"), 10);
+    RCT(f, bx, by, 20, 20, RED, 10, 0.2);
+    RCT(f, bx+1, by+1, 18, 18, BDR, 9);
+    TXT(f, bx + 4, by + 4, "PI", 7, RED, true);
+    TXT(f, bx - 10, by - 16, "Pattern Interrupt " + (i+1), 8, PUR, false, 120);
+  });
+
+  // ── COMPARISON ROW ────────────────────────────────────────────
+  const compY = gy + gh + 60;
+  const metrics = [
+    { label: "Retenție medie", before: "~12%",  after: "~65%",  c: GRN },
+    { label: "Watch time",     before: "4s",     after: "28s",   c: AMB },
+    { label: "Reach algoritm", before: "limitat",after: "amplificat", c: BLU },
+    { label: "Conversie",      before: "0%",     after: "real",  c: RED },
+  ];
+  const mw = Math.floor(1280 / metrics.length);
+  metrics.forEach((m, i) => {
+    const mx = 80 + i * mw;
+    RCT(f, mx, compY, mw - 8, 110, CARD, 10);
+    TXT(f, mx + 12, compY + 12, m.label, 10, MUT, false, mw - 32);
+    TXT(f, mx + 12, compY + 32, m.before, 18, RED, true);
+    TXT(f, mx + 12, compY + 56, "→  " + m.after, 16, GRN, true);
+    RCT(f, mx, compY, mw - 8, 3, m.c, 10);
+  });
+
+  // ── QUOTE ─────────────────────────────────────────────────────
+  RCT(f, 80, compY + 128, 1280, 60, CARD, 12);
+  RCT(f, 80, compY + 128, 4, 60, RED, 4);
+  TXT(f, 104, compY + 142, '"Dacă nu urmăresc, nu convertesc. Atenția este singurul drum spre rezultate."', 14, WHT, false, 1240);
+  TXT(f, 104, compY + 164, "— Pattern Interrupt Walkthrough · principiu core", 11, MUT, false);
+
+  RCT(f, 80, 840, 1280, 1, BDR);
+  TXT(f, 80, 852, "BUILT — Retention Graphs · 2/3 · 2026", 11, DIM, false);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FRAME 03 — APLICAT PE BUILT: SCRIPT TEMPLATE + BEFORE/AFTER
+// ═══════════════════════════════════════════════════════════════
+{
+  const f = FR("03 — Aplicat pe BUILT", 1520, 1080, 1440, 900, BG);
+
+  TXT(f, 80, 52, "APLICAT PE BUILT — SCRIPT TEMPLATE + REZULTATE", 10, RED, true);
+  TXT(f, 80, 70, "Cum folosești Pattern Interrupt în reels-urile tale.", 32, WHT, true);
+  TXT(f, 80, 114, "Completezi [parantezele]. Structura e gata, validată de video.", 13, MUT, false, 900);
+  RCT(f, 80, 140, 1280, 1, BDR);
+
+  // Script nodes — compact horizontal
+  const scriptNodes = [
+    { t:"0-3s",  c:GRN, label:"HOOK",           built:'"De ce bărbații cu job bun tot nu slăbesc — deși au încercat tot."' },
+    { t:"3-8s",  c:AMB, label:"VALOARE #1",     built:'"Nu e lipsă de voință. E biologie: stresul cronic → cortizol → grăsime."' },
+    { t:"8-11s", c:PUR, label:"PI #1 ⚡",        built:"Schimbi unghiul. Cut în timp ce te miști. Text bold apare: SISTEMUL BATE VOINȚA." },
+    { t:"11-16s",c:AMB, label:"VALOARE #2",     built:'"Pilonul I — Intelligent Fueling: mănânci strategic, nu te înfometezi."' },
+    { t:"16-19s",c:PUR, label:"PI #2 ⚡",        built:"Zoom in pe față. Pauza intenționată 1 secundă înainte de revelație." },
+    { t:"19-24s",c:ORG, label:"BUILD ANTICIP.", built:'"Clientul meu Alex a pierdut 8kg în 6 săptămâni fără să renunțe la weekend-uri."' },
+    { t:"24-27s",c:GRN, label:"PAYOFF",         built:'"Soluția nu e mai multă voință. E un sistem proiectat pe viața ta reală."' },
+    { t:"27-30s",c:RED, label:"CTA",            built:'"Dacă te regăsești, scrie-mi SISTEM în DM."' },
   ];
 
-  const mh=60, mgap=4;
-  model.forEach((m,i)=>{
-    const my=288+i*(mh+mgap);
-    const isPI = m.n==="3"||m.n==="5";
-    RCT(f,80,my,W-160,mh,isPI?{r:0.06,g:0.02,b:0.12}:CARD,10);
-    RCT(f,80,my,4,mh,m.c,4);
-    // Number badge
-    RCT(f,92,my+14,28,28,{r:m.c.r*0.15,g:m.c.g*0.15,b:m.c.b*0.15},6);
-    TXT(f,100,my+20,m.n,11,m.c,true);
-    TXT(f,134,my+10,m.t,12,isPI?m.c:WHT,true);
-    TXT(f,134,my+30,m.d,11,GRY,false,W-260);
-
-    // PI badge
-    if(isPI){
-      RCT(f,W-260,my+16,160,28,{r:0.5,g:0.1,b:0.8},8);
-      TXT(f,W-252,my+24,"⚡ RE-ENGAGEMENT",9,WHT,true);
+  const snw = Math.floor(1280 / scriptNodes.length);
+  scriptNodes.forEach((sn, i) => {
+    const sx = 80 + i * snw;
+    const isPI = sn.label.includes("PI");
+    RCT(f, sx, 160, snw - 6, 300, isPI ? {r:PUR.r*0.06,g:PUR.g*0.06,b:PUR.b*0.06} : CARD, 10);
+    RCT(f, sx, 160, snw - 6, 4, sn.c, 10);
+    TXT(f, sx + 8, 172, sn.t, 8, sn.c, true);
+    TXT(f, sx + 8, 186, sn.label, 10, sn.c, true, snw - 20);
+    RCT(f, sx + 8, 204, snw - 22, 1, BDR);
+    TXT(f, sx + 8, 212, sn.built, 9, isPI ? WHT : GRY, false, snw - 20);
+    if(isPI) {
+      RCT(f, sx, 442, snw - 6, 18, {r:PUR.r*0.15,g:PUR.g*0.15,b:PUR.b*0.15}, 4);
+      TXT(f, sx + 6, 444, "Re-engagement", 8, PUR, true);
     }
   });
 
-  // Key insight
-  RCT(f,80,800,W-160,64,CARD,12);
-  RCT(f,80,800,4,64,GRN,4);
-  TXT(f,104,814,"REGULA DE AUR",9,GRN,true);
-  TXT(f,104,832,"Short form: un Pattern Interrupt la fiecare 3–5 secunde. Long form: la fiecare 15–20 secunde.",13,WHT,false,W-200);
+  // Types of PI for BUILT
+  TXT(f, 80, 482, "8 TIPURI DE PATTERN INTERRUPT PENTRU REELS BUILT", 9, RED, true);
+  RCT(f, 80, 498, 1280, 1, BDR);
 
-  RCT(f,80,876,W-160,1,BDR);
-  TXT(f,80,882,"BUILT — Pattern Interrupt Strategy · 2/6 · 2026",11,DIM,false);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// FRAME 03 — TIMELINE VIZUAL REEL BUILT
-// ═══════════════════════════════════════════════════════════════
-{
-  const f = FR("03 — Timeline Reel", (W+G)*2, 0, W, H, BG);
-
-  TXT(f,80,52,"TIMELINE REEL BUILT — 30-60 SECUNDE",10,RED,true);
-  TXT(f,80,70,"Fiecare secundă are un scop. Zero momente moarte.",32,WHT,true);
-  TXT(f,80,116,"Pattern interrupt la fiecare 3-5s pentru short form. Atenția e moneda ta.",13,MUT,false,900);
-  RCT(f,80,144,W-160,1,BDR);
-
-  // Timeline bar
-  const tlX=80, tlY=184, tlW=W-160, tlH=64;
-  RCT(f,tlX,tlY,tlW,tlH,CARD,10);
-
-  // Segments of a 30s reel
-  const segments=[
-    {from:0,to:3,  c:RED, label:"HOOK",      pct:10},
-    {from:3,to:8,  c:AMB, label:"VALOARE",   pct:17},
-    {from:8,to:11, c:PUR, label:"PI #1",     pct:10},
-    {from:11,to:16,c:AMB, label:"VALOARE",   pct:17},
-    {from:16,to:19,c:PUR, label:"PI #2",     pct:10},
-    {from:19,to:24,c:AMB, label:"VALOARE",   pct:17},
-    {from:24,to:27,c:BLU, label:"PI #3\nANTIC.",pct:10},
-    {from:27,to:29,c:GRN, label:"PAYOFF",    pct:7},
-    {from:29,to:30,c:RED, label:"CTA",       pct:3},
+  const piList = [
+    { n:"01", c:RED,  t:"Schimbare unghi",    d:"Filmezi din 2 unghiuri. Tai mid-mișcare." },
+    { n:"02", c:PUR,  t:"Întoarcere cap/corp", d:"90° turn. Smooth cut." },
+    { n:"03", c:BLU,  t:"Text bold pe ecran", d:"Cuvânt cheie apare brusc." },
+    { n:"04", c:AMB,  t:"Prop fizic",         d:"Introduci obiect → curiozitate." },
+    { n:"05", c:GRN,  t:"Zoom in brusc",      d:"Wide → Close-up direct." },
+    { n:"06", c:ORG,  t:"B-roll intercalat",  d:"Clip scurt ilustrativ." },
+    { n:"07", c:PUR,  t:"Teaser verbal",      d:'"Și asta nu e tot..."' },
+    { n:"08", c:BLU,  t:"Pauza de 1s",       d:"Taci. Creează tensiune." },
   ];
 
-  let curX=tlX;
-  segments.forEach((seg)=>{
-    const segW=Math.round(tlW*seg.pct/100);
-    RCT(f,curX,tlY,segW,tlH,seg.c,0);
-    if(segW>40){
-      TXT(f,curX+4,tlY+8,seg.label,8,WHT,true,segW-8);
-      TXT(f,curX+4,tlY+44,seg.from+"s",8,{r:1,g:1,b:1},false);
-    }
-    curX+=segW;
+  const piw = Math.floor(1280 / piList.length);
+  piList.forEach((pi, i) => {
+    const px = 80 + i * piw;
+    RCT(f, px, 508, piw - 6, 88, CARD, 8);
+    RCT(f, px, 508, piw - 6, 3, pi.c, 8);
+    TXT(f, px + 8, 518, pi.n, 8, pi.c, true);
+    TXT(f, px + 8, 532, pi.t, 10, WHT, true, piw - 16);
+    TXT(f, px + 8, 552, pi.d, 9, GRY, false, piw - 16);
   });
 
-  // Retention graph WITH pattern interrupts (good version)
-  TXT(f,80,276,"GRAFICUL DE RETENȚIE — CU PATTERN INTERRUPT ✓",9,GRN,true);
-  RCT(f,80,292,W-160,200,CARD,14);
+  // Before / After results (din video)
+  TXT(f, 80, 618, "BEFORE / AFTER — REZULTATE REALE DIN VIDEO", 9, RED, true);
+  RCT(f, 80, 634, 1280, 1, BDR);
 
-  // Grid
-  for(let i=0;i<5;i++) RCT(f,80,292+i*40,W-160,1,BDR);
+  // Before
+  RCT(f, 80, 644, 580, 130, {r:0.08,g:0.02,b:0.02}, 12);
+  RCT(f, 80, 644, 580, 3, RED, 12);
+  TXT(f, 104, 658, "❌  BEFORE — Fără PI", 11, RED, true);
+  TXT(f, 104, 678, "202 views / 119 views / 114 views", 22, RED, true);
+  TXT(f, 104, 710, "Reels cu hook bun dar fără re-engagement.", 12, GRY, false, 520);
+  TXT(f, 104, 730, "Oamenii pleacă după primele 3-5 secunde.", 12, GRY, false, 520);
+  TXT(f, 104, 750, "Algoritmul nu distribuie. Zero reach.", 12, GRY, false, 520);
 
-  // Y axis
-  TXT(f,84,296,"100%",9,MUT,false);
-  TXT(f,84,336,"75%",9,MUT,false);
-  TXT(f,84,376,"50%",9,MUT,false);
-  TXT(f,84,416,"25%",9,MUT,false);
+  // After
+  RCT(f, 700, 644, 660, 130, {r:0.02,g:0.1,b:0.04}, 12);
+  RCT(f, 700, 644, 660, 3, GRN, 12);
+  TXT(f, 724, 658, "✓  AFTER — Cu PI", 11, GRN, true);
+  TXT(f, 724, 678, "341K / 1.8M / 10.5K views", 22, GRN, true);
+  TXT(f, 724, 710, "Același creator, același nișă.", 12, GRY, false, 600);
+  TXT(f, 724, 730, "Diferența: Pattern Interrupt-uri sistematice.", 12, GRY, false, 600);
+  TXT(f, 724, 750, "Algoritmul vede watch time → distribuie masiv.", 12, GRY, false, 600);
 
-  // Good retention — stays high with bumps at PI moments
-  const goodPts=[100,88,72,65,80,70,58,72,64,52,68,60,50,62,56,50];
-  const bW2=76, sX2=140;
-  goodPts.forEach((pct,i)=>{
-    const bH=Math.round(160*pct/100);
-    const bx=sX2+i*(bW2+2);
-    RCT(f,bx,452-bH,bW2,bH,GRN,4);
-  });
+  // Key numbers from revenue proof (video)
+  RCT(f, 80, 792, 1280, 68, CARD, 12);
+  RCT(f, 80, 792, 1280, 3, AMB, 12);
+  TXT(f, 104, 806, "REVENUE PROOF DIN VIDEO:", 9, AMB, true);
+  TXT(f, 260, 806, "$1,000 Completed  ·  $1,500 Completed  ·  $3,000 Completed  ·  $1,500 Completed", 12, GRN, false, 1100);
+  TXT(f, 104, 826, "Același sistem de PI aplicat pe content = audiență care urmărește → are încredere → cumpără.", 12, GRY, false, 1240);
+  TXT(f, 104, 844, "Atenția este singurul drum spre vânzare. Fiecare secundă în plus = trust în plus.", 12, GRY, false, 1240);
 
-  // PI markers on graph
-  [2,5,8,11].forEach((idx,i)=>{
-    const bx=sX2+idx*(bW2+2);
-    RCT(f,bx,292,2,160,PUR,0);
-    TXT(f,bx+4,300,i===0?"HOOK":i===3?"PAYOFF":"PI #"+(i),8,PUR,true);
-  });
-
-  TXT(f,900,330,"Media retenție: ~65%",11,GRN,true);
-  TXT(f,900,348,"vs fără PI: ~18%",11,RED,false);
-
-  // 8 specific pattern interrupts for BUILT
-  TXT(f,80,476,"TIPURI DE PATTERN INTERRUPT PENTRU BUILT REELS",9,RED,true);
-  RCT(f,80,492,W-160,1,BDR);
-
-  const piTypes=[
-    {n:"01",c:RED,   t:"Schimbare unghi cameră",d:"Filmezi același lucru din unghi diferit. Smooth cut. Cel mai ușor de implementat."},
-    {n:"02",c:PUR,   t:"Întoarcere cap / corp",   d:"Întorci capul sau corpul la 90°. Cut în timp ce faci mișcarea. Seamless."},
-    {n:"03",c:BLU,   t:"Text bold pe ecran",      d:"Cuvinte cheie care apar brusc. Susțin ce spui verbal. Impact vizual instant."},
-    {n:"04",c:AMB,   t:"Prop / obiect",            d:"Introduci un element fizic (minge, carte, telefon). Crezi curiozitate + anticipation."},
-    {n:"05",c:GRN,   t:"Zoom in / zoom out",       d:"Treci de la wide shot la close-up sau invers. Schimbare de perspectivă."},
-    {n:"06",c:ORG,   t:"B-roll intercalat",        d:"Clip scurt relevant între talking head shots. Ilustrezi ce spui vizual."},
-    {n:"07",c:PUR,   t:"Teaser verbal",             d:"'Și asta nu e tot — la sfârșit îți arăt...' Promiți un payoff. Îi ții acolo."},
-    {n:"08",c:BLU,   t:"Pauza intenționată",        d:"Taci 1 secundă înainte de un punct cheie. Creează tensiune și atenție."},
-  ];
-
-  const piW=Math.floor((W-160-3*16)/4);
-  piTypes.forEach((pi,i)=>{
-    const col=i%4, row=Math.floor(i/4);
-    const px=80+col*(piW+16), py=508+row*88;
-    RCT(f,px,py,piW,80,CARD,10);
-    RCT(f,px,py,piW,3,pi.c,10);
-    TXT(f,px+12,py+12,pi.n+" — "+pi.t,10,pi.c,true,piW-24);
-    TXT(f,px+12,py+32,pi.d,10,GRY,false,piW-24);
-  });
-
-  RCT(f,80,696,W-160,1,BDR);
-  TXT(f,80,708,"BUILT — Pattern Interrupt Strategy · 3/6 · 2026",11,DIM,false);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// FRAME 04 — SCRIPTUL BUILT CU PATTERN INTERRUPT
-// ═══════════════════════════════════════════════════════════════
-{
-  const f = FR("04 — Script Template BUILT", (W+G)*3, 0, W, H, BG);
-
-  TXT(f,80,52,"TEMPLATE SCRIPT REEL BUILT — CU PATTERN INTERRUPT",10,RED,true);
-  TXT(f,80,70,"Structura exactă aplicată pe nișa ta.",32,WHT,true);
-  TXT(f,80,116,"Completezi [parantezele] cu conținutul tău specific. Structura rămâne.",13,MUT,false,900);
-  RCT(f,80,144,W-160,1,BDR);
-
-  // Script sections
-  const sections=[
-    {
-      time:"0–3s", c:RED, tag:"HOOK",
-      formula:"[CIFRĂ ȘOCANTĂ] + [DUREREA EXACTĂ A ICP]",
-      example:'"De ce bărbații cu salariu bun tot nu reușesc să slăbească — deși au încercat tot."',
-      pi:"→ Intri în cadru în mișcare. Text bold apare pe ecran. Unghi ușor de jos.",
-      built:"Triggere: Cortizolul / Paradoxul Competenței / Prețul Invizibilității"
-    },
-    {
-      time:"3–8s", c:AMB, tag:"VALOARE #1 + atenție scade",
-      formula:"[VALIDEZI SITUAȚIA] + [EXPLICI MECANISMUL]",
-      example:'"Nu e lipsă de voință. E biologie. Stresul cronic crește cortizolul, care blochează arderea grăsimilor."',
-      pi:"→ Atenția începe să scadă. Pregătești Pattern Interrupt.",
-      built:"Pilonul I — Intelligent Fueling sau Pilonul U — Capacity"
-    },
-    {
-      time:"8–11s", c:PUR, tag:"PATTERN INTERRUPT #1",
-      formula:"[SCHIMBARE VIZUALĂ BRUSCĂ]",
-      example:"Cut la unghi diferit / Întoarcere cap / Text nou apare / Mergi spre cameră",
-      pi:"→ IMPLEMENTARE: filmezi același lucru din altă parte. Tai în timp ce te miști.",
-      built:"Cel mai ușor: filmezi cu telefonul din 2 unghiuri de la început"
-    },
-    {
-      time:"11–16s", c:AMB, tag:"VALOARE #2 + atenție scade",
-      formula:"[SPECIFICĂ SISTEMUL / SOLUȚIA]",
-      example:'"Sistemul BUILT rezolvă asta prin Pilonul I: mănânci în ferestre strategice, nu te înfometezi."',
-      pi:"→ Atenția scade din nou. Pregătești al doilea interrupt.",
-      built:"Leagă soluția de pilonul BUILT relevant. Specific, nu generic."
-    },
-    {
-      time:"16–19s", c:PUR, tag:"PATTERN INTERRUPT #2",
-      formula:"[AL DOILEA ELEMENT DE RE-ENGAGEMENT]",
-      example:"Zoom in pe față / Introduci un prop (carte, telefon) / Pauză intenționată de 1s",
-      pi:"→ IMPLEMENTARE: stat la loc, zoom digital sau mișcare de cameră. Sau text key pe ecran.",
-      built:"Pauza de 1 secundă înainte de cifra / revelația principală = efect maxim"
-    },
-    {
-      time:"19–26s", c:BLU, tag:"BUILD ANTICIPATION + PATTERN INTERRUPT #3",
-      formula:"[TEASER PENTRU PAYOFF] + [ELEMENT SURPRIZĂ]",
-      example:'"Și asta nu e tot — clientul meu Alex a pierdut 8kg în 6 săptămâni fără să renunțe la weekend-uri."',
-      pi:"→ IMPLEMENTARE: arunci / prinzi ceva, schimbi locația, apare elementul promis.",
-      built:"Testimonial real ca anticipation. Alex / Anastasia = dovadă socială + curiozitate."
-    },
-    {
-      time:"26–29s", c:GRN, tag:"PAYOFF — LIVREZI CE AI PROMIS",
-      formula:"[CONCLUZIA SPECIFICĂ] + [REVELAȚIA]",
-      example:'"Soluția nu e mai multă voință. E un sistem proiectat pe viața ta reală."',
-      pi:"→ IMPLEMENTARE: livrezi informația promisă. Trust-ul se construiește acum.",
-      built:"Nu vagi. Specific. Arhitectură, nu motivație. Sistemul BUILT bate voința."
-    },
-    {
-      time:"29–30s", c:RED, tag:"CTA — O SINGURĂ ACȚIUNE",
-      formula:"[KEYWORD DM] sau [URMĂREȘTE] sau [LINK]",
-      example:'"Dacă te regăsești în asta, scrie-mi SISTEM în DM și îți spun exact ce lipsește."',
-      pi:"→ IMPLEMENTARE: o acțiune, ton de diagnostic nu de vânzare, fără urgență forțată.",
-      built:"Keywords testate: SISTEM / ARHITECTURĂ / BUILT. Unul per reel."
-    },
-  ];
-
-  const sh=80, sy0=164, sgap=3;
-  const halfW=Math.floor((W-160-16)/2);
-
-  sections.forEach((sec,i)=>{
-    const col=i<4?0:1;
-    const row=i<4?i:i-4;
-    const sx=80+col*(halfW+16);
-    const sy=sy0+row*(sh+sgap);
-    const isPI=sec.tag.includes("INTERRUPT");
-
-    RCT(f,sx,sy,halfW,sh,isPI?{r:0.06,g:0.02,b:0.12}:CARD,10);
-    RCT(f,sx,sy,4,sh,sec.c,4);
-
-    TXT(f,sx+12,sy+6,sec.time,8,sec.c,true);
-    TXT(f,sx+70,sy+4,sec.tag,9,isPI?PUR:WHT,true);
-    TXT(f,sx+12,sy+24,sec.formula,10,GRY,false,halfW-60);
-    TXT(f,sx+12,sy+44,'"'+sec.example.replace(/^"|"$/g,'').slice(0,80)+(sec.example.length>80?'...':""),9,isPI?WHT:GRY,false,halfW-60);
-
-    if(isPI){
-      RCT(f,sx+halfW-80,sy+6,72,20,PUR,6);
-      TXT(f,sx+halfW-74,sy+12,"⚡ RE-HOOK",8,WHT,true);
-    }
-  });
-
-  RCT(f,80,860,W-160,1,BDR);
-  TXT(f,80,872,"BUILT — Pattern Interrupt Strategy · 4/6 · 2026",11,DIM,false);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// FRAME 05 — CHECKLIST FILMARE + DE CE FUNCȚIONEAZĂ
-// ═══════════════════════════════════════════════════════════════
-{
-  const f = FR("05 — Checklist + Algoritm", 0, H+G, W, H, BG);
-
-  TXT(f,80,52,"CHECKLIST FILMARE + DE CE FUNCȚIONEAZĂ",10,RED,true);
-  TXT(f,80,70,"Tot ce faci înainte, în timpul și după filmare.",32,WHT,true);
-  TXT(f,80,116,"Un sistem de filmare > improvizație la fiecare reel.",13,MUT,false,900);
-  RCT(f,80,144,W-160,1,BDR);
-
-  // Checklist pre-filmare
-  const clW=Math.floor((W-160-32)/2);
-  TXT(f,80,164,"PRE-FILMARE",9,BLU,true);
-  RCT(f,80,180,clW,1,BDR);
-  const pre=[
-    "Ai definit HOOK-ul (0-3s) — cifra / declarația contraintuitivă",
-    "Ai planificat minim 2 unghiuri de filmare diferite",
-    "Ai pregătit textul bold care apare pe ecran la hook",
-    "Știi care e PAYOFF-ul promis la 24-27s",
-    "Știi care e CTA-ul și keyword-ul DM",
-    "Ai un prop / element fizic pentru PI #3 dacă e cazul",
-    "Ai setat iluminarea + background-ul curat",
-  ];
-  pre.forEach((item,i)=>{
-    const py=192+i*36;
-    RCT(f,80,py,16,16,CARD,3);
-    RCT(f,80,py,16,16,BDR,3);
-    TXT(f,106,py,item,12,GRY,false,clW-36);
-    RCT(f,80,py+28,clW,1,{r:0.07,g:0.07,b:0.07});
-  });
-
-  TXT(f,80,452,"ÎN TIMPUL FILMĂRII",9,RED,true);
-  RCT(f,80,468,clW,1,BDR);
-  const during=[
-    "Filmezi hook-ul din UNGHI #1 (față sau ¾)",
-    "Filmezi aceeași valoare din UNGHI #2 (lateral sau diferit)",
-    "Tai în timp ce ești în mișcare (întoarcere, pas spre cameră)",
-    "Incluzi cel puțin 2 cuts la unghiuri diferite în 30s",
-    "Introduci prop-ul / elementul fizic la secunda 24-27",
-    "CTA-ul îl zici clar, privind direct în cameră",
-  ];
-  during.forEach((item,i)=>{
-    const dy=480+i*36;
-    RCT(f,80,dy,16,16,CARD,3);
-    RCT(f,80,dy,16,16,BDR,3);
-    TXT(f,106,dy,item,12,GRY,false,clW-36);
-    RCT(f,80,dy+28,clW,1,{r:0.07,g:0.07,b:0.07});
-  });
-
-  TXT(f,80,704,"POST-EDITARE",9,GRN,true);
-  RCT(f,80,720,clW,1,BDR);
-  const post=[
-    "Ai tăiat intro-ul (nu spui 'bună ziua, sunt Claudiu, azi...')",
-    "Text bold pe ecran la hook și la momentele cheie",
-    "Subtitluri auto — crește retenția cu 15%",
-    "Ai verificat că primele 3s sunt impact maxim",
-    "Sound design: muzică de fundal low + efect la pattern interrupt",
-  ];
-  post.forEach((item,i)=>{
-    const poy=732+i*28;
-    RCT(f,80,poy,16,16,CARD,3);
-    RCT(f,80,poy,16,16,BDR,3);
-    TXT(f,106,poy,item,12,GRY,false,clW-36);
-  });
-
-  // Right column — why it works (algorithm + trust)
-  const rx=80+clW+32;
-  TXT(f,rx,164,"DE CE FUNCȚIONEAZĂ — LANȚUL COMPLET",9,RED,true);
-  RCT(f,rx,180,clW,1,BDR);
-
-  const chain=[
-    {c:RED,   n:"01",t:"Pattern Interrupt → Watch Time",   d:"Oamenii urmăresc mai mult. Fiecare secundă în plus = semnal pozitiv pentru algoritm."},
-    {c:AMB,   n:"02",t:"Watch Time → Algoritm",            d:"Instagram și TikTok distribuie conținut cu retenție ridicată. Reach-ul tău crește organic."},
-    {c:BLU,   n:"03",t:"Reach → Mai mulți oameni",         d:"Videoclipul ajunge la audiențe noi, nu doar la followeri. E combustibil pentru creștere."},
-    {c:PUR,   n:"04",t:"Engagement → Trust",               d:"Oamenii care urmăresc tot video-ul simt că investești în ei. Trust-ul se construiește prin efort vizibil."},
-    {c:GRN,   n:"05",t:"Trust → Conversie",                d:"Dacă nu urmăresc, nu convertesc. Atenția e singurul drum spre DM și spre apelul de diagnostic."},
-    {c:RED,   n:"06",t:"Conversie → Client",               d:"500 EUR nu se vând din primul reel. Se vând din 10-20 reels care construiesc autoritate constant."},
-  ];
-
-  chain.forEach((ch,i)=>{
-    const cy=196+i*96;
-    RCT(f,rx,cy,clW,88,CARD,10);
-    RCT(f,rx,cy,4,88,ch.c,4);
-    RCT(f,rx+16,cy+18,28,28,{r:ch.c.r*0.15,g:ch.c.g*0.15,b:ch.c.b*0.15},6);
-    TXT(f,rx+24,cy+24,ch.n,10,ch.c,true);
-    TXT(f,rx+56,cy+14,ch.t,12,WHT,true,clW-80);
-    TXT(f,rx+56,cy+36,ch.d,11,GRY,false,clW-80);
-
-    if(i<chain.length-1){
-      TXT(f,rx+clW/2-8,cy+88,"↓",11,DIM,false);
-    }
-  });
-
-  RCT(f,80,768,W-160,1,BDR);
-  TXT(f,80,780,"BUILT — Pattern Interrupt Strategy · 5/6 · 2026",11,DIM,false);
-}
-
-// ═══════════════════════════════════════════════════════════════
-// FRAME 06 — CALENDARUL DE CONȚINUT CU PI
-// ═══════════════════════════════════════════════════════════════
-{
-  const f = FR("06 — Calendar Săptămânal PI", W+G, H+G, W, H, BG);
-
-  TXT(f,80,52,"CALENDARUL SĂPTĂMÂNAL BUILT — CU PATTERN INTERRUPT",10,RED,true);
-  TXT(f,80,70,"Fiecare reel = tip specific de PI. Varietate = retenție.",32,WHT,true);
-  TXT(f,80,116,"Nu același tip de PI în fiecare video. Alternezi pentru a menține surpriza.",13,MUT,false,900);
-  RCT(f,80,144,W-160,1,BDR);
-
-  const days=[
-    {
-      day:"LUNI", c:RED, type:"Talking Head / Rant",
-      hook:'"De ce [CIFRĂ] bărbați cu venituri bune tot nu reușesc să slăbească"',
-      pi1:"Schimbare unghi la 8s — cut lateral",
-      pi2:"Text bold 'GREȘEALA FATALĂ' la 16s",
-      pi3:"Arunci / prinzi obiect la 24s",
-      cta:"Scrie SISTEM în DM",
-      topic:"Pilonul B sau I"
-    },
-    {
-      day:"MARȚI", c:BLU, type:"Tutorial / Demonstrație",
-      hook:'"În 3 pași — cum [REZULTAT SPECIFIC] fără [SACRIFICIUL TEMUT]"',
-      pi1:"Mergi spre cameră la pasul 2",
-      pi2:"Close-up pe detaliu relevant la pasul 3",
-      pi3:"Pauza intenționată 1s înainte de revelație",
-      cta:"Urmărește pentru mai multe",
-      topic:"Pilonul L — Lifestyle Integration"
-    },
-    {
-      day:"MIERCURI", c:AMB, type:"Story / Case Study",
-      hook:'"Clientul meu [PROFIL] a reușit [REZULTAT] în [TIMP]"',
-      pi1:"Cut la screenshot / testimonial text la 8s",
-      pi2:"Zoom in pe cifra / rezultatul cheie",
-      pi3:"Întoarcere spre cameră cu 'și asta nu e tot'",
-      cta:"DM DOVADĂ pentru studiul de caz complet",
-      topic:"Social proof — Alex / Anastasia"
-    },
-    {
-      day:"JOI", c:PUR, type:"Talking Head — Provocare",
-      hook:'"Contrariul față de ce crezi despre [SUBIECT FITNESS]"',
-      pi1:"Challenger reframe cu pauza 1s",
-      pi2:"B-roll intercalat (sală, mâncare, antrenament)",
-      pi3:"Întoarcere corp spre alt unghi + text",
-      cta:"Scrie ARHITECTURĂ în DM",
-      topic:"Pilonul T — Tough Mindset"
-    },
-    {
-      day:"VINERI", c:GRN, type:"List / Quick Tips",
-      hook:'"[NUMĂR] motive pentru care [SITUAȚIE DUREROASĂ]"',
-      pi1:"Text numărătoare pe ecran (1... 2... 3...)",
-      pi2:"Schimbare unghi la fiecare item nou",
-      pi3:"Zoom in la ultimul item — cel mai important",
-      cta:"Urmărește pentru restul listei",
-      topic:"Pilonul U sau I"
-    },
-    {
-      day:"SÂMBĂTĂ", c:ORG, type:"Behind the Scenes",
-      hook:"Intri în cadru în activitate reală (antrenament, masă, planificare)",
-      pi1:"Cut la rezultat / progres vizibil",
-      pi2:"Text pe ecran cu insight-ul din acea activitate",
-      pi3:"Întoarcere directă spre cameră cu mesajul final",
-      cta:"Scrie BUILT în DM",
-      topic:"Autenticitate + Personal Brand"
-    },
-  ];
-
-  const dw=Math.floor((W-160-5*16)/days.length);
-  days.forEach((d,i)=>{
-    const dx=80+i*(dw+16), dy=164;
-    RCT(f,dx,dy,dw,636,CARD,12);
-    RCT(f,dx,dy,dw,4,d.c,12);
-
-    // Header
-    TXT(f,dx+12,dy+16,d.day,10,d.c,true);
-    TXT(f,dx+12,dy+34,d.type,11,WHT,true,dw-24);
-    TXT(f,dx+12,dy+56,d.topic,9,MUT,false,dw-24);
-    RCT(f,dx+12,dy+72,dw-24,1,BDR);
-
-    // Hook
-    TXT(f,dx+12,dy+80,"HOOK",7,d.c,true);
-    TXT(f,dx+12,dy+92,d.hook,9,GRY,false,dw-24);
-    RCT(f,dx+12,dy+160,dw-24,1,BDR);
-
-    // PI sections
-    TXT(f,dx+12,dy+168,"PI #1 — 8s",7,PUR,true);
-    TXT(f,dx+12,dy+180,d.pi1,9,GRY,false,dw-24);
-    RCT(f,dx+12,dy+216,dw-24,1,BDR);
-
-    TXT(f,dx+12,dy+224,"PI #2 — 16s",7,PUR,true);
-    TXT(f,dx+12,dy+236,d.pi2,9,GRY,false,dw-24);
-    RCT(f,dx+12,dy+272,dw-24,1,BDR);
-
-    TXT(f,dx+12,dy+280,"PI #3 — 24s",7,PUR,true);
-    TXT(f,dx+12,dy+292,d.pi3,9,GRY,false,dw-24);
-    RCT(f,dx+12,dy+328,dw-24,1,BDR);
-
-    // CTA
-    RCT(f,dx+12,dy+340,dw-24,52,{r:d.c.r*0.08,g:d.c.g*0.08,b:d.c.b*0.08},8);
-    TXT(f,dx+20,dy+348,"CTA",7,d.c,true);
-    TXT(f,dx+20,dy+362,d.cta,9,WHT,false,dw-40);
-  });
-
-  // Bottom KPI bar
-  RCT(f,80,820,W-160,60,CARD,12);
-  RCT(f,80,820,W-160,3,RED,12);
-  TXT(f,104,834,"TARGET RETENȚIE",9,RED,true);
-  const kpis=[
-    "3s hold rate: >60%","Watch time complet: >40%","Save rate: >3%","Share rate: >2%","DM-uri inbound: 5+/săpt"
-  ];
-  const kw2=Math.floor((W-200)/kpis.length);
-  kpis.forEach((k,i)=>{
-    TXT(f,104+i*(kw2),848,k,11,GRY,false,kw2-8);
-    if(i<kpis.length-1) RCT(f,104+i*(kw2)+kw2-4,832,1,36,BDR);
-  });
-
-  RCT(f,80,892,W-160,1,BDR);
-  TXT(f,80,882,"BUILT — Pattern Interrupt Strategy · 6/6 · 2026",11,DIM,false);
+  RCT(f, 80, 876, 1280, 1, BDR);
+  TXT(f, 80, 882, "BUILT — Pattern Interrupt Applied · 3/3 · 2026", 11, DIM, false);
 }
 
 // ── Done ──────────────────────────────────────────────────────────
 figma.viewport.scrollAndZoomIntoView(figma.currentPage.children);
-figma.closePlugin("✅ BUILT Pattern Interrupt Strategy — 6 frame-uri generate!");
+figma.closePlugin("✅ BUILT Pattern Interrupt — 3 frame-uri generate (flowchart exact din video)!");
 
 })().catch(err => figma.closePlugin("❌ " + err.message));
