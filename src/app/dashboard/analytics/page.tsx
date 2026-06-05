@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo, useRef } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   analyzeContentLibraryReel,
   getTipOfWeek,
@@ -278,6 +278,13 @@ function AnalysisPanel({
 }) {
   const [analysisTab, setAnalysisTab] = useState<"breakdown" | "from">("breakdown");
 
+  // Close on Escape
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
   const verdictClass =
     data.verdict === "Exceptional"
       ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20"
@@ -291,7 +298,18 @@ function AnalysisPanel({
   const scriptPct = Math.min(data.hook_score, 100);
 
   return (
-    <div className="built-card mt-4 bg-[#0d0d0d] border border-white/10 rounded-xl p-6 space-y-5">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      onClick={onClose}
+    >
+      {/* Backdrop */}
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+
+      {/* Panel */}
+      <div
+        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#0d0d0d] border border-white/10 rounded-xl p-6 space-y-5 shadow-2xl"
+        onClick={(e) => e.stopPropagation()}
+      >
       {/* Top row */}
       <div className="flex items-center gap-4 flex-wrap">
         <span className={`text-[11px] font-bold px-2.5 py-1 rounded border ${verdictClass}`}>
@@ -429,6 +447,7 @@ function AnalysisPanel({
         </>
       )}
     </div>
+    </div>
   );
 }
 
@@ -461,14 +480,6 @@ export default function AnalyticsPage() {
   const [analysisData, setAnalysisData] = useState<ContentLibraryAnalysis | null>(null);
   const [analysingId, setAnalysingId] = useState<string | null>(null);
   const [analysisError, setAnalysisError] = useState<string | null>(null);
-  const analysisPanelRef = useRef<HTMLDivElement>(null);
-
-  // Scroll to analysis panel when it appears
-  useEffect(() => {
-    if (analysisData && analysisPanelRef.current) {
-      analysisPanelRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [analysisData]);
 
   // ── Data loading ───────────────────────────────────────────────────────────
   useEffect(() => {
@@ -1119,14 +1130,12 @@ export default function AnalyticsPage() {
           </div>
         )}
 
-        {/* Inline analysis panel */}
+        {/* Analysis modal */}
         {analysedId && analysisData && (
-          <div ref={analysisPanelRef}>
-            <AnalysisPanel
-              data={analysisData}
-              onClose={() => { setAnalysedId(null); setAnalysisData(null); }}
-            />
-          </div>
+          <AnalysisPanel
+            data={analysisData}
+            onClose={() => { setAnalysedId(null); setAnalysisData(null); }}
+          />
         )}
       </div>
 
