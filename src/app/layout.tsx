@@ -52,6 +52,7 @@ export default async function RootLayout({
   return (
     <html
       lang="ro"
+      suppressHydrationWarning
       className={`${bebasNeue.variable} ${barlowCondensed.variable} ${barlow.variable} ${jetbrainsMono.variable}`}
     >
       <body className="antialiased">
