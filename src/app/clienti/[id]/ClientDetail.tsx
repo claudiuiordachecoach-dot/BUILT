@@ -3,7 +3,9 @@
 import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { submitCheckin, updateClientStatus, inviteClient, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, type Client, type CheckIn, type ClientStatus, type ClientModule, getClientModules, saveClientModule, deleteClientModule } from "../actions";
+import { submitCheckin, updateClientStatus, inviteClient, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, type Client, type CheckIn, type ClientStatus, type ClientModule, type IntakeRecord, getClientModules, saveClientModule, deleteClientModule } from "../actions";
+import { CopyIntakeLink } from "./CopyIntakeLink";
+import { ALL_INTAKE_FIELDS } from "@/app/fisa-start/[token]/fields";
 import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages, setAdminViewClient } from "@/app/client/actions";
 
 const STATUS_OPTIONS: { id: ClientStatus; label: string }[] = [
@@ -15,6 +17,7 @@ const weeksSince = (start: string) => Math.max(1, Math.floor((Date.now() - new D
 
 const TABS = [
   { id: "profile", label: "Profil & Progres" },
+  { id: "intake", label: "Fișa de Start" },
   { id: "checkin", label: "Check-in" },
   { id: "workout", label: "Plan Antrenament" },
   { id: "nutrition", label: "Plan Nutrițional" },
@@ -22,7 +25,7 @@ const TABS = [
   { id: "messages", label: "Mesaje" },
 ];
 
-export function ClientDetail({ client, initialCheckins }: { client: Client; initialCheckins: CheckIn[] }) {
+export function ClientDetail({ client, initialCheckins, intake, intakeToken }: { client: Client; initialCheckins: CheckIn[]; intake?: IntakeRecord | null; intakeToken?: string | null }) {
   const [checkins, setCheckins] = useState(initialCheckins);
   const [form, setForm] = useState({ training: 80, nutrition: 80, energy: 7, sleep: 7.5, hydration: 2.5, stress: 4, notes: "" });
   const [feedback, setFeedback] = useState<string | null>(null);
@@ -246,6 +249,37 @@ export function ClientDetail({ client, initialCheckins }: { client: Client; init
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Tab: Fișa de Start */}
+      {activeTab === "intake" && (
+        <div className="p-6 bg-built-gray-1 border border-built-gray-2 rounded-sm">
+          <div className="flex items-center justify-between mb-5">
+            <h3 className="font-display text-xl tracking-wider">Fișa de Start</h3>
+            {intakeToken && <CopyIntakeLink token={intakeToken} />}
+          </div>
+          {intake ? (
+            <div className="space-y-3">
+              <p className="font-condensed text-[10px] uppercase tracking-wider text-zinc-500 mb-4">
+                Completată {new Date(intake.submitted_at).toLocaleDateString("ro-RO")}
+              </p>
+              {ALL_INTAKE_FIELDS.map((f) => {
+                const val = intake.answers?.[f.key];
+                if (!val) return null;
+                return (
+                  <div key={f.key} className="bg-[#111111] border border-white/10 rounded-lg p-4">
+                    <p className="font-condensed text-[10px] uppercase tracking-wider text-built-red mb-1">{f.label}</p>
+                    <p className="text-sm text-zinc-200 whitespace-pre-wrap leading-relaxed">{val}</p>
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <p className="text-sm text-zinc-500">
+              Clientul nu a completat încă Fișa de Start. Copiază linkul și trimite-i-l pe WhatsApp.
+            </p>
+          )}
         </div>
       )}
 

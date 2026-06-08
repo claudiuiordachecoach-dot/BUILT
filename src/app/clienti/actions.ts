@@ -71,7 +71,7 @@ export interface IntakeRecord {
 
 /** Răspunsurile Fișei de Start ale clientului (null dacă nu a completat). */
 export async function getIntake(clientId: number): Promise<IntakeRecord | null> {
-  const s = getSupabaseServer();
+  const s = getSupabaseServer({ useServiceRole: true });
   const { data } = await s
     .from("client_intake")
     .select("answers, submitted_at")
@@ -82,7 +82,7 @@ export async function getIntake(clientId: number): Promise<IntakeRecord | null> 
 
 /** Token-ul de intake al clientului, pentru a construi linkul Fișei de Start. */
 export async function getIntakeToken(clientId: number): Promise<string | null> {
-  const s = getSupabaseServer();
+  const s = getSupabaseServer({ useServiceRole: true });
   const { data } = await s
     .from("clients")
     .select("intake_token")
