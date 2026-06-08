@@ -64,6 +64,33 @@ export async function createClient(name: string, startDate: string, objectives: 
   return { ok: true, id: data.id };
 }
 
+export interface IntakeRecord {
+  answers: Record<string, string>;
+  submitted_at: string;
+}
+
+/** Răspunsurile Fișei de Start ale clientului (null dacă nu a completat). */
+export async function getIntake(clientId: number): Promise<IntakeRecord | null> {
+  const s = getSupabaseServer();
+  const { data } = await s
+    .from("client_intake")
+    .select("answers, submitted_at")
+    .eq("client_id", clientId)
+    .single();
+  return (data as IntakeRecord) ?? null;
+}
+
+/** Token-ul de intake al clientului, pentru a construi linkul Fișei de Start. */
+export async function getIntakeToken(clientId: number): Promise<string | null> {
+  const s = getSupabaseServer();
+  const { data } = await s
+    .from("clients")
+    .select("intake_token")
+    .eq("id", clientId)
+    .single();
+  return (data?.intake_token as string) ?? null;
+}
+
 export type CheckInResult = { ok: true; feedback: string } | { ok: false; error: string };
 
 export async function submitCheckin(clientId: number, data: { week: number; training: number; nutrition: number; energy: number; sleep: number; hydration: number; stress: number; notes: string }): Promise<CheckInResult> {
