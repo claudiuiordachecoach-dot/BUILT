@@ -28,23 +28,26 @@ export function NewClientForm() {
   );
 
   return (
-    <div className="fixed inset-0 bg-built-black/80 flex items-center justify-center z-50 p-4">
-      <div className="bg-built-gray-1 border border-built-gray-2 rounded-sm p-6 w-full max-w-md">
-        <h3 className="font-display text-2xl tracking-wider mb-6">Client nou</h3>
-        {[["name", "Nume complet *", "text", "Ion Popescu"], ["email", "Email", "email", "ion@email.com"], ["start_date", "Data start", "date", ""], ["objectives", "Obiective", "text", "Slăbit 8kg, energie crescută"]].map(([k, l, t, p]) => (
+    <div className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-[#1A1A1A] border border-white/10 rounded-sm p-7 w-full max-w-md shadow-2xl">
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-display text-3xl tracking-wider text-white">CLIENT NOU</h3>
+          <button onClick={() => setOpen(false)} className="text-zinc-500 hover:text-white text-xl leading-none">✕</button>
+        </div>
+        {[["name", "Nume complet", "text", "Ion Popescu"], ["email", "Email", "email", "ion@email.com"], ["start_date", "Data start", "date", ""], ["objectives", "Obiective", "text", "Slăbit 8kg, energie crescută"]].map(([k, l, t, p]) => (
           <div key={k} className="mb-4">
-            <p className="font-condensed text-[10px] text-built-gray-text uppercase mb-1">{l}</p>
+            <label className="block font-condensed text-[11px] text-zinc-400 uppercase tracking-wider mb-1.5">{l}</label>
             <input type={t as string} value={(form as Record<string, string>)[k as string]} onChange={set(k as keyof typeof form)} placeholder={p as string}
-              className="w-full bg-built-black border border-built-gray-2 text-built-white text-sm px-3 py-2 focus:outline-none focus:border-built-red" />
+              className="w-full bg-black/40 border border-white/15 text-white text-sm px-3 py-2.5 focus:outline-none focus:border-built-red placeholder:text-zinc-600 rounded-sm" />
           </div>
         ))}
         {error && <p className="text-built-red font-condensed text-xs mb-3">{error}</p>}
-        <div className="flex gap-3">
+        <div className="flex gap-3 mt-6">
           <button type="button" onClick={handleSubmit} disabled={isPending}
-            className="flex-1 py-2.5 bg-built-red hover:bg-built-red-dark text-built-white font-condensed text-xs disabled:opacity-50">
-            {isPending ? "..." : "Adaugă client"}
+            className="flex-1 py-3 bg-built-red hover:bg-built-red-dark text-white font-condensed text-xs tracking-widest uppercase disabled:opacity-50 transition-colors">
+            {isPending ? "Se adaugă…" : "Adaugă client"}
           </button>
-          <button type="button" onClick={() => setOpen(false)} className="px-4 py-2.5 border border-built-gray-2 text-built-gray-text font-condensed text-xs">Anulează</button>
+          <button type="button" onClick={() => setOpen(false)} className="px-5 py-3 border border-white/15 text-zinc-400 hover:text-white hover:border-white/30 font-condensed text-xs uppercase tracking-wider transition-colors">Anulează</button>
         </div>
       </div>
     </div>
