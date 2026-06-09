@@ -1,0 +1,1623 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Antrenament · Andrei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--rdim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:130px;}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:12px 16px 10px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;}
+.logo span{color:var(--red);}
+.hdr-right{text-align:right;}
+.hdr-name{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.hdr-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-top:2px;}
+.prog-wrap{margin-bottom:2px;}
+.prog-bar{height:3px;background:var(--brd);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--red);border-radius:2px;transition:width 1.2s ease;width:0%;}
+.prog-meta{display:flex;justify-content:space-between;margin-top:3px;}
+.prog-meta span{font-size:9px;color:var(--muted);letter-spacing:1px;}
+
+.tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:11px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-weight:700;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+.panel{display:none;padding:16px;}
+.panel.active{display:block;}
+
+.alert{border-left:3px solid var(--red);background:var(--rdim);padding:11px 13px;margin-bottom:14px;font-size:12px;color:#ccc;line-height:1.6;border-radius:0 4px 4px 0;}
+.alert.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
+.alert.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
+.alert.blue{border-color:var(--blue);background:rgba(41,128,185,0.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--red);margin-bottom:3px;}
+.alert.green .alert-ttl{color:var(--green);}
+.alert.orange .alert-ttl{color:var(--orange);}
+.alert.blue .alert-ttl{color:var(--blue);}
+
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+.pill{font-size:9px;padding:4px 10px;border-radius:3px;background:var(--card);border:1px solid var(--brd);color:#aaa;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.pill.red{background:var(--rdim);border-color:rgba(192,57,43,.3);color:var(--red);}
+.pill.blue{background:rgba(41,128,185,.1);border-color:rgba(41,128,185,.3);color:var(--blue);}
+
+.ex-block{background:var(--card);border:1px solid var(--brd);border-radius:6px;margin-bottom:10px;overflow:hidden;}
+.ex-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 13px;cursor:pointer;user-select:none;}
+.ex-hdr:hover{background:rgba(255,255,255,.02);}
+.ex-left{flex:1;padding-right:8px;}
+.ex-num{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.ex-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.5px;color:var(--wht);line-height:1.2;}
+.ex-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+.tag-red{background:var(--rdim);color:var(--red);border:1px solid rgba(192,57,43,.3);}
+.tag-orange{background:rgba(230,126,34,.1);color:var(--orange);border:1px solid rgba(230,126,34,.3);}
+.tag-green{background:rgba(39,174,96,.08);color:var(--green);border:1px solid rgba(39,174,96,.25);}
+.tag-blue{background:rgba(41,128,185,.1);color:var(--blue);border:1px solid rgba(41,128,185,.3);}
+.ex-icon{font-size:11px;color:var(--muted);transition:transform .25s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--drk2);border:1px solid var(--brd);border-radius:3px;flex-shrink:0;}
+.ex-block.open .ex-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.ex-body{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1);}
+.ex-block.open .ex-body{max-height:800px;}
+.ex-cue{padding:0 13px 10px;font-size:12px;color:#aaa;line-height:1.6;border-bottom:1px solid var(--brd);}
+.ex-cue.warn{color:var(--orange);}
+.ex-cue.good{color:var(--green);}
+
+.sets-wrap{padding:8px 10px 10px;}
+.set-labels{display:flex;padding:0 36px 4px 44px;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.set-labels div{flex:1;text-align:center;}
+.set-row{display:flex;align-items:center;gap:5px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.set-row:last-child{border-bottom:none;}
+.set-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);width:38px;flex-shrink:0;}
+.set-tgt{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:48px;text-align:center;flex-shrink:0;}
+.set-inp{background:var(--blk);border:1px solid var(--brd);color:var(--wht);font-family:'DM Mono',monospace;font-size:14px;text-align:center;flex:1;padding:5px 2px;border-radius:3px;min-width:0;}
+.set-inp:focus{outline:none;border-color:var(--red);}
+.set-chk{width:30px;height:30px;flex-shrink:0;border-radius:3px;border:1px solid var(--brd);background:var(--drk);display:flex;justify-content:center;align-items:center;cursor:pointer;transition:all .15s;}
+.set-chk.done{background:var(--green);border-color:var(--green);}
+.set-chk.done::after{content:'✓';color:#fff;font-weight:700;font-size:14px;}
+.rest-btn{width:100%;background:var(--drk2);border:1px solid var(--brd);color:var(--muted);padding:8px;font-size:10px;letter-spacing:1px;font-weight:700;text-transform:uppercase;cursor:pointer;border-radius:3px;margin-top:8px;transition:all .15s;}
+.rest-btn:hover{border-color:var(--red);color:var(--red);}
+
+.cond-block{border:1px solid var(--orange);border-radius:6px;background:rgba(230,126,34,.04);padding:14px;margin-top:14px;}
+.cond-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.cond-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:3px;}
+.cond-equip{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--wht);}
+.cond-setup{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;}
+.cond-rounds{display:flex;gap:7px;justify-content:center;margin-bottom:10px;}
+.rdot{height:8px;flex:1;border-radius:4px;background:var(--brd);transition:all .3s;}
+.rdot.done{background:var(--green);}
+.rdot.active.work{background:var(--orange);}
+.rdot.active.rest{background:var(--blue);}
+.cond-state{text-align:center;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;min-height:16px;transition:color .3s;}
+.cond-cd{font-family:'Bebas Neue',sans-serif;font-size:58px;text-align:center;letter-spacing:2px;color:var(--wht);line-height:1;margin-bottom:14px;transition:color .3s;}
+.cond-ctrls{display:flex;gap:8px;}
+.cond-btn{flex:1;padding:11px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .15s;border:1px solid;}
+.cond-start{background:rgba(230,126,34,.15);border-color:var(--orange);color:var(--orange);}
+.cond-start:hover{background:rgba(230,126,34,.25);}
+.cond-reset{background:var(--drk2);border-color:var(--brd);color:var(--muted);}
+.cond-reset:hover{border-color:var(--red);color:var(--red);}
+
+.rule-card{background:var(--drk);border:1px solid var(--brd);border-radius:6px;padding:14px;margin-bottom:12px;}
+.rule-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--wht);letter-spacing:1px;margin-bottom:8px;}
+.rule-body{font-size:12px;color:#ccc;line-height:1.7;}
+.rule-body strong{color:var(--orange);}
+.rule-body .ok{color:var(--green);}
+.rule-body .warn{color:var(--red);}
+
+/* ── CASETA EXERCIȚIU ── */
+.caseta{margin:0 0 10px;border:1px solid rgba(41,128,185,0.25);border-left:3px solid var(--blue);background:rgba(41,128,185,0.05);border-radius:0 4px 4px 0;overflow:hidden;}
+.caseta-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;user-select:none;}
+.caseta-hdr-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--blue);}
+.caseta-icon{font-size:11px;color:var(--blue);transition:transform .25s;}
+.caseta.open .caseta-icon{transform:rotate(180deg);}
+.caseta-body{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1);}
+.caseta.open .caseta-body{max-height:600px;}
+.caseta-inner{padding:0 12px 10px;}
+.caseta-row{display:grid;grid-template-columns:90px 1fr;gap:6px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.caseta-row:last-child{border-bottom:none;}
+.caseta-lbl{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);line-height:1.5;padding-top:1px;}
+.caseta-val{font-size:11px;color:#ccc;line-height:1.6;}
+.caseta-val .g{color:var(--green);font-weight:600;}
+.caseta-val .w{color:var(--orange);font-weight:600;}
+
+/* ── BUTON YOUTUBE ── */
+.btn-yt{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:9px 14px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,80,80,0.3);border-radius:4px;color:#ff6b6b;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all .2s;}
+.btn-yt:hover{background:rgba(255,0,0,0.2);color:#fff;}
+.btn-yt-icon{width:20px;height:14px;background:#ff0000;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.btn-yt-icon::after{content:'';border-style:solid;border-width:4px 0 4px 8px;border-color:transparent transparent transparent #fff;}
+
+.btn-vid{display:inline-flex;align-items:center;gap:4px;margin-top:6px;padding:4px 10px;background:rgba(41,128,185,0.12);border:1px solid rgba(41,128,185,0.3);color:var(--blue);font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;border-radius:3px;transition:all .2s;}
+.btn-vid:hover{background:rgba(41,128,185,0.25);color:#fff;}
+.btn-vid span{font-size:12px;}
+.wu-item{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.wu-item:last-child{border-bottom:none;}
+.wu-name{font-size:12px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.wu-cue{font-size:11px;color:#aaa;line-height:1.4;}
+.wu-sets{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);white-space:nowrap;margin-left:8px;flex-shrink:0;}
+.prog-box{background:var(--card);border:1px solid var(--brd);border-left:3px solid var(--green);padding:12px;border-radius:4px;}
+.prog-label{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.prog-val{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--green);line-height:1;}
+.prog-note{font-size:11px;color:#aaa;margin-top:4px;line-height:1.4;}
+
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-ov.open{opacity:1;pointer-events:auto;}
+.modal-box{background:var(--card);border:1px solid var(--red);border-radius:8px;padding:24px;width:90%;max-width:400px;text-align:center;transform:translateY(20px);transition:transform .3s;}
+.modal-ov.open .modal-box{transform:translateY(0);}
+.modal-ttl{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--wht);letter-spacing:2px;margin-bottom:20px;}
+.modal-ttl span{color:var(--red);}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.sum-box{background:var(--blk);border:1px solid var(--brd);border-radius:4px;padding:16px 10px;}
+.sum-val{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--red);line-height:1;margin-bottom:4px;}
+.sum-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.modal-desc{font-size:13px;color:#aaa;margin-bottom:18px;line-height:1.6;}
+.modal-btn{width:100%;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);padding:12px;font-weight:700;letter-spacing:1px;font-size:12px;border-radius:4px;cursor:pointer;text-transform:uppercase;margin-bottom:8px;transition:all .2s;}
+.modal-btn.green-btn{background:rgba(39,174,96,.15);border-color:rgba(39,174,96,.4);color:var(--green);margin-bottom:12px;}
+.modal-btn.cancel{background:transparent;border-color:var(--brd);color:var(--muted);margin-bottom:0;}
+
+.timer-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,13,.97);backdrop-filter:blur(12px);border-top:1px solid var(--brd);padding:11px 16px;display:flex;justify-content:space-between;align-items:center;z-index:1000;}
+.t-info{display:flex;flex-direction:column;gap:2px;}
+.t-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.t-val{font-family:'DM Mono',monospace;font-size:26px;color:var(--wht);line-height:1;font-weight:600;}
+.t-val.active{color:var(--blue);}
+.t-val.done{color:var(--green);}
+.t-ctrls{display:flex;gap:8px;align-items:center;}
+.t-btn{background:var(--card);border:1px solid var(--brd);color:var(--wht);font-size:10px;font-weight:700;padding:9px 14px;border-radius:3px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+.t-btn.red{color:var(--red);}
+.fin-btn{font-size:10px;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);padding:9px 12px;border-radius:3px;cursor:pointer;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+@media(max-width:767px){body,.sticky-bar{max-width:480px;margin:0 auto;}}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT<span>GYM</span></div>
+    <div class="hdr-right">
+      <div class="hdr-name">Andrei · Antrenament</div>
+      <div class="hdr-day" id="hdr-day">Zi — din 90</div>
+    </div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-meta">
+      <span id="prog-phase">FAZA 1: Fundație</span>
+      <span id="prog-pct">0% complet</span>
+    </div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('calendar')">PROGRAM &amp; PROTOCOL</div>
+  <div class="tab" onclick="showTab('a')">PUSH — A</div>
+  <div class="tab" onclick="showTab('b')">PULL — B</div>
+  <div class="tab" onclick="showTab('c')">LEGS — C</div>
+  <div class="tab" onclick="showTab('combo')">FULL UPPER — COMBO</div>
+  <div class="tab" onclick="showTab('reguli')">REGULI</div>
+</div>
+
+<!-- MODAL -->
+<div id="modal" class="modal-ov">
+  <div class="modal-box">
+    <div class="modal-ttl">RAPORT <span>SĂPTĂMÂNAL</span></div>
+    <div class="sum-grid">
+      <div class="sum-box"><div class="sum-val" id="sum-sets">0</div><div class="sum-lbl">Serii Finalizate</div></div>
+      <div class="sum-box"><div class="sum-val" id="sum-vol">0</div><div class="sum-lbl">Volum Total (kg)</div></div>
+    </div>
+    <div class="modal-desc">Descarcă istoricul înainte de resetare.</div>
+    <button class="modal-btn green-btn" onclick="exportCSV()">Descarcă Istoric (CSV)</button>
+    <button class="modal-btn" onclick="confirmReset()">Resetează pentru Săptămâna Nouă</button>
+    <button class="modal-btn cancel" onclick="closeModal()">Înapoi</button>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════ TAB 1 — CALENDAR & PROTOCOL ═══════════════════════════════ -->
+<div class="panel active" id="tab-calendar">
+
+  <div class="alert">
+    <div class="alert-ttl">PROTOCOL PRE-ANTRENAMENT — OBLIGATORIU</div>
+    <strong>Nu intri la sală pe stomacul gol.</strong> Glicemia ta e 71 — fără mâncare vei avea un tremurat al mâinilor în timp ce ridici greutăți. Cu 60–90 min înainte: iaurt + banană, pâine cu brânză, sau orice din gustarea de la 15:00. Atât.
+  </div>
+
+  <!-- CALENDAR IUNIE 2026 -->
+  <div class="rule-card" style="border-color:var(--blue);">
+    <div class="rule-ttl" style="color:var(--blue);">CALENDARUL TĂU — IUNIE 2026</div>
+    <div class="rule-body">
+      <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px;">
+        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">L</div>
+        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">M</div>
+        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">M</div>
+        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">J</div>
+        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">V</div>
+        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">S</div>
+        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">D</div>
+        <!-- 1 Iunie 2026 = Luni → zero spacere -->
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#ccc;"><div style="width:10px;height:10px;background:rgba(192,57,43,0.7);border-radius:2px;"></div>Muncă</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#ccc;"><div style="width:10px;height:10px;background:rgba(39,174,96,0.7);border-radius:2px;"></div>Sală</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#ccc;"><div style="width:10px;height:10px;background:rgba(41,128,185,0.4);border-radius:2px;"></div>Liber</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SĂPTĂMÂNILE DE ANTRENAMENT -->
+  <div class="rule-card" style="border-color:var(--green);">
+    <div class="rule-ttl" style="color:var(--green);">SESIUNILE PLANIFICATE IUNIE</div>
+    <div class="rule-body">
+      <div style="margin-bottom:10px;padding:10px;background:rgba(192,57,43,0.1);border:1px solid rgba(192,57,43,0.4);border-radius:4px;">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);margin-bottom:4px;">Săpt. 9–14 Iunie — AZI ÎNCEPI ✦</div>
+        <div style="font-size:12px;color:#ccc;"><strong style="color:var(--wht);">Marți 9 (AZI)</strong> → Push (A) &nbsp;·&nbsp; <strong style="color:var(--wht);">Vineri 12</strong> → Pull (B) &nbsp;·&nbsp; <strong style="color:var(--wht);">Duminică 14</strong> → Legs (C)</div>
+      </div>
+      <div style="margin-bottom:10px;padding:10px;background:rgba(230,126,34,0.06);border:1px solid rgba(230,126,34,0.2);border-radius:4px;">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:4px;">Săpt. 15–21 Iunie — 2 Zile, 2 Sesiuni Complete</div>
+        <div style="font-size:12px;color:#ccc;"><strong style="color:var(--wht);">Miercuri 17</strong> → Full Upper Body (COMBO) &nbsp;·&nbsp; <strong style="color:var(--wht);">Joi 18</strong> → Legs (C) &nbsp;·&nbsp; <span style="color:var(--muted);">Restul = muncă</span></div>
+      </div>
+      <div style="padding:10px;background:rgba(39,174,96,0.06);border:1px solid rgba(39,174,96,0.2);border-radius:4px;">
+        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:4px;">Săpt. 22–28 Iunie</div>
+        <div style="font-size:12px;color:#ccc;"><strong style="color:var(--wht);">Marți 23</strong> → Pull (B) &nbsp;·&nbsp; <strong style="color:var(--wht);">Vineri 26</strong> → Legs (C) &nbsp;·&nbsp; <strong style="color:var(--wht);">Duminică 28</strong> → Push (A)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEAT -->
+  <div class="rule-card" style="border-color:var(--orange);">
+    <div class="rule-ttl" style="color:var(--orange);">NEAT — Cardio-ul Tău Gratuit</div>
+    <div class="rule-body">
+      La muncă stai afară și te miști toată ziua — arzi calorii fără să te gândești. Cafeneaua, drumurile, plimbările din zilele libere = Zone 2 natural.<br><br>
+      <strong>Nu adaugi ore de alergat.</strong> În zilele libere: 10.000+ pași. În zilele de muncă: mișcarea de la job e suficientă. Finisher-ul de 5 min de la sală completează Zone 2 și HIIT. Atât.
+    </div>
+  </div>
+
+  <!-- PROTOCOL RESPIRATIE -->
+  <div class="rule-card" style="border-color:var(--red);">
+    <div class="rule-ttl" style="color:var(--red);">RESPIRATUL GREU LA EFORT — Ce Faci</div>
+    <div class="rule-body">
+      Faptul că respiri greu la efort indică lipsa antrenamentului, nu o problemă medicală. Se îmbunătățește în 3–4 săptămâni garantat.<br><br>
+      <strong>Warm-up-ul de 5 min pe bicicletă/bandă e obligatoriu</strong> — nu îl sări. Pornește lent și lasă corpul să se adapteze.<br><br>
+      În exerciții: <strong>expiră la efort (când ridici)</strong>, inspiră la coborâre. Nu reții respirația. Dacă simți că nu poți respira — reduci greutatea la jumătate, nu te forțezi.
+    </div>
+  </div>
+
+  <div class="alert green" style="margin-top:4px;">
+    <div class="alert-ttl">Regula de Bază</div>
+    Antrenezi doar în zilele libere. La muncă (6:30–20:15+) nu ai energie pentru sală — și nici nu ai nevoie. Sistemul e construit pe realitatea ta, nu pe una imaginară.
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════ ZIUA A — PUSH ═══════════════════════════════ -->
+<div class="panel" id="tab-a">
+
+  <div class="alert">
+    <div class="alert-ttl">PUSH — Piept + Umeri + Triceps · ~45 min</div>
+    <strong>Ai mâncat cu 60–90 min înainte?</strong> Dacă nu — fă asta întâi. Dacă apare un tremurat al mâinilor în timpul exercițiului, ia o pauză, mănâncă o banană sau un iaurt, apoi continuă.
+  </div>
+  <div class="pills">
+    <span class="pill red">Exerciții de bază: 2 min pauză</span>
+    <span class="pill">Izolare: 60–90 sec</span>
+  </div>
+
+  <!-- WARM-UP A -->
+  <div class="ex-block open" id="wu-a">
+    <div class="ex-hdr" onclick="toggleEx('wu-a')">
+      <div class="ex-left">
+        <div class="ex-num">🔥 WARM-UP OBLIGATORIU</div>
+        <div class="ex-ttl">Activare + Respirație (7 min)</div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="wu-item">
+        <div><div class="wu-name">Bandă sau bicicletă statică</div><div class="wu-cue">Viteză ușoară. Lasă corpul să se încălzească, nu forța. Respiră pe nas, expiră pe gură.</div></div>
+        <div class="wu-sets">5 min</div>
+      </div>
+      <div class="wu-item">
+        <div><div class="wu-name">Rotații mari cu brațele</div><div class="wu-cue">10 înainte + 10 înapoi. Lubrifiezi umerii — cei mai sensibili la efort.</div></div>
+        <div class="wu-sets">10+10</div>
+      </div>
+      <div class="wu-item">
+        <div><div class="wu-name">Genuflexiuni lente fără greutate</div><div class="wu-cue">Pauză 2 sec jos. Activezi tot corpul și încarci articulațiile înainte de efort real.</div></div>
+        <div class="wu-sets">10</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. ÎMPINS CU GANTERE LA BANCĂ -->
+  <div class="ex-block open" id="ex-a1">
+    <div class="ex-hdr" onclick="toggleEx('ex-a1')">
+      <div class="ex-left">
+        <div class="ex-num">01 · EXERCIȚIUL PRINCIPAL</div>
+        <div class="ex-ttl">Împins cu gantere la bancă</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">2 min pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=dumbbell+bench+press+correct+form+tutorial+beginners" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta open">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Stai pe bancă, spatele lipit. Gantere la nivelul pieptului. Împingi sus până brațele aproape drepte. Cobori <span class="g">2 secunde</span> controlat.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Coatele la <span class="g">45° față de corp</span> (nu la 90°). Omoplații strânși și lipiți de bancă. Nu ridici bazinul.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la împingere</span> (sus) · <span class="g">Inspiră la coborâre</span>. Nu bloca respirația.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Coatele la 90°</span> — prea mult stres pe umeri. Ține-le la 45° față de corp.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Cobori prea repede</span> — pierdere de tensiune musculară. Numără 2 secunde la coborâre.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a1s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a1s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a1s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a1s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(120)">Start Pauză 2:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. ÎMPINS LA UMERI -->
+  <div class="ex-block" id="ex-a2">
+    <div class="ex-hdr" onclick="toggleEx('ex-a2')">
+      <div class="ex-left">
+        <div class="ex-num">02 · UMERI</div>
+        <div class="ex-ttl">Împins cu gantere la umeri</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=dumbbell+seated+shoulder+press+correct+form+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Stai pe bancă cu spătar. Gantere la nivelul urechilor, coatele ușor în față. Împingi sus. Cobori controlat.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Spatele <span class="g">lipit de spătar</span> tot timpul. Nu te arcui în spate pentru a ajuta împingerea.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la împingere</span> (sus) · Inspiră la coborâre.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Arcuirea spatelui</span> — semnul că greutatea e prea mare. Reduce și lucrează cu formă.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Gantere prea jos</span> (sub urechi) — pierde tensiunea. Pornesc de la nivelul urechilor.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a2s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a2s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a2s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. FLUTURĂRI PIEPT -->
+  <div class="ex-block" id="ex-a3">
+    <div class="ex-hdr" onclick="toggleEx('ex-a3')">
+      <div class="ex-left">
+        <div class="ex-num">03 · IZOLARE PIEPT</div>
+        <div class="ex-ttl">Fluturări la aparat (Pec Deck)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12–15</span>
+          <span class="tag">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=pec+deck+fly+machine+correct+form+chest+isolation" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Coate ușor îndoite, aduci brațele împreună, strângi pieptul <span class="g">1 secundă</span> la final. Revii lent. Alternativă fără aparat: fluturări cu gantere pe bancă.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Nu cobori sub nivelul umerilor. Coatele <span class="g">niciodată complet drepte</span> — articulație protejată.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la strângere</span> (când aduci brațele) · Inspiră la deschidere.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Coate complet drepte</span> — stres articular la umăr. Ține-le ușor îndoite.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Lași greutatea să cadă rapid</span> — nu mai lucrează pieptul. Revii controlat 2 secunde.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a3s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a3s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a3s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. RIDICARE LATERALĂ -->
+  <div class="ex-block" id="ex-a4">
+    <div class="ex-hdr" onclick="toggleEx('ex-a4')">
+      <div class="ex-left">
+        <div class="ex-num">04 · LĂȚIMEA UMERILOR</div>
+        <div class="ex-ttl">Ridicare laterală cu gantere</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=lateral+raise+dumbbell+correct+form+no+swinging+shoulders" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val"><span class="g">Greutate mică</span> (2–5 kg la început). Ridici lateral până la nivelul umerilor. Cobori lent 2 secunde. Nu mai sus de umeri.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Coate ușor îndoite. Corpul drept, <span class="g">nu te legăni</span> din spate. Imaginează-ți că torni apă dintr-o cană — coatele ușor în față.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la ridicare</span> · Inspiră la coborâre.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Legănatul din spate</span> — inerție, nu mușchi. Dacă te legeni, greutatea e prea mare. Reduce la jumătate.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Ridici mai sus de umeri</span> — trapezul preia toată munca. Mișcarea se termină la nivelul umerilor.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a4s1"><div class="set-num">S1</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a4s2"><div class="set-num">S2</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a4s3"><div class="set-num">S3</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. TRICEPS -->
+  <div class="ex-block" id="ex-a5">
+    <div class="ex-hdr" onclick="toggleEx('ex-a5')">
+      <div class="ex-left">
+        <div class="ex-num">05 · TRICEPS</div>
+        <div class="ex-ttl">Extensii triceps la scripetă</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12–15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=triceps+pushdown+cable+rope+correct+form+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Prinde bara sau coarda la scripetă sus. Împingi în jos până brațele <span class="g">complet drepte</span>. Strângi 1 secundă. Revii controlat.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Coatele <span class="g">lipite de corp</span> tot timpul — nu le lăsa să iasă lateral. Tricepsul e 2/3 din brațul tău.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la împingere</span> (în jos) · Inspiră la revenire.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Coatele ies în lateral</span> — nu mai izolezi tricepsul. Lipești coatele de corp și reduci greutatea.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Nu mergi până la capăt</span> — extensia completă e crucială pentru triceps. Fără ea, jumătate din mișcare e pierdută.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="a5s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a5s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="a5s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDIO FINISHER -->
+  <div class="cond-block" data-work="40" data-rest="20" data-rounds="5">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">Cardio Finisher · Ziua A</div>
+        <div class="cond-equip">Bicicletă sau Eliptică</div>
+      </div>
+      <div class="cond-setup">5 runde<br>40″ efort / 20″ odihnă<br>~5 minute total</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">00:40</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+
+  <div class="alert green" style="margin-top:14px;">
+    <div class="alert-ttl">După antrenament — 3 minute de mobilitate</div>
+    10 rotații mari cu brațele înainte + 10 înapoi. Stretching umăr: ții brațul drept în față cu celălalt braț, 30 sec pe fiecare parte. Cat-Cow: pe mâini și genunchi, arcuiești și rotunjești spatele de 10 ori.
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════ ZIUA B — SPATE + BICEPS ═══════════════════════════════ -->
+<div class="panel" id="tab-b">
+
+  <div class="alert">
+    <div class="alert-ttl">PULL — Spate + Biceps · ~45 min</div>
+    Spate + bicepsi = combo care dă volumul brațului și forma de V. <strong>Un braț masiv vine din dezvoltarea spatelui și a tricepsului, nu doar din biceps.</strong> Ai mâncat cu 60–90 min înainte?
+  </div>
+  <div class="pills">
+    <span class="pill red">Tracțiuni și ramat: 90 sec</span>
+    <span class="pill">Biceps: 60 sec</span>
+  </div>
+
+  <!-- WARM-UP B -->
+  <div class="ex-block open" id="wu-b">
+    <div class="ex-hdr" onclick="toggleEx('wu-b')">
+      <div class="ex-left">
+        <div class="ex-num">🔥 WARM-UP OBLIGATORIU</div>
+        <div class="ex-ttl">Activare Spate + Umeri (7 min)</div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="wu-item">
+        <div><div class="wu-name">Bicicletă sau bandă</div><div class="wu-cue">5 min viteză ușoară. Respiră controlat. Nu forța ritmul.</div></div>
+        <div class="wu-sets">5 min</div>
+      </div>
+      <div class="wu-item">
+        <div><div class="wu-name">Rotații umeri (cercuri)</div><div class="wu-cue">10 înainte + 10 înapoi. Activezi umerii posteriori — cei care lucrează în lat pulldown și ramat.</div></div>
+        <div class="wu-sets">10+10</div>
+      </div>
+      <div class="wu-item">
+        <div><div class="wu-name">Tracțiuni ușoare mimice (fără greutate)</div><div class="wu-cue">Mimezi mișcarea de lat pulldown cu brațele goale, 10 repetări lente. Pregătești mușchii mici ai spatelui.</div></div>
+        <div class="wu-sets">10</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. LAT PULLDOWN -->
+  <div class="ex-block open" id="ex-b1">
+    <div class="ex-hdr" onclick="toggleEx('ex-b1')">
+      <div class="ex-left">
+        <div class="ex-num">01 · PRIORITATE SPATE</div>
+        <div class="ex-ttl">Tracțiuni la aparat (Lat Pulldown)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=lat+pulldown+correct+form+beginners+back+muscles+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta open">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Bara mai lată decât umerii. Pieptul ușor arcuit înainte. Trage bara spre <span class="g">claviculă</span> (nu spre burtă). Revii sus 2 secunde.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Imaginează-ți că <span class="g">bagi coatele în buzunarele pantalonilor</span> — asta activează dorsalii, nu bicepsul.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la tragere</span> (bara în jos) · Inspiră la revenire (bara sus).</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Tragi cu bicepsul</span> nu cu spatele — gândești la coate, nu la mâini. Mâinile sunt cârlige.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Te apleci mult înapoi</span> — devine ramat, nu lat pulldown. Rămâi relativ drept.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b1s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b1s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b1s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b1s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. RAMAT CU CABLU ȘEZUT -->
+  <div class="ex-block" id="ex-b2">
+    <div class="ex-hdr" onclick="toggleEx('ex-b2')">
+      <div class="ex-left">
+        <div class="ex-num">02 · SPATE GROS</div>
+        <div class="ex-ttl">Ramat cu cablu șezut</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=seated+cable+row+correct+form+back+muscles+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Spatele drept. Trage mânerul spre abdomen. <span class="g">Strângi omoplații împreună 1 sec</span>. Revii lent 2 secunde.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Corpul <span class="g">aproape vertical</span> tot timpul. Coatele pe lângă corp la final.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la tragere</span> · Inspiră la revenire.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Te apleci mult înainte la revenire</span> — corpul balansează, nu mai lucrează spatele. Rămâi drept.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Nu strângi omoplații</span> — faci ramat de biceps. Acel squeeze de 1 sec e mișcarea care contează.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b2s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b2s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b2s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b2s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. FACE PULLS -->
+  <div class="ex-block" id="ex-b3">
+    <div class="ex-hdr" onclick="toggleEx('ex-b3')">
+      <div class="ex-left">
+        <div class="ex-num">03 · POSTURĂ + UMERI POSTERIORI</div>
+        <div class="ex-ttl">Face Pulls (Cablu)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=face+pulls+cable+correct+form+rear+delts+posture" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Cablul la nivelul capului sau mai sus. Trage cu <span class="g">coatele sus</span>, coatele ajung la nivelul urechilor la final. Greutate mică.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Coatele sus tot timpul — <span class="g">nu coboară spre corp</span>. Execuție precisă bate greutate mare.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la tragere</span> · Inspiră la revenire.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Coatele coboară</span> spre corp — devine ramat, nu face pulls. Coatele trebuie să rămână sus.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Greutate prea mare</span> — nu mai poți ține coatele sus. Reduce până execuția e corectă.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b3s1"><div class="set-num">S1</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b3s2"><div class="set-num">S2</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b3s3"><div class="set-num">S3</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. FLEXII BICEPS -->
+  <div class="ex-block" id="ex-b4">
+    <div class="ex-hdr" onclick="toggleEx('ex-b4')">
+      <div class="ex-left">
+        <div class="ex-num">04 · BICEPS</div>
+        <div class="ex-ttl">Flexii biceps cu gantere</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12–15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=dumbbell+bicep+curl+correct+form+no+swinging+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Coate lipite de corp. Ridici spre umăr. <span class="g">Strângi bicepsul 1 sec sus</span>. Cobori 2 secunde controlat.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Coatele <span class="g">fixe ca un pivot</span> — nu se mișcă. Poți face alternativ sau simultan.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la ridicare</span> · Inspiră la coborâre.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Legănatul din spate</span> — inerție, nu biceps. Stai lipit de un perete dacă te legeni.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Cobori prea repede</span> — faza negativă (coborârea) e jumătate din creșterea musculară. Numără 2 sec.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b4s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b4s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b4s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. HAMMER CURL -->
+  <div class="ex-block" id="ex-b5">
+    <div class="ex-hdr" onclick="toggleEx('ex-b5')">
+      <div class="ex-left">
+        <div class="ex-num">05 · ANTEBRAȚ + FORȚĂ ÎN MÂINI</div>
+        <div class="ex-ttl">Flexii ciocan (Hammer Curl)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=hammer+curl+dumbbell+correct+form+brachialis+forearm" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val"><span class="g">Priza neutră</span>: palma spre corp (ca un ciocan). Ridici fără a roti încheietura. Alternezi brațele.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Coate lipite de corp. Gantera rămâne verticală pe toată mișcarea. Lucrează antebrațul și brachialis — grosimea brațului.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la ridicare</span> · Inspiră la coborâre.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Rotești încheietura</span> — devine flexie normală. Gantera rămâne în poziție de ciocan pe tot parcursul.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Faci ambele brațe simultan</span> — pierdere de control. Alternezi pentru mai multă precizie.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="b5s1"><div class="set-num">S1</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b5s2"><div class="set-num">S2</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="b5s3"><div class="set-num">S3</div><div class="set-tgt">15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDIO FINISHER B -->
+  <div class="cond-block" data-work="30" data-rest="30" data-rounds="6">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">Cardio Finisher · Ziua B</div>
+        <div class="cond-equip">Aparat de vâslit</div>
+      </div>
+      <div class="cond-setup">6 runde<br>30″ efort / 30″ odihnă<br>Lucrează tot corpul</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">00:30</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+
+  <div class="alert green" style="margin-top:14px;">
+    <div class="alert-ttl">După antrenament</div>
+    Stretching biceps: ții brațul drept în spate cu cotul îndoit și apăsând ușor cu cealaltă mână, 30 sec pe fiecare parte. Dead Hang: agață-te de bara de tracțiuni și stai atârnat 20-30 de secunde. Decomprimă articulațiile.
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════ ZIUA C — PICIOARE + CORE ═══════════════════════════════ -->
+<div class="panel" id="tab-c">
+
+  <div class="alert">
+    <div class="alert-ttl">LEGS — Picioare + Core · ~45 min</div>
+    Picioarele sunt cel mai mare grup muscular — generează cei mai mulți hormoni anabolici. <strong>Leg day = fat loss accelerat.</strong> Ai mâncat cu 60–90 min înainte?
+  </div>
+  <div class="pills">
+    <span class="pill red">Presă și squat: 2 min pauză</span>
+    <span class="pill">Izolare: 60–90 sec</span>
+  </div>
+
+  <!-- WARM-UP C -->
+  <div class="ex-block open" id="wu-c">
+    <div class="ex-hdr" onclick="toggleEx('wu-c')">
+      <div class="ex-left">
+        <div class="ex-num">🔥 WARM-UP OBLIGATORIU</div>
+        <div class="ex-ttl">Activare Picioare + Șolduri (8 min)</div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="wu-item">
+        <div><div class="wu-name">Bicicletă statică</div><div class="wu-cue">5 min viteză ușoară. Picioarele au nevoie de mai mult timp de încălzire decât corpul superior.</div></div>
+        <div class="wu-sets">5 min</div>
+      </div>
+      <div class="wu-item">
+        <div><div class="wu-name">Genuflexiuni fără greutate (lente)</div><div class="wu-cue">Pauză 3 sec jos, urcare lentă. Activezi cvadricepsul, fesierii și articulațiile genunchilor.</div></div>
+        <div class="wu-sets">2 × 10</div>
+      </div>
+      <div class="wu-item">
+        <div><div class="wu-name">Rotații șolduri (cercuri mari)</div><div class="wu-cue">Mâini pe șolduri, cercuri ample. 10 pe fiecare parte. Lubrifiere articulară înainte de presă.</div></div>
+        <div class="wu-sets">10/parte</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. PRESĂ PICIOARE -->
+  <div class="ex-block open" id="ex-c1">
+    <div class="ex-hdr" onclick="toggleEx('ex-c1')">
+      <div class="ex-left">
+        <div class="ex-num">01 · EXERCIȚIUL PRINCIPAL</div>
+        <div class="ex-ttl">Presă picioare (Leg Press)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">4 × 10–12</span>
+          <span class="tag tag-orange">2 min pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=leg+press+machine+correct+form+beginners+no+lower+back+injury" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta open">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Tălpi la lățimea umerilor. Coboară la <span class="g">90° genunchi</span>. Împingi prin <span class="g">călcâie</span>. Nu bloca genunchii sus.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Spatele <span class="g">mereu în contact</span> cu spătarul. <span class="w">Nu ridica coloana lombară</span> de pe spătar la coborâre.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la împingere</span> (sus) · Inspiră la coborâre. Nu reține respirația — important pentru operația ta recentă.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Coloana se ridică de pe spătar</span> — risc de hernie. Reduce greutatea până execuția e corectă.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Genunchii se înclină înăuntru</span> — stres articular. Împinge ușor genunchii spre exterior.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c1s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c1s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c1s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c1s4"><div class="set-num">S4</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(120)">Start Pauză 2:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. GOBLET SQUAT -->
+  <div class="ex-block" id="ex-c2">
+    <div class="ex-hdr" onclick="toggleEx('ex-c2')">
+      <div class="ex-left">
+        <div class="ex-num">02 · ECHILIBRU + FUNCȚIONAL</div>
+        <div class="ex-ttl">Squat cu gantera la piept (Goblet Squat)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=goblet+squat+correct+form+dumbbell+beginners+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Ganteră la piept, picioare ușor mai departe decât umerii, vârfuri ușor spre exterior. Cobori <span class="g">2 sec</span> până coapsele paralele cu podeaua.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Spatele <span class="g">drept tot timpul</span>. Genunchii urmăresc direcția degetelor. Pieptul sus — gantera în față te ajută să stai drept.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Inspiră la coborâre</span> · <span class="g">Expiră la ridicare</span>.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Spatele se rotunjește</span> — ridici pieptul și ții gantera mai aproape de corp.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Genunchii se înclină înăuntru</span> — împinge-i activ spre exterior pe toată coborârea.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c2s1"><div class="set-num">S1</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c2s2"><div class="set-num">S2</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c2s3"><div class="set-num">S3</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. LEG CURL -->
+  <div class="ex-block" id="ex-c3">
+    <div class="ex-hdr" onclick="toggleEx('ex-c3')">
+      <div class="ex-left">
+        <div class="ex-num">03 · ISCHIOGAMBIERI</div>
+        <div class="ex-ttl">Leg Curl (Aparat culcat)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12–15</span>
+          <span class="tag">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=lying+leg+curl+machine+correct+form+hamstrings+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Stai culcat, bazin fix. Trage călcâiele spre fese. Coboară <span class="g">2 sec controlat</span>.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Bazinul <span class="g">nu se ridică</span> de pe aparat — dacă se ridică, greutatea e prea mare.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Expiră la tragere</span> (sus) · Inspiră la coborâre.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Bazinul se ridică</span> — semnul că greutatea e prea mare. Reduce și ține bazinul pe aparat.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Cobori prea repede</span> — ischiogambierii lucrează și la coborâre. Numără 2 secunde.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c3s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c3s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c3s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. CALF RAISE -->
+  <div class="ex-block" id="ex-c4">
+    <div class="ex-hdr" onclick="toggleEx('ex-c4')">
+      <div class="ex-left">
+        <div class="ex-num">04 · GAMBE</div>
+        <div class="ex-ttl">Ridicări pe vârfuri (Calf Raise)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 20–25</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=standing+calf+raise+correct+form+full+range+of+motion" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Ridici pe vârfuri <span class="g">cât mai sus posibil</span>. Ții 1 sec sus. Cobori <span class="g">lent sub nivelul treptei</span> pentru alungire maximă.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Mișcare lentă și controlată. <span class="g">Repetări mari</span> (20–25) — gambele nu răspund la repetări mici.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val">Respiră continuu. Nu bloca respirația pentru câteva secunde cât ții poziția sus.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Repetări rapide</span> — inerție, nu gambe. Fiecare repetare lentă bate 5 rapide.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Nu cobori sub nivelul treptei</span> — pierzi jumătate din amplitudine. Alungirea completă e esențială.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="c4s1"><div class="set-num">S1</div><div class="set-tgt">20–25</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c4s2"><div class="set-num">S2</div><div class="set-tgt">20–25</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c4s3"><div class="set-num">S3</div><div class="set-tgt">20–25</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. PLANK -->
+  <div class="ex-block" id="ex-c5">
+    <div class="ex-hdr" onclick="toggleEx('ex-c5')">
+      <div class="ex-left">
+        <div class="ex-num">05 · MUSCULATURĂ CENTRALĂ</div>
+        <div class="ex-ttl">Plank</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 30–45 sec</span>
+          <span class="tag">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=plank+correct+form+tutorial+core+stability+beginners" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție Corectă</a>
+      <div class="caseta">
+        <div class="caseta-hdr" onclick="toggleCaseta(this)">
+          <span class="caseta-hdr-lbl">Execuție · Formă · Respirație · Greșeli</span>
+          <span class="caseta-icon">▼</span>
+        </div>
+        <div class="caseta-body"><div class="caseta-inner">
+          <div class="caseta-row"><span class="caseta-lbl">Execuție</span><span class="caseta-val">Antebrațe pe sol, vârfuri. Corp <span class="g">o linie dreaptă</span> cap-călcâie. Ții. Dacă apare un tremurat — mușchii lucrează, e bine.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Formă</span><span class="caseta-val">Bazinul <span class="g">la același nivel cu corpul</span> — nu sus, nu jos. Coatele sub umeri. Gât neutru (privești podeaua).</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Respirație</span><span class="caseta-val"><span class="g">Respiră continuu</span> și normal. Nu bloca respirația — asta crește inutil tensiunea abdominală.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #1</span><span class="caseta-val"><span class="w">Bazinul prea sus</span> (V inversat) — ușurezi exercițiul. Coboară până la linia dreaptă.</span></div>
+          <div class="caseta-row"><span class="caseta-lbl">Greșeală #2</span><span class="caseta-val"><span class="w">Bazinul prea jos</span> — presiune excesivă pe coloana lombară. Ridică ușor până la linia dreaptă.</span></div>
+        </div></div>
+      </div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>SEC</div><div>REPS</div></div>
+        <div class="set-row" data-id="c5s1"><div class="set-num">S1</div><div class="set-tgt">30–45s</div><input class="set-inp kg" type="number" placeholder="sec"><input class="set-inp rep" type="number" placeholder="ok"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c5s2"><div class="set-num">S2</div><div class="set-tgt">30–45s</div><input class="set-inp kg" type="number" placeholder="sec"><input class="set-inp rep" type="number" placeholder="ok"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="c5s3"><div class="set-num">S3</div><div class="set-tgt">30–45s</div><input class="set-inp kg" type="number" placeholder="sec"><input class="set-inp rep" type="number" placeholder="ok"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(45)">Start Pauză 45 sec</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDIO FINISHER C -->
+  <div class="cond-block" data-work="40" data-rest="20" data-rounds="5">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">Cardio Finisher · Ziua C</div>
+        <div class="cond-equip">Bicicletă sau Mers rapid</div>
+      </div>
+      <div class="cond-setup">5 runde<br>40″ efort / 20″ odihnă<br>Zero impact pe articulații</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">00:40</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+
+  <div class="alert green" style="margin-top:14px;">
+    <div class="alert-ttl">După antrenament — Mobilitate șold</div>
+    Stretching cvadriceps: stai pe un picior, tragi călcâiul spre fesă cu mâna, 30 sec pe fiecare parte. Stretching ischiogambieri: stai cu piciorul drept pe o bancă și te apleci ușor înainte, 30 sec pe fiecare parte.
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════ FULL UPPER BODY — COMBO (săpt 15-21) ═══════════════════════════════ -->
+<div class="panel" id="tab-combo">
+
+  <div class="alert">
+    <div class="alert-ttl">FULL UPPER BODY — Push + Pull Combinat · ~45 min</div>
+    Folosești asta în <strong>săptămânile când ai doar 2 zile libere consecutive</strong> (ex: Miercuri 17 + Joi 18 iunie). Ziua 1 = Full Upper Body (asta), Ziua 2 = Legs (C). Grupe diferite → recuperare completă.
+  </div>
+  <div class="pills">
+    <span class="pill red">Compuse: 90 sec pauză</span>
+    <span class="pill">Izolare: 60 sec</span>
+  </div>
+
+  <!-- WARM-UP COMBO -->
+  <div class="ex-block open" id="wu-combo">
+    <div class="ex-hdr" onclick="toggleEx('wu-combo')">
+      <div class="ex-left">
+        <div class="ex-num">🔥 WARM-UP</div>
+        <div class="ex-ttl">Activare Completă (7 min)</div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="wu-item">
+        <div><div class="wu-name">Bicicletă sau bandă</div><div class="wu-cue">5 min ușor. Activezi tot corpul superior înainte de Push + Pull.</div></div>
+        <div class="wu-sets">5 min</div>
+      </div>
+      <div class="wu-item">
+        <div><div class="wu-name">Rotații brațe + tracțiuni mimice</div><div class="wu-cue">10 rotații mari + 10 tracțiuni fără greutate. Pregătești umerii și spatele simultan.</div></div>
+        <div class="wu-sets">10+10</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 1. ÎMPINS GANTERE LA BANCĂ [PUSH] -->
+  <div class="ex-block open" id="ex-co1">
+    <div class="ex-hdr" onclick="toggleEx('ex-co1')">
+      <div class="ex-left">
+        <div class="ex-num">01 · PUSH — PIEPT</div>
+        <div class="ex-ttl">Împins cu gantere la bancă</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=dumbbell+bench+press+correct+form+tutorial+beginners" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție</a>
+      <div class="caseta"><div class="caseta-hdr" onclick="toggleCaseta(this)"><span class="caseta-hdr-lbl">Formă Esențial</span><span class="caseta-icon">▼</span></div><div class="caseta-body"><div class="caseta-inner"><div class="caseta-row"><span class="caseta-lbl">Cheie</span><span class="caseta-val">Coate <span class="g">45°</span>. Cobori 2 sec. <span class="g">Expiră la împingere.</span></span></div><div class="caseta-row"><span class="caseta-lbl">Greșeală</span><span class="caseta-val"><span class="w">Coate la 90°</span> = stres pe umăr. Ține-le la 45°.</span></div></div></div></div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="co1s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co1s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co1s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. LAT PULLDOWN [PULL] -->
+  <div class="ex-block" id="ex-co2">
+    <div class="ex-hdr" onclick="toggleEx('ex-co2')">
+      <div class="ex-left">
+        <div class="ex-num">02 · PULL — SPATE LAT</div>
+        <div class="ex-ttl">Tracțiuni la aparat (Lat Pulldown)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 10–12</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=lat+pulldown+correct+form+beginners+back+muscles+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție</a>
+      <div class="caseta"><div class="caseta-hdr" onclick="toggleCaseta(this)"><span class="caseta-hdr-lbl">Formă Esențial</span><span class="caseta-icon">▼</span></div><div class="caseta-body"><div class="caseta-inner"><div class="caseta-row"><span class="caseta-lbl">Cheie</span><span class="caseta-val">Coate <span class="g">în buzunare</span>. Trage spre <span class="g">claviculă</span>. Expiră la tragere.</span></div><div class="caseta-row"><span class="caseta-lbl">Greșeală</span><span class="caseta-val"><span class="w">Tragi cu bicepsul</span> nu cu spatele. Gândești la coate, nu la mâini.</span></div></div></div></div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="co2s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co2s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co2s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. ÎMPINS UMERI [PUSH] -->
+  <div class="ex-block" id="ex-co3">
+    <div class="ex-hdr" onclick="toggleEx('ex-co3')">
+      <div class="ex-left">
+        <div class="ex-num">03 · PUSH — UMERI</div>
+        <div class="ex-ttl">Împins cu gantere la umeri</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 10–12</span>
+          <span class="tag">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=dumbbell+seated+shoulder+press+correct+form+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție</a>
+      <div class="caseta"><div class="caseta-hdr" onclick="toggleCaseta(this)"><span class="caseta-hdr-lbl">Formă Esențial</span><span class="caseta-icon">▼</span></div><div class="caseta-body"><div class="caseta-inner"><div class="caseta-row"><span class="caseta-lbl">Cheie</span><span class="caseta-val">Spatele <span class="g">lipit de spătar</span>. Expiră la împingere.</span></div><div class="caseta-row"><span class="caseta-lbl">Greșeală</span><span class="caseta-val"><span class="w">Arcuirea spatelui</span> = greutate prea mare. Reduce.</span></div></div></div></div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="co3s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co3s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co3s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. RAMAT CABLU [PULL] -->
+  <div class="ex-block" id="ex-co4">
+    <div class="ex-hdr" onclick="toggleEx('ex-co4')">
+      <div class="ex-left">
+        <div class="ex-num">04 · PULL — SPATE GROS</div>
+        <div class="ex-ttl">Ramat cu cablu șezut</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 10–12</span>
+          <span class="tag">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=seated+cable+row+correct+form+back+muscles+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Execuție</a>
+      <div class="caseta"><div class="caseta-hdr" onclick="toggleCaseta(this)"><span class="caseta-hdr-lbl">Formă Esențial</span><span class="caseta-icon">▼</span></div><div class="caseta-body"><div class="caseta-inner"><div class="caseta-row"><span class="caseta-lbl">Cheie</span><span class="caseta-val">Omoplații <span class="g">împreună 1 sec</span>. Expiră la tragere.</span></div><div class="caseta-row"><span class="caseta-lbl">Greșeală</span><span class="caseta-val"><span class="w">Te apleci înainte</span> = spate muncește, nu dorsalii.</span></div></div></div></div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="co4s1"><div class="set-num">S1</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co4s2"><div class="set-num">S2</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co4s3"><div class="set-num">S3</div><div class="set-tgt">10–12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. SUPERSET BICEPS + TRICEPS -->
+  <div class="ex-block" id="ex-co5">
+    <div class="ex-hdr" onclick="toggleEx('ex-co5')">
+      <div class="ex-left">
+        <div class="ex-num">05 · SUPERSET — BRAȚE</div>
+        <div class="ex-ttl">Flexii biceps + Extensii triceps (superset)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12 + 12</span>
+          <span class="tag">60 sec după superset</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <div class="ex-cue good">Superset = faci bicepsul imediat după triceps fără pauză între ele. Economisești 10 minute față de a le face separat.</div>
+      <div class="ex-cue good">12 flexii biceps → fără pauză → 12 extensii triceps → 60 sec pauză → repeat. Brațe complete în 6 minute.</div>
+      <a href="https://www.youtube.com/results?search_query=biceps+triceps+superset+correct+form+arms+workout" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Superset Brațe</a>
+      <div class="caseta"><div class="caseta-hdr" onclick="toggleCaseta(this)"><span class="caseta-hdr-lbl">Cum funcționează superset-ul</span><span class="caseta-icon">▼</span></div><div class="caseta-body"><div class="caseta-inner"><div class="caseta-row"><span class="caseta-lbl">Ordine</span><span class="caseta-val">Biceps (<span class="g">coate lipite</span>, cobori 2 sec) → imediat → Triceps (<span class="g">coate lipite de corp</span>, mergi până la capăt) → 60 sec pauză.</span></div><div class="caseta-row"><span class="caseta-lbl">De ce funcț.</span><span class="caseta-val">Bicepsul și tricepsul sunt grupe opuse — unul se odihnește în timp ce celălalt lucrează. Eficiență maximă.</span></div><div class="caseta-row"><span class="caseta-lbl">Greșeală</span><span class="caseta-val"><span class="w">Pauză între biceps și triceps</span> — pierzi beneficiul supersetului. Treci imediat.</span></div></div></div></div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="co5s1"><div class="set-num">S1 BIC</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co5s2"><div class="set-num">S1 TRI</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co5s3"><div class="set-num">S2 BIC</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co5s4"><div class="set-num">S2 TRI</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co5s5"><div class="set-num">S3 BIC</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="co5s6"><div class="set-num">S3 TRI</div><div class="set-tgt">12</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDIO FINISHER COMBO -->
+  <div class="cond-block" data-work="40" data-rest="20" data-rounds="5">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">Cardio Finisher · Full Upper</div>
+        <div class="cond-equip">Bicicletă sau Eliptică</div>
+      </div>
+      <div class="cond-setup">5 runde<br>40″ efort / 20″ odihnă<br>~5 minute total</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">00:40</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+
+  <div class="alert green" style="margin-top:14px;">
+    <div class="alert-ttl">A doua zi (Legs C) — recuperare completă</div>
+    Full Upper Body ieri + Legs azi = grupe complet diferite. Nu există interferență. Faci Legs (C) normal, fără modificări.
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════════════ REGULI ═══════════════════════════════ -->
+<div class="panel" id="tab-reguli">
+
+  <div class="rule-card" style="border-color:var(--red);">
+    <div class="rule-ttl">Double Progression — Cum crești greutatea</div>
+    <div class="rule-body">
+      <strong>Pasul 1 — Repetări:</strong> Lucrezi la intervalul indicat (ex: 10–12). Dacă nu scoți minimul (10) → rămâi la aceeași greutate.<br><br>
+      <strong>Pasul 2 — Greutate:</strong> Când scoți maximul (12) din TOATE seriile cu formă bună → adaugi <strong>2–2.5 kg</strong> la sesiunea următoare.<br><br>
+      <span class="warn">Forma dictează greutatea. Nu invers.</span> Formă proastă = accidentare, nu progres.<br><br>
+      <strong>RPE (efort subiectiv):</strong> Lucrezi la RPE 7–8 — mai ai 1–2 repetări în rezervă. Nu te duce la limita absolută în primele 4 săptămâni.
+    </div>
+  </div>
+
+  <div class="rule-card" style="border-color:var(--orange);">
+    <div class="rule-ttl">Adaptări Specifice Andrei — Ce Monitorizezi</div>
+    <div class="rule-body">
+      <strong>Tremuratul mâinilor în exerciții:</strong> Pauză → banană sau iaurt → continui. Nu e o problemă de formă — e glicemie. Dispare în 4–6 săptămâni când mesele se stabilizează.<br><br>
+      <strong>Respiratul greu la efort:</strong> Expiră la efort, inspiră la revenire. La warm-up primele 2 minute nu forța ritmul — corpul are nevoie de 90 sec să activeze sistemul cardiovascular. Se îmbunătățește săptămânal.<br><br>
+      <strong>Operație fimoză (Martie 2026):</strong> Evită presiune abdominală extremă la Leg Press — coboară ușor, fără să blochezi respirația la coborâre. Altfel, nicio restricție.<br><br>
+      <strong>Meditațiile zilnice din calendar:</strong> Avantaj real — cortizolul tău e mai mic decât media. Continuă.
+    </div>
+  </div>
+
+  <div class="rule-card" style="border-color:var(--orange);">
+    <div class="rule-ttl">Plimbările contează — Cardio invizibil</div>
+    <div class="rule-body">
+      În zilele libere faci 10.000+ de pași — plimbări, cafenele, ieșiri. <span class="ok">Asta e cardio real.</span><br><br>
+      La muncă stai afară toată ziua — arzi calorii fără să te gândești. Nu trebuie să adaugi ore de alergat peste asta.<br><br>
+      <strong>Obiectiv minim în zilele libere:</strong> menții plimbările. În zilele de sală nu mai adaugi nimic extra — antrenamentul e suficient.
+    </div>
+  </div>
+
+  <div class="rule-card" style="border-color:var(--green);">
+    <div class="rule-ttl">MVE — Minimum Viable Effort (30 min bate zero)</div>
+    <div class="rule-body">
+      Ai o zi liberă dar nu ai chef, ești obosit, sau ai ceva de făcut. <strong>Varianta MVE e jumătate din sesiune — dar o faci.</strong><br><br>
+      <span class="ok">Push MVE: Împins gantere 3×10 + Umeri 3×10 + Ridicări laterale 2×15 + 5 min bicicletă</span><br>
+      <span class="ok">Pull MVE: Lat Pulldown 3×10 + Ramat cablu 3×10 + Flexii biceps 2×12</span><br>
+      <span class="ok">Legs MVE: Presă picioare 3×10 + Goblet squat 2×12 + Plank 2×30 sec</span><br><br>
+      <strong>Nu anulezi. Faci MVE și pleci. O sesiune de 25 min e de 100 ori mai bună decât zero.</strong>
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-ttl">Durerile musculare — Ce e normal</div>
+    <div class="rule-body">
+      Dureri musculare la 24–48 de ore după antrenament = <span class="ok">normal, înseamnă că mușchii se adaptează.</span><br><br>
+      <span class="warn">Durere articulară acută în timpul exercițiului</span> (în umăr, genunchi, cot) = oprești imediat acel exercițiu și reduci greutatea la jumătate la sesiunea următoare.<br><br>
+      Nu te forța dacă simți durere articulară. Durerea musculară de a doua zi e ok — durerea în articulație în timp real nu e ok.
+    </div>
+  </div>
+
+  <div class="rule-card" style="border-color:var(--blue);">
+    <div class="rule-ttl">Calendarul tău — Iunie 2026</div>
+    <div class="rule-body">
+      Zilele de muncă (6:30–22:00+) = antrenament imposibil. <strong>Facem doar pe zilele libere.</strong><br><br>
+      <span class="ok">Săpt 9–14 iunie: Marți 9 — AZI (A) · Vineri 12 (B) · Duminică 14 (C)</span><br>
+      <span style="color:var(--orange);">Săpt 15–21 iunie: Miercuri 17 (COMBO Full Upper) · Joi 18 (Legs C) — 2 zile, tot corpul acoperit.</span><br>
+      <span class="ok">Săpt 22–28 iunie: Marți 23 (B) · Vineri 26 (C) · Duminică 28 (A)</span><br><br>
+      Ordinea A→B→C nu e obligatorie. Contează 2–3 sesiuni pe săptămână, nu ordinea exactă.
+    </div>
+  </div>
+
+  <div class="rule-card" style="border-color:var(--red);">
+    <div class="rule-ttl">Tremuratul mâinilor + respiratul greu — Ce faci</div>
+    <div class="rule-body">
+      <span class="warn">Nu intri la sală pe stomacul gol.</span> Glicemia ta e la 71 și mănânci 1–2 mese/zi — asta cauzează tremuratul. Protocol obligatoriu:<br><br>
+      → <strong>Cu 60–90 min înainte de antrenament: mănânci ceva solid</strong> (iaurt + banană / pâine cu brânză / orice din planul de mese).<br>
+      → Dacă apare un tremurat al mâinilor în timpul exercițiului — pauză, mănânci ceva dulce rapid, continui.<br><br>
+      <strong>Respiratul greu la efort</strong> = normal la start, e sedentarism. Se îmbunătățește în 3–4 săptămâni. Warm-up-ul de 5 minute pe bandă/bicicletă e obligatoriu — nu îl sări.
+    </div>
+  </div>
+
+  <div style="padding-bottom:8px;">
+    <button onclick="showModal()" style="width:100%;padding:14px;font-size:12px;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);border-radius:4px;font-weight:700;letter-spacing:1px;cursor:pointer;text-transform:uppercase;">
+      FINALIZEAZĂ SĂPTĂMÂNA / RAPORT
+    </button>
+  </div>
+
+</div>
+
+
+<!-- TIMER BAR -->
+<div class="timer-bar">
+  <div class="t-info">
+    <div class="t-lbl">TIMP RĂMAS PAUZĂ</div>
+    <div class="t-val" id="t-val">00:00</div>
+  </div>
+  <div class="t-ctrls">
+    <button class="t-btn red" onclick="stopRest()">STOP</button>
+  </div>
+</div>
+
+
+<script>
+/* ─── CALENDAR IUNIE 2026 ─── */
+(function() {
+  const workDays = new Set([1,2,5,6,7,10,11,15,16,19,20,21,24,25,29,30]);
+  const trainDays = { 9:'A', 12:'B', 14:'C', 17:'C', 18:'A', 23:'B', 26:'C', 28:'A' };
+  const today = new Date();
+  const todayDay = today.getMonth() === 5 && today.getFullYear() === 2026 ? today.getDate() : -1;
+  const grid = document.getElementById('cal-grid');
+  if (!grid) return;
+  // June 2026 starts on Monday (day 0 = Mon)
+  for (let d = 1; d <= 30; d++) {
+    const cell = document.createElement('div');
+    cell.style.cssText = 'text-align:center;padding:5px 2px;border-radius:4px;font-size:12px;font-weight:700;';
+    let bg = 'rgba(41,128,185,0.15)'; // free
+    let color = '#aaa';
+    let label = '';
+    if (workDays.has(d)) { bg = 'rgba(192,57,43,0.25)'; color = '#e88'; }
+    if (trainDays[d]) { bg = 'rgba(39,174,96,0.3)'; color = '#6e6'; label = trainDays[d]; }
+    if (d === todayDay) { bg = '#C0392B'; color = '#fff'; }
+    cell.style.background = bg;
+    cell.style.color = color;
+    cell.innerHTML = d + (label ? '<br><span style="font-size:9px;letter-spacing:1px;">' + label + '</span>' : '');
+    grid.appendChild(cell);
+  }
+})();
+
+/* ─── TABS ─── */
+function showTab(id) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('tab-' + id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ─── EXERCISE ACCORDION ─── */
+function toggleEx(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+/* ─── CASETA TOGGLE ─── */
+function toggleCaseta(el) {
+  el.closest('.caseta').classList.toggle('open');
+}
+
+/* ─── REST TIMER ─── */
+let restTimer = null, restEnd = 0;
+const tVal = document.getElementById('t-val');
+
+function startRest(sec) {
+  if (restTimer) clearInterval(restTimer);
+  restEnd = Date.now() + sec * 1000;
+  tVal.className = 't-val active';
+  tickRest();
+  restTimer = setInterval(tickRest, 1000);
+}
+
+function tickRest() {
+  const left = Math.round((restEnd - Date.now()) / 1000);
+  if (left <= 0) {
+    clearInterval(restTimer);
+    tVal.textContent = '00:00';
+    tVal.className = 't-val done';
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    return;
+  }
+  const m = Math.floor(left / 60), s = left % 60;
+  tVal.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+}
+
+function stopRest() {
+  if (restTimer) clearInterval(restTimer);
+  tVal.textContent = '00:00';
+  tVal.className = 't-val';
+}
+
+/* ─── INTERVAL TIMER (CONDITIONING) ─── */
+let ivTimer = null, ivBlock = null;
+let ivPhase = 'idle', ivRound = 0, ivRemaining = 0;
+let ivWorkSec = 40, ivRestSec = 20, ivTotalRounds = 5;
+
+function startCond(block) {
+  if (ivTimer) clearInterval(ivTimer);
+  ivBlock = block;
+  ivWorkSec = parseInt(block.dataset.work);
+  ivRestSec = parseInt(block.dataset.rest);
+  ivTotalRounds = parseInt(block.dataset.rounds);
+  ivRound = 0;
+  ivPhase = 'work';
+  ivRemaining = ivWorkSec;
+  updateCondUI();
+  ivTimer = setInterval(tickCond, 1000);
+}
+
+function tickCond() {
+  ivRemaining--;
+  if (ivRemaining <= 0) {
+    if (ivPhase === 'work') {
+      ivPhase = 'rest';
+      ivRemaining = ivRestSec;
+      if (navigator.vibrate) navigator.vibrate(300);
+    } else {
+      ivRound++;
+      if (ivRound >= ivTotalRounds) {
+        ivPhase = 'done';
+        clearInterval(ivTimer);
+        ivTimer = null;
+        if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
+      } else {
+        ivPhase = 'work';
+        ivRemaining = ivWorkSec;
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+      }
+    }
+  }
+  updateCondUI();
+}
+
+function updateCondUI() {
+  if (!ivBlock) return;
+  const stateEl = ivBlock.querySelector('.cond-state');
+  const cdEl = ivBlock.querySelector('.cond-cd');
+  const dots = ivBlock.querySelectorAll('.rdot');
+
+  if (ivPhase === 'done') {
+    stateEl.textContent = '✓ COMPLET';
+    stateEl.style.color = 'var(--green)';
+    cdEl.textContent = '00:00';
+    cdEl.style.color = 'var(--green)';
+    dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
+    return;
+  }
+
+  if (ivPhase === 'work') {
+    stateEl.textContent = 'EFORT';
+    stateEl.style.color = 'var(--orange)';
+    cdEl.style.color = 'var(--orange)';
+  } else {
+    stateEl.textContent = 'ODIHNĂ';
+    stateEl.style.color = 'var(--blue)';
+    cdEl.style.color = 'var(--blue)';
+  }
+
+  const m = Math.floor(ivRemaining / 60), s = ivRemaining % 60;
+  cdEl.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+
+  dots.forEach((d, i) => {
+    d.classList.remove('active', 'done', 'work', 'rest');
+    if (i < ivRound) d.classList.add('done');
+    else if (i === ivRound) { d.classList.add('active'); d.classList.add(ivPhase); }
+  });
+}
+
+function resetCond(block) {
+  if (ivTimer && ivBlock === block) { clearInterval(ivTimer); ivTimer = null; ivBlock = null; }
+  const workSec = parseInt(block.dataset.work);
+  const stateEl = block.querySelector('.cond-state');
+  const cdEl = block.querySelector('.cond-cd');
+  const m = Math.floor(workSec / 60), s = workSec % 60;
+  stateEl.textContent = 'GATA SĂ ÎNCEPI';
+  stateEl.style.color = '';
+  cdEl.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
+  cdEl.style.color = '';
+  block.querySelectorAll('.rdot').forEach(d => d.classList.remove('active', 'done', 'work', 'rest'));
+}
+
+/* ─── 90 ZILE PROGRES ─── */
+(function() {
+  const day1 = new Date(2026, 5, 9);
+  const today = new Date();
+  const elapsed = Math.max(0, Math.floor((today - day1) / (1000*60*60*24)));
+  const dayNum = Math.min(elapsed + 1, 90);
+  const pct = Math.min(100, Math.round((elapsed / 89) * 100));
+
+  document.getElementById('hdr-day').textContent = 'Zi ' + dayNum + ' din 90';
+  document.getElementById('prog-pct').textContent = pct + '% complet';
+
+  setTimeout(() => {
+    document.getElementById('prog-fill').style.width = pct + '%';
+  }, 300);
+
+  const phase = elapsed < 30 ? 'FAZA 1: Fundație' : elapsed < 60 ? 'FAZA 2: Progresie' : 'FAZA 3: Vârf';
+  document.getElementById('prog-phase').textContent = phase;
+})();
+
+/* ─── LOCALSTORAGE ─── */
+const LS_KEY = 'built_andrei_gym';
+
+function loadData() {
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
+
+  document.querySelectorAll('.set-row').forEach(row => {
+    const id = row.dataset.id;
+    if (!id || !data[id]) return;
+    const kg = row.querySelector('.set-inp.kg');
+    const rep = row.querySelector('.set-inp.rep');
+    const chk = row.querySelector('.set-chk');
+    if (kg && data[id].kg !== undefined) kg.value = data[id].kg;
+    if (rep && data[id].rep !== undefined) rep.value = data[id].rep;
+    if (data[id].done) chk.classList.add('done');
+    if (kg) kg.addEventListener('change', () => saveRow(row));
+    if (rep) rep.addEventListener('change', () => saveRow(row));
+  });
+}
+
+function saveRow(row) {
+  const id = row.dataset.id;
+  if (!id) return;
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
+  const kg = row.querySelector('.set-inp.kg');
+  const rep = row.querySelector('.set-inp.rep');
+  const chk = row.querySelector('.set-chk');
+  data[id] = { kg: kg ? kg.value : '', rep: rep ? rep.value : '', done: chk.classList.contains('done') };
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+}
+
+function toggleSet(btn) {
+  btn.classList.toggle('done');
+  const row = btn.closest('.set-row');
+  if (row) saveRow(row);
+}
+
+/* ─── MODAL / RAPORT ─── */
+function showModal() {
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
+  let sets = 0, vol = 0;
+  Object.values(data).forEach(s => {
+    if (s.done) {
+      sets++;
+      const kg = parseFloat(s.kg), rep = parseInt(s.rep, 10);
+      if (!isNaN(kg) && !isNaN(rep)) vol += kg * rep;
+    }
+  });
+  document.getElementById('sum-sets').textContent = sets;
+  document.getElementById('sum-vol').textContent = new Intl.NumberFormat('de-DE').format(Math.round(vol));
+  document.getElementById('modal').classList.add('open');
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('open'); }
+function confirmReset() { localStorage.removeItem(LS_KEY); location.reload(); }
+
+function exportCSV() {
+  let data = {};
+  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
+  let lines = ['ID,Greutate(kg),Reps,Finalizat'];
+  for (const [id, s] of Object.entries(data)) lines.push(`${id},${s.kg||0},${s.rep||0},${s.done?'DA':'NU'}`);
+  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'BUILT_Andrei_' + new Date().toISOString().split('T')[0] + '.csv';
+  a.click();
+}
+
+document.addEventListener('DOMContentLoaded', loadData);
+</script>
+</body>
+</html>
