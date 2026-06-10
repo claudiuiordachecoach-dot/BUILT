@@ -35,13 +35,13 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "BUILT AI",
+  title: "BUILT",
   description: "Command Center — Metoda BUILT",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "BUILT AI",
+    title: "BUILT",
   },
   other: {
     "mobile-web-app-capable": "yes",
