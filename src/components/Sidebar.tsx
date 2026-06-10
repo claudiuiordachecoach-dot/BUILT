@@ -111,6 +111,7 @@ function SectionLabel({ label, collapsed }: { label: string; collapsed: boolean 
 export function Sidebar() {
   const pathname = usePathname();
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(true);
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -124,11 +125,44 @@ export function Sidebar() {
     return () => clearInterval(interval);
   }, []);
 
+  // Închide drawer-ul la navigare
+  useEffect(() => { setMobileOpen(false); }, [pathname]);
+
   return (
+    <>
+      {/* Mobile header — doar pe telefon */}
+      <header className="md:hidden fixed top-0 left-0 right-0 z-40 flex items-center justify-between px-4 h-12 bg-background border-b border-border">
+        <div className="flex items-center gap-2">
+          <div className="w-6 h-6 bg-built-red rounded flex items-center justify-center shrink-0">
+            <span className="text-white text-[10px] font-bold">B</span>
+          </div>
+          <span className="text-foreground font-semibold text-[13px]">BUILT AI</span>
+        </div>
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+          aria-label="Deschide meniu"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        </button>
+      </header>
+
+      {/* Overlay fundal — mobile drawer */}
+      {mobileOpen && (
+        <div
+          className="md:hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
     <aside
-      className={`shrink-0 flex flex-col h-screen sticky top-0 bg-background border-r border-border transition-all duration-200 ${
-        collapsed ? "w-[52px]" : "w-56"
-      }`}
+      className={`shrink-0 flex flex-col h-screen bg-background border-r border-border transition-all duration-200
+        fixed md:sticky top-0 z-50
+        ${mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"}
+        ${collapsed ? "w-[52px]" : "w-56"}
+      `}
     >
       {/* Header */}
       <div className={`border-b border-border ${collapsed ? "p-3" : "p-4"}`}>
@@ -236,5 +270,6 @@ export function Sidebar() {
         </div>
       </div>
     </aside>
+    </>
   );
 }
