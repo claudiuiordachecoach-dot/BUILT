@@ -43,8 +43,6 @@ export default function BonusuriPage() {
       {/* Cookbook card */}
       <a
         href="/BUILT_Cookbook_v2.html"
-        target="_blank"
-        rel="noopener noreferrer"
         className="flex items-center gap-4 bg-[#111111] border border-built-red/30 hover:border-built-red/60 rounded-xl p-4 mb-8 transition-all group"
       >
         <span className="text-3xl">🥩</span>
