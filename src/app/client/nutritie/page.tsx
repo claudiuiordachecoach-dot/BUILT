@@ -30,7 +30,7 @@ export default function NutritiePage() {
   return (
     <div className="p-8 max-w-3xl">
       <h1 className="text-xl font-bold text-white mb-6">Plan Nutrițional</h1>
-      <div className="grid grid-cols-4 gap-3 mb-6">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
           { label: "Calorii", value: plan.calories, unit: "kcal", color: "text-built-red" },
           { label: "Proteine", value: plan.protein_g, unit: "g", color: "text-blue-400" },

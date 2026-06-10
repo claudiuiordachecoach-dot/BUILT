@@ -139,7 +139,7 @@ function AnalysisPanel({
       </div>
 
       {/* 3-col breakdown */}
-      <div className="grid grid-cols-3 gap-6 text-[12px]">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-[12px]">
         <div>
           <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">De Ce a Performat</p>
           <p className="text-zinc-300 leading-relaxed">{data.performance_summary}</p>

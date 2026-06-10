@@ -174,7 +174,7 @@ export default function OutreachPage() {
       </div>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {KPI_STATS.map((k) => (
           <div
             key={k.label}

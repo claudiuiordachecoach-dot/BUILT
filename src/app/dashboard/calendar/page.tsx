@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -258,7 +259,7 @@ export default function CalendarPage() {
         </div>
 
         {/* Calendar container */}
-        <div className="bg-[#111] border border-white/[0.06] rounded-xl overflow-hidden">
+        <div className="bg-[#111] border border-white/[0.06] rounded-xl overflow-x-auto">
 
           {/* Month navigation */}
           <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.06]">
@@ -309,13 +310,11 @@ export default function CalendarPage() {
               return (
                 <div
                   key={idx}
-                  className={`min-h-[120px] border-b border-r border-white/[0.06] p-2 relative transition-colors ${
-                    day
-                      ? "cursor-pointer hover:bg-white/[0.02]"
-                      : "bg-[#0d0d0d]"
-                  } ${isToday ? "bg-white/[0.03]" : ""} ${
-                    isPast && !isToday ? "opacity-70" : ""
-                  }`}
+                  className={`min-h-[120px] border-b border-r border-white/[0.06] p-2 relative transition-colors ${day
+                    ? "cursor-pointer hover:bg-white/[0.02]"
+                    : "bg-[#0d0d0d]"
+                    } ${isToday ? "bg-white/[0.03]" : ""} ${isPast && !isToday ? "opacity-70" : ""
+                    }`}
                   onClick={() => {
                     if (day) openAddModal(dateStr);
                   }}
@@ -325,11 +324,10 @@ export default function CalendarPage() {
                       {/* Day number */}
                       <div className="flex items-center justify-between mb-1.5">
                         <span
-                          className={`text-[12px] font-medium ${
-                            isToday
-                              ? "bg-[#C0392B] text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px]"
-                              : "text-zinc-500"
-                          }`}
+                          className={`text-[12px] font-medium ${isToday
+                            ? "bg-[#C0392B] text-white w-5 h-5 flex items-center justify-center rounded-full text-[10px]"
+                            : "text-zinc-500"
+                            }`}
                         >
                           {day}
                         </span>
@@ -683,9 +681,8 @@ export default function CalendarPage() {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <span
-                  className={`text-[9px] font-bold px-2 py-0.5 rounded text-white ${
-                    FORMAT_COLORS[selectedIdea.format] ?? "bg-zinc-600"
-                  }`}
+                  className={`text-[9px] font-bold px-2 py-0.5 rounded text-white ${FORMAT_COLORS[selectedIdea.format] ?? "bg-zinc-600"
+                    }`}
                 >
                   {selectedIdea.format}
                 </span>
@@ -837,8 +834,8 @@ export default function CalendarPage() {
             <button onClick={(e) => { e.stopPropagation(); setSelectedPost(null); setRecommendations([]); setExpandedPanel(false); }}
               className="text-zinc-600 hover:text-zinc-300 transition-colors text-lg leading-none shrink-0 ml-1"
             >
-                ✕
-              </button>
+              ✕
+            </button>
           </div>
         </div>
       )}

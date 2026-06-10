@@ -522,8 +522,8 @@ export default function AziPage() {
   if (!plan) return <div className="p-8"><p className="text-zinc-600">Se încarcă...</p></div>;
 
   return (
-    <div className="p-8">
-      <div className="grid grid-cols-[minmax(0,520px)_minmax(0,420px)] gap-6 items-start">
+    <div className="p-4 md:p-8">
+      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,520px)_minmax(0,420px)] gap-6 items-start">
 
         {/* ── Coloana stângă: jurnal ── */}
         <div>
@@ -531,7 +531,7 @@ export default function AziPage() {
           <div className="flex items-start justify-between mb-8">
             <div>
               <p className="font-condensed text-[10px] text-built-red uppercase tracking-widest mb-2">Jurnalul zilei</p>
-              <h1 className="font-display text-6xl tracking-[0.06em] text-white leading-none mb-2">
+              <h1 className="font-display text-4xl md:text-6xl tracking-[0.06em] text-white leading-none mb-2">
                 {isToday(dateStr) ? "AZI" : prettyDate(dateStr).split(",")[0].toUpperCase()}
               </h1>
               <p className="text-zinc-500 text-sm capitalize">{prettyDate(dateStr)}</p>
@@ -651,7 +651,7 @@ export default function AziPage() {
         </div>
 
         {/* ── Coloana dreaptă: calendar sticky ── */}
-        <div className="sticky top-6" style={{ height: "calc(100vh - 80px)" }}>
+        <div className="md:sticky md:top-6" style={{ height: "calc(100vh - 80px)" }}>
           <CalendarDay
             appointments={(plan.appointments ?? []).slice().sort((a, b) => a.time.localeCompare(b.time))}
             onAdd={addAppointment}

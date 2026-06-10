@@ -1,0 +1,161 @@
+<h2>Layout mobil — care varianta preferi?</h2>
+<p class="subtitle">Acum sidebar-ul apare lateral și rupe layout-ul pe telefon. Alege cum vrei să arate navigarea pe mobile.</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#aaa">
+      <div style="background:#0a0a0a;border-radius:12px;width:160px;margin:0 auto;overflow:hidden;box-shadow:0 4px 20px #0005">
+        <!-- Status bar -->
+        <div style="background:#1a1a1a;padding:6px 12px;display:flex;justify-content:space-between;font-size:9px;color:#666">
+          <span>9:41</span><span>●●●</span>
+        </div>
+        <!-- Top bar cu hamburger -->
+        <div style="background:#111;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #222">
+          <div style="color:#C0392B;font-weight:bold;font-size:11px">BUILT AI</div>
+          <div style="width:18px;height:12px;display:flex;flex-direction:column;justify-content:space-between">
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+          </div>
+        </div>
+        <!-- Content -->
+        <div style="padding:10px;background:#0a0a0a;min-height:120px">
+          <div style="background:#111;border-radius:6px;padding:8px;margin-bottom:6px">
+            <div style="height:6px;background:#222;border-radius:3px;width:60%;margin-bottom:4px"></div>
+            <div style="height:6px;background:#1a1a1a;border-radius:3px;width:80%"></div>
+          </div>
+          <div style="background:#111;border-radius:6px;padding:8px">
+            <div style="height:6px;background:#222;border-radius:3px;width:70%;margin-bottom:4px"></div>
+            <div style="height:6px;background:#1a1a1a;border-radius:3px;width:50%"></div>
+          </div>
+        </div>
+        <!-- Bottom nav -->
+        <div style="background:#111;padding:8px 4px;display:flex;justify-content:space-around;border-top:1px solid #222">
+          <div style="text-align:center">
+            <div style="width:16px;height:16px;background:#C0392B;border-radius:4px;margin:0 auto 2px"></div>
+            <div style="height:5px;background:#C0392B;border-radius:2px;width:20px;margin:0 auto"></div>
+          </div>
+          <div style="text-align:center">
+            <div style="width:16px;height:16px;background:#333;border-radius:4px;margin:0 auto 2px"></div>
+            <div style="height:5px;background:#333;border-radius:2px;width:20px;margin:0 auto"></div>
+          </div>
+          <div style="text-align:center">
+            <div style="width:16px;height:16px;background:#333;border-radius:4px;margin:0 auto 2px"></div>
+            <div style="height:5px;background:#333;border-radius:2px;width:20px;margin:0 auto"></div>
+          </div>
+          <div style="text-align:center">
+            <div style="width:16px;height:16px;background:#333;border-radius:4px;margin:0 auto 2px"></div>
+            <div style="height:5px;background:#333;border-radius:2px;width:20px;margin:0 auto"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Bottom Navigation Bar</h3>
+      <p>Bare fixă jos cu 4-5 icoane principale. Standard iOS/Android. Cel mai natural pe telefon — degetul mare ajunge ușor.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pro</h4><ul><li>Nativ mobile</li><li>Acces rapid la module cheie</li><li>Conținut maxim pe ecran</li></ul></div>
+        <div class="cons"><h4>Con</h4><ul><li>Max ~5 item-uri vizibile</li><li>Restul itemilor → drawer sau "More"</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#aaa">
+      <div style="background:#0a0a0a;border-radius:12px;width:160px;margin:0 auto;overflow:hidden;box-shadow:0 4px 20px #0005">
+        <!-- Status bar -->
+        <div style="background:#1a1a1a;padding:6px 12px;display:flex;justify-content:space-between;font-size:9px;color:#666">
+          <span>9:41</span><span>●●●</span>
+        </div>
+        <!-- Top bar -->
+        <div style="background:#111;padding:8px 10px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #222">
+          <div style="width:18px;height:12px;display:flex;flex-direction:column;justify-content:space-between">
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+          </div>
+          <div style="color:#C0392B;font-weight:bold;font-size:11px">Azi</div>
+        </div>
+        <!-- Drawer overlay (semi) -->
+        <div style="position:relative;min-height:140px">
+          <div style="background:#0a0a0a;padding:10px;min-height:140px">
+            <div style="background:#111;border-radius:6px;padding:8px;margin-bottom:6px;opacity:0.4">
+              <div style="height:6px;background:#222;border-radius:3px;width:60%;margin-bottom:4px"></div>
+            </div>
+            <div style="background:#111;border-radius:6px;padding:8px;opacity:0.4">
+              <div style="height:6px;background:#222;border-radius:3px;width:70%"></div>
+            </div>
+          </div>
+          <!-- Drawer panel -->
+          <div style="position:absolute;top:0;left:0;width:100px;height:100%;background:#111;border-right:1px solid #222;padding:8px">
+            <div style="color:#C0392B;font-size:9px;font-weight:bold;margin-bottom:8px">BUILT AI</div>
+            <div style="color:#888;font-size:8px;margin-bottom:4px">● Azi</div>
+            <div style="color:#555;font-size:8px;margin-bottom:4px">● Dashboard</div>
+            <div style="color:#555;font-size:8px;margin-bottom:4px">● Studio</div>
+            <div style="color:#555;font-size:8px;margin-bottom:4px">● DM Sales</div>
+            <div style="color:#555;font-size:8px;">● AI Chat</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Slide-in Drawer (hamburger)</h3>
+      <p>Sidebar-ul se transformă într-un drawer care alunecă din stânga la tap pe hamburger. Desktop rămâne identic.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pro</h4><ul><li>Toate modulele accesibile</li><li>Desktop neschimbat</li><li>Familiar utilizatorilor web</li></ul></div>
+        <div class="cons"><h4>Con</h4><ul><li>Un tap extra față de bottom nav</li><li>Drawer acoperă conținutul</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:8px;padding:12px;font-family:monospace;font-size:11px;color:#aaa">
+      <div style="background:#0a0a0a;border-radius:12px;width:160px;margin:0 auto;overflow:hidden;box-shadow:0 4px 20px #0005">
+        <!-- Status bar -->
+        <div style="background:#1a1a1a;padding:6px 12px;display:flex;justify-content:space-between;font-size:9px;color:#666">
+          <span>9:41</span><span>●●●</span>
+        </div>
+        <!-- Top bar -->
+        <div style="background:#111;padding:8px 10px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #222">
+          <div style="color:#C0392B;font-weight:bold;font-size:11px">BUILT AI</div>
+          <div style="width:18px;height:12px;display:flex;flex-direction:column;justify-content:space-between">
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+            <div style="height:2px;background:#888;border-radius:1px"></div>
+          </div>
+        </div>
+        <!-- Content -->
+        <div style="padding:8px;background:#0a0a0a;min-height:80px">
+          <div style="background:#111;border-radius:6px;padding:8px;margin-bottom:6px">
+            <div style="height:6px;background:#222;border-radius:3px;width:60%;margin-bottom:4px"></div>
+            <div style="height:6px;background:#1a1a1a;border-radius:3px;width:80%"></div>
+          </div>
+        </div>
+        <!-- Tab row top -->
+        <div style="background:#111;padding:6px 4px;display:flex;justify-content:space-around;border-top:1px solid #222;border-bottom:1px solid #222">
+          <div style="font-size:7px;color:#C0392B;text-align:center;padding:2px 4px;border-bottom:2px solid #C0392B">Azi</div>
+          <div style="font-size:7px;color:#555;text-align:center;padding:2px 4px">Studio</div>
+          <div style="font-size:7px;color:#555;text-align:center;padding:2px 4px">DM</div>
+          <div style="font-size:7px;color:#555;text-align:center;padding:2px 4px">AI</div>
+          <div style="font-size:7px;color:#555;text-align:center;padding:2px 4px">+</div>
+        </div>
+        <!-- More content -->
+        <div style="padding:8px;background:#0a0a0a;min-height:40px">
+          <div style="background:#111;border-radius:6px;padding:6px">
+            <div style="height:5px;background:#1a1a1a;border-radius:3px;width:70%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Hibrid: Bottom Nav + Drawer</h3>
+      <p>Bottom bar cu cele 4-5 module folosite cel mai des. Buton "+" sau hamburger deschide drawer cu restul. Cel mai ergonomic.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Pro</h4><ul><li>Module cheie la 1 tap</li><li>Toate modulele accesibile</li><li>UX nativ + complet</li></ul></div>
+        <div class="cons"><h4>Con</h4><ul><li>Cel mai complex de implementat</li><li>Trebuie ales ce e "important"</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+</div>

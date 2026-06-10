@@ -374,7 +374,7 @@ function AnalysisPanel({
           </div>
 
           {/* 3-column row */}
-          <div className="grid grid-cols-3 gap-4 text-[12px]">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-[12px]">
             <div>
               <p className="text-[10px] text-zinc-600 uppercase tracking-widest font-mono mb-2">HOOK</p>
               <p className="text-zinc-300 leading-relaxed">{data.performance_summary}</p>
@@ -706,7 +706,7 @@ export default function AnalyticsPage() {
       <div className="px-8 space-y-6">
 
       {/* ── HEADER SECTION ─────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-[1fr_340px] gap-6 items-start">
+      <div className="grid grid-cols-1 md:grid-cols-[1fr_340px] gap-6 items-start">
         {/* Left: Name + bio + stats */}
         <div>
           <h1 className="text-2xl font-semibold text-zinc-100 mb-1">
