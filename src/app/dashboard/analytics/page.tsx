@@ -700,10 +700,10 @@ export default function AnalyticsPage() {
   // ── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-6">
+    <div className="max-w-[1400px] mx-auto space-y-6 overflow-x-hidden">
 
 
-      <div className="px-8 space-y-6">
+      <div className="px-4 md:px-8 space-y-6">
 
       {/* ── HEADER SECTION ─────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-[1fr_340px] gap-6 items-start">
@@ -1041,7 +1041,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* 5-column grid — matches William Scott */}
-        <div className="grid grid-cols-5 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {sortedReels.map((reel) => (
             <div
               key={reel.id}

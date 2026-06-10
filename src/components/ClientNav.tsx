@@ -62,16 +62,16 @@ function ClientNavContent() {
       </header>
 
       {/* MOBILE — bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111] border-t border-white/10 flex items-center justify-around px-1 py-2 safe-area-inset-bottom">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111] border-t border-white/10 flex items-center justify-around px-0 py-2 safe-area-inset-bottom">
         {NAV.map(item => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link key={item.href} href={`${item.href}${qs}`}
-              className={`flex flex-col items-center gap-0.5 px-2 py-1 rounded-lg transition-all min-w-0 ${
+              className={`flex flex-col items-center gap-0.5 flex-1 py-1 rounded-lg transition-all min-w-0 ${
                 isActive ? 'text-built-red' : 'text-zinc-500'
               }`}>
-              <span className="text-lg leading-none">{item.icon}</span>
-              <span className={`text-[9px] font-semibold tracking-wide truncate ${
+              <span className="text-base leading-none">{item.icon}</span>
+              <span className={`text-[7px] font-semibold tracking-wide w-full text-center truncate px-0.5 ${
                 isActive ? 'text-built-red' : 'text-zinc-600'
               }`}>{item.label}</span>
             </Link>
