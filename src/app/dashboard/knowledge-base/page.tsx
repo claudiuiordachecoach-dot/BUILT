@@ -62,8 +62,8 @@ export default function KnowledgeBasePage() {
 
   return (
     <div className="flex h-[calc(100vh-0px)] overflow-hidden">
-      {/* Panel stânga */}
-      <aside className="w-64 shrink-0 bg-[#0d0d0d] border-r border-white/10 flex flex-col">
+      {/* Panel stânga — ascuns pe mobile */}
+      <aside className="hidden md:flex w-64 shrink-0 bg-[#0d0d0d] border-r border-white/10 flex-col">
         <div className="p-4 border-b border-white/10">
           <h2 className="text-xs font-semibold text-zinc-400 tracking-widest uppercase mb-3">Ask BUILT AI</h2>
           <button onClick={newConversation}
@@ -106,7 +106,15 @@ export default function KnowledgeBasePage() {
 
       {/* Chat */}
       <div className="flex-1 flex flex-col min-w-0">
-        <div className="flex-1 overflow-y-auto p-6 space-y-4">
+        {/* Mobile-only header */}
+        <div className="md:hidden flex items-center justify-between px-4 py-2 border-b border-white/10 shrink-0">
+          <span className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Ask BUILT AI</span>
+          <button onClick={newConversation}
+            className="bg-built-red/10 hover:bg-built-red/20 border border-built-red/30 text-built-red text-xs font-semibold px-3 py-1.5 rounded-lg transition-all">
+            + Conversație nouă
+          </button>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="w-16 h-16 rounded-2xl bg-built-red/10 border border-built-red/20 flex items-center justify-center text-2xl mb-4">◎</div>
