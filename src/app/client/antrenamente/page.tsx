@@ -5,7 +5,7 @@ import { getWorkoutPlan } from "../actions";
 
 const DAYS = ["Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă", "Duminică"];
 type Exercise = { name: string; sets: number; reps: string; note?: string };
-type WorkoutPlan = { days: Record<string, Exercise[]>; notes?: string; week_start?: string; quickref_url?: string };
+type WorkoutPlan = { days: Record<string, Exercise[]>; notes?: string; week_start?: string; quickref_url?: string; quickref_acasa_url?: string };
 
 export default function AntrenamantePage() {
   const [plan, setPlan] = useState<WorkoutPlan | null>(null);
@@ -25,12 +25,14 @@ export default function AntrenamantePage() {
       <div className="flex flex-col w-full" style={{ height: "calc(100vh - 60px)" }}>
         <div className="flex gap-2 px-4 py-2 bg-[#111111] border-b border-white/10 shrink-0">
           <span className="text-xs font-semibold text-built-red border-b-2 border-built-red pb-1 px-1">Sală</span>
-          <Link
-            href="/client/antrenamente/acasa"
-            className="text-xs font-semibold text-zinc-500 hover:text-zinc-200 pb-1 px-1 transition-colors"
-          >
-            Acasă
-          </Link>
+          {plan.quickref_acasa_url && (
+            <Link
+              href="/client/antrenamente/acasa"
+              className="text-xs font-semibold text-zinc-500 hover:text-zinc-200 pb-1 px-1 transition-colors"
+            >
+              Acasă
+            </Link>
+          )}
         </div>
         <iframe
           src={plan.quickref_url}

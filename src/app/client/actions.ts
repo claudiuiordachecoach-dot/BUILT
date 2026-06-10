@@ -103,7 +103,12 @@ export async function getModuleContent(moduleId: number) {
 export async function getWorkoutPlan() {
   const clientId = await getClientId();
   if (!clientId) return null;
-  if (QUICKREF_ANTRENAMENT[clientId]) return { quickref_url: QUICKREF_ANTRENAMENT[clientId] };
+  if (QUICKREF_ANTRENAMENT[clientId]) {
+    return {
+      quickref_url: QUICKREF_ANTRENAMENT[clientId],
+      quickref_acasa_url: QUICKREF_ACASA[clientId] ?? null,
+    };
+  }
   const db = getSupabaseServer();
   const { data } = await db
     .from("workout_plans")
@@ -129,6 +134,10 @@ const QUICKREF_ANTRENAMENT: Record<number, string> = {
   3: "/quickref/george-antrenament.html",
   4: "/quickref/ciprian-antrenament.html",
   5: "/quickref/andrei-antrenament.html",
+};
+
+const QUICKREF_ACASA: Record<number, string> = {
+  1: "/quickref/alex-acasa.html",
 };
 
 export async function getNutritionPlan() {
