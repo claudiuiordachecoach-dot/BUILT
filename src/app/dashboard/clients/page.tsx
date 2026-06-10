@@ -96,30 +96,29 @@ export default async function ClientsDashboardPage() {
             <Link
               key={c.id}
               href={`/dashboard/clients/${c.id}`}
-              className="flex items-center justify-between p-4 bg-[#111111] border border-white/[0.08] hover:border-built-red/40 rounded-xl transition-colors"
+              className="flex items-center justify-between gap-3 p-4 bg-[#111111] border border-white/[0.08] hover:border-built-red/40 rounded-xl transition-colors"
             >
-              <div>
-                <div className="flex items-center gap-2 mb-0.5">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                   <span className="text-[14px] font-medium text-zinc-200">{c.name}</span>
                   {(unreadPerClient[c.id] ?? 0) > 0 && (
                     <span className="bg-built-red text-white text-[10px] font-bold rounded-full px-1.5 py-0.5 leading-none">
                       {unreadPerClient[c.id]} mesaj{unreadPerClient[c.id] > 1 ? "e" : ""}
                     </span>
                   )}
-                  {c.email && <span className="text-[12px] text-zinc-500">{c.email}</span>}
                 </div>
+                {c.email && <p className="text-[11px] text-zinc-500 truncate">{c.email}</p>}
                 {c.objectives && (
                   <p className="text-[11px] text-zinc-600 line-clamp-1">{c.objectives}</p>
                 )}
               </div>
-              <div className="flex items-center gap-4">
-                <span className="text-[11px] text-zinc-600 font-mono">
-                  Start: {new Date(c.start_date).toLocaleDateString("ro-RO")}
-                </span>
+              <div className="flex flex-col items-end gap-1 shrink-0">
                 <span className={`text-[11px] font-mono uppercase ${STATUS_COLOR[c.status]}`}>
                   {STATUS_LABEL[c.status]}
                 </span>
-                <span className="text-zinc-600">→</span>
+                <span className="text-[10px] text-zinc-600 font-mono whitespace-nowrap">
+                  {new Date(c.start_date).toLocaleDateString("ro-RO")}
+                </span>
               </div>
             </Link>
           ))}

@@ -216,32 +216,32 @@ function ReelCard({
       </p>
 
       {/* Stats + Analyse */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3 text-[12px] text-zinc-500">
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center gap-2.5 text-[11px] text-zinc-500">
           <span className="flex items-center gap-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
             {fmt(item.views)}
           </span>
           <span className="flex items-center gap-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
             {fmt(item.likes)}
           </span>
           <span className="flex items-center gap-1">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
             {fmt(item.comments)}
           </span>
         </div>
         <button
           onClick={onAnalyse}
           disabled={analysing}
-          className={`text-[11px] px-2.5 py-1 rounded-lg border transition-colors disabled:opacity-50 ${
+          className={`w-full text-[11px] px-2 py-1.5 rounded-lg border transition-colors disabled:opacity-50 ${
             analysed
               ? "text-built-red border-built-red/30 bg-built-red/10"
               : "text-zinc-400 border-white/10 hover:border-white/20 hover:bg-white/5"
           }`}
         >
           {analysing ? (
-            <span className="flex items-center gap-1">
+            <span className="flex items-center justify-center gap-1">
               <span className="w-2.5 h-2.5 border border-zinc-400 border-t-transparent rounded-full animate-spin" />
               ...
             </span>
@@ -464,7 +464,7 @@ export default function ContentPage() {
       const rowItems = reels.slice(i, i + cols);
       const rowIndex = Math.floor(i / cols);
       rows.push(
-        <div key={`row-${rowIndex}`} className="grid grid-cols-4 gap-3">
+        <div key={`row-${rowIndex}`} className="grid grid-cols-2 md:grid-cols-4 gap-3">
           {rowItems.map((item, j) => (
             <ReelCard
               key={item.instagram_id}
@@ -574,7 +574,7 @@ export default function ContentPage() {
               Inteligență competitori, scripturi săptămânale și strategie de conținut generată de AI.
             </p>
 
-            <div className="grid grid-cols-[160px_1fr_300px] gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-[160px_1fr_300px] gap-6">
               {/* Past Packages Sidebar */}
               <div className="space-y-1">
                 <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-600 mb-3 px-1">Pachete</p>
