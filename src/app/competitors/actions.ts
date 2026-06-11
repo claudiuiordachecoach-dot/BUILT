@@ -35,6 +35,7 @@ export interface CompetitorReel {
   comments_count: number | null;
   duration_seconds: number | null;
   ai_analysis: ReelAnalysis | null;
+  remake: RemakeOutput | null;
 }
 
 export interface ReelAnalysis {
@@ -42,6 +43,20 @@ export interface ReelAnalysis {
   why_worked: string;
   format: string;
   built_adaptation: string;
+}
+
+export interface RemakeOutput {
+  analysis: {
+    viral_elements: string[];   // ce a oprit scrollul
+    strengths: string[];        // ce face postarea puternică
+    adaptation_tips: string[];  // cum o adaptezi la tine
+    risks: string[];            // ce să NU copiezi orbește
+  };
+  regenerated: {
+    hook: string;               // hook-ul regenerat
+    script: string;             // scriptul/caption-ul complet, vocea BUILT
+    pillar: "B" | "U" | "I" | "L" | "T" | "mix";
+  };
 }
 
 export interface WeeklyReportData {
@@ -471,6 +486,82 @@ ${reelsList}
 
     revalidatePath("/competitors");
     return { ok: true, data: report as WeeklyReport };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// AI: Remake — analiză structurată + postare regenerată în vocea BUILT
+// ════════════════════════════════════════════════════════════════════
+
+export async function remakeReel(reelId: number): Promise<Result<RemakeOutput>> {
+  const sb = getSupabaseServer();
+  const { data: reel, error } = await sb
+    .from("competitor_reels")
+    .select("*, competitors(handle, niche_notes)")
+    .eq("id", reelId)
+    .single();
+  if (error || !reel) return { ok: false, error: error?.message ?? "Reel inexistent." };
+
+  const handle = (reel.competitors as { handle: string } | null)?.handle ?? "?";
+  const task = `# TASK: REMAKE — transformă acest reel viral într-o postare BUILT gata de publicat
+
+## Reel viral (sursă)
+- Cont: ${handle}
+- Views: ${reel.views ?? "?"} · Likes: ${reel.likes ?? "?"}
+- Caption: "${(reel.caption ?? "").slice(0, 1000)}"
+- Transcript (dacă există): "${(reel.transcript ?? "").slice(0, 2000)}"
+
+## Misiunea ta
+1. Analizează DE CE a funcționat postarea asta — mecanistic, nu generic.
+2. Regenerează postarea COMPLET în vocea lui Claudiu (BUILT), adaptată la audiența BUILT.
+   - NU traduci, NU copiezi — reconstruiești ideea în limbajul și mecanismul BUILT.
+   - Folosește contextul din Creier ca sursă de adevăr despre cine e Claudiu și cui i se adresează.
+   - NU forța o grilă de frici. NU folosi clișee de fitness ("trage tare", "crede în tine").
+   - Ton: direct, matur, structural. Postarea trebuie gata de copiat și filmat/postat.
+3. Atribuie un pilon BUILT (B/U/I/L/T sau mix) dacă se potrivește natural.
+
+## Format JSON strict (FĂRĂ markdown, FĂRĂ text înainte/după):
+{
+  "analysis": {
+    "viral_elements": ["element concret 1", "element 2", "element 3"],
+    "strengths": ["punct forte 1", "punct forte 2"],
+    "adaptation_tips": ["cum adaptezi la BUILT 1", "tip 2", "tip 3"],
+    "risks": ["ce să NU copiezi orbește 1", "risc 2"]
+  },
+  "regenerated": {
+    "hook": "hook-ul regenerat, scurt și contraintuitiv",
+    "script": "scriptul/caption-ul complet în vocea BUILT, gata de copiat (paragrafe scurte)",
+    "pillar": "B"
+  }
+}`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({
+      creierJson: JSON.stringify(creier, null, 2),
+      taskContext: task,
+    });
+    const message = await client.messages.create({
+      model: MODELS.deep,
+      max_tokens: 2000,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Generează Remake-ul. JSON strict." }],
+    });
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns gol." };
+
+    const t = textBlock.text.trim();
+    const a = t.indexOf("{");
+    const b = t.lastIndexOf("}");
+    if (a === -1 || b <= a) return { ok: false, error: "JSON invalid." };
+    const remake = JSON.parse(t.slice(a, b + 1)) as RemakeOutput;
+
+    await sb.from("competitor_reels").update({ remake }).eq("id", reelId);
+    revalidatePath("/competitors");
+    return { ok: true, data: remake };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
   }
