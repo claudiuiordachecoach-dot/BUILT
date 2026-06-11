@@ -3,8 +3,10 @@
 import { useState, useTransition, useEffect } from "react";
 import {
   remakeReel,
+  remakeVariations,
   type CompetitorReel,
   type RemakeOutput,
+  type RegeneratedPost,
 } from "@/app/competitors/actions";
 
 function formatViews(views: number) {
@@ -100,6 +102,11 @@ export function ReelCard({ reel }: { reel: CompetitorReel }) {
           error={error}
           onRerun={runRemake}
           onClose={() => setOpen(false)}
+          onAddVariations={(posts) =>
+            setRemake((prev) =>
+              prev ? { ...prev, variations: [...(prev.variations ?? []), ...posts] } : prev,
+            )
+          }
         />
       )}
     </>
@@ -113,6 +120,7 @@ function RemakeModal({
   error,
   onRerun,
   onClose,
+  onAddVariations,
 }: {
   reel: CompetitorReel;
   remake: RemakeOutput | null;
@@ -120,8 +128,20 @@ function RemakeModal({
   error: string | null;
   onRerun: () => void;
   onClose: () => void;
+  onAddVariations: (posts: RegeneratedPost[]) => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const [varsPending, startVars] = useTransition();
+  const [varsErr, setVarsErr] = useState<string | null>(null);
+
+  function moreInDirection() {
+    setVarsErr(null);
+    startVars(async () => {
+      const r = await remakeVariations(reel.id, 3);
+      if (r.ok) onAddVariations(r.data);
+      else setVarsErr(r.error);
+    });
+  }
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -216,7 +236,28 @@ function RemakeModal({
                 </p>
               </div>
 
-              <div className="flex justify-end">
+              {/* Variații — mai multe postări în aceeași direcție */}
+              {remake.variations && remake.variations.length > 0 && (
+                <div className="space-y-3 border-t border-border pt-5">
+                  <p className="font-condensed text-[10px] uppercase tracking-widest text-built-red">
+                    Mai multe postări în direcția asta
+                  </p>
+                  {remake.variations.map((v, i) => (
+                    <VarPost key={i} post={v} />
+                  ))}
+                </div>
+              )}
+
+              {varsErr && <p className="text-built-red text-xs">⚠ {varsErr}</p>}
+
+              <div className="flex items-center justify-between gap-3">
+                <button
+                  onClick={moreInDirection}
+                  disabled={varsPending}
+                  className="font-condensed text-[10px] uppercase tracking-wider px-3 py-2 rounded-lg bg-built-red/15 text-built-red hover:bg-built-red/25 disabled:opacity-40 transition-colors"
+                >
+                  {varsPending ? "Generez..." : "+ 3 postări în direcția asta"}
+                </button>
                 <button
                   onClick={onRerun}
                   className="font-condensed text-[10px] uppercase tracking-wider text-muted-foreground hover:text-foreground transition-colors"
@@ -228,6 +269,32 @@ function RemakeModal({
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+function VarPost({ post }: { post: RegeneratedPost }) {
+  const [copied, setCopied] = useState(false);
+  function copy() {
+    navigator.clipboard.writeText(`${post.hook}\n\n${post.script}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1600);
+  }
+  return (
+    <div className="rounded-lg border border-border bg-background/40 p-4">
+      <div className="flex items-center justify-between mb-2">
+        <span className="font-condensed text-[9px] uppercase tracking-wider px-1.5 py-0.5 bg-built-red/15 text-built-red rounded">
+          pilon {post.pillar}
+        </span>
+        <button
+          onClick={copy}
+          className="font-condensed text-[9px] uppercase tracking-wider px-2 py-1 rounded border border-border text-muted-foreground hover:text-foreground hover:border-white/20 transition-colors"
+        >
+          {copied ? "✓ Copiat" : "Copiază"}
+        </button>
+      </div>
+      <p className="text-[14px] text-foreground font-semibold leading-snug mb-1.5">{post.hook}</p>
+      <p className="text-[13px] text-foreground/80 whitespace-pre-wrap leading-relaxed">{post.script}</p>
     </div>
   );
 }

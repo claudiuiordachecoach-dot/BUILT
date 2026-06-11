@@ -45,6 +45,12 @@ export interface ReelAnalysis {
   built_adaptation: string;
 }
 
+export interface RegeneratedPost {
+  hook: string;               // hook-ul regenerat
+  script: string;             // scriptul/caption-ul complet, vocea BUILT
+  pillar: "B" | "U" | "I" | "L" | "T" | "mix";
+}
+
 export interface RemakeOutput {
   analysis: {
     viral_elements: string[];   // ce a oprit scrollul
@@ -52,11 +58,8 @@ export interface RemakeOutput {
     adaptation_tips: string[];  // cum o adaptezi la tine
     risks: string[];            // ce să NU copiezi orbește
   };
-  regenerated: {
-    hook: string;               // hook-ul regenerat
-    script: string;             // scriptul/caption-ul complet, vocea BUILT
-    pillar: "B" | "U" | "I" | "L" | "T" | "mix";
-  };
+  regenerated: RegeneratedPost;
+  variations?: RegeneratedPost[]; // postări adiționale în aceeași direcție
 }
 
 export interface WeeklyReportData {
@@ -559,6 +562,79 @@ export async function remakeReel(reelId: number): Promise<Result<RemakeOutput>> 
     await sb.from("competitor_reels").update({ remake }).eq("id", reelId);
     revalidatePath("/competitors");
     return { ok: true, data: remake };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// AI: Remake → deschide direcție (mai multe postări în aceeași direcție)
+// ════════════════════════════════════════════════════════════════════
+
+export async function remakeVariations(
+  reelId: number,
+  count = 3,
+): Promise<Result<RegeneratedPost[]>> {
+  const sb = getSupabaseServer();
+  const { data: reel, error } = await sb
+    .from("competitor_reels")
+    .select("*, competitors(handle)")
+    .eq("id", reelId)
+    .single();
+  if (error || !reel) return { ok: false, error: error?.message ?? "Reel inexistent." };
+
+  const existing = (reel.remake as RemakeOutput | null) ?? null;
+  const directionCtx = existing
+    ? `## Direcția deja stabilită (din analiza Remake)
+Viral elements: ${existing.analysis.viral_elements.join("; ")}
+Adaptation tips: ${existing.analysis.adaptation_tips.join("; ")}
+Postarea de bază: "${existing.regenerated.hook}"`
+    : "";
+
+  const task = `# TASK: ${count} postări BUILT noi în aceeași direcție virală
+
+## Reel viral (sursă)
+- Caption: "${(reel.caption ?? "").slice(0, 800)}"
+- Views: ${reel.views ?? "?"}
+${directionCtx}
+
+## Misiunea ta
+Generează ${count} postări DISTINCTE în aceeași direcție, fiecare cu alt unghi și alt pilon. Vocea BUILT, pe baza Creierului. Fără clișee de fitness. Fiecare gata de copiat.
+
+## JSON strict (FĂRĂ markdown, FĂRĂ text înainte/după):
+{"posts":[{"hook":"hook scurt","script":"caption complet, paragrafe scurte","pillar":"B"}]}`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({
+      creierJson: JSON.stringify(creier, null, 2),
+      taskContext: task,
+    });
+    const message = await client.messages.create({
+      model: MODELS.deep,
+      max_tokens: 5000,
+      system: systemBlocks,
+      messages: [{ role: "user", content: `Generează ${count} postări. JSON strict.` }],
+    });
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns gol." };
+    const t = textBlock.text.trim();
+    const a = t.indexOf("{");
+    const b = t.lastIndexOf("}");
+    if (a === -1 || b <= a) return { ok: false, error: "JSON invalid." };
+    const parsed = JSON.parse(t.slice(a, b + 1)) as { posts: RegeneratedPost[] };
+    const newPosts = parsed.posts ?? [];
+
+    if (existing) {
+      const updated: RemakeOutput = {
+        ...existing,
+        variations: [...(existing.variations ?? []), ...newPosts],
+      };
+      await sb.from("competitor_reels").update({ remake: updated }).eq("id", reelId);
+    }
+    revalidatePath("/competitors");
+    return { ok: true, data: newPosts };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
   }
