@@ -29,7 +29,7 @@ export default async function CompetitorsPage() {
   const activeCount = competitors.filter((c) => c.is_active).length;
 
   return (
-    <div className="p-8 max-w-6xl">
+    <div className="p-8 max-w-7xl">
       <p className="font-condensed text-xs text-built-red uppercase tracking-wider mb-1">
         Studio Viral · Content Intelligence
       </p>
@@ -55,7 +55,7 @@ export default async function CompetitorsPage() {
       )}
 
       {/* STATS */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-3 gap-4 mb-8">
         <Stat label="Competitori activi" value={String(activeCount)} />
         <Stat
           label="Reels (7 zile)"
@@ -89,15 +89,15 @@ export default async function CompetitorsPage() {
       {/* RECENT REELS */}
       {recentReels.length > 0 && (
         <div className="mb-10">
-          <h2 className="font-display text-2xl tracking-wide text-built-white mb-1">
+          <h2 className="font-display text-2xl tracking-wide text-foreground mb-1.5">
             REELS · ULTIMELE 7 ZILE
           </h2>
-          <p className="text-xs text-built-gray-text mb-4">
+          <p className="text-[13px] text-muted-foreground mb-6 max-w-2xl">
             Sortate descrescător după views. Apasă{" "}
-            <strong className="text-built-white">🔥 Remake</strong> pe oricare ca să primești analiza
+            <strong className="text-foreground">🔥 Remake</strong> pe oricare ca să primești analiza
             (de ce a mers) + postarea regenerată în vocea BUILT, gata de copiat.
           </p>
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {recentReels.map((r) => (
               <ReelCard key={r.id} reel={r} />
             ))}
@@ -140,12 +140,12 @@ function Stat({
   sub?: string;
 }) {
   return (
-    <div className="bg-built-gray-1 border border-built-gray-2 rounded-sm p-4">
-      <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wider mb-1">
+    <div className="bg-card border border-border rounded-xl p-5">
+      <p className="font-condensed text-[10px] text-muted-foreground uppercase tracking-widest mb-1.5">
         {label}
       </p>
-      <p className="font-display text-3xl text-built-white tracking-wide">{value}</p>
-      {sub && <p className="text-[10px] text-built-gray-text mt-1">{sub}</p>}
+      <p className="font-display text-3xl text-foreground tracking-wide">{value}</p>
+      {sub && <p className="text-[10px] text-muted-foreground mt-1">{sub}</p>}
     </div>
   );
 }
