@@ -31,14 +31,15 @@ export default async function CompetitorsPage() {
   return (
     <div className="p-8 max-w-6xl">
       <p className="font-condensed text-xs text-built-red uppercase tracking-wider mb-1">
-        M6 · Competitor Intelligence
+        Studio Viral · Content Intelligence
       </p>
       <h1 className="font-display text-5xl tracking-[0.06em] text-built-white mb-3">
-        COMPETITOR INTEL
+        STUDIO VIRAL
       </h1>
       <p className="text-built-gray-text mb-8 max-w-2xl">
-        Adaugă conturi IG din nișa ta. Scraper-ul scoate reels-urile lor săptămânal, AI-ul
-        analizează ce funcționează și generează 7 scripturi pentru săptămâna viitoare în vocea BUILT.
+        Creatorii din nișa ta, reels-urile lor virale sortate după views, și butonul{" "}
+        <strong className="text-built-white">Remake</strong>: din orice postare care a explodat,
+        AI-ul îți scoate de ce a funcționat + postarea regândită complet în vocea ta, gata de filmat.
       </p>
 
       {dbError && (
@@ -93,8 +94,8 @@ export default async function CompetitorsPage() {
           </h2>
           <p className="text-xs text-built-gray-text mb-4">
             Sortate descrescător după views. Apasă{" "}
-            <strong className="text-built-white">Analizează</strong> pe oricare să vezi de ce a
-            funcționat și cum l-ai adapta în vocea BUILT.
+            <strong className="text-built-white">🔥 Remake</strong> pe oricare ca să primești analiza
+            (de ce a mers) + postarea regenerată în vocea BUILT, gata de copiat.
           </p>
           <div className="space-y-3">
             {recentReels.map((r) => (
