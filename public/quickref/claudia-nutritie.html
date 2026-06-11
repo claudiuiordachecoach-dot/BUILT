@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Nutriție · Claudia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--rdim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;padding-bottom:30px;}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:12px 16px 10px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;}
+.logo span{color:var(--red);}
+.hdr-right{text-align:right;}
+.hdr-name{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.hdr-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-top:2px;}
+.macro-bar{background:var(--rdim);border:1px solid rgba(192,57,43,.25);border-radius:4px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+.macro-item{text-align:center;flex:1;}
+.macro-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--wht);line-height:1;}
+.macro-val span{font-size:12px;color:var(--muted);}
+.macro-lbl{font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.macro-val.kcal{color:var(--red);}
+
+.tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;position:sticky;top:0;z-index:90;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:13px 15px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-weight:700;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+.panel{display:none;padding:16px;}
+.panel.active{display:block;}
+
+.alert{border-left:3px solid var(--red);background:var(--rdim);padding:12px 14px;margin-bottom:14px;font-size:12.5px;color:#ccc;line-height:1.65;border-radius:0 4px 4px 0;}
+.alert.green{border-color:var(--green);background:rgba(39,174,96,.06);}
+.alert.orange{border-color:var(--orange);background:rgba(230,126,34,.07);}
+.alert.blue{border-color:var(--blue);background:rgba(41,128,185,.07);}
+.alert.purple{border-color:var(--purple);background:rgba(142,68,173,.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--red);margin-bottom:5px;}
+.alert.green .alert-ttl{color:var(--green);}
+.alert.orange .alert-ttl{color:var(--orange);}
+.alert.blue .alert-ttl{color:var(--blue);}
+.alert.purple .alert-ttl{color:var(--purple);}
+.alert strong{color:var(--wht);}
+.alert em{color:var(--muted);}
+
+.acc-card{background:var(--drk);border:1px solid var(--brd);margin-bottom:10px;border-radius:6px;overflow:hidden;transition:border-color .2s;}
+.acc-card.open{border-color:var(--red);}
+.acc-hdr{padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.acc-hdr:hover{background:rgba(255,255,255,.02);}
+.acc-left{flex:1;padding-right:8px;}
+.acc-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:2px;}
+.acc-ttl{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.5px;color:var(--wht);}
+.acc-sub{font-size:11px;color:#aaa;margin-top:2px;}
+.acc-icon{font-size:11px;color:var(--muted);transition:transform .25s;display:flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--card);border:1px solid var(--brd);border-radius:3px;flex-shrink:0;}
+.acc-card.open .acc-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);}
+.acc-card.open .acc-body{max-height:2400px;}
+.acc-content{padding:4px 14px 14px;}
+.why{font-size:11.5px;color:#bbb;line-height:1.55;background:rgba(255,255,255,.02);border-left:2px solid var(--red);padding:8px 10px;margin-bottom:10px;}
+.why b{color:var(--wht);}
+
+.opt{background:var(--card);border:1px solid var(--brd);border-radius:5px;padding:11px 12px;margin-bottom:8px;}
+.opt:last-child{margin-bottom:0;}
+.opt-n{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;color:var(--red);font-weight:600;margin-bottom:3px;letter-spacing:1px;}
+.opt-ttl{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:4px;}
+.opt-macros{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--orange);margin-bottom:4px;}
+.opt-note{font-size:11.5px;color:#aaa;line-height:1.55;}
+.opt-note strong{color:var(--wht);}
+.tip{font-size:11px;color:var(--green);line-height:1.5;margin-top:10px;padding-top:8px;border-top:1px dashed var(--brd);}
+.tip b{color:var(--wht);}
+
+.step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--brd);}
+.step:last-child{border-bottom:none;}
+.step-n{flex-shrink:0;width:30px;height:30px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;border-radius:5px;}
+.step-c{flex:1;}
+.step-t{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.step-d{font-size:11.5px;color:#aaa;line-height:1.55;}
+.step-d strong{color:var(--wht);}
+
+.cap{background:var(--drk);border:1px solid var(--brd);border-radius:6px;padding:13px 14px;margin-bottom:11px;}
+.cap-when{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:3px;}
+.cap-sit{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:.5px;margin-bottom:7px;}
+.cap-do{font-size:12px;color:#ccc;line-height:1.6;}
+.cap-do strong{color:var(--orange);}
+.cap-reinc{background:rgba(142,68,173,.07);border-left:3px solid var(--purple);border-radius:0 4px 4px 0;padding:8px 10px;margin-top:9px;}
+.cap-from{font-size:10.5px;color:var(--muted);margin-bottom:2px;}
+.cap-to{font-size:12px;color:var(--wht);font-weight:600;line-height:1.5;}
+
+.tl{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.tl-time{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--red);width:54px;flex-shrink:0;padding-top:1px;}
+.tl-c{flex:1;border-left:1px solid var(--brd);padding-left:14px;position:relative;}
+.tl-c::before{content:"";position:absolute;left:-5px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--red);}
+.tl-t{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.tl-d{font-size:11.5px;color:#aaa;line-height:1.55;}
+
+.rule{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px;color:#ccc;line-height:1.55;}
+.rule:last-child{border-bottom:none;}
+.rule b{font-family:'DM Mono',monospace;color:var(--red);flex-shrink:0;}
+.rule strong{color:var(--wht);}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--red);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--brd);}
+.sec-h:first-child{margin-top:4px;}
+
+.ftr{text-align:center;padding:24px 16px 0;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.ftr span{color:var(--red);font-family:'Bebas Neue',sans-serif;letter-spacing:4px;font-size:14px;display:block;margin-bottom:6px;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT<span>NUT</span></div>
+    <div class="hdr-right">
+      <div class="hdr-name">Claudia · Nutriție</div>
+      <div class="hdr-day" id="hdr-day">90 de zile</div>
+    </div>
+  </div>
+  <div class="macro-bar">
+    <div class="macro-item"><div class="macro-val kcal">1900</div><div class="macro-lbl">kcal</div></div>
+    <div class="macro-item"><div class="macro-val">140<span>g</span></div><div class="macro-lbl">Proteină</div></div>
+    <div class="macro-item"><div class="macro-val">175<span>g</span></div><div class="macro-lbl">Carbi</div></div>
+    <div class="macro-item"><div class="macro-val">70<span>g</span></div><div class="macro-lbl">Grăsimi</div></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" data-tab="mese" onclick="showTab('mese')">Plan mese</div>
+  <div class="tab" data-tab="capcane" onclick="showTab('capcane')">Capcanele tale</div>
+  <div class="tab" data-tab="zile-grele" onclick="showTab('zile-grele')">Zile Grele</div>
+  <div class="tab" data-tab="seara" onclick="showTab('seara')">Seara</div>
+  <div class="tab" data-tab="apa" onclick="showTab('apa')">Apă + minerale</div>
+  <div class="tab" data-tab="mindful" onclick="showTab('mindful')">Mindful</div>
+</div>
+
+
+<!-- ═══════════════════════ PLAN MESE ═══════════════════════ -->
+<div class="panel active" id="tab-mese">
+
+  <div class="alert orange">
+    <div class="alert-ttl">CUM FOLOSEȘTI ASTA</div>
+    Fiecare masă are <strong>5 variante</strong> — alegi ce ai chef și ce ai în casă. <strong>Nimic nu e interzis.</strong> Ai <strong>gramajele exacte</strong> la fiecare ingredient (ca să le treci în aplicație) și, în tab-ul <strong>Mindful</strong>, ghidul „porții cu mâna" pentru când nu vrei să cântărești. <em>Regula de aur: proteină la fiecare masă, volum mare, mănânci încet.</em>
+  </div>
+
+  <!-- PRE-DECIDE -->
+  <div class="acc-card open" id="acc-predecide">
+    <div class="acc-hdr" onclick="toggleAcc('acc-predecide')">
+      <div class="acc-left">
+        <div class="acc-lbl">Seara înainte · ritual fix</div>
+        <div class="acc-ttl">Ce pui în geantă — ambele schimburi</div>
+        <div class="acc-sub">Dacă nu e pregătit seara, nu există dimineața</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>De ce contează:</b> Dimineața, pe schimbul 1, trezirea este la ora 4:00. Pe schimbul 2, timpul este frecvent limitat. Decizia legată de alimentație, luată în grabă, conduce deseori către patiseria de la locul de muncă sau snack-ul de la automat. <strong>Organizarea optimă se face seara, când claritatea mentală este intactă.</strong></div>
+      <div class="step"><div class="step-n">S2</div><div class="step-c"><div class="step-t">Schimb 2 · seara înainte</div><div class="step-d">✓ Ovăzul în bol în frigider (VAR 3 Mic dejun) — gata la trezire<br>✓ Prânzul la pachet în caserolă — carne/pește + salată<br>✓ Bidonul cu apă + lămâie pus pe blat<br>✓ Magneziul pus lângă pahar — ca să nu uiți</div></div></div>
+      <div class="step"><div class="step-n">S1</div><div class="step-c"><div class="step-t">Schimb 1 · cu o seară înainte (la ora normală)</div><div class="step-d">✓ Ovăzul în bol — pregătit pentru ora 4:00, înainte de plecare<br>✓ Geanta organizată complet cu prânzul și gustarea<br>✓ Apa pregătită — pentru a evita agitația matinală<br>✓ Echipamentul de sală pregătit anticipat, dacă este planificat antrenament</div></div></div>
+      <div class="tip"><b>💡 Regula simplă:</b> Tot ceea ce este necesar pentru ziua următoare trebuie pregătit de seara. Improvizația la primele ore ale dimineții trebuie evitată.</div>
+    </div></div>
+  </div>
+
+  <!-- MIC DEJUN -->
+  <div class="acc-card open" id="acc-md">
+    <div class="acc-hdr" onclick="toggleAcc('acc-md')">
+      <div class="acc-left">
+        <div class="acc-lbl">Mic dejun · la trezire · Ancora zilei</div>
+        <div class="acc-ttl">Cea mai importantă masă</div>
+        <div class="acc-sub">minimum 30g proteină · previne dezechilibrele glicemice de seara</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>De ce contează cel mai mult:</b> Ținta este de <strong>minimum 30g de proteină</strong> la prima masă a zilei. Acest aspect stabilizează curba glicemică, reducând semnificativ nevoia acută de dulce de mai târziu. Omiterea micului dejun crește considerabil riscul poftelor incontrolabile din a doua parte a zilei.</div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Omleta tradițională <strong style="color:var(--green);font-weight:700;">(baza ta)</strong></div><div class="opt-macros">P ~34g · C ~24g · G ~27g · ~470 kcal</div><div class="opt-note">3 ouă (~150g) + 40g brânză (telemea/cașcaval slab) + 15g slănină + roșii și ardei (~100g) + 1 felie pâine integrală (~40g).</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Omletă cu brânză + mămăligă la tigaie</div><div class="opt-macros">P ~33g · C ~26g · G ~22g · ~440 kcal</div><div class="opt-note">3 ouă (~150g) + 60g brânză slabă + legume (~100g) + 1 felie mămăligă (~80g) încălzită la tigaie. <strong>O alegere tradițională, echilibrată proteic.</strong></div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Iaurt grec cu ovăz (pregătit seara)</div><div class="opt-macros">P ~32g · C ~40g · G ~14g · ~430 kcal</div><div class="opt-note">300g iaurt grec gros (tip skyr) + 40g ovăz + 15g nuci + 1 linguriță miere (~7g). Îl pregătești seara — dimineața e gata.</div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Brânză de vaci cu ou + pâine</div><div class="opt-macros">P ~34g · C ~22g · G ~12g · ~380 kcal</div><div class="opt-note">250g brânză de vaci (cottage) + 1 ou fiert + roșii/castravete (~100g) + 1 felie pâine secară (~40g).</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">Clătite proteice fără ulei</div><div class="opt-macros">P ~33g · C ~32g · G ~13g · ~400 kcal</div><div class="opt-note">2 ouă + 40g ovăz + 150g brânză de vaci, blenduite și trase la tigaie fără ulei. Cu 50g fructe deasupra.</div></div>
+      <div class="tip"><b>💡 Tip:</b> Pentru schimbul 1 (trezire la 4:00), VAR 3 (ovăzul pregătit cu o seară înainte) reprezintă soluția optimă și rapidă.</div>
+    </div></div>
+  </div>
+
+  <!-- GUSTARE -->
+  <div class="acc-card" id="acc-gust">
+    <div class="acc-hdr" onclick="toggleAcc('acc-gust')">
+      <div class="acc-left">
+        <div class="acc-lbl">Gustare · ~10:30 · Între mese</div>
+        <div class="acc-ttl">Ține foamea departe</div>
+        <div class="acc-sub">minimum 30g proteină · previne senzația extremă de foame seara</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>De ce:</b> gustarea cu proteină taie foamea acumulată, ca să nu ajungi seara să mănânci pe disperare. O gustare bună acum previne mâncatul haotic de seara.</div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Iaurt grec cu nuci</div><div class="opt-macros">P ~30g · C ~12g · G ~18g · ~300 kcal</div><div class="opt-note">250g iaurt grec gros + 25g nuci sau semințe. Grăsimile bune pe care le iubești.</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Ou fiert + brânză + măr</div><div class="opt-macros">P ~32g · C ~14g · G ~9g · ~250 kcal</div><div class="opt-note">250g brânză de vaci (cottage) + 1 ou fiert + un măr (~150g). Le porți ușor la muncă.</div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Pui rece cu legume (rapid, de luat la muncă)</div><div class="opt-macros">P ~31g · C ~8g · G ~6g · ~210 kcal</div><div class="opt-note">120g piept de pui rece (pregătit dinainte) + castravete și roșii (~100g). <strong>Proteină pură, te ține mult.</strong></div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Brânză de vaci cu legume</div><div class="opt-macros">P ~32g · C ~10g · G ~16g · ~300 kcal</div><div class="opt-note">230g brânză de vaci + 20g nuci + castravete și roșii. Ușoară, multă proteină.</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">Iaurt cu semințe de dovleac + fruct</div><div class="opt-macros">P ~30g · C ~20g · G ~12g · ~300 kcal</div><div class="opt-note">280g iaurt grec gros + 15g semințe de dovleac + un fruct mic (~120g).</div></div>
+    </div></div>
+  </div>
+
+  <!-- PRANZ -->
+  <div class="acc-card" id="acc-pranz">
+    <div class="acc-hdr" onclick="toggleAcc('acc-pranz')">
+      <div class="acc-left">
+        <div class="acc-lbl">Prânz · 13:30 · Masa principală</div>
+        <div class="acc-ttl">Cu proteină și volum</div>
+        <div class="acc-sub">minimum 40g proteină · mănânci pe îndelete</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>De ce volum mare:</b> salata/legumele umplu stomacul fără calorii multe — te saturi fără să-ți fie foame. Mănânci încet, furculița jos: stomacul are nevoie de 20 de minute să-ți spună că e plin.</div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Pește cu mămăligă <strong style="color:var(--green);font-weight:700;">(preferata ta)</strong></div><div class="opt-macros">P ~38g · C ~40g · G ~18g · ~520 kcal</div><div class="opt-note">150g pește (somon/păstrăv/cod) + 150g mămăligă gata + salată mare (~150g) cu 1 lingură ulei de măsline (~10g).</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Pui/curcan cu cartof copt</div><div class="opt-macros">P ~42g · C ~38g · G ~12g · ~480 kcal</div><div class="opt-note">150g piept de pui sau curcan + 200g cartof copt + legume la grătar/salată (~150g).</div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Ciorbă cu carne + pâine</div><div class="opt-macros">P ~35g · C ~35g · G ~16g · ~500 kcal</div><div class="opt-note">Ciorbă cu 120g carne de pui sau vită + 1 felie pâine (~40g) + o salată. Caldă, de casă.</div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Tocăniță de legume cu carne slabă + orez</div><div class="opt-macros">P ~36g · C ~42g · G ~16g · ~510 kcal</div><div class="opt-note">Tocăniță cu 120g carne slabă + legume + 150g orez gătit + murături/salată.</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">Friptură slabă cu mămăligă + salată</div><div class="opt-macros">P ~40g · C ~36g · G ~18g · ~510 kcal</div><div class="opt-note">150g friptură slabă (pește, curcan, vită slabă) + 150g mămăligă + salată mare cu 1 lingură ulei de măsline (~10g).</div></div>
+      <div class="tip"><b>💡 Tip pe schimb 2:</b> Prânzul este masa principală luată la pachet. Necesită pregătire prealabilă (cu o seară înainte) pentru a evita alternativele de patiserie la locul de muncă.</div>
+    </div></div>
+  </div>
+
+  <!-- PRE-ANTRENAMENT -->
+  <div class="acc-card" id="acc-pre">
+    <div class="acc-hdr" onclick="toggleAcc('acc-pre')">
+      <div class="acc-left">
+        <div class="acc-lbl">Înainte de sală · Doar zi de antrenament</div>
+        <div class="acc-ttl">Combustibil rapid</div>
+        <div class="acc-sub">carb rapid · fără proteină grea</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>De ce doar carb:</b> e <strong>singura excepție</strong> de la regula de 30g proteină — înainte de sală vrem doar energie rapidă. Proteina grea încetinește digestia și te simți plină la aparate, de-aia o lăsăm după antrenament.</div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Banană cu puțină miere</div><div class="opt-macros">C ~32g · ~125 kcal</div><div class="opt-note">1 banană (~120g) + 1 linguriță miere (~7g). Energie pe loc, stomac ușor.</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Felie de pâine cu miere</div><div class="opt-macros">C ~28g · ~140 kcal</div><div class="opt-note">1 felie pâine integrală (~40g) cu un strat subțire de miere (~10g).</div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Măr + câteva curmale</div><div class="opt-macros">C ~30g · ~130 kcal</div><div class="opt-note">1 măr (~150g) + 2-3 curmale (~20g). Energie din fructe.</div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Ovăz mic cu apă</div><div class="opt-macros">C ~25g · ~120 kcal</div><div class="opt-note">30g ovăz cu apă. Energie care ține un pic mai mult.</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">O banană simplă</div><div class="opt-macros">C ~27g · ~105 kcal</div><div class="opt-note">1 banană (~120g). Dacă nu ai chef de nimic — tot e bine.</div></div>
+    </div></div>
+  </div>
+
+  <!-- CINA -->
+  <div class="acc-card" id="acc-cina">
+    <div class="acc-hdr" onclick="toggleAcc('acc-cina')">
+      <div class="acc-left">
+        <div class="acc-lbl">Cină · ~19:30 · Ușoară + plăcerea ta</div>
+        <div class="acc-ttl">Cu pătratul de ciocolată</div>
+        <div class="acc-sub">minimum 35g proteină · mai ușoară ca prânzul</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>De ce mai ușoară:</b> ca să dormi bine și să nu te trezești umflată. Și aici intră, programat, pătratul de ciocolată neagră — ales de tine, nu furat pe nervi. Asta dezamorsează capcana de seara.</div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Pește la cuptor + legume + avocado</div><div class="opt-macros">P ~34g · C ~22g · G ~24g · ~500 kcal</div><div class="opt-note">150g pește + legume la cuptor (~200g) + 1/2 avocado (~70g) + <strong>10g ciocolată neagră (un pătrat)</strong>.</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Pui cu salată mare</div><div class="opt-macros">P ~38g · C ~18g · G ~20g · ~470 kcal</div><div class="opt-note">150g piept de pui + salată mare (~200g) cu 1 lingură ulei de măsline (~10g) + 10g ciocolată neagră.</div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Omletă cu brânză și legume</div><div class="opt-macros">P ~30g · C ~16g · G ~24g · ~450 kcal</div><div class="opt-note">3 ouă + 40g brânză slabă + multe legume (~150g). Cină ușoară clasică.</div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Brânză de vaci cu legume și nuci (rapid)</div><div class="opt-macros">P ~32g · C ~14g · G ~18g · ~420 kcal</div><div class="opt-note">200g brânză de vaci + legume (~150g) + 20g nuci. O opțiune rapidă, ideală pentru momentele de epuizare fizică.</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">Supă curată + friptură slabă</div><div class="opt-macros">P ~36g · C ~20g · G ~16g · ~460 kcal</div><div class="opt-note">Supă curată (din oase fierte) + 130g friptură slabă + salată. Ușor de digerat seara.</div></div>
+    </div></div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════ CAPCANELE TALE ═══════════════════════ -->
+<div class="panel" id="tab-capcane">
+  <div class="alert red">
+    <div class="alert-ttl">MOMENTELE TALE GRELE — ȘI CE FACI</div>
+    Astea sunt situațiile exacte din viața ta în care ai cedat până acum. Pentru fiecare, ai un plan și o reîncadrare. <strong>Nu mai improvizezi în momentul greu — citești aici.</strong>
+  </div>
+
+  <div class="cap">
+    <div class="cap-when">Ora 19:00 · acasă de la muncă</div>
+    <div class="cap-sit">Nevoia acută de dulce seara</div>
+    <div class="cap-do">Scăderea accentuată a glicemiei, asociată cu stresul și oboseala acumulată. <strong>Ce faci:</strong> consumi cina bogată în proteină ÎNTÂI. Ulterior, dacă senzația persistă, poți savura porția de ciocolată planificată. În cazul unui impuls puternic: o pauză de 5 minute în aer liber ajută la clarificarea deciziei.</div>
+    <div class="cap-reinc"><div class="cap-from">„Am cedat din nou."</div><div class="cap-to">Nu este un eșec de disciplină, ci o epuizare a resurselor. Soluția este organizarea meselor, nu bazarea exclusivă pe voință.</div></div>
+  </div>
+
+  <div class="cap">
+    <div class="cap-when">La muncă · schimbul 2</div>
+    <div class="cap-sit">Patiseria / snackul de la job</div>
+    <div class="cap-do"><strong>Ce faci:</strong> ai pachetul pregătit de dimineață — carne/pește + salată mare. Bidonul cu apă lângă tine. Când ai mâncarea ta la îndemână, snackul de la job nu mai e tentație, e doar zgomot.</div>
+    <div class="cap-reinc"><div class="cap-from">„N-am avut timp, am luat ce era."</div><div class="cap-to">Timpul se câștigă duminica, gătind. Eu nu mănânc pe fugă — eu deschid pachetul.</div></div>
+  </div>
+
+  <div class="cap">
+    <div class="cap-when">Schimb 1 · sus de la ora 4</div>
+    <div class="cap-sit">Oboseală extremă și tentația de a omite mese</div>
+    <div class="cap-do"><strong>Ce faci:</strong> Evită omiterea meselor sub pretextul oboselii — exact în acel moment corpul are nevoie de nutrienți. Alege o variantă simplă, dar cu un aport ridicat de proteină. Consistența unei mese simple previne compensările calorice ulterioare.</div>
+    <div class="cap-reinc"><div class="cap-from">„Sunt prea obosită ca să mă hrănesc corect."</div><div class="cap-to">Nivelul scăzut de energie este adesea rezultatul omiterii meselor. Aleg o masă simplă, dar hrănitoare.</div></div>
+  </div>
+
+  <div class="cap">
+    <div class="cap-when">Când bei mai multă apă</div>
+    <div class="cap-sit">Te balonezi și renunți</div>
+    <div class="cap-do"><strong>Ce faci:</strong> crești treptat (1/2 litru la 2-3 zile), apă caldă cu lămâie, nu rece. Balonarea apare doar când torni mult deodată. Pas cu pas, dispare — și retenția cu ea.</div>
+    <div class="cap-reinc"><div class="cap-from">„Apa mă umflă, deci beau puțin."</div><div class="cap-to">Mă umflă pentru că beau puțin. Cresc încet și corpul dă drumul la apă.</div></div>
+  </div>
+
+  <div class="cap">
+    <div class="cap-when">Orice zi · a mers prost</div>
+    <div class="cap-sit">„Am stricat tot azi"</div>
+    <div class="cap-do"><strong>Ce faci:</strong> nimic dramatic. O masă proastă nu strică nimic, o zi proastă nu strică nimic. Te întorci la masa următoare — nu „de luni". Fără compensări, fără să sari peste mâine.</div>
+    <div class="cap-reinc"><div class="cap-from">„Am avut o abatere de la plan, reîncep de luni."</div><div class="cap-to">Reiau structura corectă de la următoarea masă. Consecvența în 80% din timp generează rezultate sustenabile.</div></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ ZILE GRELE ═══════════════════════ -->
+<div class="panel" id="tab-zile-grele">
+
+  <div class="alert red">
+    <div class="alert-ttl">PENTRU ZILELE ÎN CARE SISTEMUL CEDEAZĂ</div>
+    Acestea nu sunt protocoale de urgență — sunt protocoale de om normal. Oricine cedează uneori. Diferența e că tu știi ce faci <strong>după</strong>.
+  </div>
+
+  <!-- PROTOCOL ANTI-VAL SEARA -->
+  <div class="acc-card open" id="acc-val">
+    <div class="acc-hdr" onclick="toggleAcc('acc-val')">
+      <div class="acc-left">
+        <div class="acc-lbl">Seara · după muncă</div>
+        <div class="acc-ttl">Nevoia de dulce — protocol în 4 pași</div>
+        <div class="acc-sub">Parcurgi în ordine. Te oprești la primul care funcționează.</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>De ce apare această senzație:</b> Glicemia coboară după o zi solicitantă, nivelul de cortizol este ridicat, iar stomacul este gol. Aceasta este o reacție fiziologică, nu o lipsă de disciplină. Situația se gestionează prin aport proteic și decizii luate cu calm.</div>
+      <div class="step"><div class="step-n">1</div><div class="step-c"><div class="step-t">Hidratarea — 300ml apă</div><div class="step-d">Înainte de orice altceva. De multe ori valul e sete sau cortizol ridicat, nu foame reală. Ieși 5 minute afară dacă poți — aerul curat și hidratarea adecvată diminuează impulsul înainte ca acesta să se manifeste.</div></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-c"><div class="step-t">Proteina cinei — întâi</div><div class="step-d">Dacă valul persistă, mănânci cina cu proteină <strong>înainte</strong> de orice dulce. Niciodată direct la ciocolată cu stomacul gol — glicemia urcă brusc și cade și mai rău după 20 de minute.</div></div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-c"><div class="step-t">Porția de ciocolată — asumată</div><div class="step-d">Este deja inclusă în planul alimentar. O porție, savurată lent, după consumul proteinei. <strong>O decizie asumată, nu un răspuns la stres.</strong> Aceasta reprezintă o alegere echilibrată, nu o abatere.</div></div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-c"><div class="step-t">Dacă tot ai mâncat mai mult — nu dramatizezi</div><div class="step-d">O seară proastă nu strică nimic. <strong>Nu compensezi dimineața</strong> (nu sari micul dejun, nu te înfometezi). Revii la prima masă normală — și asta e tot. O seară din zece nu e un eșec, e statistică.</div></div></div>
+    </div></div>
+  </div>
+
+  <!-- PROTOCOL MVE SCHIMB 1 -->
+  <div class="acc-card" id="acc-mve">
+    <div class="acc-hdr" onclick="toggleAcc('acc-mve')">
+      <div class="acc-left">
+        <div class="acc-lbl">Schimb 1 · sus de la ora 4</div>
+        <div class="acc-ttl">Ziua solicitantă — 3 acțiuni de bază</div>
+        <div class="acc-sub">Pentru momentele de epuizare fizică și mentală</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>De ce funcționează:</b> Energia decizională este o resursă limitată. La ora 4:00 dimineața, aceasta este deja minimă. Abordarea corectă implică reducerea la zero a deciziilor necesare în acel moment, nu forțarea voinței.</div>
+      <div class="step"><div class="step-n">1</div><div class="step-c"><div class="step-t">Dimineața: preparatul din avans</div><div class="step-d">VAR 3 Mic dejun — pregătit cu o seară înainte. Necesită doar consumul direct. Zero efort decizional la ora 4:00.</div></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-c"><div class="step-t">Pachetul — organizat de seara</div><div class="step-d">Prânzul și gustarea, pregătite și așezate în geantă în noaptea precedentă. Omiterea acestei etape lasă patiseria ca singura variantă disponibilă la locul de muncă. <strong>Organizarea se face exclusiv seara.</strong></div></div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-c"><div class="step-t">Seara, pe fond de oboseală: VAR 4 Cină</div><div class="step-d">Brânză de vaci + legume + 20g nuci. O masă rapidă, fără efort de gătire. Administrarea magneziului înainte de culcare. <strong>O abordare simplă, care menține consistența progresului.</strong></div></div></div>
+      <div class="cap-reinc"><div class="cap-from">„Sunt prea obosită să mă organizez."</div><div class="cap-to">Organizarea se face exclusiv seara, pentru a proteja energia limitată din dimineața următoare. Totul trebuie lăsat pregătit.</div></div>
+    </div></div>
+  </div>
+
+  <!-- PROTOCOL ZILE CU SIMPTOME -->
+  <div class="acc-card" id="acc-simpt">
+    <div class="acc-hdr" onclick="toggleAcc('acc-simpt')">
+      <div class="acc-left">
+        <div class="acc-lbl">Perimenopauză · simptome ciclice</div>
+        <div class="acc-ttl">Bufeuri, nervozitate, pofte de dulce</div>
+        <div class="acc-sub">Când corpul tău face ce vrea — și tu știi ce înseamnă</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="why"><b>Mecanismul real:</b> pofta de dulce ciclic nu e lipsă de voință — e estrogenul în scădere care dereglează serotonina. Corpul caută zahăr ca să compenseze. Știind asta, <strong>nu te mai judeci</strong> — intervii cu instrumentele potrivite.</div>
+      <div class="step"><div class="step-n">1</div><div class="step-c"><div class="step-t">Recunoști ziua — și nu intri în luptă</div><div class="step-d">Bufeuri dimineața, nervozitate fără motiv, poftă de dulce din senin = zi cu simptome. Nu e o zi proastă — e o zi cu semnal hormonal. <strong>Strategia se schimbă, nu se abandonează.</strong></div></div></div>
+      <div class="step"><div class="step-n">2</div><div class="step-c"><div class="step-t">Proteina — mai devreme, mai mult</div><div class="step-d">Proteina stabilizează glicemia și reduce indirect pofta de dulce. Pe zilele cu simptome, nu sari gustarea și nu întârzii mesele. <strong>Foamea acumulată + hormoni = val dublu.</strong></div></div></div>
+      <div class="step"><div class="step-n">3</div><div class="step-c"><div class="step-t">Magneziul — dublezi doza seara</div><div class="step-d">Pe zilele cu simptome severe, poți lua o doză suplimentară de magneziu bisglicinat seara. Reduce nervozitatea, ajută somnul, calmează crampele. <strong>Nu e supliment de slăbit — e mineralul care liniștește sistemul nervos.</strong></div></div></div>
+      <div class="step"><div class="step-n">4</div><div class="step-c"><div class="step-t">Mișcarea ușoară — 20 de minute afară</div><div class="step-d">Nu sală, nu efort mare. Mers afară 20 de minute eliberează endorfine naturale care compensează scăderea serotoninei. Pe zilele cu simptome, plimbarea e mai valoroasă decât antrenamentul forțat.</div></div></div>
+      <div class="cap-reinc"><div class="cap-from">„Iar n-am voință."</div><div class="cap-to">Nu e voință — e estrogen. Și mâine e o altă zi hormonală.</div></div>
+    </div></div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════ SEARA ═══════════════════════ -->
+<div class="panel" id="tab-seara">
+  <div class="alert purple">
+    <div class="alert-ttl">RITUALUL DE SEARĂ — UNDE SE CÂȘTIGĂ ZIUA</div>
+    Seara e momentul în care ai cedat mereu. Cu un ritual clar, nu mai lași decizia pe seama oboselii. <strong>Patul redevine somn, nu evadare.</strong>
+  </div>
+
+  <div class="tl"><div class="tl-time">19:30</div><div class="tl-c"><div class="tl-t">Cină ușoară, cu proteină</div><div class="tl-d">Mănânci pe îndelete, furculița jos. Mai ușoară ca prânzul, ca să dormi bine.</div></div></div>
+  <div class="tl"><div class="tl-time">20:00</div><div class="tl-c"><div class="tl-t">Pătratul de ciocolată neagră</div><div class="tl-d">Planificat, ales de tine. Asta e plăcerea, nu furtul pe nervi. Un pătrat, savurat încet.</div></div></div>
+  <div class="tl"><div class="tl-time">21:30</div><div class="tl-c"><div class="tl-t">Ceaiul + lăsat telefonul</div><div class="tl-d">Un ceai cald, lumini mai blânde, telefonul jos. Pregătești corpul pentru somn.</div></div></div>
+  <div class="tl"><div class="tl-time">Înainte de somn</div><div class="tl-c"><div class="tl-t">Magneziul</div><div class="tl-d">Te ajută să adormi și calmează nervii. Lucrează în timp ce dormi.</div></div></div>
+  <div class="tl"><div class="tl-time">Noaptea</div><div class="tl-c"><div class="tl-t">Patul = somn</div><div class="tl-d">Nu 2 ore de evadare după-masă (maximum 20 de minute pui de somn, cu alarmă). Așa noaptea redevine noapte.</div></div></div>
+
+  <div class="alert green">
+    <div class="alert-ttl">DE CE CONTEAZĂ ATÂT</div>
+    O noapte de odihnă calitativă <strong>reduce semnificativ poftele alimentare din ziua următoare</strong>. Optimizarea somnului facilitează echilibrarea întregului sistem. O seară liniștită asigură resursele necesare pentru ziua următoare.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ APA + MINERALE ═══════════════════════ -->
+<div class="panel" id="tab-apa">
+  <div class="alert blue">
+    <div class="alert-ttl">PRIMA VICTORIE · 48–72h</div>
+    Aici vezi primul rezultat, repede: mâinile mai puțin umflate dimineața. <strong>Paradoxul: bei mai mult ca să reții mai puțin.</strong>
+  </div>
+
+  <div class="step"><div class="step-n">1</div><div class="step-c"><div class="step-t">Apa — cresc treptat</div><div class="step-d">De la 1,5L spre 2,2–2,5L. Adaugi 1/2 litru la fiecare 2–3 zile. <strong>O hidratare optimă, treptată, previne senzația de balonare.</strong></div></div></div>
+  <div class="step"><div class="step-n">2</div><div class="step-c"><div class="step-t">Magneziu bisglicinat — seara</div><div class="step-d">Înainte de culcare. <strong>Ce rezolvă direct la tine:</strong> insomnie după puiul de somn după-masă, nervozitate fără motiv, pofte de dulce seara, retenție de apă, bufeuri de perimenopauză. Germania are apă demineralizată — magneziul se pierde natural prin transpirație și urină.<br><br><strong>Nu este un produs comercial de slăbit rapid.</strong> E un mineral dovedit lipsă, pe care îl scoți din corp în fiecare zi și trebuie înlocuit. Când nivelul se normalizează, somnul se repară de la sine.</div></div></div>
+  <div class="step"><div class="step-n">3</div><div class="step-c"><div class="step-t">D3 — dimineața, cu masa</div><div class="step-d">Ți-a ieșit scăzut la analize. 70% din europeni sunt deficitari în D3 — cu atât mai mult în Germania, unde soarele e absent 6–8 luni pe an. <strong>Ce simți când e scăzut:</strong> oboseală cronică, dispoziție scăzută, imunitate slabă. Cu acordul medicului, doza standard: 2.000–4.000 UI/zi cu grăsime (de aceea se ia la masă).</div></div></div>
+  <div class="step"><div class="step-n">4</div><div class="step-c"><div class="step-t">B12 — dimineața</div><div class="step-d">Nivelul a fost identificat ca fiind scăzut la analize. Starea profundă de epuizare din a doua parte a zilei este frecvent asociată cu un deficit de vitamina B12. Celulele nervoase și globulele roșii depind de el pentru funcționare optimă. Se administrează la recomandarea medicului. <strong>Este o vitamină hidrosolubilă, excesul eliminându-se natural.</strong></div></div></div>
+  <div class="step"><div class="step-n">5</div><div class="step-c"><div class="step-t">Sodiul — cu moderație</div><div class="step-d">Un praf de sare de calitate în apă și consumul de legume pentru potasiu. Principalul obiectiv este reducerea sodiului din alimentele procesate, nu din mâncarea pregătită acasă. Hidratarea eficientă necesită un echilibru mineral adecvat.</div></div></div>
+
+  <div class="alert green">
+    <div class="alert-ttl">ȚINTA</div>
+    Bidonul cu apă + lămâie mereu la vedere și în geantă la muncă. <strong>Ce vezi, bei.</strong> Mineralele sunt un reglaj temporar, nu o dependență — pe măsură ce te așezi, le reducem.
+  </div>
+</div>
+
+
+<!-- ═══════════════════════ MINDFUL ═══════════════════════ -->
+<div class="panel" id="tab-mindful">
+  <div class="alert purple">
+    <div class="alert-ttl">CUM MĂNÂNCI, NU DOAR CE</div>
+    Nu numeri obsesiv și nu-ți interzici nimic. Construim un <strong>stil de viață echilibrat</strong>, pe care îl duci toată viața. Variantele de la „Plan mese" sunt deja calibrate — alegi, mănânci, gata.
+  </div>
+
+  <div class="sec-h">CELE 3 ÎNTREBĂRI MINDFUL</div>
+  <div class="rule"><b>1</b><div><strong>„Este senzație reală de foame sau stres acumulat?"</strong> Analizează starea înainte de a face o alegere impulsivă. Deseori este vorba de o descărcare emoțională, care se poate atenua printr-o scurtă pauză de reflecție.</div></div>
+  <div class="rule"><b>2</b><div><strong>„Mănânc încet?"</strong> Furculița jos între îmbucături. Stomacul are nevoie de 20 de minute ca să-ți spună că e plin.</div></div>
+  <div class="rule"><b>3</b><div><strong>„Am proteină pe farfurie?"</strong> Dacă da, ești pe drumul bun, indiferent de rest.</div></div>
+
+  <div class="sec-h">CELE 7 REGULI DE MASĂ</div>
+  <div class="rule"><b>01</b><div>Mâncare reală, minim procesată.</div></div>
+  <div class="rule"><b>02</b><div>1.900 kcal — <strong>nici mai puțin</strong>. Mâncatul prea puțin te secătuiește.</div></div>
+  <div class="rule"><b>03</b><div>Proteină la fiecare masă (140g/zi), ancorată de micul dejun.</div></div>
+  <div class="rule"><b>04</b><div>Carbohidrații în jurul mișcării — energie, nu depozit.</div></div>
+  <div class="rule"><b>05</b><div>Grăsimile bune rămân — hrănesc hormonii.</div></div>
+  <div class="rule"><b>06</b><div>Mănânci încet, volum mare — sațietate fără foame.</div></div>
+  <div class="rule"><b>07</b><div>80% structură, 20% plăcere. <strong>Nimic interzis.</strong></div></div>
+
+  <div class="alert orange">
+    <div class="alert-ttl">PARTEA DE 20% — PLĂCEREA TA</div>
+    Preparatele tradiționale consumate ocazional, un pahar de vin în weekend, o masă în familie — <strong>pot fi integrate în mod controlat.</strong> Echilibrul permite rezultate sustenabile, respectând preferințele culinare personale.
+  </div>
+
+  <div class="alert blue">
+    <div class="alert-ttl">ÎN CURÂND: EAT &amp; TRACK</div>
+    Pe parcurs îți pun la dispoziție o aplicație unde îți treci singură mesele și vezi macronutrienții în timp real. Până atunci, variantele de aici sunt deja calculate — <strong>nu trebuie să numeri nimic acum.</strong> Doar alegi și mănânci.
+  </div>
+
+  <div class="sec-h">PORȚIILE CU MÂNA · FĂRĂ CÂNTAR</div>
+  <div class="alert green">
+    <div class="alert-ttl">REGULA MÂINII</div>
+    Monitorizarea nu necesită instrumente de măsurare stricte. <strong>Reperul vizual raportat la propria mână</strong> reprezintă o metodă practică și proporțională cu nevoile corpului tău.
+  </div>
+  <div class="rule"><b>✋</b><div><strong>Proteină = o palmă</strong> (cât palma, gros cât palma) — carne, pește, brânză. La <strong>fiecare</strong> masă.</div></div>
+  <div class="rule"><b>✊</b><div><strong>Carbi = un pumn</strong> — mămăligă, cartof, orez, paste. În jurul mișcării.</div></div>
+  <div class="rule"><b>🙌</b><div><strong>Legume = două mâini căuș</strong> — oricât, volumul care te satură fără calorii multe.</div></div>
+  <div class="rule"><b>👍</b><div><strong>Grăsimi = un deget mare</strong> (ulei, unt) sau <strong>o mână mică</strong> de nuci/semințe.</div></div>
+  <div class="alert purple" style="margin-top:12px;">
+    <div class="alert-ttl">DE CE FUNCȚIONEAZĂ</div>
+    Mâna ta crește odată cu corpul tău — o femeie mai mică are automat porții mai mici. Nu e obsesiv, e <strong>conștient</strong>. O farfurie cu o palmă de proteină, un pumn de carbi și două mâini de legume = o masă corectă, fără să cântărești nimic.
+  </div>
+</div>
+
+<div class="ftr">
+  <span>BUILT</span>
+</div>
+
+
+<script>
+function toggleAcc(id){ document.getElementById(id).classList.toggle('open'); }
+function showTab(name){
+  document.querySelectorAll('.panel').forEach(function(p){ p.classList.remove('active'); });
+  document.getElementById('tab-'+name).classList.add('active');
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.toggle('active', t.dataset.tab===name); });
+  window.scrollTo(0,0);
+}
+(function(){
+  var start=new Date(2026,5,8), now=new Date();
+  var d=Math.floor((now-start)/86400000)+1;
+  var el=document.getElementById('hdr-day');
+  if(d<1){ el.textContent='Start: luni 8 iun'; }
+  else if(d<=90){ el.textContent='Ziua '+d+' / 90'; }
+  else { el.textContent='Program complet'; }
+})();
+</script>
+
+</body>
+</html>
