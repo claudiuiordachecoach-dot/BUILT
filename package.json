@@ -9,7 +9,8 @@
     "lint": "eslint",
     "migrate:creier": "tsx scripts/migrate-creier.ts",
     "test:connections": "tsx scripts/test-connections.ts",
-    "scrape:competitors": ".venv/bin/python scripts/scrape_competitors.py"
+    "scrape:competitors": ".venv/bin/python scripts/scrape_competitors.py",
+    "verify:competitors": "tsx scripts/verify-competitor-data.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.94.0",
