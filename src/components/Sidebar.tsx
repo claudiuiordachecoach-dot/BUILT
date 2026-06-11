@@ -43,6 +43,7 @@ const MAIN_ITEMS: NavEntry[] = [
   { label: "Azi",                 href: "/dashboard/azi",             icon: <Icons.star /> },
   { label: "Dashboard",           href: "/dashboard/analytics",       icon: <Icons.grid />,     exact: true },
   { label: "Studio Conținut",     href: "/dashboard/content",         icon: <Icons.star /> },
+  { label: "Studio Viral",        href: "/competitors",               icon: <Icons.users /> },
   { label: "Calendar Conținut",   href: "/dashboard/calendar",        icon: <Icons.calendar /> },
   { label: "DM Sales",            href: "/dashboard/outreach",        icon: <Icons.message /> },
   { label: "Întreabă BUILT AI",   href: "/dashboard/knowledge-base",  icon: <Icons.brain /> },
