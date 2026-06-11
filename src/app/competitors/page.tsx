@@ -76,13 +76,15 @@ export default async function CompetitorsPage() {
       <AddCompetitorForm />
 
       {/* COMPETITORS LIST */}
-      <div className="space-y-2 mb-10">
+      <div className="mb-10">
         {competitors.length === 0 && !dbError ? (
-          <p className="text-built-gray-text text-sm italic p-6 text-center bg-built-gray-1/50 border border-dashed border-built-gray-2 rounded-sm">
+          <p className="text-muted-foreground text-sm italic p-6 text-center bg-card/50 border border-dashed border-border rounded-xl">
             Niciun competitor adăugat încă.
           </p>
         ) : (
-          competitors.map((c) => <CompetitorRow key={c.id} c={c} />)
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {competitors.map((c) => <CompetitorRow key={c.id} c={c} />)}
+          </div>
         )}
       </div>
 
