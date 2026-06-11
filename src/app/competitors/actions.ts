@@ -69,6 +69,7 @@ export interface WeeklyReportData {
     day: number;
     hook: string;
     angle: string;
+    script: string;
     pillar: "B" | "U" | "I" | "L" | "T" | "mix";
     estimated_duration_sec: number;
   }>;
@@ -375,11 +376,12 @@ export async function getCurrentWeekReport(): Promise<WeeklyReport | null> {
   } as WeeklyReport;
 }
 
-export async function generateWeeklyReport(): Promise<Result<WeeklyReport>> {
+export async function generateWeeklyReport(cadence: 1 | 2 = 1): Promise<Result<WeeklyReport>> {
   const sb = getSupabaseServer();
   const weekStart = getWeekStart();
   const weekEnd = new Date(weekStart);
   weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
+  const totalPosts = 7 * cadence;
 
   // ia toate reels-urile din ultimele 7 zile
   const since = new Date(Date.now() - 7 * 86400_000).toISOString();
@@ -409,22 +411,23 @@ Transcript: "${(r.transcript ?? "").slice(0, 1200)}"`;
     })
     .join("\n\n");
 
-  const task = `# TASK: Weekly Intelligence Report — analiză competitori + 7 scripturi BUILT
+  const task = `# TASK: Planul tău de conținut — analiză competitori + ${totalPosts} postări BUILT gata de publicat
 
 ## Date analizate
 - Săptămâna: ${weekStart.toISOString().slice(0, 10)} — ${weekEnd.toISOString().slice(0, 10)}
 - ${reels.length} reels din ${competitorsCount ?? "?"} competitori
+- Cadență: ${cadence} ${cadence === 1 ? "postare" : "postări"} pe zi → ${totalPosts} postări (Luni–Duminică)
 
 ## Reels-urile (sortate desc după views)
 ${reelsList}
 
 ## Misiunea ta
-1. Identifică pattern-urile reale: ce hook-uri funcționează, ce formate domină, ce teme se repetă
-2. Generează 7 scripturi pentru săptămâna viitoare (Luni–Duminică) — nu copia, ADAPTEAZĂ în vocea BUILT
-3. Fiecare script are unghi diferit, atribuit pilonilor B/U/I/L/T/mix conform metodei BUILT
-4. Hook-uri scurte, contraintuitive, fără clișee fitness
+1. Identifică pattern-urile reale: ce hook-uri funcționează, ce formate domină, ce teme se repetă.
+2. Generează EXACT ${totalPosts} postări pentru săptămâna viitoare, distribuite ${cadence} pe zi (zilele 1–7). NU copia — ADAPTEAZĂ în vocea BUILT, pe baza Creierului.
+3. Fiecare postare: hook scurt contraintuitiv + un script/caption COMPLET, gata de filmat/postat (paragrafe scurte, vocabular BUILT), atribuită unui pilon B/U/I/L/T/mix.
+4. Variază unghiurile și pilonii pe parcursul săptămânii. Fără clișee de fitness.
 
-## Format JSON strict (FĂRĂ markdown, FĂRĂ text înainte/după):
+## Format JSON strict (FĂRĂ markdown, FĂRĂ text înainte/după). EXACT ${totalPosts} obiecte în generated_scripts, cu "day" de la 1 la 7 (${cadence} per zi):
 {
   "patterns": {
     "top_hooks": ["hook pattern 1", "hook pattern 2", "hook pattern 3"],
@@ -432,13 +435,7 @@ ${reelsList}
     "common_themes": ["temă recurentă 1", "temă 2", "temă 3"]
   },
   "generated_scripts": [
-    {"day": 1, "hook": "string scurt", "angle": "unghi 1-2 propoziții", "pillar": "B", "estimated_duration_sec": 45},
-    {"day": 2, "hook": "...", "angle": "...", "pillar": "U", "estimated_duration_sec": 45},
-    {"day": 3, "hook": "...", "angle": "...", "pillar": "I", "estimated_duration_sec": 45},
-    {"day": 4, "hook": "...", "angle": "...", "pillar": "L", "estimated_duration_sec": 45},
-    {"day": 5, "hook": "...", "angle": "...", "pillar": "T", "estimated_duration_sec": 45},
-    {"day": 6, "hook": "...", "angle": "...", "pillar": "mix", "estimated_duration_sec": 45},
-    {"day": 7, "hook": "...", "angle": "...", "pillar": "B", "estimated_duration_sec": 45}
+    {"day": 1, "hook": "string scurt", "angle": "unghi 1 propoziție", "script": "scriptul/caption complet, gata de copiat, paragrafe scurte", "pillar": "B", "estimated_duration_sec": 45}
   ],
   "raw_summary": "3-5 propoziții cu insight-ul cheie al săptămânii și ce ar trebui să facă BUILT diferit"
 }`;
@@ -452,9 +449,9 @@ ${reelsList}
     });
     const message = await client.messages.create({
       model: MODELS.deep, // Opus pentru analiză densă
-      max_tokens: 4000,
+      max_tokens: cadence === 2 ? 12000 : 7000,
       system: systemBlocks,
-      messages: [{ role: "user", content: "Generează raportul săptămânal. JSON strict." }],
+      messages: [{ role: "user", content: "Generează planul săptămânal. JSON strict." }],
     });
     const textBlock = message.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns gol." };

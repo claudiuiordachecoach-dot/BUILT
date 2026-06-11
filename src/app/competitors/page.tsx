@@ -3,10 +3,7 @@ import {
   listRecentReels,
   getCurrentWeekReport,
 } from "./actions";
-import { AddCompetitorForm } from "@/components/competitor/AddCompetitorForm";
-import { CompetitorRow } from "@/components/competitor/CompetitorRow";
-import { ReelCard } from "@/components/competitor/ReelCard";
-import { WeeklyReportPanel } from "@/components/competitor/WeeklyReportPanel";
+import { StudioViralTabs } from "@/components/competitor/StudioViralTabs";
 
 export const dynamic = "force-dynamic";
 
@@ -26,128 +23,32 @@ export default async function CompetitorsPage() {
     dbError = e instanceof Error ? e.message : "Eroare DB";
   }
 
-  const activeCount = competitors.filter((c) => c.is_active).length;
-
   return (
     <div className="p-8 max-w-7xl">
       <p className="font-condensed text-xs text-built-red uppercase tracking-wider mb-1">
         Studio Viral · Content Intelligence
       </p>
-      <h1 className="font-display text-5xl tracking-[0.06em] text-built-white mb-3">
+      <h1 className="font-display text-5xl tracking-[0.06em] text-foreground mb-3">
         STUDIO VIRAL
       </h1>
-      <p className="text-built-gray-text mb-8 max-w-2xl">
-        Creatorii din nișa ta, reels-urile lor virale sortate după views, și butonul{" "}
-        <strong className="text-built-white">Remake</strong>: din orice postare care a explodat,
-        AI-ul îți scoate de ce a funcționat + postarea regândită complet în vocea ta, gata de filmat.
+      <p className="text-muted-foreground mb-8 max-w-2xl">
+        Creatorii din nișa ta, conținutul lor viral, planul tău săptămânal și butonul{" "}
+        <strong className="text-foreground">Remake</strong> — totul într-un loc. Din orice postare care
+        a explodat, AI-ul îți scoate de ce a funcționat + postarea regândită în vocea ta.
       </p>
 
-      {dbError && (
-        <div className="bg-built-red/10 border border-built-red text-built-red p-4 rounded-sm mb-6 text-sm">
-          <p className="font-condensed uppercase mb-1">⚠ Tabelele M6 nu sunt încă create.</p>
-          <p className="text-xs text-built-white/80">
-            Rulează{" "}
-            <code className="bg-built-black px-1.5 py-0.5">supabase/m6_competitors.sql</code> în
-            Supabase SQL Editor, apoi reîncarcă pagina.
+      {dbError ? (
+        <div className="bg-built-red/10 border border-built-red text-built-red p-4 rounded-xl text-sm">
+          <p className="font-condensed uppercase mb-1">⚠ Tabelele nu sunt încă create.</p>
+          <p className="text-xs text-foreground/80">
+            Rulează <code className="bg-background px-1.5 py-0.5 rounded">supabase/m6_competitors.sql</code> în
+            Supabase SQL Editor, apoi reîncarcă.
           </p>
-          <p className="text-xs text-built-gray-text mt-1">{dbError}</p>
+          <p className="text-xs text-muted-foreground mt-1">{dbError}</p>
         </div>
+      ) : (
+        <StudioViralTabs competitors={competitors} recentReels={recentReels} report={report} />
       )}
-
-      {/* STATS */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        <Stat label="Competitori activi" value={String(activeCount)} />
-        <Stat
-          label="Reels (7 zile)"
-          value={String(recentReels.length)}
-          sub={recentReels.length === 0 ? "npm run scrape:competitors" : "scrape-uite"}
-        />
-        <Stat
-          label="Total competitori"
-          value={String(competitors.length)}
-          sub={competitors.length === 0 ? "Adaugă primul mai jos" : ""}
-        />
-      </div>
-
-      {/* WEEKLY INTELLIGENCE REPORT */}
-      <WeeklyReportPanel initial={report} />
-
-      {/* ADD COMPETITOR */}
-      <AddCompetitorForm />
-
-      {/* COMPETITORS LIST */}
-      <div className="mb-10">
-        {competitors.length === 0 && !dbError ? (
-          <p className="text-muted-foreground text-sm italic p-6 text-center bg-card/50 border border-dashed border-border rounded-xl">
-            Niciun competitor adăugat încă.
-          </p>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-            {competitors.map((c) => <CompetitorRow key={c.id} c={c} />)}
-          </div>
-        )}
-      </div>
-
-      {/* RECENT REELS */}
-      {recentReels.length > 0 && (
-        <div className="mb-10">
-          <h2 className="font-display text-2xl tracking-wide text-foreground mb-1.5">
-            REELS · ULTIMELE 7 ZILE
-          </h2>
-          <p className="text-[13px] text-muted-foreground mb-6 max-w-2xl">
-            Sortate descrescător după views. Apasă{" "}
-            <strong className="text-foreground">🔥 Remake</strong> pe oricare ca să primești analiza
-            (de ce a mers) + postarea regenerată în vocea BUILT, gata de copiat.
-          </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {recentReels.map((r) => (
-              <ReelCard key={r.id} reel={r} />
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* SCRAPE INSTRUCTIONS */}
-      <div className="p-5 bg-built-gray-1/50 border border-built-gray-2 rounded-sm">
-        <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wider mb-3">
-          Cum se scrape-ează
-        </p>
-        <p className="text-xs text-built-white/80 mb-2">
-          <strong>Local (manual):</strong> rulează{" "}
-          <code className="bg-built-black px-1.5 py-0.5 rounded">npm run scrape:competitors</code>{" "}
-          în terminal din folderul proiectului.
-        </p>
-        <p className="text-xs text-built-white/80">
-          <strong>Automat (după conectare GitHub):</strong>{" "}
-          <code className="bg-built-black px-1.5 py-0.5 rounded">
-            .github/workflows/scrape-competitors.yml
-          </code>{" "}
-          rulează lunea 09:00. Adaugă secrets{" "}
-          <code className="bg-built-black px-1.5 py-0.5 rounded">NEXT_PUBLIC_SUPABASE_URL</code> și{" "}
-          <code className="bg-built-black px-1.5 py-0.5 rounded">SUPABASE_SERVICE_ROLE_KEY</code> în
-          repo → Settings → Secrets.
-        </p>
-      </div>
-    </div>
-  );
-}
-
-function Stat({
-  label,
-  value,
-  sub,
-}: {
-  label: string;
-  value: string;
-  sub?: string;
-}) {
-  return (
-    <div className="bg-card border border-border rounded-xl p-5">
-      <p className="font-condensed text-[10px] text-muted-foreground uppercase tracking-widest mb-1.5">
-        {label}
-      </p>
-      <p className="font-display text-3xl text-foreground tracking-wide">{value}</p>
-      {sub && <p className="text-[10px] text-muted-foreground mt-1">{sub}</p>}
     </div>
   );
 }
