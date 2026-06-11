@@ -1,13 +1,30 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { analyzeReel, type CompetitorReel, type ReelAnalysis } from "@/app/competitors/actions";
+import {
+  analyzeReel,
+  remakeReel,
+  type CompetitorReel,
+  type ReelAnalysis,
+  type RemakeOutput,
+} from "@/app/competitors/actions";
 
 export function ReelCard({ reel }: { reel: CompetitorReel }) {
   const [isPending, startTransition] = useTransition();
   const [analysis, setAnalysis] = useState<ReelAnalysis | null>(reel.ai_analysis);
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [remake, setRemake] = useState<RemakeOutput | null>(reel.remake ?? null);
+  const [remakePending, startRemake] = useTransition();
+
+  function runRemake() {
+    setError(null);
+    startRemake(async () => {
+      const r = await remakeReel(reel.id);
+      if (r.ok) setRemake(r.data);
+      else setError(r.error);
+    });
+  }
 
   function runAnalysis() {
     setError(null);
@@ -70,15 +87,24 @@ export function ReelCard({ reel }: { reel: CompetitorReel }) {
             >
               Deschide pe IG ↗
             </a>
-            {!analysis && (
+            <div className="ml-auto flex gap-2">
+              {!analysis && (
+                <button
+                  onClick={runAnalysis}
+                  disabled={isPending}
+                  className="font-condensed text-[10px] uppercase tracking-wider px-3 py-1 border border-built-gray-2 text-built-white hover:border-built-white disabled:opacity-40"
+                >
+                  {isPending ? "Analizez..." : "Analizează"}
+                </button>
+              )}
               <button
-                onClick={runAnalysis}
-                disabled={isPending}
-                className="font-condensed text-[10px] uppercase tracking-wider px-3 py-1 bg-built-red text-white hover:bg-built-red-dark disabled:opacity-40 ml-auto"
+                onClick={runRemake}
+                disabled={remakePending}
+                className="font-condensed text-[10px] uppercase tracking-wider px-3 py-1 bg-built-red text-white hover:bg-built-red-dark disabled:opacity-40"
               >
-                {isPending ? "Analizez..." : "Analizează"}
+                {remakePending ? "Remake..." : remake ? "Remake din nou" : "🔥 Remake"}
               </button>
-            )}
+            </div>
           </div>
         </div>
       </div>
@@ -118,11 +144,65 @@ export function ReelCard({ reel }: { reel: CompetitorReel }) {
         </div>
       )}
 
+      {remake && (
+        <div className="border-t border-built-red/40 bg-built-black/40 p-4 space-y-4">
+          <p className="font-condensed text-[10px] uppercase tracking-wider text-built-red">
+            🔥 Remake BUILT
+          </p>
+
+          {/* ANALIZA — 4 secțiuni */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <RemakeList title="Viral Elements" items={remake.analysis.viral_elements} />
+            <RemakeList title="Strengths" items={remake.analysis.strengths} />
+            <RemakeList title="Adaptation Tips" items={remake.analysis.adaptation_tips} />
+            <RemakeList title="Risks" items={remake.analysis.risks} />
+          </div>
+
+          {/* POSTAREA REGENERATĂ */}
+          <div className="border-t border-built-gray-2 pt-3">
+            <div className="flex items-center justify-between mb-2">
+              <p className="font-condensed text-[10px] uppercase tracking-wider text-built-gray-text">
+                Postare regenerată · pilon {remake.regenerated.pillar}
+              </p>
+              <button
+                onClick={() =>
+                  navigator.clipboard.writeText(
+                    `${remake.regenerated.hook}\n\n${remake.regenerated.script}`,
+                  )
+                }
+                className="font-condensed text-[10px] uppercase tracking-wider px-2 py-1 border border-built-gray-2 text-built-white hover:border-built-white"
+              >
+                Copiază
+              </button>
+            </div>
+            <p className="text-sm text-built-white font-semibold mb-2">{remake.regenerated.hook}</p>
+            <p className="text-sm text-built-white/90 whitespace-pre-wrap">
+              {remake.regenerated.script}
+            </p>
+          </div>
+        </div>
+      )}
+
       {error && (
         <div className="border-t border-built-red bg-built-red/10 p-3">
           <p className="text-built-red text-xs">⚠ {error}</p>
         </div>
       )}
+    </div>
+  );
+}
+
+function RemakeList({ title, items }: { title: string; items: string[] }) {
+  return (
+    <div>
+      <p className="text-built-gray-text uppercase font-condensed mb-1">{title}</p>
+      <ul className="space-y-0.5">
+        {items.map((it, i) => (
+          <li key={i} className="text-built-white">
+            · {it}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
