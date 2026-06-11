@@ -146,29 +146,48 @@ export function WeeklyReportPanel({ initial }: { initial: WeeklyReport | null })
 
 function PostBlock({ s }: { s: Script }) {
   const [copied, setCopied] = useState(false);
+  const [open, setOpen] = useState(false);
   function copy() {
     navigator.clipboard.writeText(s.script ? `${s.hook}\n\n${s.script}` : `${s.hook}\n\n${s.angle}`);
     setCopied(true);
     setTimeout(() => setCopied(false), 1600);
   }
   return (
-    <div className="rounded-lg bg-background/40 border border-border p-3.5">
-      <div className="flex items-center justify-between mb-2">
-        <span className="font-condensed text-[9px] uppercase tracking-wider px-1.5 py-0.5 bg-built-red/15 text-built-red rounded">
+    <div className="rounded-lg bg-background/40 border border-border p-3">
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <span className="font-condensed text-[9px] uppercase tracking-wider px-1.5 py-0.5 bg-built-red/15 text-built-red rounded shrink-0">
           {s.pillar} · {PILLAR_LABEL[s.pillar] ?? s.pillar}
         </span>
         <button
           onClick={copy}
-          className="font-condensed text-[9px] uppercase tracking-wider px-2 py-1 rounded border border-border text-muted-foreground hover:text-foreground hover:border-white/20 transition-colors"
+          className="font-condensed text-[9px] uppercase tracking-wider px-2 py-1 rounded border border-border text-muted-foreground hover:text-foreground hover:border-white/20 transition-colors shrink-0"
         >
           {copied ? "✓ Copiat" : "Copiază"}
         </button>
       </div>
-      <p className="text-[14px] text-foreground font-semibold leading-snug mb-1.5">{s.hook}</p>
+
+      {/* Hook = clickabil pentru a deschide postarea */}
+      <button onClick={() => setOpen((o) => !o)} className="w-full text-left group">
+        <p className="text-[13px] text-foreground font-semibold leading-snug group-hover:text-built-red transition-colors">
+          {s.hook}
+        </p>
+      </button>
+
+      {open && s.script && (
+        <p className="text-[13px] text-foreground/80 whitespace-pre-wrap leading-relaxed mt-2 pt-2 border-t border-border">
+          {s.script}
+        </p>
+      )}
+
       {s.script ? (
-        <p className="text-[13px] text-foreground/80 whitespace-pre-wrap leading-relaxed">{s.script}</p>
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="font-condensed text-[9px] uppercase tracking-wider text-muted-foreground hover:text-foreground mt-2 transition-colors"
+        >
+          {open ? "Ascunde ↑" : "Vezi postarea ↓"}
+        </button>
       ) : (
-        <p className="text-[13px] text-muted-foreground italic">{s.angle}</p>
+        <p className="text-[12px] text-muted-foreground italic mt-1">{s.angle}</p>
       )}
     </div>
   );
