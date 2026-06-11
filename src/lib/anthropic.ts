@@ -48,6 +48,16 @@ export function getAnthropicClient(): Anthropic {
  * Astfel, prefixul (1+2) rămâne identic între request-uri și se servește din cache
  * la 1/10 din cost.
  */
+/**
+ * Elimină surogații Unicode orfani (emoji rupte la mijloc de `.slice()`),
+ * care fac request-ul body invalid JSON pentru API-ul Anthropic.
+ */
+export function stripLoneSurrogates(s: string): string {
+  return s
+    .replace(/[\uD800-\uDBFF](?![\uDC00-\uDFFF])/g, "")
+    .replace(/(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/g, "");
+}
+
 export function buildSystemBlocks(opts: {
   creierJson?: string;
   unifiedContext?: string;
@@ -59,11 +69,11 @@ export function buildSystemBlocks(opts: {
 
   const blocks: Anthropic.TextBlockParam[] = [
     { type: "text", text: BUILT_IDENTITY_PROMPT },
-    { type: "text", text: contextText, cache_control: { type: "ephemeral" } },
+    { type: "text", text: stripLoneSurrogates(contextText), cache_control: { type: "ephemeral" } },
   ];
 
   if (opts.taskContext) {
-    blocks.push({ type: "text", text: opts.taskContext });
+    blocks.push({ type: "text", text: stripLoneSurrogates(opts.taskContext) });
   }
 
   return blocks;

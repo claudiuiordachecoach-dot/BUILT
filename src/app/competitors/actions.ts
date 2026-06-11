@@ -45,6 +45,12 @@ export interface ReelAnalysis {
   built_adaptation: string;
 }
 
+export interface RegeneratedPost {
+  hook: string;               // hook-ul regenerat
+  script: string;             // scriptul/caption-ul complet, vocea BUILT
+  pillar: "B" | "U" | "I" | "L" | "T" | "mix";
+}
+
 export interface RemakeOutput {
   analysis: {
     viral_elements: string[];   // ce a oprit scrollul
@@ -52,11 +58,8 @@ export interface RemakeOutput {
     adaptation_tips: string[];  // cum o adaptezi la tine
     risks: string[];            // ce să NU copiezi orbește
   };
-  regenerated: {
-    hook: string;               // hook-ul regenerat
-    script: string;             // scriptul/caption-ul complet, vocea BUILT
-    pillar: "B" | "U" | "I" | "L" | "T" | "mix";
-  };
+  regenerated: RegeneratedPost;
+  variations?: RegeneratedPost[]; // postări adiționale în aceeași direcție
 }
 
 export interface WeeklyReportData {
@@ -69,6 +72,7 @@ export interface WeeklyReportData {
     day: number;
     hook: string;
     angle: string;
+    script: string;
     pillar: "B" | "U" | "I" | "L" | "T" | "mix";
     estimated_duration_sec: number;
   }>;
@@ -86,6 +90,19 @@ export interface WeeklyReport extends WeeklyReportData {
 }
 
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
+
+export interface MyPost {
+  id: number;
+  caption: string | null;
+  views: number | null;
+  format_type: string | null;
+}
+
+export interface PostScore {
+  score: number;             // 1–100
+  why_worked: string;        // de ce a performat
+  repeatable_pattern: string; // ce pattern poți repeta
+}
 
 export interface CompetitorBrief {
   positioning: string;
@@ -375,11 +392,12 @@ export async function getCurrentWeekReport(): Promise<WeeklyReport | null> {
   } as WeeklyReport;
 }
 
-export async function generateWeeklyReport(): Promise<Result<WeeklyReport>> {
+export async function generateWeeklyReport(cadence: 1 | 2 = 1): Promise<Result<WeeklyReport>> {
   const sb = getSupabaseServer();
   const weekStart = getWeekStart();
   const weekEnd = new Date(weekStart);
   weekEnd.setUTCDate(weekStart.getUTCDate() + 6);
+  const totalPosts = 7 * cadence;
 
   // ia toate reels-urile din ultimele 7 zile
   const since = new Date(Date.now() - 7 * 86400_000).toISOString();
@@ -409,22 +427,23 @@ Transcript: "${(r.transcript ?? "").slice(0, 1200)}"`;
     })
     .join("\n\n");
 
-  const task = `# TASK: Weekly Intelligence Report — analiză competitori + 7 scripturi BUILT
+  const task = `# TASK: Planul tău de conținut — analiză competitori + ${totalPosts} postări BUILT gata de publicat
 
 ## Date analizate
 - Săptămâna: ${weekStart.toISOString().slice(0, 10)} — ${weekEnd.toISOString().slice(0, 10)}
 - ${reels.length} reels din ${competitorsCount ?? "?"} competitori
+- Cadență: ${cadence} ${cadence === 1 ? "postare" : "postări"} pe zi → ${totalPosts} postări (Luni–Duminică)
 
 ## Reels-urile (sortate desc după views)
 ${reelsList}
 
 ## Misiunea ta
-1. Identifică pattern-urile reale: ce hook-uri funcționează, ce formate domină, ce teme se repetă
-2. Generează 7 scripturi pentru săptămâna viitoare (Luni–Duminică) — nu copia, ADAPTEAZĂ în vocea BUILT
-3. Fiecare script are unghi diferit, atribuit pilonilor B/U/I/L/T/mix conform metodei BUILT
-4. Hook-uri scurte, contraintuitive, fără clișee fitness
+1. Identifică pattern-urile reale: ce hook-uri funcționează, ce formate domină, ce teme se repetă.
+2. Generează EXACT ${totalPosts} postări pentru săptămâna viitoare, distribuite ${cadence} pe zi (zilele 1–7). NU copia — ADAPTEAZĂ în vocea BUILT, pe baza Creierului.
+3. Fiecare postare: hook scurt contraintuitiv + un script/caption COMPLET, gata de filmat/postat (paragrafe scurte, vocabular BUILT), atribuită unui pilon B/U/I/L/T/mix.
+4. Variază unghiurile și pilonii pe parcursul săptămânii. Fără clișee de fitness.
 
-## Format JSON strict (FĂRĂ markdown, FĂRĂ text înainte/după):
+## Format JSON strict (FĂRĂ markdown, FĂRĂ text înainte/după). EXACT ${totalPosts} obiecte în generated_scripts, cu "day" de la 1 la 7 (${cadence} per zi):
 {
   "patterns": {
     "top_hooks": ["hook pattern 1", "hook pattern 2", "hook pattern 3"],
@@ -432,13 +451,7 @@ ${reelsList}
     "common_themes": ["temă recurentă 1", "temă 2", "temă 3"]
   },
   "generated_scripts": [
-    {"day": 1, "hook": "string scurt", "angle": "unghi 1-2 propoziții", "pillar": "B", "estimated_duration_sec": 45},
-    {"day": 2, "hook": "...", "angle": "...", "pillar": "U", "estimated_duration_sec": 45},
-    {"day": 3, "hook": "...", "angle": "...", "pillar": "I", "estimated_duration_sec": 45},
-    {"day": 4, "hook": "...", "angle": "...", "pillar": "L", "estimated_duration_sec": 45},
-    {"day": 5, "hook": "...", "angle": "...", "pillar": "T", "estimated_duration_sec": 45},
-    {"day": 6, "hook": "...", "angle": "...", "pillar": "mix", "estimated_duration_sec": 45},
-    {"day": 7, "hook": "...", "angle": "...", "pillar": "B", "estimated_duration_sec": 45}
+    {"day": 1, "hook": "string scurt", "angle": "unghi 1 propoziție", "script": "scriptul/caption complet, gata de copiat, paragrafe scurte", "pillar": "B", "estimated_duration_sec": 45}
   ],
   "raw_summary": "3-5 propoziții cu insight-ul cheie al săptămânii și ce ar trebui să facă BUILT diferit"
 }`;
@@ -452,9 +465,9 @@ ${reelsList}
     });
     const message = await client.messages.create({
       model: MODELS.deep, // Opus pentru analiză densă
-      max_tokens: 4000,
+      max_tokens: cadence === 2 ? 12000 : 7000,
       system: systemBlocks,
-      messages: [{ role: "user", content: "Generează raportul săptămânal. JSON strict." }],
+      messages: [{ role: "user", content: "Generează planul săptămânal. JSON strict." }],
     });
     const textBlock = message.content.find((b) => b.type === "text");
     if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns gol." };
@@ -562,6 +575,144 @@ export async function remakeReel(reelId: number): Promise<Result<RemakeOutput>> 
     await sb.from("competitor_reels").update({ remake }).eq("id", reelId);
     revalidatePath("/competitors");
     return { ok: true, data: remake };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// AI: Remake → deschide direcție (mai multe postări în aceeași direcție)
+// ════════════════════════════════════════════════════════════════════
+
+export async function remakeVariations(
+  reelId: number,
+  count = 3,
+): Promise<Result<RegeneratedPost[]>> {
+  const sb = getSupabaseServer();
+  const { data: reel, error } = await sb
+    .from("competitor_reels")
+    .select("*, competitors(handle)")
+    .eq("id", reelId)
+    .single();
+  if (error || !reel) return { ok: false, error: error?.message ?? "Reel inexistent." };
+
+  const existing = (reel.remake as RemakeOutput | null) ?? null;
+  const directionCtx = existing
+    ? `## Direcția deja stabilită (din analiza Remake)
+Viral elements: ${existing.analysis.viral_elements.join("; ")}
+Adaptation tips: ${existing.analysis.adaptation_tips.join("; ")}
+Postarea de bază: "${existing.regenerated.hook}"`
+    : "";
+
+  const task = `# TASK: ${count} postări BUILT noi în aceeași direcție virală
+
+## Reel viral (sursă)
+- Caption: "${(reel.caption ?? "").slice(0, 800)}"
+- Views: ${reel.views ?? "?"}
+${directionCtx}
+
+## Misiunea ta
+Generează ${count} postări DISTINCTE în aceeași direcție, fiecare cu alt unghi și alt pilon. Vocea BUILT, pe baza Creierului. Fără clișee de fitness. Fiecare gata de copiat.
+
+## JSON strict (FĂRĂ markdown, FĂRĂ text înainte/după):
+{"posts":[{"hook":"hook scurt","script":"caption complet, paragrafe scurte","pillar":"B"}]}`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({
+      creierJson: JSON.stringify(creier, null, 2),
+      taskContext: task,
+    });
+    const message = await client.messages.create({
+      model: MODELS.deep,
+      max_tokens: 5000,
+      system: systemBlocks,
+      messages: [{ role: "user", content: `Generează ${count} postări. JSON strict.` }],
+    });
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns gol." };
+    const t = textBlock.text.trim();
+    const a = t.indexOf("{");
+    const b = t.lastIndexOf("}");
+    if (a === -1 || b <= a) return { ok: false, error: "JSON invalid." };
+    const parsed = JSON.parse(t.slice(a, b + 1)) as { posts: RegeneratedPost[] };
+    const newPosts = parsed.posts ?? [];
+
+    if (existing) {
+      const updated: RemakeOutput = {
+        ...existing,
+        variations: [...(existing.variations ?? []), ...newPosts],
+      };
+      await sb.from("competitor_reels").update({ remake: updated }).eq("id", reelId);
+    }
+    revalidatePath("/competitors");
+    return { ok: true, data: newPosts };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Postările MELE — listă + scorare (ce a performat la mine + de ce)
+// ════════════════════════════════════════════════════════════════════
+
+export async function listMyTopPosts(limit = 12): Promise<MyPost[]> {
+  const sb = getSupabaseServer();
+  const { data, error } = await sb
+    .from("instagram_media")
+    .select("id, caption, views, format_type")
+    .order("views", { ascending: false, nullsFirst: false })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as MyPost[];
+}
+
+export async function scoreMyPost(postId: number): Promise<Result<PostScore>> {
+  const sb = getSupabaseServer();
+  const { data: post, error } = await sb
+    .from("instagram_media")
+    .select("caption, views, format_type")
+    .eq("id", postId)
+    .single();
+  if (error || !post) return { ok: false, error: error?.message ?? "Postare inexistentă." };
+
+  const task = `# TASK: Scorează postarea MEA și explică de ce a performat (sau nu)
+
+## Postarea
+- Format: ${post.format_type ?? "?"} · Views: ${post.views ?? "?"}
+- Caption: "${(post.caption ?? "").slice(0, 1000)}"
+
+## Misiunea ta
+Raportat la audiența BUILT și la ce face conținutul să prindă, scorează postarea de la 1 la 100 și spune CONCRET de ce a mers (sau nu) + ce pattern fix poate repeta Claudiu. Mecanistic, nu generic. JSON strict:
+
+{
+  "score": 0,
+  "why_worked": "2-3 propoziții concrete despre ce a făcut postarea să performeze",
+  "repeatable_pattern": "1 pattern clar, executabil, pe care Claudiu îl poate repeta"
+}`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({
+      creierJson: JSON.stringify(creier, null, 2),
+      taskContext: task,
+    });
+    const message = await client.messages.create({
+      model: MODELS.routine,
+      max_tokens: 700,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Scorează postarea. JSON strict." }],
+    });
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns gol." };
+    const t = textBlock.text.trim();
+    const a = t.indexOf("{");
+    const b = t.lastIndexOf("}");
+    if (a === -1 || b <= a) return { ok: false, error: "JSON invalid." };
+    const score = JSON.parse(t.slice(a, b + 1)) as PostScore;
+    return { ok: true, data: score };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
   }
