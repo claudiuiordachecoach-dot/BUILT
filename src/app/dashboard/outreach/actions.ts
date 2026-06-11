@@ -1,6 +1,87 @@
 "use server";
-import { getAnthropicClient, MODELS } from "@/lib/anthropic";
+import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
+import { readCreierFromSupabase } from "@/lib/creier";
 import { getSupabaseServer } from "@/lib/supabase/server";
+
+// ════════════════════════════════════════════════════════════════════
+// DM CO-PILOT — pe playbook-ul BUILT DM-to-Client (4 faze)
+// ════════════════════════════════════════════════════════════════════
+
+export interface DmCopilotResult {
+  phase: string;      // faza detectată în funnel
+  signal: string;     // lumină verde / steag roșu / semnal de alarmă / ok
+  reply: string;      // mesajul de trimis
+  next_step: string;  // ce urmărești cu mesajul ăsta
+}
+
+const DM_PLAYBOOK = `# PLAYBOOK BUILT DM-to-Client (4 faze) — urmează-l EXACT
+Filosofie: DM = instrument de DIAGNOSTIC, nu de vânzare. Nu vinzi — califici. Nu convingi — diagnostichezi.
+
+## FAZA 2 — DESCHIDEREA
+Scop: să se simtă om, nu lead. Fără pitch.
+Reguli: folosește numele dacă există · referință specifică (comentariu/story/resursă) · TERMINĂ MEREU cu o întrebare · scurt (3-4 rânduri) · ZERO link de plată · ZERO ziduri de text.
+Când răspunde: acceptă ce spune → sapă mai adânc → treci la Faza 3.
+
+## FAZA 3 — DESCOPERIREA (inima — aici se câștigă apelul)
+A) Situația curentă: 2-3 întrebări (rutină, alimentație, antrenament, cea mai mare piedică, ce a încercat, de ce n-a mers). Nu interoga.
+   Semnale de alarmă: "am încercat tot" → nevoie de SISTEM, nu trucuri · "mănânc o salată pe zi / sunt epuizat" → metabolism prăbușit, reconstrucție nu restricție · "nu știu ce greșesc" → nevoie de ochi de expert.
+B) Situația dorită (întrebarea magică): "Dacă dăm pe repede-înainte 6 luni și totul merge fix cum vrei — cum arată corpul tău, câte kg, cum te simți?" + follow-up "de ce e important ACUM?" / "cum ți-ar schimba energia la birou/cu copiii?".
+C) Decalajul: reflectă curent vs dorit CU CUVINTELE LUI + "Ce crezi tu că stă între tine și rezultatul ăsta acum?". Îl forțează să spună "nu știu cum" → te invită ca expert.
+Calificare: VERDE (vrea ACUM + problema o rezolvi tu + minte deschisă) → programezi. ROȘU (caută trucuri/pastile · vrea garanții înainte să vorbească · defensiv) → NU intri în apel.
+
+## FAZA 4 — PUNTEA (invitația la apel)
+NICIODATĂ preț pe chat. Inviți la apel 15-20 min: "Pe baza la tot ce mi-ai zis, chiar cred că te pot ajuta. Ai 15-20 min săptămâna asta pentru un scurt apel? Îți arăt exact cum ar arăta sistemul pe situația ta."
+Obiecții: DA → "Ce zi: Joi sau Vineri? Dimineața sau seara?" (2 opțiuni), apoi link Calendly · "mă mai gândesc" → "Normal. Ce anume vrei să analizezi — momentul, timpul de alocat, altceva?" · "nu-s pregătit" → "Zero presiune. Cum arată 'pregătit' pentru tine? Ce ar trebui să se schimbe?" · "vreau fără apel" → confirmă + pachet scurt + link.
+
+## FOLLOW-UP: o singură re-invitație (ziua 21): "Știu că nu era timing-ul atunci. Mi s-au eliberat câteva locuri și m-am gândit la tine. Mai e [obiectivul] activ?"
+
+## Voce: română, direct, matur, structural. Empatic cu situația, tăios cu scuzele. Fără clișee de fitness. Maxim 3-4 propoziții per mesaj.`;
+
+export async function dmCopilot(opts: {
+  conversation: string;
+  extraContext?: string;
+}): Promise<{ ok: true; data: DmCopilotResult } | { ok: false; error: string }> {
+  if (!opts.conversation.trim()) return { ok: false, error: "Lipește conversația." };
+
+  const task = `${DM_PLAYBOOK}
+
+## CONVERSAȚIA DE PÂNĂ ACUM (prospect ↔ tu)
+${opts.conversation.slice(0, 4000)}
+${opts.extraContext ? `\n## CONTEXT EXTRA: ${opts.extraContext}` : ""}
+
+## CE FACI ACUM
+1. Detectează în ce FAZĂ e conversația (Deschidere / Descoperire-Situație / Descoperire-Dorință / Descoperire-Decalaj / Punte / Obiecție / Follow-up).
+2. Scrie URMĂTORUL mesaj de trimis, EXACT pe playbook, în vocea BUILT.
+3. Dă un SEMNAL: lumină verde / steag roșu / semnal de alarmă relevant (din playbook), sau "ok, continuă".
+4. Spune pe scurt CE URMĂREȘTI cu mesajul ăsta.
+
+JSON strict (FĂRĂ markdown, FĂRĂ text înainte/după):
+{"phase":"...","signal":"...","reply":"mesajul de trimis","next_step":"..."}`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({
+      creierJson: JSON.stringify(creier, null, 2),
+      taskContext: task,
+    });
+    const message = await client.messages.create({
+      model: MODELS.deep,
+      max_tokens: 1200,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Generează pasul de DM. JSON strict." }],
+    });
+    const tb = message.content.find((b) => b.type === "text");
+    if (!tb || tb.type !== "text") return { ok: false, error: "Răspuns gol." };
+    const t = tb.text.trim();
+    const a = t.indexOf("{");
+    const b = t.lastIndexOf("}");
+    if (a === -1 || b <= a) return { ok: false, error: "JSON invalid." };
+    return { ok: true, data: JSON.parse(t.slice(a, b + 1)) as DmCopilotResult };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
+}
 
 const STAGE_CONTEXT: Record<string, string> = {
   "initial_contact": "Este primul contact. Nu vinde nimic. Pune o singură întrebare care forțează verbalizarea durerii.",

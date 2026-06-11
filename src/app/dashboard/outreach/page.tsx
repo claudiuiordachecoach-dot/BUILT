@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react";
 import {
-  generateDmReply,
+  dmCopilot,
   saveDmTemplate,
   calculateLeadScore,
   saveDmLog,
   listDmLogs,
   listDmTemplates,
   type DmLog,
+  type DmCopilotResult,
 } from "./actions";
 
 interface DailyEntry {
@@ -54,11 +55,11 @@ export default function OutreachPage() {
     outcome: "neutral" as "positive" | "neutral" | "negative",
     notes: "",
   });
-  // AI Reply Generator state
-  const [theirMessage, setTheirMessage] = useState("");
-  const [stage, setStage] = useState(STAGES[0].value);
+  // DM Co-pilot state
+  const [conversation, setConversation] = useState("");
   const [context, setContext] = useState("");
-  const [generatedReply, setGeneratedReply] = useState("");
+  const [copilot, setCopilot] = useState<DmCopilotResult | null>(null);
+  const [copilotError, setCopilotError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
   const [copiedReply, setCopiedReply] = useState(false);
 
@@ -99,28 +100,30 @@ export default function OutreachPage() {
     }`;
 
   const handleGenerate = async () => {
-    if (!theirMessage.trim()) return;
+    if (!conversation.trim()) return;
     setGenerating(true);
-    const result = await generateDmReply({ theirMessage, stage, extraContext: context });
-    setGeneratedReply(result);
+    setCopilotError(null);
+    const result = await dmCopilot({ conversation, extraContext: context });
+    if (result.ok) setCopilot(result.data);
+    else setCopilotError(result.error);
     setGenerating(false);
   };
 
   const handleCopyReply = () => {
-    navigator.clipboard.writeText(generatedReply);
+    if (!copilot) return;
+    navigator.clipboard.writeText(copilot.reply);
     setCopiedReply(true);
     setTimeout(() => setCopiedReply(false), 2000);
   };
 
   const handleSaveAsTemplate = async () => {
-    if (!generatedReply.trim()) return;
+    if (!copilot?.reply.trim()) return;
     const name = window.prompt("Numele template-ului:");
     if (!name?.trim()) return;
-    await saveDmTemplate(name.trim(), generatedReply);
-    const stageLabel = STAGES.find((s) => s.value === stage)?.label ?? stage;
+    await saveDmTemplate(name.trim(), copilot.reply);
     setTemplates((prev) => [
       ...prev,
-      { id: Date.now(), name: name.trim(), stage: stageLabel, content: generatedReply },
+      { id: Date.now(), name: name.trim(), stage: copilot.phase, content: copilot.reply },
     ]);
   };
 
@@ -199,7 +202,7 @@ export default function OutreachPage() {
           Template-uri
         </button>
         <button className={TAB_STYLE("generator")} onClick={() => setActiveTab("generator")}>
-          Generator Răspuns AI
+          Co-pilot DM
         </button>
       </div>
 
@@ -353,72 +356,83 @@ export default function OutreachPage() {
         </div>
       )}
 
-      {/* Tab: AI Reply Generator */}
+      {/* Tab: DM Co-pilot */}
       {activeTab === "generator" && (
         <div className="space-y-5">
           <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5 space-y-4">
-            <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">
-              GENERATE A REPLY
-            </p>
+            <div>
+              <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">
+                CO-PILOT DM · pe playbook-ul BUILT
+              </p>
+              <p className="text-[12px] text-zinc-500">
+                Lipește conversația de până acum. AI-ul detectează faza din funnel și-ți dă următorul mesaj, semnalul și ce urmărești.
+              </p>
+            </div>
 
             <div>
-              <label className="text-[11px] text-zinc-400 block mb-2">Mesajul lor</label>
+              <label className="text-[11px] text-zinc-400 block mb-2">Conversația (prospect ↔ tu)</label>
               <textarea
-                value={theirMessage}
-                onChange={(e) => setTheirMessage(e.target.value)}
-                placeholder="Lipește mesajul primit în DM..."
-                rows={5}
-                className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-3 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600 resize-none"
+                value={conversation}
+                onChange={(e) => setConversation(e.target.value)}
+                placeholder={"Lipește tot schimbul de mesaje. Ex:\nEl: Am comentat PLATOU\nTu: Salut! Ce te-a făcut să comentezi azi?\nEl: Sunt blocat la 95kg de luni bune..."}
+                rows={9}
+                className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-3 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600 resize-none whitespace-pre-line"
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-[11px] text-zinc-400 block mb-2">Etapa conversației</label>
-                <select
-                  value={stage}
-                  onChange={(e) => setStage(e.target.value)}
-                  className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-2.5 rounded-lg focus:outline-none focus:border-built-red/40"
-                >
-                  {STAGES.map((s) => (
-                    <option key={s.value} value={s.value}>{s.label}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label className="text-[11px] text-zinc-400 block mb-2">Context extra (opțional)</label>
-                <input
-                  value={context}
-                  onChange={(e) => setContext(e.target.value)}
-                  placeholder="ex. a comentat pe reel-ul despre cortizol"
-                  className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-2.5 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600"
-                />
-              </div>
+            <div>
+              <label className="text-[11px] text-zinc-400 block mb-2">Context extra (opțional)</label>
+              <input
+                value={context}
+                onChange={(e) => setContext(e.target.value)}
+                placeholder="ex. a descărcat ghidul de resetare metabolică"
+                className="w-full bg-[#0a0a0a] border border-white/[0.08] text-zinc-200 text-[13px] px-4 py-2.5 rounded-lg focus:outline-none focus:border-built-red/40 placeholder:text-zinc-600"
+              />
             </div>
 
             <button
               onClick={handleGenerate}
-              disabled={generating || !theirMessage.trim()}
+              disabled={generating || !conversation.trim()}
               className="w-full bg-built-red text-white py-3 rounded-lg text-[13px] font-medium hover:bg-built-red/90 transition-colors disabled:opacity-40"
             >
-              {generating ? "Generează..." : "✦ Generează Răspuns"}
+              {generating ? "Analizez conversația..." : "✦ Dă-mi următorul mesaj"}
             </button>
           </div>
 
-          {generatedReply && (
-            <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5 space-y-3">
-              <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono">
-                RĂSPUNS GENERAT
-              </p>
-              <p className="text-zinc-200 text-[13px] leading-relaxed whitespace-pre-line">
-                {generatedReply}
-              </p>
+          {copilotError && (
+            <div className="bg-built-red/10 border border-built-red/40 rounded-xl p-4">
+              <p className="text-built-red text-[13px]">⚠ {copilotError}</p>
+            </div>
+          )}
+
+          {copilot && (
+            <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5 space-y-4">
+              {/* Faza + semnal */}
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-[10px] uppercase tracking-widest font-mono px-2 py-1 rounded bg-built-red/15 text-built-red">
+                  Faza: {copilot.phase}
+                </span>
+                <span className="text-[12px] text-amber-400/90">✦ {copilot.signal}</span>
+              </div>
+
+              {/* Răspunsul */}
+              <div>
+                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-2">Mesajul de trimis</p>
+                <p className="text-zinc-100 text-[14px] leading-relaxed whitespace-pre-line">{copilot.reply}</p>
+              </div>
+
+              {/* Ce urmărești */}
+              <div className="pt-3 border-t border-white/[0.06]">
+                <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-1">Ce urmărești</p>
+                <p className="text-[12px] text-zinc-400">{copilot.next_step}</p>
+              </div>
+
               <div className="flex gap-2 pt-2 border-t border-white/[0.06]">
                 <button
                   onClick={handleCopyReply}
-                  className="text-[12px] text-zinc-400 border border-white/10 px-3 py-1.5 rounded-lg hover:bg-white/5 transition-colors"
+                  className="text-[12px] text-zinc-300 bg-built-red/15 border border-built-red/30 px-3 py-1.5 rounded-lg hover:bg-built-red/25 transition-colors"
                 >
-                  {copiedReply ? "Copiat!" : "Copiază"}
+                  {copiedReply ? "Copiat!" : "Copiază mesajul"}
                 </button>
                 <button
                   onClick={handleSaveAsTemplate}
