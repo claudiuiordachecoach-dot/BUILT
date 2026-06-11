@@ -5,18 +5,21 @@ import { AddCompetitorForm } from "./AddCompetitorForm";
 import { CompetitorRow } from "./CompetitorRow";
 import { ReelCard } from "./ReelCard";
 import { WeeklyReportPanel } from "./WeeklyReportPanel";
-import type { Competitor, CompetitorReel, WeeklyReport } from "@/app/competitors/actions";
+import { MyPostsPanel } from "./MyPostsPanel";
+import type { Competitor, CompetitorReel, WeeklyReport, MyPost } from "@/app/competitors/actions";
 
-type TabId = "feed" | "plan" | "creatori";
+type TabId = "feed" | "plan" | "mele" | "creatori";
 
 export function StudioViralTabs({
   competitors,
   recentReels,
   report,
+  myPosts,
 }: {
   competitors: Competitor[];
   recentReels: CompetitorReel[];
   report: WeeklyReport | null;
+  myPosts: MyPost[];
 }) {
   const [tab, setTab] = useState<TabId>("feed");
   const activeCount = competitors.filter((c) => c.is_active).length;
@@ -24,6 +27,7 @@ export function StudioViralTabs({
   const TABS: { id: TabId; label: string; count?: number }[] = [
     { id: "feed", label: "Feed Viral", count: recentReels.length || undefined },
     { id: "plan", label: "Plan Săptămânal" },
+    { id: "mele", label: "Postările Mele", count: myPosts.length || undefined },
     { id: "creatori", label: "Creatori", count: competitors.length || undefined },
   ];
 
@@ -75,6 +79,9 @@ export function StudioViralTabs({
 
       {/* PLAN SĂPTĂMÂNAL */}
       {tab === "plan" && <WeeklyReportPanel initial={report} />}
+
+      {/* POSTĂRILE MELE */}
+      {tab === "mele" && <MyPostsPanel posts={myPosts} />}
 
       {/* CREATORI */}
       {tab === "creatori" && (

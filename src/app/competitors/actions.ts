@@ -91,6 +91,19 @@ export interface WeeklyReport extends WeeklyReportData {
 
 type Result<T> = { ok: true; data: T } | { ok: false; error: string };
 
+export interface MyPost {
+  id: number;
+  caption: string | null;
+  views: number | null;
+  format_type: string | null;
+}
+
+export interface PostScore {
+  score: number;             // 1–100
+  why_worked: string;        // de ce a performat
+  repeatable_pattern: string; // ce pattern poți repeta
+}
+
 export interface CompetitorBrief {
   positioning: string;
   target_audience: string;
@@ -635,6 +648,71 @@ Generează ${count} postări DISTINCTE în aceeași direcție, fiecare cu alt un
     }
     revalidatePath("/competitors");
     return { ok: true, data: newPosts };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
+}
+
+// ════════════════════════════════════════════════════════════════════
+// Postările MELE — listă + scorare (ce a performat la mine + de ce)
+// ════════════════════════════════════════════════════════════════════
+
+export async function listMyTopPosts(limit = 12): Promise<MyPost[]> {
+  const sb = getSupabaseServer();
+  const { data, error } = await sb
+    .from("instagram_media")
+    .select("id, caption, views, format_type")
+    .order("views", { ascending: false, nullsFirst: false })
+    .limit(limit);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as MyPost[];
+}
+
+export async function scoreMyPost(postId: number): Promise<Result<PostScore>> {
+  const sb = getSupabaseServer();
+  const { data: post, error } = await sb
+    .from("instagram_media")
+    .select("caption, views, format_type")
+    .eq("id", postId)
+    .single();
+  if (error || !post) return { ok: false, error: error?.message ?? "Postare inexistentă." };
+
+  const task = `# TASK: Scorează postarea MEA și explică de ce a performat (sau nu)
+
+## Postarea
+- Format: ${post.format_type ?? "?"} · Views: ${post.views ?? "?"}
+- Caption: "${(post.caption ?? "").slice(0, 1000)}"
+
+## Misiunea ta
+Raportat la audiența BUILT și la ce face conținutul să prindă, scorează postarea de la 1 la 100 și spune CONCRET de ce a mers (sau nu) + ce pattern fix poate repeta Claudiu. Mecanistic, nu generic. JSON strict:
+
+{
+  "score": 0,
+  "why_worked": "2-3 propoziții concrete despre ce a făcut postarea să performeze",
+  "repeatable_pattern": "1 pattern clar, executabil, pe care Claudiu îl poate repeta"
+}`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const client = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({
+      creierJson: JSON.stringify(creier, null, 2),
+      taskContext: task,
+    });
+    const message = await client.messages.create({
+      model: MODELS.routine,
+      max_tokens: 700,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Scorează postarea. JSON strict." }],
+    });
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") return { ok: false, error: "Răspuns gol." };
+    const t = textBlock.text.trim();
+    const a = t.indexOf("{");
+    const b = t.lastIndexOf("}");
+    if (a === -1 || b <= a) return { ok: false, error: "JSON invalid." };
+    const score = JSON.parse(t.slice(a, b + 1)) as PostScore;
+    return { ok: true, data: score };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
   }

@@ -2,6 +2,7 @@ import {
   listCompetitors,
   listRecentReels,
   getCurrentWeekReport,
+  listMyTopPosts,
 } from "./actions";
 import { StudioViralTabs } from "@/components/competitor/StudioViralTabs";
 
@@ -11,13 +12,15 @@ export default async function CompetitorsPage() {
   let competitors: Awaited<ReturnType<typeof listCompetitors>> = [];
   let recentReels: Awaited<ReturnType<typeof listRecentReels>> = [];
   let report: Awaited<ReturnType<typeof getCurrentWeekReport>> = null;
+  let myPosts: Awaited<ReturnType<typeof listMyTopPosts>> = [];
   let dbError: string | null = null;
 
   try {
-    [competitors, recentReels, report] = await Promise.all([
+    [competitors, recentReels, report, myPosts] = await Promise.all([
       listCompetitors(),
       listRecentReels(7, 30),
       getCurrentWeekReport(),
+      listMyTopPosts(12),
     ]);
   } catch (e) {
     dbError = e instanceof Error ? e.message : "Eroare DB";
@@ -47,7 +50,7 @@ export default async function CompetitorsPage() {
           <p className="text-xs text-muted-foreground mt-1">{dbError}</p>
         </div>
       ) : (
-        <StudioViralTabs competitors={competitors} recentReels={recentReels} report={report} />
+        <StudioViralTabs competitors={competitors} recentReels={recentReels} report={report} myPosts={myPosts} />
       )}
     </div>
   );
