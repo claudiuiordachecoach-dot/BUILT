@@ -2,7 +2,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
-import { scrapeInstagramReels, scrapeReelComments, type ApifyComment } from "@/lib/apify";
+import { type ApifyComment } from "@/lib/apify";
 import { getAnthropicClient, buildSystemBlocks, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 
@@ -28,61 +28,9 @@ export async function removeCompetitor(id: number) {
   await supabase.from("competitors").delete().eq("id", id);
 }
 
-export async function scrapeCompetitors() {
-  const supabase = getSupabaseServer();
-  const { data: competitors } = await supabase.from("competitors").select("handle");
-  if (!competitors?.length) return { scraped: 0 };
-
-  const { transcribeVideoUrl } = await import("@/lib/assemblyai");
-
-  let total = 0;
-  for (const comp of competitors) {
-    try {
-      const reels = await scrapeInstagramReels(comp.handle, 10);
-
-      // Sortează după views și ia top 3 pentru comentarii
-      const sorted = [...reels].sort((a, b) => b.viewsCount - a.viewsCount);
-      const topReelUrls = new Set(sorted.slice(0, 3).map(r => r.url));
-
-      for (const reel of reels) {
-        let transcript: string | null = null;
-        if (reel.videoUrl) {
-          try {
-            transcript = await transcribeVideoUrl(reel.videoUrl);
-          } catch {
-            transcript = null;
-          }
-        }
-
-        // Comentarii doar pentru top 3 reeluri (economie de API calls)
-        let comments: ApifyComment[] = [];
-        if (topReelUrls.has(reel.url) && reel.url) {
-          try {
-            comments = await scrapeReelComments(reel.url, 30);
-          } catch {
-            comments = [];
-          }
-        }
-
-        await supabase.from("competitor_reels").upsert({
-          competitor_handle: comp.handle,
-          instagram_id: reel.id,
-          thumbnail_url: reel.thumbnailUrl,
-          caption: reel.caption,
-          views: reel.viewsCount,
-          likes: reel.likesCount,
-          posted_at: reel.timestamp,
-          transcript,
-          comments,
-        }, { onConflict: "instagram_id" });
-      }
-      total += reels.length;
-    } catch (e) {
-      console.error(`Failed scraping ${comp.handle}:`, e);
-    }
-  }
-  return { scraped: total };
-}
+// NOTĂ: `scrapeCompetitors` (scraper TS) a fost retras — scria într-o schemă
+// greșită și eșua silențios. Sursa unică de scraping este scriptul Python
+// `scripts/scrape_competitors.py` (rulat via GitHub Actions / `npm run scrape:competitors`).
 
 export async function listWeeklyPackages(): Promise<{ id: number; week_of: string; created_at: string }[]> {
   try {

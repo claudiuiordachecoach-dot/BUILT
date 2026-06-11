@@ -317,16 +317,30 @@ export async function getClientMessages(clientId: number) {
 export async function linkAuthToClient(): Promise<void> {
   const supabase = await getSupabaseAuth();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return;
-
-  const clientId = user.user_metadata?.client_id as number | undefined;
-  if (!clientId) return;
+  if (!user || !user.email) return;
 
   const adminClient = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!,
     { auth: { autoRefreshToken: false, persistSession: false } }
   );
+
+  let clientId = user.user_metadata?.client_id as number | undefined;
+  
+  if (!clientId) {
+    // Fallback: caută clientul după email
+    const { data: clientByEmail } = await adminClient
+      .from("clients")
+      .select("id")
+      .eq("email", user.email)
+      .single();
+      
+    if (clientByEmail) {
+      clientId = clientByEmail.id;
+    }
+  }
+
+  if (!clientId) return;
 
   const { data: existing } = await adminClient
     .from("clients")

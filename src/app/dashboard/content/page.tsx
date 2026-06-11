@@ -5,7 +5,6 @@ import {
   listCompetitors,
   addCompetitor,
   removeCompetitor,
-  scrapeCompetitors,
   generateWeeklyPackageAI,
   generateSingleScript,
   getLatestWeeklyPackage,
@@ -691,12 +690,12 @@ export default function ContentPage() {
                 <div className="bg-[#111111] border border-white/[0.08] rounded-xl p-5">
                   <div className="flex items-center justify-between mb-3">
                     <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-400">Competitori</p>
-                    <button
-                      onClick={async () => { await scrapeCompetitors(); }}
+                    <a
+                      href="/competitors"
                       className="text-[10px] text-zinc-500 border border-white/10 px-2 py-1 rounded hover:bg-white/5 transition-colors"
                     >
-                      ⟳ Scrape
-                    </button>
+                      Studio Viral ↗
+                    </a>
                   </div>
                   <div className="flex gap-2 mb-3">
                     <input
