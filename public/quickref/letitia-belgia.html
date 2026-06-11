@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Belgium Survival Guide · Letiția</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--rdim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:100%;margin:0 auto;padding-bottom:20px;}
+
+.container { max-width: 600px; margin: 0 auto; width: 100%; }
+
+/* HEADER */
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:14px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:5px;}
+.logo span{color:var(--red);}
+.hdr-right{text-align:right;}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.hdr-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-top:2px;letter-spacing:1px;}
+
+/* MACRO BAR */
+.macro-bar{background:var(--rdim);border:1px solid rgba(192,57,43,.25);border-radius:6px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+.macro-item{text-align:center;flex:1;}
+.macro-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--wht);line-height:1;}
+.macro-lbl{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.macro-val.dyn{color:var(--red);}
+
+/* CONTENT */
+.content{padding:18px;}
+
+/* ALERT */
+.alert{border-left:3px solid var(--red);background:var(--rdim);padding:14px 16px;margin-bottom:18px;font-size:13px;color:#ccc;line-height:1.6;border-radius:0 6px 6px 0;}
+.alert.orange{border-color:var(--orange);background:rgba(230,126,34,.07);}
+.alert.green{border-color:var(--green);background:rgba(39,174,96,.06);}
+.alert.blue{border-color:var(--blue);background:rgba(41,128,185,.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--red);margin-bottom:4px;}
+.alert.orange .alert-ttl{color:var(--orange);}
+.alert.green .alert-ttl{color:var(--green);}
+.alert.blue .alert-ttl{color:var(--blue);}
+
+/* ACCORDION */
+.acc-card{background:var(--drk);border:1px solid var(--brd);margin-bottom:12px;border-radius:8px;overflow:hidden;transition:border-color .2s;}
+.acc-card.open{border-color:var(--red);}
+.acc-card.open.orange{border-color:var(--orange);}
+.acc-card.open.blue{border-color:var(--blue);}
+.acc-hdr{padding:16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.acc-hdr:hover{background:rgba(255,255,255,.02);}
+.acc-left{flex:1;padding-right:10px;}
+.acc-lbl{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:3px;}
+.acc-card.orange .acc-lbl{color:var(--orange);}
+.acc-card.blue .acc-lbl{color:var(--blue);}
+.acc-ttl{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:.5px;color:var(--wht);}
+.acc-icon{font-size:12px;color:var(--muted);transition:transform .25s;display:flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--card);border:1px solid var(--brd);border-radius:4px;flex-shrink:0;}
+.acc-card.open .acc-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.acc-card.open.orange .acc-icon{color:var(--orange);border-color:var(--orange);}
+.acc-card.open.blue .acc-icon{color:var(--blue);border-color:var(--blue);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);}
+.acc-card.open .acc-body{max-height:1200px;}
+.acc-content{padding:14px 16px 20px;}
+
+/* OPTION BLOCKS */
+.opt{background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:14px;margin-bottom:10px;}
+.opt:last-child{margin-bottom:0;}
+.opt-ttl{font-size:14px;font-weight:700;color:var(--wht);margin-bottom:6px;}
+.opt-note{font-size:13px;color:#aaa;line-height:1.6;}
+.opt-note strong{color:var(--orange);}
+
+</style>
+</head>
+<body>
+<div class="container">
+  
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="logo">BUILT<span>SURVIVAL</span></div>
+      <div class="hdr-right">
+        <div class="hdr-name">LETIȚIA</div>
+        <div class="hdr-day">BELGIUM EDITION</div>
+      </div>
+    </div>
+    <div class="macro-bar">
+      <div class="macro-item">
+        <div class="macro-val dyn">1400</div>
+        <div class="macro-lbl">kcal/zi</div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-val">120<span style="font-size:14px;color:var(--muted);">g</span></div>
+        <div class="macro-lbl">Proteină</div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-val">100<span style="font-size:14px;color:var(--muted);">g</span></div>
+        <div class="macro-lbl">Carbo</div>
+      </div>
+      <div class="macro-item">
+        <div class="macro-val">60<span style="font-size:14px;color:var(--muted);">g</span></div>
+        <div class="macro-lbl">Grăsimi</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="alert red">
+      <div class="alert-ttl">OBIECTIVUL TĂU — DAMAGE CONTROL</div>
+      Avem 4 zile de haos, alcool și petreceri. Nu suntem aici să slăbim, suntem aici să limităm daunele la minim, în timp ce te bucuri la maxim de experiență. Mai jos ai 4 reguli de fier.
+    </div>
+
+    <!-- REGULA 1 -->
+    <div class="acc-card open" id="acc-r1">
+      <div class="acc-hdr" onclick="toggleAcc('acc-r1')">
+        <div class="acc-left">
+          <div class="acc-lbl">Regula #1</div>
+          <div class="acc-ttl">Împinge Prima Masă (Fasting)</div>
+        </div>
+        <div class="acc-icon">▼</div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-content">
+          <div class="opt">
+            <div class="opt-ttl">Fereastra Calorică pentru Seară</div>
+            <div class="opt-note">
+              Încearcă să îți amâni prima masă cât mai târziu în zi (Intermittent Fasting tactic). Nu irosi caloriile dimineața.<br><br>
+              <strong>De ce?</strong> Păstrând caloriile pentru partea a doua a zilei, vei avea un "buget" masiv de calorii pe care îl poți folosi seara pentru alcool și street food la festival, fără să depășești 1400 kcal.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGULA 2 -->
+    <div class="acc-card orange" id="acc-r2">
+      <div class="acc-hdr" onclick="toggleAcc('acc-r2')">
+        <div class="acc-left">
+          <div class="acc-lbl">Regula #2</div>
+          <div class="acc-ttl">Proteină Lângă Orice</div>
+        </div>
+        <div class="acc-icon">▼</div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-content">
+          <div class="opt">
+            <div class="opt-ttl">Ancorarea Glicemiei</div>
+            <div class="opt-note">
+              Alcoolul și carbohidrații goi îți vor arunca glicemia în aer, provocând pofte incontrolabile de dulce.<br><br>
+              <strong>Regula:</strong> Indiferent ce mănânci (chiar dacă e o porție de cartofi prăjiți), asigură-te că adaugi și o sursă de proteină lângă (un burger de vită, niște pui, etc.). Te satură mult mai repede și taie senzația de gol în stomac post-party.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGULA 3 -->
+    <div class="acc-card blue" id="acc-r3">
+      <div class="acc-hdr" onclick="toggleAcc('acc-r3')">
+        <div class="acc-left">
+          <div class="acc-lbl">Regula #3</div>
+          <div class="acc-ttl">Hidratare Tactică 1 la 1</div>
+        </div>
+        <div class="acc-icon">▼</div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-content">
+          <div class="opt">
+            <div class="opt-ttl">Spală Alcoolul din Sistem</div>
+            <div class="opt-note">
+              Alcoolul deshidratează celula musculară și strică recuperarea complet. Mahmureala e, în mare parte, doar o deshidratare severă a creierului.<br><br>
+              <strong>Acțiunea ta:</strong> La fiecare pahar/doză de alcool, cere obligatoriu un pahar de apă. Le bei în paralel. Mâine dimineață îmi vei mulțumi.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REGULA 4 -->
+    <div class="acc-card" id="acc-r4">
+      <div class="acc-hdr" onclick="toggleAcc('acc-r4')">
+        <div class="acc-left">
+          <div class="acc-lbl">Regula #4</div>
+          <div class="acc-ttl">Supermarket Hacks</div>
+        </div>
+        <div class="acc-icon">▼</div>
+      </div>
+      <div class="acc-body">
+        <div class="acc-content">
+          <div class="opt">
+            <div class="opt-ttl">Ești pe fugă prin oraș?</div>
+            <div class="opt-note">
+              Nu intra la patiserii. Oprește-te într-un supermarket banal și caută următoarele.<br><br>
+              <strong>De pus în coș:</strong><br>
+              → Iaurt proteic la sticlă (Skyr/Kefir) - se bea din mers.<br>
+              → Felii de pui/curcan ambalate (să le mănânci direct sau cu 2 rondele de orez).<br>
+              → Batoane proteice (sursă densă).<br>
+              → Banane (energie rapidă).
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="alert green" style="margin-top: 24px;">
+      <div class="alert-ttl">O NOTĂ DESPRE SOMN</div>
+      Somnul tău va fi groaznic. E inevitabil când alcoolul și petrecerea sunt la mijloc. Nu te stresa absolut deloc. Ești acolo să trăiești 4 zile la maxim, nu să fii perfectă.<br><br>
+      Bucură-te de festival, distrează-te, respectă regulile de supraviețuire de mai sus cât poți, și când te întorci tragem tare și reparăm. Have fun! ✌️
+    </div>
+
+  </div>
+</div>
+
+<script>
+function toggleAcc(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+</body>
+</html>
