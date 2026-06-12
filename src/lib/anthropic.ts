@@ -9,8 +9,8 @@ import { getSupabaseServer } from "@/lib/supabase/server";
  * Opus 4.7 pentru analize profunde (KB chat, audit profil, decizii strategice).
  */
 export const MODELS = {
-  routine: "claude-sonnet-4-6",
-  deep: "claude-opus-4-7",
+  routine: "claude-haiku-4-5-20251001",
+  deep: "claude-sonnet-4-6",
 } as const;
 
 export type ModelTier = keyof typeof MODELS;
