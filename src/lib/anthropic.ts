@@ -3,14 +3,13 @@ import { readCreierFromSupabase } from "@/lib/creier";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
 /**
- * Modele BUILT — Google Gemini, tier GRATUIT (fără plată).
- * routine: Flash-Lite (rapid, ~1000 cereri/zi free) — task-uri simple/dese.
- * deep: Flash (calitate mai bună, ~250 cereri/zi free) — Remake, DM, audit, intervenții.
- * NU folosim Pro (a devenit plătit din apr. 2026).
+ * Modele BUILT — Groq (tier GRATUIT, fără card, fără billing).
+ * routine: Llama 3.1 8B Instant — rapid, task-uri simple/dese.
+ * deep: Llama 3.3 70B Versatile — calitate, Remake/DM/audit/intervenții.
  */
 export const MODELS = {
-  routine: "gemini-2.5-flash-lite",
-  deep: "gemini-2.5-flash",
+  routine: "llama-3.1-8b-instant",
+  deep: "llama-3.3-70b-versatile",
 } as const;
 
 export type ModelTier = keyof typeof MODELS;
@@ -47,24 +46,23 @@ type Usage = {
 type CreateResult = { content: Array<{ type: "text"; text: string }>; usage: Usage };
 export type AIClient = { messages: { create(opts: CreateOpts): Promise<CreateResult> } };
 
-function contentToParts(content: string | AnyBlock[]): Array<Record<string, unknown>> {
-  if (typeof content === "string") return [{ text: content }];
-  return content.map((b) => {
-    const img = b as ImageBlock;
-    if (img.type === "image" && img.source) {
-      return { inline_data: { mime_type: img.source.media_type, data: img.source.data } };
-    }
-    return { text: (b as { text?: string }).text ?? "" };
-  });
+function blockText(content: string | AnyBlock[]): string {
+  if (typeof content === "string") return content;
+  // Groq (text-only): extragem textul; imaginile (audit) sunt ignorate — audit-ul
+  // cade pe contextul text (bio + postări), ceea ce e suficient.
+  return content
+    .map((b) => ((b as { type?: string }).type === "image" ? "" : ((b as { text?: string }).text ?? "")))
+    .filter(Boolean)
+    .join("\n");
 }
 
-async function geminiCreate(opts: CreateOpts): Promise<CreateResult> {
-  const apiKey = process.env.GEMINI_API_KEY;
+async function groqCreate(opts: CreateOpts): Promise<CreateResult> {
+  const apiKey = process.env.GROQ_API_KEY;
   if (!apiKey) {
     throw new Error(
-      "GEMINI_API_KEY lipsește din .env.local. " +
-        "Ia o cheie GRATUITĂ de la https://aistudio.google.com/apikey (fără card) " +
-        "și adaug-o ca GEMINI_API_KEY=... în built-ai-command-center/.env.local (și în Vercel).",
+      "GROQ_API_KEY lipsește din .env.local. " +
+        "Ia o cheie GRATUITĂ de la https://console.groq.com/keys (fără card) " +
+        "și adaug-o ca GROQ_API_KEY=... în built-ai-command-center/.env.local (și în Vercel).",
     );
   }
 
@@ -72,44 +70,44 @@ async function geminiCreate(opts: CreateOpts): Promise<CreateResult> {
     ? opts.system.map((b) => b.text).join("\n\n")
     : (opts.system ?? "");
 
-  const contents = opts.messages.map((m) => ({
-    role: m.role === "assistant" ? "model" : "user",
-    parts: contentToParts(m.content),
-  }));
+  const messages: Array<{ role: string; content: string }> = [];
+  if (sysText) messages.push({ role: "system", content: sysText });
+  for (const m of opts.messages) {
+    messages.push({ role: m.role === "assistant" ? "assistant" : "user", content: blockText(m.content) });
+  }
 
-  const body = {
-    ...(sysText ? { systemInstruction: { parts: [{ text: sysText }] } } : {}),
-    contents,
-    generationConfig: { maxOutputTokens: opts.max_tokens ?? 2048, temperature: 0.8 },
-  };
-
-  const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${opts.model}:generateContent?key=${apiKey}`,
-    { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) },
-  );
+  const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${apiKey}` },
+    body: JSON.stringify({
+      model: opts.model,
+      messages,
+      max_tokens: opts.max_tokens ?? 2048,
+      temperature: 0.8,
+    }),
+  });
 
   if (!res.ok) {
     const t = await res.text().catch(() => "");
-    throw new Error(`Gemini ${res.status}: ${t.slice(0, 400)}`);
+    throw new Error(`Groq ${res.status}: ${t.slice(0, 400)}`);
   }
 
   const data = (await res.json()) as {
-    candidates?: Array<{ content?: { parts?: Array<{ text?: string }> }; finishReason?: string }>;
-    usageMetadata?: { promptTokenCount?: number; candidatesTokenCount?: number; cachedContentTokenCount?: number };
+    choices?: Array<{ message?: { content?: string }; finish_reason?: string }>;
+    usage?: { prompt_tokens?: number; completion_tokens?: number };
   };
-  const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
+  const text = data.choices?.[0]?.message?.content ?? "";
   if (!text) {
-    const reason = data.candidates?.[0]?.finishReason ?? "necunoscut";
-    throw new Error(`Gemini a returnat gol (finishReason: ${reason}).`);
+    const reason = data.choices?.[0]?.finish_reason ?? "necunoscut";
+    throw new Error(`Groq a returnat gol (finish_reason: ${reason}).`);
   }
-  const u = data.usageMetadata;
   return {
     content: [{ type: "text", text }],
     usage: {
-      input_tokens: u?.promptTokenCount ?? 0,
-      output_tokens: u?.candidatesTokenCount ?? 0,
+      input_tokens: data.usage?.prompt_tokens ?? 0,
+      output_tokens: data.usage?.completion_tokens ?? 0,
       cache_creation_input_tokens: 0,
-      cache_read_input_tokens: u?.cachedContentTokenCount ?? 0,
+      cache_read_input_tokens: 0,
     },
   };
 }
@@ -117,12 +115,12 @@ async function geminiCreate(opts: CreateOpts): Promise<CreateResult> {
 let cachedClient: AIClient | null = null;
 
 /**
- * Returnează clientul AI (Gemini, tier gratuit) cu interfață compatibilă Anthropic.
+ * Returnează clientul AI (Groq, tier gratuit) cu interfață compatibilă Anthropic.
  * Numele e păstrat (`getAnthropicClient`) ca să nu atingem call site-urile.
  */
 export function getAnthropicClient(): AIClient {
   if (cachedClient) return cachedClient;
-  cachedClient = { messages: { create: geminiCreate } };
+  cachedClient = { messages: { create: groqCreate } };
   return cachedClient;
 }
 
