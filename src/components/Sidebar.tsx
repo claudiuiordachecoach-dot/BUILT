@@ -47,6 +47,7 @@ const MAIN_ITEMS: NavEntry[] = [
   { label: "Calendar Conținut",   href: "/dashboard/calendar",        icon: <Icons.calendar /> },
   { label: "DM Sales",            href: "/dashboard/outreach",        icon: <Icons.message /> },
   { label: "Întreabă BUILT AI",   href: "/dashboard/knowledge-base",  icon: <Icons.brain /> },
+  { label: "Audit Creier",        href: "/dashboard/creier-audit",    icon: <Icons.settings /> },
 ];
 
 const TOOLS_ITEMS: NavEntry[] = [
