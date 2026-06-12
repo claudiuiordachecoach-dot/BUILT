@@ -66,31 +66,41 @@ async function groqCreate(opts: CreateOpts): Promise<CreateResult> {
     );
   }
 
-  let sysText = Array.isArray(opts.system)
-    ? opts.system.map((b) => b.text).join("\n\n")
-    : (opts.system ?? "");
-
   const userMsgs = opts.messages.map((m) => ({
     role: m.role === "assistant" ? "assistant" : "user",
     content: blockText(m.content),
   }));
 
   // ── Buget pentru free tier Groq (12.000 tokeni/cerere = input + output) ──
-  // Trunchiem contextul (Creierul) și plafonăm output-ul ca cererea să încapă.
+  // Trunchiem MIJLOCUL fiecărui bloc (păstrăm începutul + sfârșitul), ca
+  // instrucțiunile de output (JSON-ul cerut, de obicei la finalul task-ului)
+  // să supraviețuiască. Plafonăm și output-ul.
   const maxTok = Math.min(opts.max_tokens ?? 2048, 2200);
-  const INPUT_BUDGET = 9000; // ~2.6K tokeni; cereri mici => 2-3/minut pe free tier (12K TPM)
-  let userLen = userMsgs.reduce((n, m) => n + m.content.length, 0);
-  if (userLen > INPUT_BUDGET) {
-    // user-ul singur (ex. raport săptămânal cu multe reels) depășește → trunchiem
-    sysText = "";
-    for (const m of userMsgs) {
-      if (m.content.length > INPUT_BUDGET) m.content = m.content.slice(0, INPUT_BUDGET) + "\n…[trunchiat pt. limita free]";
+  const INPUT_BUDGET = 12000; // ~3.4K tokeni; lasă loc de output sub 12K TPM
+
+  const midTruncate = (s: string, max: number): string => {
+    if (s.length <= max) return s;
+    const half = Math.max(200, Math.floor(max / 2));
+    return s.slice(0, half) + "\n…[trunchiat pt. limita free]…\n" + s.slice(-half);
+  };
+
+  let sysText: string;
+  if (Array.isArray(opts.system)) {
+    const blocks = opts.system.map((b) => b.text ?? "");
+    const total = blocks.reduce((n, b) => n + b.length, 0);
+    if (total > INPUT_BUDGET) {
+      for (let i = 0; i < blocks.length; i++) {
+        const alloc = Math.max(400, Math.floor((INPUT_BUDGET * blocks[i].length) / total));
+        blocks[i] = midTruncate(blocks[i], alloc);
+      }
     }
-    userLen = INPUT_BUDGET;
+    sysText = blocks.join("\n\n");
+  } else {
+    sysText = midTruncate(opts.system ?? "", INPUT_BUDGET);
   }
-  if (sysText && sysText.length + userLen > INPUT_BUDGET) {
-    sysText = sysText.slice(0, Math.max(0, INPUT_BUDGET - userLen)) + "\n…[context trunchiat pt. limita free]";
-  }
+
+  // user content prea mare (ex. raport săptămânal) — trunchiem mijlocul
+  for (const m of userMsgs) m.content = midTruncate(m.content, INPUT_BUDGET);
 
   const messages: Array<{ role: string; content: string }> = [];
   if (sysText) messages.push({ role: "system", content: sysText });
