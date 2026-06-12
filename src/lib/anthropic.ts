@@ -66,15 +66,35 @@ async function groqCreate(opts: CreateOpts): Promise<CreateResult> {
     );
   }
 
-  const sysText = Array.isArray(opts.system)
+  let sysText = Array.isArray(opts.system)
     ? opts.system.map((b) => b.text).join("\n\n")
     : (opts.system ?? "");
 
+  const userMsgs = opts.messages.map((m) => ({
+    role: m.role === "assistant" ? "assistant" : "user",
+    content: blockText(m.content),
+  }));
+
+  // ── Buget pentru free tier Groq (12.000 tokeni/cerere = input + output) ──
+  // Trunchiem contextul (Creierul) și plafonăm output-ul ca cererea să încapă.
+  const maxTok = Math.min(opts.max_tokens ?? 2048, 3500);
+  const INPUT_BUDGET = 22000; // ~6K tokeni; + maxTok rămâne sub limită
+  let userLen = userMsgs.reduce((n, m) => n + m.content.length, 0);
+  if (userLen > INPUT_BUDGET) {
+    // user-ul singur (ex. raport săptămânal cu multe reels) depășește → trunchiem
+    sysText = "";
+    for (const m of userMsgs) {
+      if (m.content.length > INPUT_BUDGET) m.content = m.content.slice(0, INPUT_BUDGET) + "\n…[trunchiat pt. limita free]";
+    }
+    userLen = INPUT_BUDGET;
+  }
+  if (sysText && sysText.length + userLen > INPUT_BUDGET) {
+    sysText = sysText.slice(0, Math.max(0, INPUT_BUDGET - userLen)) + "\n…[context trunchiat pt. limita free]";
+  }
+
   const messages: Array<{ role: string; content: string }> = [];
   if (sysText) messages.push({ role: "system", content: sysText });
-  for (const m of opts.messages) {
-    messages.push({ role: m.role === "assistant" ? "assistant" : "user", content: blockText(m.content) });
-  }
+  messages.push(...userMsgs);
 
   const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
     method: "POST",
@@ -82,7 +102,7 @@ async function groqCreate(opts: CreateOpts): Promise<CreateResult> {
     body: JSON.stringify({
       model: opts.model,
       messages,
-      max_tokens: opts.max_tokens ?? 2048,
+      max_tokens: maxTok,
       temperature: 0.8,
     }),
   });
