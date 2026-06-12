@@ -31,6 +31,20 @@ const PLUGINS = [
       {n:"05",l:"Checklist + Algoritm",c:"#0891B2"},
       {n:"06",l:"Calendar Săptămânal",c:"#C0392B"},
     ]
+  },
+  {
+    id: "dmfunnel",
+    file: "/built-dm-funnel-plugin.js",
+    title: "Funnel DM-to-Client",
+    desc: "1 frame: 5 faze (Atragere → Deschidere → Descoperire → Punte → Anti-no-show) + gating + obiecții CAR",
+    frames: [
+      {n:"01",l:"Adu-i în DM",c:"#C0392B"},
+      {n:"02",l:"Deschiderea",c:"#7C3AED"},
+      {n:"03",l:"Descoperirea",c:"#D97706"},
+      {n:"04",l:"Puntea",c:"#0891B2"},
+      {n:"05",l:"Anti-no-show",c:"#059669"},
+      {n:"CAR",l:"Obiecții",c:"#C0392B"},
+    ]
   }
 ];
 
