@@ -107,10 +107,9 @@ export async function getTipOfWeek(): Promise<string> {
     if (age < 7 * 24 * 60 * 60 * 1000) return val.text;
   }
 
-  const Anthropic = (await import("@anthropic-ai/sdk")).default;
-  const anthropic = new Anthropic();
+  const anthropic = getAnthropicClient();
   const response = await anthropic.messages.create({
-    model: "claude-haiku-4-5-20251001",
+    model: MODELS.routine,
     max_tokens: 200,
     messages: [{
       role: "user",
@@ -190,7 +189,7 @@ Răspunde DOAR cu un JSON object pe o singură linie, fără text înainte sau d
 
     try {
       const resp = await client.messages.create({
-        model: "claude-haiku-4-5-20251001",
+        model: MODELS.routine,
         max_tokens: 1024,
         messages: [{ role: "user", content: prompt }],
       });

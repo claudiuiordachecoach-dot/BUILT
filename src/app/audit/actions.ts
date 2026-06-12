@@ -1,6 +1,5 @@
 "use server";
 
-import Anthropic from "@anthropic-ai/sdk";
 import { getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 import { getSupabaseServer } from "@/lib/supabase/server";
@@ -43,55 +42,6 @@ export interface AuditInput {
   posting_frequency: string;
 }
 
-const ELEMENT_SCHEMA = (label: string, hint: string) => ({
-  type: "object" as const,
-  properties: {
-    score: { type: "number" as const, description: "Score 0-10" },
-    label: { type: "string" as const, description: label },
-    feedback_good: { type: "string" as const, description: `What is working well — ${hint}` },
-    feedback_bad: { type: "string" as const, description: `What is missing or wrong — ${hint}` },
-    fix: { type: "string" as const, description: "Exact blue-box recommendation to fix it" },
-  },
-  required: ["score", "label", "feedback_good", "feedback_bad", "fix"] as string[],
-});
-
-const auditTool: Anthropic.Tool = {
-  name: "submit_instagram_audit",
-  description: "Submit the Instagram profile audit with split good/bad feedback per element.",
-  input_schema: {
-    type: "object",
-    properties: {
-      overall: { type: "number", description: "Overall score out of 10 (e.g. 6.3)" },
-      elements: {
-        type: "object",
-        properties: {
-          profile_picture: ELEMENT_SCHEMA("e.g. 'Profile Picture'", "photo quality, professionalism, authority"),
-          name_username: ELEMENT_SCHEMA("e.g. 'Name & Username'", "memorability, searchability, brand consistency"),
-          bio: ELEMENT_SCHEMA("e.g. 'Bio'", "ICP specificity, CTA clarity, proof of outcome"),
-          link_in_bio: ELEMENT_SCHEMA("e.g. 'Link in Bio'", "branded domain, CTA context, landing page relevance"),
-          highlights: ELEMENT_SCHEMA("e.g. 'Highlights'", "Start Here / social proof / lead magnet presence"),
-          pinned_posts: ELEMENT_SCHEMA("e.g. 'Pinned Posts'", "conversion funnel: hook reel / proof / offer CTA"),
-        },
-        required: ["profile_picture", "name_username", "bio", "link_in_bio", "highlights", "pinned_posts"],
-      },
-      top_priority: { type: "string", description: "Single most important fix today" },
-      rewritten_bio: { type: "string", description: "Complete rewritten bio ready to copy-paste with CTA" },
-      new_bio_explanation: { type: "string", description: "2-3 sentences explaining WHY the current bio fails and what the rewrite fixes" },
-      suggested_highlights: {
-        type: "array",
-        items: { type: "string" },
-        description: "5 suggested highlight names for this creator (e.g. Start Here, Client Wins, Free Training, My Story, Results)",
-      },
-      priority_fixes: {
-        type: "array",
-        items: { type: "string" },
-        description: "3 priority fixes implementable today, each as a complete actionable sentence",
-      },
-    },
-    required: ["overall", "elements", "top_priority", "rewritten_bio", "new_bio_explanation", "suggested_highlights", "priority_fixes"],
-  },
-};
-
 export async function auditProfile(input: AuditInput): Promise<AuditResult> {
   const hasScreenshot = !!input.screenshot_base64;
   const hasText = !!(input.bio.trim() || input.last_posts.trim());
@@ -123,7 +73,9 @@ ${textContext}
 
 ## Verdict global: media ponderată a celor 6 elemente × 10
 
-Apelează instrumentul submit_instagram_audit cu rezultatele exacte.`;
+## Returnează DOAR JSON STRICT (fără markdown, fără text înainte/după), exact această structură:
+{"overall":6.3,"elements":{"profile_picture":{"score":0,"label":"Profile Picture","feedback_good":"...","feedback_bad":"...","fix":"..."},"name_username":{"score":0,"label":"Name & Username","feedback_good":"...","feedback_bad":"...","fix":"..."},"bio":{"score":0,"label":"Bio","feedback_good":"...","feedback_bad":"...","fix":"..."},"link_in_bio":{"score":0,"label":"Link in Bio","feedback_good":"...","feedback_bad":"...","fix":"..."},"highlights":{"score":0,"label":"Highlights","feedback_good":"...","feedback_bad":"...","fix":"..."},"pinned_posts":{"score":0,"label":"Pinned Posts","feedback_good":"...","feedback_bad":"...","fix":"..."}},"top_priority":"cel mai important fix de azi","rewritten_bio":"bio complet rescris, gata de copiat, cu CTA","new_bio_explanation":"2-3 propoziții de ce bio-ul actual eșuează și ce repară rescrierea","suggested_highlights":["5 nume de highlights"],"priority_fixes":["3 fix-uri implementabile azi"]}
+Fiecare element: score 0-10. Răspunde în română.`;
 
   try {
     const creier = await readCreierFromSupabase();
@@ -131,7 +83,7 @@ Apelează instrumentul submit_instagram_audit cu rezultatele exacte.`;
     const systemPrompt = `Ești un expert în optimizarea profilurilor Instagram pentru coaching fitness.
 Contextul creatorului: ${JSON.stringify(creier).slice(0, 1500)}
 
-REGULA CRITICĂ: Analizează profilul și apelează instrumentul submit_instagram_audit cu structura completă. Niciun text suplimentar.`;
+REGULA CRITICĂ: Analizează profilul și răspunde DOAR cu JSON valid în structura cerută. Niciun text suplimentar înainte sau după JSON.`;
 
     type AllowedMime = "image/png" | "image/jpeg" | "image/gif" | "image/webp";
     const ALLOWED_MIMES = new Set<string>(["image/png", "image/jpeg", "image/gif", "image/webp"]);
@@ -154,20 +106,21 @@ REGULA CRITICĂ: Analizează profilul și apelează instrumentul submit_instagra
     userContent.push({ type: "text", text: task });
 
     const message = await client.messages.create({
-      model: MODELS.routine,
+      model: MODELS.deep,
       max_tokens: 2500,
       system: systemPrompt,
       messages: [{ role: "user", content: userContent }],
-      tools: [auditTool],
-      tool_choice: { type: "tool", name: "submit_instagram_audit" },
     });
 
-    const toolBlock = message.content.find((b) => b.type === "tool_use");
-    if (!toolBlock || toolBlock.type !== "tool_use") {
+    const textBlock = message.content.find((b) => b.type === "text");
+    if (!textBlock || textBlock.type !== "text") {
       return { ok: false, error: "AI nu a returnat structura de audit." };
     }
-
-    const audit = toolBlock.input as unknown as InstagramAudit;
+    const t = textBlock.text.trim();
+    const a = t.indexOf("{");
+    const b = t.lastIndexOf("}");
+    if (a === -1 || b <= a) return { ok: false, error: "JSON invalid de la AI." };
+    const audit = JSON.parse(t.slice(a, b + 1)) as InstagramAudit;
 
     // Salvează în DB (best effort)
     try {

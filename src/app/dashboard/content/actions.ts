@@ -1,12 +1,11 @@
 "use server";
-import Anthropic from "@anthropic-ai/sdk";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { type ApifyComment } from "@/lib/apify";
 import { getAnthropicClient, buildSystemBlocks, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 
-const anthropic = new Anthropic();
+const anthropic = getAnthropicClient();
 
 export async function listCompetitors() {
   const supabase = getSupabaseServer();
@@ -149,7 +148,7 @@ Generează un pachet săptămânal COMPLET în format JSON cu această structur�
 Generează 6 scripturi (Luni-Sâmbătă). Fiecare script trebuie să fie în vocea lui Claudiu, bazat pe pilonii BUILT, cu hook contraintuativ, mecanism fiziologic/psihologic, sistem BUILT ca soluție, CTA discret.`;
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: MODELS.deep,
     max_tokens: 4096,
     messages: [{ role: "user", content: prompt }],
   });

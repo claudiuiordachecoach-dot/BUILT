@@ -1,9 +1,9 @@
 "use server";
-import Anthropic from "@anthropic-ai/sdk";
+import { getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { getRecentContext, saveConversation, appendMessage, listConversations, getConversation } from "@/lib/conversations";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-const client = new Anthropic();
+const client = getAnthropicClient();
 
 export async function sendMessage(conversationId: number | null, userMessage: string) {
   const recentContext = await getRecentContext(5);
@@ -41,7 +41,7 @@ Răspunzi în română, direct, fără clișee motivaționale. Folosești vocabu
   messages.push({ role: "user", content: userMessage });
 
   const response = await client.messages.create({
-    model: "claude-sonnet-4-6",
+    model: MODELS.deep,
     max_tokens: 1024,
     system: systemPrompt,
     messages,
