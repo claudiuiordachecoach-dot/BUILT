@@ -77,8 +77,8 @@ async function groqCreate(opts: CreateOpts): Promise<CreateResult> {
 
   // ── Buget pentru free tier Groq (12.000 tokeni/cerere = input + output) ──
   // Trunchiem contextul (Creierul) și plafonăm output-ul ca cererea să încapă.
-  const maxTok = Math.min(opts.max_tokens ?? 2048, 3500);
-  const INPUT_BUDGET = 22000; // ~6K tokeni; + maxTok rămâne sub limită
+  const maxTok = Math.min(opts.max_tokens ?? 2048, 2200);
+  const INPUT_BUDGET = 9000; // ~2.6K tokeni; cereri mici => 2-3/minut pe free tier (12K TPM)
   let userLen = userMsgs.reduce((n, m) => n + m.content.length, 0);
   if (userLen > INPUT_BUDGET) {
     // user-ul singur (ex. raport săptămânal cu multe reels) depășește → trunchiem
