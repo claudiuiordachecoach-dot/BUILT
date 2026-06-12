@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { listClients } from "@/app/clienti/actions";
+import { listClients, listClientsWithRisk } from "@/app/clienti/actions";
 import { NewClientForm } from "@/app/clienti/NewClientForm";
 import { getUnreadCountPerClient } from "@/app/client/actions";
+import { RetentionPanel } from "@/components/clients/RetentionPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -19,9 +20,10 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function ClientsDashboardPage() {
-  const [clients, unreadPerClient] = await Promise.all([
+  const [clients, unreadPerClient, risks] = await Promise.all([
     listClients().catch(() => []),
     getUnreadCountPerClient().catch(() => ({} as Record<number, number>)),
+    listClientsWithRisk().catch(() => []),
   ]);
   const active = clients.filter((c) => c.status === "active");
   const atRisk = clients.filter((c) => c.status === "at_risk");
@@ -54,26 +56,8 @@ export default async function ClientsDashboardPage() {
         ))}
       </div>
 
-      {/* At Risk Alert */}
-      {atRisk.length > 0 && (
-        <div className="mb-6 p-4 bg-orange-400/10 border border-orange-400/30 rounded-xl">
-          <p className="text-[10px] text-orange-400 uppercase tracking-widest font-mono mb-2">
-            ⚠ Interventie necesara
-          </p>
-          <div className="space-y-1">
-            {atRisk.map((c) => (
-              <Link
-                key={c.id}
-                href={`/dashboard/clients/${c.id}`}
-                className="flex items-center gap-3 hover:text-orange-300 transition-colors"
-              >
-                <span className="text-[13px] text-zinc-200">{c.name}</span>
-                <span className="text-[11px] text-orange-400">→ Aplica MVR</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Retenție — auto-detectat + intervenție Skill 3 */}
+      <RetentionPanel risks={risks} />
 
       {/* Header + Add */}
       <div className="flex items-center justify-between mb-4">
