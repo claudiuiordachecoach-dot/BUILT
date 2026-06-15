@@ -52,7 +52,7 @@ export async function getClientDashboard(overrideClientId?: number) {
     { data: nutrition },
     { data: unreadMessages },
   ] = await Promise.all([
-    db.from("clients").select("name, start_date, status, objectives, progress_gallery").eq("id", clientId).single(),
+    db.from("clients").select("id, name, start_date, status, objectives, progress_gallery").eq("id", clientId).single(),
     db.from("client_checkins").select("*").eq("client_id", clientId).order("created_at", { ascending: false }).limit(1).single(),
     db.from("workout_plans").select("*").eq("client_id", clientId).order("week_start", { ascending: false }).limit(1).single(),
     db.from("nutrition_plans").select("*").eq("client_id", clientId).single(),
