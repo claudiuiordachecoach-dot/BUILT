@@ -52,7 +52,7 @@ export async function getClientDashboard(overrideClientId?: number) {
     { data: nutrition },
     { data: unreadMessages },
   ] = await Promise.all([
-    db.from("clients").select("name, start_date, status, objectives").eq("id", clientId).single(),
+    db.from("clients").select("name, start_date, status, objectives, progress_gallery").eq("id", clientId).single(),
     db.from("client_checkins").select("*").eq("client_id", clientId).order("created_at", { ascending: false }).limit(1).single(),
     db.from("workout_plans").select("*").eq("client_id", clientId).order("week_start", { ascending: false }).limit(1).single(),
     db.from("nutrition_plans").select("*").eq("client_id", clientId).single(),
@@ -383,4 +383,30 @@ export async function getClientCheckinsForClient(): Promise<ClientCheckin[]> {
     .eq("client_id", clientId)
     .order("week_number", { ascending: true });
   return (data ?? []) as ClientCheckin[];
+}
+
+// ── Progress Gallery Actions ──
+export async function saveProgressEntry(clientId: number, entry: { id: string; label: string; weight_kg: number; photo_url: string; date: string }) {
+  const db = getSupabaseServer();
+  
+  // 1. Fetch current gallery
+  const { data: client } = await db.from("clients").select("progress_gallery").eq("id", clientId).single();
+  const currentGallery = client?.progress_gallery || [];
+  
+  // 2. Append new entry
+  const newGallery = [...currentGallery, entry];
+  
+  // 3. Update DB
+  await db.from("clients").update({ progress_gallery: newGallery }).eq("id", clientId);
+}
+
+export async function deleteProgressEntry(clientId: number, entryId: string) {
+  const db = getSupabaseServer();
+  
+  const { data: client } = await db.from("clients").select("progress_gallery").eq("id", clientId).single();
+  const currentGallery = client?.progress_gallery || [];
+  
+  const newGallery = currentGallery.filter((entry: any) => entry.id !== entryId);
+  
+  await db.from("clients").update({ progress_gallery: newGallery }).eq("id", clientId);
 }

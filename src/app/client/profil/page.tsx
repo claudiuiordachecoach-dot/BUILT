@@ -1,4 +1,5 @@
 import { getClientDashboard } from "../actions";
+import ProgressGallery from "./ProgressGallery";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,7 @@ export default async function ClientProfilePage({
   }
 
   const { client } = data;
+  const clientId = overrideId || data.client?.id;
 
   return (
     <div className="p-8 max-w-4xl pb-24">
@@ -43,39 +45,10 @@ export default async function ClientProfilePage({
         <section>
           <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Galeria de Progres (Foto)</h2>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {/* Start Photo */}
-            <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group p-4 text-center">
-              <p className="text-zinc-600 text-[10px] font-condensed uppercase tracking-wider mb-2">Lipește link URL poză</p>
-              <input type="text" placeholder="https://..." className="w-full bg-black/50 border border-white/10 rounded text-[9px] p-2 text-zinc-300 focus:outline-none focus:border-built-red transition-colors" />
-              <div className="absolute bottom-0 inset-x-0 bg-black/80 py-2 px-2 border-t border-white/10">
-                <p className="text-[9px] font-condensed text-built-gray-text uppercase tracking-widest text-center">Poza Inițială (Ziua 1)</p>
-              </div>
-            </div>
-
-            {/* Week 2 Photo */}
-            <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group p-4 text-center">
-              <p className="text-zinc-600 text-[10px] font-condensed uppercase tracking-wider mb-2">Lipește link URL poză</p>
-              <input type="text" placeholder="https://..." className="w-full bg-black/50 border border-white/10 rounded text-[9px] p-2 text-zinc-300 focus:outline-none focus:border-built-red transition-colors" />
-              <div className="absolute bottom-0 inset-x-0 bg-black/80 py-2 px-2 border-t border-white/10">
-                <p className="text-[9px] font-condensed text-built-gray-text uppercase tracking-widest text-center">Săptămâna 2</p>
-              </div>
-            </div>
-
-            {/* Week 4 Photo */}
-            <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group p-4 text-center">
-              <p className="text-zinc-600 text-[10px] font-condensed uppercase tracking-wider mb-2">Lipește link URL poză</p>
-              <input type="text" placeholder="https://..." className="w-full bg-black/50 border border-white/10 rounded text-[9px] p-2 text-zinc-300 focus:outline-none focus:border-built-red transition-colors" />
-              <div className="absolute bottom-0 inset-x-0 bg-black/80 py-2 px-2 border-t border-white/10">
-                <p className="text-[9px] font-condensed text-built-gray-text uppercase tracking-widest text-center">Săptămâna 4</p>
-              </div>
-            </div>
-
-            {/* Add more */}
-            <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex items-center justify-center border-dashed border-built-gray-2 hover:border-built-red/50 transition-colors cursor-pointer" title="Mai târziu vei putea salva galeria.">
-              <p className="text-built-gray-text text-2xl font-light">+</p>
-            </div>
-          </div>
+          <ProgressGallery 
+            clientId={clientId} 
+            initialGallery={client?.progress_gallery || []} 
+          />
         </section>
       </div>
     </div>
