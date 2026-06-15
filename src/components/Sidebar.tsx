@@ -46,6 +46,7 @@ const MAIN_ITEMS: NavEntry[] = [
   { label: "Studio Viral",        href: "/competitors",               icon: <Icons.users /> },
   { label: "Calendar Conținut",   href: "/dashboard/calendar",        icon: <Icons.calendar /> },
   { label: "DM Sales",            href: "/dashboard/outreach",        icon: <Icons.message /> },
+  { label: "Pipeline Prospecți",  href: "/dashboard/prospects",       icon: <Icons.users /> },
   { label: "Întreabă BUILT AI",   href: "/dashboard/knowledge-base",  icon: <Icons.brain /> },
   { label: "Audit Creier",        href: "/dashboard/creier-audit",    icon: <Icons.settings /> },
 ];
