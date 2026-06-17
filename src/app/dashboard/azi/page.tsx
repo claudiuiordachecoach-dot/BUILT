@@ -569,50 +569,86 @@ function fmtCountdown(min: number): { label: string; cls: string } {
   return { label: `peste ${h}h${m ? ` ${m}m` : ""}`, cls: "text-zinc-400" };
 }
 
-function CallsBanner({ appointments, signalCalls, notifPerm, onEnableReminders }: {
+function CallsBanner({ appointments, signalCalls, notifPerm, onEnableReminders, onAdd, onEdit, onDelete, onToggle }: {
   appointments: Appointment[];
   signalCalls: CallSignal[];
   notifPerm: NotificationPermission;
   onEnableReminders: () => void;
+  onAdd: (a: Omit<Appointment, "id" | "done">) => void;
+  onEdit: (id: string, a: Omit<Appointment, "id" | "done">) => void;
+  onDelete: (id: string) => void;
+  onToggle: (id: string) => void;
 }) {
   const [nowMs, setNowMs] = useState(Date.now());
+  const [editId, setEditId] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
   useEffect(() => {
     const id = setInterval(() => setNowMs(Date.now()), 30000);
     return () => clearInterval(id);
   }, []);
 
-  const timed = appointments.filter((a) => !a.done).slice().sort((a, b) => a.time.localeCompare(b.time));
+  const calls = appointments.slice().sort((a, b) => a.time.localeCompare(b.time));
   const pipelineToday = signalCalls.filter((c) => c.isToday);
-  const total = timed.length + pipelineToday.length;
-  if (total === 0) return null;
+  if (calls.length === 0 && pipelineToday.length === 0) return null;
 
   return (
     <div className="rounded-2xl border border-blue-500/25 bg-blue-500/[0.04] p-5 mb-6">
       <div className="flex items-center gap-2 mb-3">
         <span className="text-base">📞</span>
         <p className="text-[11px] font-condensed uppercase tracking-widest text-blue-300">Apeluri azi</p>
-        <span className="text-[11px] text-zinc-600 ml-auto">{total} {total === 1 ? "apel" : "apeluri"}</span>
+        <span className="text-[11px] text-zinc-600 ml-auto">{calls.length} {calls.length === 1 ? "apel" : "apeluri"}</span>
       </div>
 
-      {timed.length > 0 && (
+      {calls.length > 0 && (
         <div className="space-y-2.5">
-          {timed.map((a) => {
+          {calls.map((a) => {
+            if (editId === a.id) {
+              return (
+                <AppointmentForm
+                  key={a.id}
+                  initial={a}
+                  onSave={(upd) => { onEdit(a.id, upd); setEditId(null); }}
+                  onCancel={() => setEditId(null)}
+                  onDelete={() => { onDelete(a.id); setEditId(null); }}
+                />
+              );
+            }
             const [h, m] = a.time.split(":").map(Number);
             const t = new Date(); t.setHours(h, m ?? 0, 0, 0);
             const min = Math.round((t.getTime() - nowMs) / 60000);
             const cd = fmtCountdown(min);
             return (
-              <div key={a.id} className="flex items-center gap-3">
-                <span className="font-mono text-sm text-white w-14 shrink-0 tabular-nums">{a.time}</span>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white truncate">{a.name || "—"}</p>
+              <div key={a.id} className="flex items-center gap-3 group">
+                <button type="button" onClick={() => onToggle(a.id)}
+                  className={`w-4 h-4 shrink-0 rounded border flex items-center justify-center transition-colors ${a.done ? "bg-blue-500/70 border-blue-500/70" : "border-white/30 hover:border-blue-400"}`}>
+                  {a.done && <svg width="8" height="6" viewBox="0 0 8 6" fill="none"><path d="M1 3L3 5L7 1" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>}
+                </button>
+                <span className={`font-mono text-sm w-14 shrink-0 tabular-nums ${a.done ? "text-zinc-600 line-through" : "text-white"}`}>{a.time}</span>
+                <button type="button" onClick={() => { setEditId(a.id); setAdding(false); }}
+                  className="flex-1 min-w-0 text-left hover:opacity-80 transition-opacity">
+                  <p className={`text-sm truncate ${a.done ? "text-zinc-600 line-through" : "text-white"}`}>{a.name || "—"}</p>
                   {a.phone && <p className="text-[11px] text-zinc-500 truncate">📞 {a.phone}</p>}
-                </div>
-                <span className={`text-[11px] font-condensed uppercase tracking-wider shrink-0 ${cd.cls}`}>{cd.label}</span>
+                </button>
+                {!a.done && <span className={`text-[11px] font-condensed uppercase tracking-wider shrink-0 ${cd.cls}`}>{cd.label}</span>}
+                <button type="button" onClick={() => onDelete(a.id)}
+                  className="text-zinc-700 hover:text-built-red opacity-0 group-hover:opacity-100 transition-all w-5 text-center text-base shrink-0">×</button>
               </div>
             );
           })}
         </div>
+      )}
+
+      {adding ? (
+        <div className="mt-3">
+          <AppointmentForm
+            initial={{ time: "09:00", duration: 60 }}
+            onSave={(a) => { onAdd(a); setAdding(false); }}
+            onCancel={() => setAdding(false)}
+          />
+        </div>
+      ) : (
+        <button type="button" onClick={() => { setAdding(true); setEditId(null); }}
+          className="mt-3 text-[11px] text-zinc-600 hover:text-blue-300 transition-colors">+ adaugă apel</button>
       )}
 
       {pipelineToday.length > 0 && (
@@ -841,6 +877,10 @@ export default function AziPage() {
               signalCalls={signals?.calls ?? []}
               notifPerm={notifPerm}
               onEnableReminders={enableReminders}
+              onAdd={addAppointment}
+              onEdit={editAppointment}
+              onDelete={deleteAppointment}
+              onToggle={toggleAppointment}
             />
           )}
 
