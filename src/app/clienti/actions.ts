@@ -53,6 +53,141 @@ export async function getClientCheckins(clientId: number): Promise<CheckIn[]> {
   return (data ?? []) as CheckIn[];
 }
 
+// ════════════════════════════════════════════════════════════════════
+// RETENȚIE — detecție risc (2 niveluri) + intervenție Skill 3
+// ════════════════════════════════════════════════════════════════════
+
+export type RiskLevel = "disparut" | "aluneca" | "epuizat" | "atentie" | "ok";
+
+export interface ClientRisk {
+  client: Client;
+  level: RiskLevel;
+  reason: string;
+  days_since_checkin: number | null;
+}
+
+function daysBetween(iso: string): number {
+  return Math.floor((Date.now() - new Date(iso).getTime()) / 86400_000);
+}
+
+function computeRisk(client: Client, checkins: CheckIn[]): ClientRisk {
+  if (client.status === "completed" || client.status === "paused") {
+    return {
+      client,
+      level: "ok",
+      reason: client.status === "completed" ? "Program finalizat" : "În pauză",
+      days_since_checkin: null,
+    };
+  }
+  if (checkins.length === 0) {
+    return {
+      client,
+      level: "disparut",
+      reason: "Niciun check-in încă — pornește ritualul / re-engage",
+      days_since_checkin: null,
+    };
+  }
+  const latest = checkins[0]; // ordonat week desc → cel mai recent
+  const days = daysBetween(latest.created_at);
+
+  if (days >= 9) {
+    return { client, level: "disparut", reason: `${days} zile fără check-in — a sărit ciclul`, days_since_checkin: days };
+  }
+
+  const minAdh = Math.min(latest.training_adherence ?? 100, latest.nutrition_adherence ?? 100);
+  let avgPrev: number | null = null;
+  if (checkins.length >= 2) {
+    const prev = checkins.slice(1);
+    avgPrev =
+      prev.reduce((s, c) => s + Math.min(c.training_adherence ?? 100, c.nutrition_adherence ?? 100), 0) / prev.length;
+  }
+  if (minAdh < 60 || (avgPrev != null && minAdh < avgPrev * 0.75)) {
+    return {
+      client,
+      level: "aluneca",
+      reason: `Aderență scăzută: ${latest.training_adherence}% antrenament / ${latest.nutrition_adherence}% nutriție`,
+      days_since_checkin: days,
+    };
+  }
+
+  if ((latest.energy_level ?? 10) <= 4 || (latest.mood ?? 10) <= 4) {
+    return {
+      client,
+      level: "epuizat",
+      reason: `Energie ${latest.energy_level}/10 · dispoziție ${latest.mood}/10 — semnal de suprasolicitare`,
+      days_since_checkin: days,
+    };
+  }
+
+  if (days >= 7) {
+    return { client, level: "atentie", reason: `${days} zile de la ultimul check-in — a ratat fereastra săptămânală`, days_since_checkin: days };
+  }
+
+  return { client, level: "ok", reason: "Pe traseu", days_since_checkin: days };
+}
+
+const RISK_ORDER: Record<RiskLevel, number> = { disparut: 0, aluneca: 1, epuizat: 1, atentie: 2, ok: 3 };
+
+export async function listClientsWithRisk(): Promise<ClientRisk[]> {
+  const clients = await listClients();
+  const risks = await Promise.all(clients.map(async (c) => computeRisk(c, await getClientCheckins(c.id))));
+  return risks.sort((a, b) => RISK_ORDER[a.level] - RISK_ORDER[b.level]);
+}
+
+export async function generateIntervention(
+  clientId: number,
+): Promise<{ ok: true; data: string } | { ok: false; error: string }> {
+  const client = await getClient(clientId);
+  if (!client) return { ok: false, error: "Client inexistent." };
+  const checkins = await getClientCheckins(clientId);
+  const risk = computeRisk(client, checkins);
+
+  const recent =
+    checkins
+      .slice(0, 3)
+      .map(
+        (c) =>
+          `S${c.week_number}: antrenament ${c.training_adherence}%, nutriție ${c.nutrition_adherence}%, energie ${c.energy_level}/10, dispoziție ${c.mood}/10${c.notes ? `, notă: "${c.notes}"` : ""}`,
+      )
+      .join("\n") || "fără check-in-uri trimise";
+
+  const task = `# TASK: Mesaj de intervenție de retenție (Skill 3 — Manager de Succes Client)
+
+## Clientul
+- Nume: ${client.name}
+- Obiective: ${client.objectives ?? "—"}
+- Stare detectată: ${risk.level.toUpperCase()} — ${risk.reason}
+- Ultimele check-in-uri:
+${recent}
+
+## Skill 3 — structura intervenției (urmează EXACT, în ordine)
+1. ELIMINĂ VINOVĂȚIA (primul lucru). Niciodată "de ce n-ai trimis check-in?". Reîncadrează: "ce s-a întâmplat nu e un eșec, e un capitol din program pe care îl știam că va veni."
+2. DIAGNOSTIC scurt al cauzei (suprasolicitare / demotivare / dorință de renunțare / dispariție), adaptat la starea de mai sus.
+3. MVR — Minimum Viable Return: UN singur pas executabil imediat (20 min antrenament / o masă bună / două rânduri de check-in). NU doi pași — unul.
+4. Recalibrare scurtă (oferi ajustarea, nu presiunea).
+INTERZIS: compensare extremă ("faci 3 ore mâine"), comparații cu alte perioade, așteptarea motivației înainte de primul pas, clișee.
+
+## Scrie
+Un singur mesaj (WhatsApp/DM), în vocea lui Claudiu, în română, scurt (max 5-6 rânduri), cald cu situația dar ferm cu sistemul, personalizat la ${client.name} și starea lui reală. Doar mesajul, fără explicații înainte/după.`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const ai = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({ creierJson: JSON.stringify(creier, null, 2), taskContext: task });
+    const message = await ai.messages.create({
+      model: MODELS.deep,
+      max_tokens: 600,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Scrie mesajul de intervenție." }],
+    });
+    const tb = message.content.find((b) => b.type === "text");
+    if (!tb || tb.type !== "text") return { ok: false, error: "Răspuns gol." };
+    return { ok: true, data: tb.text.trim() };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
+}
+
 export type CreateClientResult = { ok: true; id: number } | { ok: false; error: string };
 
 export async function createClient(name: string, startDate: string, objectives: string, email: string): Promise<CreateClientResult> {
