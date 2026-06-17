@@ -103,15 +103,24 @@ export interface ClientSignal {
   reason: string;
 }
 
+export interface CallSignal {
+  id: number;
+  name: string;
+  next_step: string | null;
+  next_step_date: string | null;
+  isToday: boolean;
+}
+
 export interface DailySignals {
+  calls: CallSignal[];
   prospects: ProspectSignal[];
   clients: ClientSignal[];
 }
 
-// Prospecți încă în joc (nu închiși, nu pierduți).
-const OPEN_PROSPECT = new Set(["dm", "apel_programat", "discovery", "oferta"]);
+// Prospecți încă în joc, în etapa de follow-up (apel_programat e tratat separat ca „apel").
+const OPEN_PROSPECT = new Set(["dm", "discovery", "oferta"]);
 // Mijloc de pâlnie — dacă n-au pas următor setat, e o scurgere (uitat).
-const MID_FUNNEL = new Set(["discovery", "oferta", "apel_programat"]);
+const MID_FUNNEL = new Set(["discovery", "oferta"]);
 
 /**
  * Semnalele zilei — ce aduce bani azi, fără să decizi tu pe gol:
@@ -120,9 +129,23 @@ const MID_FUNNEL = new Set(["discovery", "oferta", "apel_programat"]);
 export async function getDailySignals(): Promise<DailySignals> {
   const today = new Date().toISOString().slice(0, 10);
 
+  let calls: CallSignal[] = [];
   let prospects: ProspectSignal[] = [];
   try {
     const all = await listProspects();
+
+    // Apeluri programate — întâi cele de azi, apoi restul (după dată).
+    calls = all
+      .filter((p) => p.status === "apel_programat")
+      .map((p) => ({
+        id: p.id, name: p.name, next_step: p.next_step,
+        next_step_date: p.next_step_date, isToday: p.next_step_date === today,
+      }))
+      .sort((a, b) => {
+        if (a.isToday !== b.isToday) return a.isToday ? -1 : 1;
+        return (a.next_step_date ?? "9999").localeCompare(b.next_step_date ?? "9999");
+      });
+
     prospects = all
       .filter((p) => OPEN_PROSPECT.has(p.status))
       .map((p): ProspectSignal | null => {
@@ -139,6 +162,7 @@ export async function getDailySignals(): Promise<DailySignals> {
     const order = { intarziat: 0, azi: 1, fara_pas: 2 };
     prospects.sort((a, b) => order[a.urgency] - order[b.urgency]);
   } catch {
+    calls = [];
     prospects = [];
   }
 
@@ -152,7 +176,7 @@ export async function getDailySignals(): Promise<DailySignals> {
     clients = [];
   }
 
-  return { prospects, clients };
+  return { calls, prospects, clients };
 }
 
 export async function saveDailyPlan(plan: DailyPlan): Promise<{ ok: boolean; error?: string }> {

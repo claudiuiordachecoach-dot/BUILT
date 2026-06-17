@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import {
   getDailyPlan, saveDailyPlan, getDailySignals,
-  type DailyPlan, type DailyItem, type Appointment, type DailySignals,
+  type DailyPlan, type DailyItem, type Appointment, type DailySignals, type CallSignal,
 } from "./actions";
 
 function todayStr() { return new Date().toISOString().split("T")[0]; }
@@ -554,6 +554,97 @@ function SignalsPanel({ signals, onAddToDay }: {
   );
 }
 
+// ─── Apeluri azi: front-and-center + reminder ────────────────────────────────
+
+function notifSupported() {
+  return typeof window !== "undefined" && "Notification" in window;
+}
+
+// Minute până la apel → etichetă scurtă + culoare după urgență.
+function fmtCountdown(min: number): { label: string; cls: string } {
+  if (min < -2) return { label: "a trecut", cls: "text-zinc-600" };
+  if (min <= 2) return { label: "ACUM", cls: "text-built-red font-semibold" };
+  if (min < 60) return { label: `în ${min} min`, cls: "text-built-red" };
+  const h = Math.floor(min / 60), m = min % 60;
+  return { label: `peste ${h}h${m ? ` ${m}m` : ""}`, cls: "text-zinc-400" };
+}
+
+function CallsBanner({ appointments, signalCalls, notifPerm, onEnableReminders }: {
+  appointments: Appointment[];
+  signalCalls: CallSignal[];
+  notifPerm: NotificationPermission;
+  onEnableReminders: () => void;
+}) {
+  const [nowMs, setNowMs] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNowMs(Date.now()), 30000);
+    return () => clearInterval(id);
+  }, []);
+
+  const timed = appointments.filter((a) => !a.done).slice().sort((a, b) => a.time.localeCompare(b.time));
+  const pipelineToday = signalCalls.filter((c) => c.isToday);
+  const total = timed.length + pipelineToday.length;
+  if (total === 0) return null;
+
+  return (
+    <div className="rounded-2xl border border-blue-500/25 bg-blue-500/[0.04] p-5 mb-6">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-base">📞</span>
+        <p className="text-[11px] font-condensed uppercase tracking-widest text-blue-300">Apeluri azi</p>
+        <span className="text-[11px] text-zinc-600 ml-auto">{total} {total === 1 ? "apel" : "apeluri"}</span>
+      </div>
+
+      {timed.length > 0 && (
+        <div className="space-y-2.5">
+          {timed.map((a) => {
+            const [h, m] = a.time.split(":").map(Number);
+            const t = new Date(); t.setHours(h, m ?? 0, 0, 0);
+            const min = Math.round((t.getTime() - nowMs) / 60000);
+            const cd = fmtCountdown(min);
+            return (
+              <div key={a.id} className="flex items-center gap-3">
+                <span className="font-mono text-sm text-white w-14 shrink-0 tabular-nums">{a.time}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm text-white truncate">{a.name || "—"}</p>
+                  {a.phone && <p className="text-[11px] text-zinc-500 truncate">📞 {a.phone}</p>}
+                </div>
+                <span className={`text-[11px] font-condensed uppercase tracking-wider shrink-0 ${cd.cls}`}>{cd.label}</span>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {pipelineToday.length > 0 && (
+        <Link href="/dashboard/prospects"
+          className="flex items-center gap-2 mt-3 pt-3 border-t border-white/[0.06] hover:opacity-80 transition-opacity">
+          <span className="text-[9px] font-condensed uppercase tracking-wider px-2 py-1 rounded-md border border-amber-500/40 bg-amber-500/10 text-amber-400 shrink-0">
+            FĂRĂ ORĂ
+          </span>
+          <p className="text-[11px] text-zinc-400">
+            {pipelineToday.length} {pipelineToday.length === 1 ? "apel programat" : "apeluri programate"} din pipeline azi — pune-le oră în calendar ca să primești reminder →
+          </p>
+        </Link>
+      )}
+
+      {notifSupported() && (
+        <div className="mt-3 pt-3 border-t border-white/[0.06]">
+          {notifPerm === "granted" ? (
+            <p className="text-[11px] text-emerald-400/80">🔔 Reminder activ — te anunț cu o oră înainte de fiecare apel (cât timp ai aplicația deschisă).</p>
+          ) : notifPerm === "denied" ? (
+            <p className="text-[11px] text-zinc-600">Notificările sunt blocate. Activează-le din setările browserului pentru site ca să primești reminder.</p>
+          ) : (
+            <button type="button" onClick={onEnableReminders}
+              className="text-[11px] text-blue-300 border border-blue-500/30 bg-blue-500/10 px-3 py-1.5 rounded-lg hover:bg-blue-500/20 transition-colors">
+              🔔 Pornește reminder cu o oră înainte
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AziPage() {
@@ -561,7 +652,9 @@ export default function AziPage() {
   const [plan, setPlan] = useState<DailyPlan | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [signals, setSignals] = useState<DailySignals | null>(null);
+  const [notifPerm, setNotifPerm] = useState<NotificationPermission>("default");
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const reminderTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const skipSave = useRef(true);
 
   useEffect(() => {
@@ -572,8 +665,58 @@ export default function AziPage() {
 
   // Semnalele zilei — „acum", nu per dată. Le tragem o dată, la încărcare.
   useEffect(() => {
-    getDailySignals().then(setSignals).catch(() => setSignals({ prospects: [], clients: [] }));
+    getDailySignals().then(setSignals).catch(() => setSignals({ calls: [], prospects: [], clients: [] }));
   }, []);
+
+  // Starea permisiunii de notificare la încărcare.
+  useEffect(() => {
+    if (notifSupported()) setNotifPerm(Notification.permission);
+  }, []);
+
+  const enableReminders = useCallback(async () => {
+    if (!notifSupported()) return;
+    const perm = await Notification.requestPermission();
+    setNotifPerm(perm);
+    if (perm === "granted") {
+      new Notification("Reminder pornit", { body: "Te anunț cu o oră înainte de fiecare apel.", icon: "/icons/notification.png" });
+    }
+  }, []);
+
+  // Programează reminder-ele zilei: cu o oră înainte + la start de apel,
+  // plus o notă „scrie-ți ziua" la 09:00 dacă ziua e goală. (Cât timp aplicația e deschisă.)
+  useEffect(() => {
+    reminderTimers.current.forEach(clearTimeout);
+    reminderTimers.current = [];
+    if (notifPerm !== "granted" || !plan || !isToday(dateStr)) return;
+
+    const now = Date.now();
+    const at = (h: number, m: number) => { const d = new Date(); d.setHours(h, m, 0, 0); return d.getTime(); };
+    const schedule = (ms: number, title: string, body: string) => {
+      const delay = ms - now;
+      if (delay <= 0 || delay > 86_400_000) return;
+      const t = setTimeout(() => {
+        try { new Notification(title, { body, icon: "/icons/notification.png" }); } catch { /* noop */ }
+      }, delay);
+      reminderTimers.current.push(t);
+    };
+
+    for (const a of plan.appointments ?? []) {
+      if (a.done || !a.time) continue;
+      const [h, m] = a.time.split(":").map(Number);
+      const start = at(h, m ?? 0);
+      const who = `${a.time} · ${a.name || "apel"}${a.phone ? " · " + a.phone : ""}`;
+      schedule(start - 3_600_000, "Apel într-o oră", who);
+      schedule(start, "Apel ACUM", `${a.name || "apel"}${a.phone ? " · " + a.phone : ""}`);
+    }
+
+    const dayEmpty =
+      (plan.top3 ?? []).every((t) => !t.trim()) &&
+      plan.posts.every((p) => !p.text.trim()) &&
+      plan.tasks.length === 0;
+    if (dayEmpty) schedule(at(9, 0), "Scrie-ți ziua", "Top 3 + ce postezi azi (story, reel). 60 de secunde.");
+
+    return () => { reminderTimers.current.forEach(clearTimeout); reminderTimers.current = []; };
+  }, [plan, notifPerm, dateStr]);
 
   useEffect(() => {
     if (!plan || skipSave.current) return;
@@ -643,6 +786,11 @@ export default function AziPage() {
     ? plan.posts.filter((p) => p.text.trim()).length + plan.tasks.length + plan.clients.length
     : 0;
 
+  const dayEmpty = !!plan && isToday(dateStr) &&
+    (plan.top3 ?? []).every((t) => !t.trim()) &&
+    plan.posts.every((p) => !p.text.trim()) &&
+    plan.tasks.length === 0;
+
   if (!plan) return <div className="p-8"><p className="text-zinc-600">Se încarcă...</p></div>;
 
   return (
@@ -685,6 +833,26 @@ export default function AziPage() {
               </span>
             </div>
           </div>
+
+          {/* Apeluri azi — front and center, ca să nu uiți + reminder */}
+          {isToday(dateStr) && (
+            <CallsBanner
+              appointments={plan.appointments ?? []}
+              signalCalls={signals?.calls ?? []}
+              notifPerm={notifPerm}
+              onEnableReminders={enableReminders}
+            />
+          )}
+
+          {/* Ziua e goală — scrie-ți-o */}
+          {dayEmpty && (
+            <div className="rounded-2xl border border-amber-500/20 bg-amber-500/[0.03] p-5 mb-6">
+              <p className="text-sm text-zinc-300 leading-relaxed">
+                <span className="text-amber-400">✎</span> Ziua e goală. Scrie-ți <span className="text-white font-medium">Top 3</span> și ce postezi azi — <span className="text-white font-medium">story, reel, carusel</span>.
+                <span className="text-zinc-500"> 60 de secunde acum, claritate toată ziua.</span>
+              </p>
+            </div>
+          )}
 
           {/* Semnale — ce contează azi (doar pe ziua curentă) */}
           {isToday(dateStr) && (
