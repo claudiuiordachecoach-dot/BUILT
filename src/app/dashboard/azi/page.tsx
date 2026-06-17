@@ -1,7 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { getDailyPlan, saveDailyPlan, type DailyPlan, type DailyItem, type Appointment } from "./actions";
+import Link from "next/link";
+import {
+  getDailyPlan, saveDailyPlan, getDailySignals,
+  type DailyPlan, type DailyItem, type Appointment, type DailySignals,
+} from "./actions";
 
 function todayStr() { return new Date().toISOString().split("T")[0]; }
 function shiftDate(d: string, n: number) {
@@ -436,12 +440,127 @@ function CalendarDay({
   );
 }
 
+// ─── Semnale: ce contează azi ────────────────────────────────────────────────
+
+const PROSPECT_STATUS_LABEL: Record<string, string> = {
+  dm: "în DM", apel_programat: "apel programat", discovery: "discovery", oferta: "ofertă",
+};
+const URGENCY: Record<string, { label: string; cls: string }> = {
+  intarziat: { label: "ÎNTÂRZIAT", cls: "text-red-400 border-red-500/40 bg-red-500/10" },
+  azi: { label: "AZI", cls: "text-built-red border-built-red/40 bg-built-red/10" },
+  fara_pas: { label: "FĂRĂ PAS", cls: "text-amber-400 border-amber-500/40 bg-amber-500/10" },
+};
+const CLIENT_LEVEL: Record<string, { label: string; cls: string }> = {
+  disparut: { label: "DISPĂRUT", cls: "text-red-400 border-red-500/40 bg-red-500/10" },
+  aluneca: { label: "ALUNECĂ", cls: "text-amber-400 border-amber-500/40 bg-amber-500/10" },
+  epuizat: { label: "EPUIZAT", cls: "text-amber-400 border-amber-500/40 bg-amber-500/10" },
+  atentie: { label: "ATENȚIE", cls: "text-zinc-400 border-white/20 bg-white/5" },
+};
+
+function SignalRow({ chip, title, sub, href, onAdd, added }: {
+  chip: { label: string; cls: string }; title: string; sub: string;
+  href: string; onAdd: () => void; added: boolean;
+}) {
+  return (
+    <div className="flex items-center gap-3 py-2 group">
+      <span className={`text-[9px] font-condensed uppercase tracking-wider px-2 py-1 rounded-md border shrink-0 w-[88px] text-center ${chip.cls}`}>
+        {chip.label}
+      </span>
+      <Link href={href} className="flex-1 min-w-0 hover:opacity-80 transition-opacity">
+        <p className="text-sm text-white truncate">{title}</p>
+        {sub && <p className="text-[11px] text-zinc-500 truncate">{sub}</p>}
+      </Link>
+      <button type="button" onClick={onAdd} disabled={added}
+        className={`text-[10px] font-condensed uppercase tracking-wider px-2.5 py-1.5 rounded-lg border shrink-0 transition-colors ${
+          added ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/5 cursor-default"
+                : "text-zinc-400 border-white/10 hover:border-built-red/40 hover:text-built-red"
+        }`}>
+        {added ? "✓ pe listă" : "+ azi"}
+      </button>
+    </div>
+  );
+}
+
+function SignalsPanel({ signals, onAddToDay }: {
+  signals: DailySignals | null;
+  onAddToDay: (list: "clients" | "tasks", text: string) => void;
+}) {
+  const [added, setAdded] = useState<Set<string>>(new Set());
+  if (!signals) return null;
+  const total = signals.prospects.length + signals.clients.length;
+  const markAdded = (k: string) => setAdded((s) => new Set(s).add(k));
+
+  if (total === 0) {
+    return (
+      <div className="rounded-2xl border border-emerald-500/15 bg-emerald-500/[0.03] p-5 mb-6">
+        <p className="text-sm text-zinc-400">
+          <span className="text-emerald-400">✓</span> Niciun semnal urgent. Niciun prospect întârziat, niciun client care alunecă. Construiește.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="rounded-2xl border border-built-red/20 bg-built-red/[0.03] p-5 mb-6">
+      <div className="flex items-center gap-2 mb-3">
+        <span className="text-base">⬢</span>
+        <p className="text-[11px] font-condensed uppercase tracking-widest text-built-red">Ce contează azi</p>
+        <span className="text-[11px] text-zinc-600 ml-auto">{total} {total === 1 ? "semnal" : "semnale"}</span>
+      </div>
+
+      {signals.prospects.length > 0 && (
+        <div className="mb-1">
+          <p className="text-[10px] uppercase tracking-wider text-zinc-600 mb-1">Prospecți de urmărit</p>
+          <div className="divide-y divide-white/[0.04]">
+            {signals.prospects.map((p) => {
+              const k = `p${p.id}`;
+              const action = p.next_step?.trim() || (p.urgency === "fara_pas" ? "stabilește pasul următor" : "urmărește");
+              return (
+                <SignalRow key={k}
+                  chip={URGENCY[p.urgency]}
+                  title={`${p.name} · ${PROSPECT_STATUS_LABEL[p.status] ?? p.status}`}
+                  sub={action}
+                  href="/dashboard/prospects"
+                  added={added.has(k)}
+                  onAdd={() => { onAddToDay("clients", `${p.name} — ${action}`); markAdded(k); }}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {signals.clients.length > 0 && (
+        <div className="mt-3">
+          <p className="text-[10px] uppercase tracking-wider text-zinc-600 mb-1">Clienți care au nevoie de tine</p>
+          <div className="divide-y divide-white/[0.04]">
+            {signals.clients.map((c) => {
+              const k = `c${c.id}`;
+              return (
+                <SignalRow key={k}
+                  chip={CLIENT_LEVEL[c.level] ?? { label: c.level.toUpperCase(), cls: "text-zinc-400 border-white/20 bg-white/5" }}
+                  title={c.name}
+                  sub={c.reason}
+                  href="/dashboard/clients"
+                  added={added.has(k)}
+                  onAdd={() => { onAddToDay("clients", `Check-in: ${c.name}`); markAdded(k); }}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function AziPage() {
   const [dateStr, setDateStr] = useState(todayStr());
   const [plan, setPlan] = useState<DailyPlan | null>(null);
   const [status, setStatus] = useState<"idle" | "saving" | "saved">("idle");
+  const [signals, setSignals] = useState<DailySignals | null>(null);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const skipSave = useRef(true);
 
@@ -450,6 +569,11 @@ export default function AziPage() {
     setPlan(null);
     getDailyPlan(dateStr).then((p) => { setPlan(p); skipSave.current = false; });
   }, [dateStr]);
+
+  // Semnalele zilei — „acum", nu per dată. Le tragem o dată, la încărcare.
+  useEffect(() => {
+    getDailySignals().then(setSignals).catch(() => setSignals({ prospects: [], clients: [] }));
+  }, []);
 
   useEffect(() => {
     if (!plan || skipSave.current) return;
@@ -562,7 +686,12 @@ export default function AziPage() {
             </div>
           </div>
 
-          {/* Dimineată */}
+          {/* Semnale — ce contează azi (doar pe ziua curentă) */}
+          {isToday(dateStr) && (
+            <SignalsPanel signals={signals} onAddToDay={(list, text) => addItem(list, text)} />
+          )}
+
+          {/* Dimineață */}
           <div className="flex items-center gap-3 mb-4">
             <div className="h-px flex-1 bg-white/[0.06]" />
             <p className="font-condensed text-[10px] uppercase tracking-widest text-zinc-600">Dimineață</p>
