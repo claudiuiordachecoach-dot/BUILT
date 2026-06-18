@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { saveProgressEntry, deleteProgressEntry } from "../actions";
+import { ImageUpload } from "@/components/ImageUpload";
 
 type ProgressEntry = {
   id: string;
@@ -136,13 +137,13 @@ export default function ProgressGallery({ clientId, initialGallery }: { clientId
               />
             </div>
             <div>
-              <label className="text-[9px] text-zinc-500 mb-1 block">URL POZĂ (Postimages.org)</label>
-              <input 
-                type="text" 
-                value={formData.photo_url}
-                onChange={e => setFormData({...formData, photo_url: e.target.value})}
-                className="w-full bg-black/50 border border-white/10 rounded text-xs p-1.5 text-white focus:outline-none focus:border-built-red"
-                placeholder="https://i.postimg.cc/..."
+              <label className="text-[9px] text-zinc-500 mb-1 block">POZĂ</label>
+              <ImageUpload
+                folder="progress"
+                shape="rect"
+                value={formData.photo_url || undefined}
+                label="Alege poza"
+                onUploaded={(url) => setFormData({ ...formData, photo_url: url })}
               />
             </div>
           </div>

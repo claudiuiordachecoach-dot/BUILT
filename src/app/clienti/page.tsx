@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { listClients } from "./actions";
 import { NewClientForm } from "./NewClientForm";
+import { CoachProfileCard } from "./CoachProfileCard";
 
 export const dynamic = "force-dynamic";
 
@@ -21,6 +22,8 @@ export default async function ClientiPage() {
     <div className="p-8 max-w-4xl">
       <p className="font-condensed text-xs text-built-red uppercase tracking-wider mb-1">M12 · Clienți & Retenție</p>
       <h1 className="font-display text-5xl tracking-[0.06em] text-built-white mb-8">CLIENȚI BUILT</h1>
+
+      <CoachProfileCard />
 
       <div className="grid grid-cols-4 gap-4 mb-8">
         {[["Total", clients.length], ["Activi", active.length], ["La risc", atRisk.length], ["Finalizați", clients.filter(c => c.status === "completed").length]].map(([l, v]) => (

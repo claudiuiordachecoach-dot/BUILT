@@ -53,7 +53,7 @@ export async function getClientDashboard(overrideClientId?: number) {
     { data: nutrition },
     { data: unreadMessages },
   ] = await Promise.all([
-    db.from("clients").select("id, name, start_date, status, objectives, progress_gallery").eq("id", clientId).single(),
+    db.from("clients").select("*").eq("id", clientId).single(),
     db.from("client_checkins").select("*").eq("client_id", clientId).order("created_at", { ascending: false }).limit(1).single(),
     db.from("workout_plans").select("*").eq("client_id", clientId).order("week_start", { ascending: false }).limit(1).single(),
     db.from("nutrition_plans").select("*").eq("client_id", clientId).single(),
@@ -411,11 +411,39 @@ export async function saveProgressEntry(clientId: number, entry: { id: string; l
 
 export async function deleteProgressEntry(clientId: number, entryId: string) {
   const db = getSupabaseServer();
-  
+
   const { data: client } = await db.from("clients").select("progress_gallery").eq("id", clientId).single();
   const currentGallery = client?.progress_gallery || [];
-  
+
   const newGallery = currentGallery.filter((entry: any) => entry.id !== entryId);
-  
+
   await db.from("clients").update({ progress_gallery: newGallery }).eq("id", clientId);
+}
+
+// ── Avatar client ──
+export async function saveClientAvatar(clientId: number, url: string) {
+  const db = getSupabaseServer();
+  await db.from("clients").update({ avatar_url: url }).eq("id", clientId);
+}
+
+// ── Avatar coach (app_settings) ──
+export async function getCoachAvatar(): Promise<string | null> {
+  try {
+    const db = getSupabaseServer();
+    const { data } = await db
+      .from("app_settings")
+      .select("value")
+      .eq("key", "coach_avatar_url")
+      .single();
+    return data?.value ?? null;
+  } catch {
+    return null; // tabelul poate lipsi până rulează DDL-ul
+  }
+}
+
+export async function saveCoachAvatar(url: string) {
+  const db = getSupabaseServer();
+  await db
+    .from("app_settings")
+    .upsert({ key: "coach_avatar_url", value: url, updated_at: new Date().toISOString() });
 }

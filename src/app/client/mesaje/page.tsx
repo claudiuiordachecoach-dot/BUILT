@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { getMessages, sendClientMessage } from "../actions";
+import { getMessages, sendClientMessage, getCoachAvatar } from "../actions";
 
 type Msg = { id: number; sender: string; content: string; created_at: string };
 
@@ -8,9 +8,11 @@ export default function MesajePage() {
   const [messages, setMessages] = useState<Msg[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [coachAvatar, setCoachAvatar] = useState<string | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => { getMessages().then(msgs => setMessages(msgs as Msg[])); }, []);
+  useEffect(() => { getCoachAvatar().then(setCoachAvatar); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
   async function handleSend() {
@@ -27,7 +29,12 @@ export default function MesajePage() {
     <div className="flex flex-col h-screen">
       <div className="p-5 border-b border-white/10">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-full bg-built-red flex items-center justify-center text-sm font-bold text-white">IC</div>
+          {coachAvatar ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={coachAvatar} alt="Coach" className="w-9 h-9 rounded-full object-cover" />
+          ) : (
+            <div className="w-9 h-9 rounded-full bg-built-red flex items-center justify-center text-sm font-bold text-white">IC</div>
+          )}
           <div>
             <p className="text-sm font-semibold text-zinc-200">Iordache Claudiu</p>
             <p className="text-xs text-zinc-500">Coach BUILT</p>

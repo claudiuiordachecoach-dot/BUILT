@@ -1,5 +1,7 @@
 import { getClientDashboard } from "../actions";
 import ProgressGallery from "./ProgressGallery";
+import ProfileAvatar from "./ProfileAvatar";
+import WeightSummary from "./WeightSummary";
 import { EnableNotificationsButton } from "../components/EnableNotificationsButton";
 
 export const dynamic = "force-dynamic";
@@ -32,6 +34,23 @@ export default async function ClientProfilePage({
       </h1>
 
       <div className="space-y-8">
+        {/* Avatar */}
+        <section>
+          <div className="bg-[#111111] border border-white/10 rounded-lg p-6">
+            <ProfileAvatar
+              clientId={clientId!}
+              name={client?.name || "Membru BUILT"}
+              initialUrl={client?.avatar_url}
+            />
+          </div>
+        </section>
+
+        {/* Greutate actuală + evoluție */}
+        <section>
+          <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Greutate &amp; Evoluție</h2>
+          <WeightSummary gallery={client?.progress_gallery || []} />
+        </section>
+
         {/* Notificări Push */}
         <section>
           <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Notificări</h2>
