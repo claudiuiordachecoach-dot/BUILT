@@ -1,5 +1,6 @@
 import { getClientDashboard } from "../actions";
 import ProgressGallery from "./ProgressGallery";
+import { EnableNotificationsButton } from "../components/EnableNotificationsButton";
 
 export const dynamic = "force-dynamic";
 
@@ -31,6 +32,17 @@ export default async function ClientProfilePage({
       </h1>
 
       <div className="space-y-8">
+        {/* Notificări Push */}
+        <section>
+          <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Notificări</h2>
+          <div className="bg-[#111111] border border-white/10 rounded-lg p-6 flex items-center justify-between">
+            <div>
+              <p className="text-sm text-zinc-300">Activează notificările pentru a primi remindere şi mesaje de la antrenor.</p>
+            </div>
+            <EnableNotificationsButton clientId={clientId!} />
+          </div>
+        </section>
+
         {/* Obiective */}
         <section>
           <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Foaia de Parcurs (Obiective)</h2>
@@ -54,3 +66,4 @@ export default async function ClientProfilePage({
     </div>
   );
 }
+

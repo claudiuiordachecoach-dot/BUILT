@@ -48,6 +48,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { NotificationProvider } from '@/app/client/components/NotificationProvider';
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -74,7 +76,9 @@ export default async function RootLayout({
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <div className="flex min-h-screen">
             {isAdmin && <Sidebar />}
-            <main className={`flex-1 min-w-0 ${isAdmin ? "pt-12 md:pt-0" : ""}`}>{children}</main>
+            <NotificationProvider>
+              <main className={`flex-1 min-w-0 ${isAdmin ? "pt-12 md:pt-0" : ""}`}>{children}</main>
+            </NotificationProvider>
           </div>
         </ThemeProvider>
       </body>
