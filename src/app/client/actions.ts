@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { getSupabaseAuth, getUserRole } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { sendMessageNotification } from "@/lib/email";
+import { sendPushToClient } from "@/lib/push";
 
 // Seteaza cookie-ul cand admin apasa "View as Client"
 export async function setAdminViewClient(clientId: number) {
@@ -16,7 +17,7 @@ export async function setAdminViewClient(clientId: number) {
   });
 }
 
-async function getClientId(): Promise<number | null> {
+export async function getClientId(): Promise<number | null> {
   const supabase = await getSupabaseAuth();
   const { data: { user } } = await supabase.auth.getUser();
 
@@ -269,6 +270,14 @@ export async function saveNutritionPlan(clientId: number, plan: {
 export async function sendAdminMessage(clientId: number, content: string) {
   const db = getSupabaseServer();
   await db.from("client_messages").insert({ client_id: clientId, sender: "admin", content });
+
+  // Notificare push către client (silentios, nu blochează)
+  sendPushToClient(
+    clientId,
+    "Mesaj nou de la antrenor",
+    content.length > 120 ? content.slice(0, 117) + "..." : content,
+    "/client/mesaje"
+  ).catch(() => {});
 }
 
 export async function getAdminUnreadCount(): Promise<number> {
