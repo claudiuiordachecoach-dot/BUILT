@@ -274,7 +274,7 @@ export async function sendAdminMessage(clientId: number, content: string) {
   // Notificare push către client (silentios, nu blochează)
   sendPushToClient(
     clientId,
-    "Mesaj nou de la antrenor",
+    "Mesaj nou de la Coach",
     content.length > 120 ? content.slice(0, 117) + "..." : content,
     "/client/mesaje"
   ).catch(() => {});
