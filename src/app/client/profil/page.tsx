@@ -2,6 +2,8 @@ import { getClientDashboard } from "../actions";
 import ProgressGallery from "./ProgressGallery";
 import ProfileAvatar from "./ProfileAvatar";
 import WeightSummary from "./WeightSummary";
+import WeightGoal from "./WeightGoal";
+import BeforeAfter from "./BeforeAfter";
 import { EnableNotificationsButton } from "../components/EnableNotificationsButton";
 
 export const dynamic = "force-dynamic";
@@ -48,7 +50,16 @@ export default async function ClientProfilePage({
         {/* Greutate actuală + evoluție */}
         <section>
           <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Greutate &amp; Evoluție</h2>
-          <WeightSummary gallery={client?.progress_gallery || []} />
+          <div className="space-y-4">
+            <WeightSummary gallery={client?.progress_gallery || []} />
+            <WeightGoal gallery={client?.progress_gallery || []} target={client?.target_weight_kg} />
+          </div>
+        </section>
+
+        {/* Înainte / Acum */}
+        <section>
+          <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Înainte / Acum</h2>
+          <BeforeAfter gallery={client?.progress_gallery || []} />
         </section>
 
         {/* Notificări Push */}

@@ -3,7 +3,7 @@
 import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { submitCheckin, updateClientStatus, inviteClient, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, type Client, type CheckIn, type ClientStatus, type ClientModule, type IntakeRecord, getClientModules, saveClientModule, deleteClientModule } from "../actions";
+import { submitCheckin, updateClientStatus, inviteClient, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, saveTargetWeight, type Client, type CheckIn, type ClientStatus, type ClientModule, type IntakeRecord, getClientModules, saveClientModule, deleteClientModule } from "../actions";
 import { CopyIntakeLink } from "./CopyIntakeLink";
 import { ALL_INTAKE_FIELDS } from "@/app/fisa-start/[token]/fields";
 import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages, setAdminViewClient } from "@/app/client/actions";
@@ -36,6 +36,17 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
   const [inviting, setInviting] = useState(false);
   const [inviteMsg, setInviteMsg] = useState<string | null>(null);
   const [draftState, setDraftState] = useState<Record<number, { loading: boolean; text: string; sent: boolean }>>({});
+  const [targetWeight, setTargetWeight] = useState<string>(client.target_weight_kg != null ? String(client.target_weight_kg) : "");
+  const [targetSaved, setTargetSaved] = useState(false);
+
+  function handleSaveTarget() {
+    const val = targetWeight.trim() === "" ? null : parseFloat(targetWeight);
+    startTransition(async () => {
+      await saveTargetWeight(client.id, val);
+      setTargetSaved(true);
+      setTimeout(() => setTargetSaved(false), 2000);
+    });
+  }
 
   const numericClientId = client.id;
   const currentWeek = weeksSince(client.start_date);
@@ -221,31 +232,37 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
           )}
 
           <div>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-display text-xl tracking-wider">Galeria de Progres (Foto)</h3>
-              <button onClick={() => alert('Pentru MVP, adaugă direct link-ul foto în câmpul text. Mai târziu vom face upload în Supabase.')} className="text-[10px] font-condensed text-built-red uppercase hover:underline tracking-wider">+ Adaugă Foto Nouă</button>
-            </div>
-            
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {/* Mockup for photos */}
-              <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group">
-                 <p className="text-zinc-600 text-[10px] text-center px-4 font-condensed uppercase tracking-wider">Lipește link URL poză<br/><input type="text" placeholder="https://..." className="mt-2 w-full bg-black/50 border border-white/10 rounded text-[9px] p-1.5 text-zinc-300 focus:outline-none focus:border-built-red transition-colors" /></p>
-                 <div className="absolute bottom-0 inset-x-0 bg-black/80 py-2 px-2 border-t border-white/10">
-                   <p className="text-[9px] font-condensed text-built-gray-text uppercase tracking-widest text-center">Poza Inițială (Ziua 1)</p>
-                 </div>
+            <h3 className="font-display text-xl tracking-wider mb-3">Obiectiv de Greutate</h3>
+            <div className="bg-[#111111] border border-white/10 rounded-lg p-5">
+              <p className="text-[11px] text-built-gray-text mb-3">
+                Ținta apare ca bară de progres în profilul clientului (start → actuală → țintă).
+              </p>
+              <div className="flex items-center gap-3">
+                <input
+                  type="number"
+                  step="0.1"
+                  value={targetWeight}
+                  onChange={(e) => setTargetWeight(e.target.value)}
+                  placeholder="Ex: 72"
+                  className="w-32 bg-black/50 border border-white/10 rounded text-sm p-2 text-white focus:outline-none focus:border-built-red"
+                />
+                <span className="text-sm text-zinc-400">kg</span>
+                <button
+                  onClick={handleSaveTarget}
+                  disabled={isPending}
+                  className="px-4 py-2 bg-built-red hover:bg-red-700 text-white text-xs uppercase tracking-wider rounded transition-colors disabled:opacity-50"
+                >
+                  {targetSaved ? "Salvat ✓" : "Salvează"}
+                </button>
               </div>
+            </div>
+          </div>
 
-              <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center relative overflow-hidden group">
-                 <p className="text-zinc-600 text-[10px] text-center px-4 font-condensed uppercase tracking-wider">Lipește link URL poză<br/><input type="text" placeholder="https://..." className="mt-2 w-full bg-black/50 border border-white/10 rounded text-[9px] p-1.5 text-zinc-300 focus:outline-none focus:border-built-red transition-colors" /></p>
-                 <div className="absolute bottom-0 inset-x-0 bg-black/80 py-2 px-2 border-t border-white/10">
-                   <p className="text-[9px] font-condensed text-built-gray-text uppercase tracking-widest text-center">Săptămâna 2</p>
-                 </div>
-              </div>
-              
-              <div className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex items-center justify-center border-dashed border-built-gray-2 hover:border-built-red/50 transition-colors cursor-pointer">
-                 <p className="text-built-gray-text text-2xl font-light">+</p>
-              </div>
-            </div>
+          <div>
+            <h3 className="font-display text-xl tracking-wider mb-3">Galeria de Progres (Foto)</h3>
+            <p className="text-[11px] text-built-gray-text">
+              Pozele de progres se adaugă de către client din portalul lui (Profilul Meu → Galeria de Progres), cu upload direct de pe telefon.
+            </p>
           </div>
         </div>
       )}

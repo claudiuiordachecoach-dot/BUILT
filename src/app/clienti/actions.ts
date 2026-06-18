@@ -12,6 +12,9 @@ export interface Client {
   id: number; name: string; email: string | null;
   start_date: string; objectives: string | null;
   status: ClientStatus; notes: string | null; created_at: string;
+  target_weight_kg?: number | null;
+  avatar_url?: string | null;
+  progress_gallery?: { id: string; label: string; weight_kg: number; photo_url: string; date: string }[];
 }
 
 export interface ClientModule {
@@ -44,6 +47,12 @@ export async function getClient(id: number): Promise<Client | null> {
   const s = getSupabaseServer();
   const { data } = await s.from("clients").select("*").eq("id", id).maybeSingle();
   return data as Client | null;
+}
+
+export async function saveTargetWeight(clientId: number, targetKg: number | null) {
+  const s = getSupabaseServer();
+  const { error } = await s.from("clients").update({ target_weight_kg: targetKg }).eq("id", clientId);
+  if (error) throw new Error(error.message);
 }
 
 export async function getClientCheckins(clientId: number): Promise<CheckIn[]> {
