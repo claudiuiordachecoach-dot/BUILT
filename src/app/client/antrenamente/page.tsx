@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getWorkoutPlan } from "../actions";
 import WeeklyTraining from "./WeeklyTraining";
+import { EmptyState } from "../components/EmptyState";
 
 const DAYS = ["Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă", "Duminică"];
 type Exercise = { name: string; sets: number; reps: string; note?: string };
@@ -15,10 +16,10 @@ export default function AntrenamantePage() {
   useEffect(() => { getWorkoutPlan().then(p => setPlan(p as WorkoutPlan | null)); }, []);
 
   if (!plan) return (
-    <div className="p-8">
+    <div className="p-5 md:p-8 max-w-3xl">
       <h1 className="font-display text-4xl tracking-wider text-built-white mb-4">Plan Antrenament</h1>
       <WeeklyTraining />
-      <p className="text-zinc-500 text-sm">Planul tău nu a fost creat încă. Claudiu îl va pregăti în curând.</p>
+      <EmptyState icon="⚡" title="Planul tău se construiește" subtitle="Claudiu îți pregătește antrenamentele. Apar aici în curând." />
     </div>
   );
 

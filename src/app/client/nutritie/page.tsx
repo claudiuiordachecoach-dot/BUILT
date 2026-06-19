@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { getNutritionPlan } from "../actions";
+import { EmptyState } from "../components/EmptyState";
 
 type Meal = { name: string; foods: string[]; calories?: number; protein_g?: number };
 type NutritionPlan = { calories: number; protein_g: number; carbs_g: number; fat_g: number; meals: Meal[]; notes?: string; quickref_url?: string };
@@ -10,9 +11,9 @@ export default function NutritiePage() {
   useEffect(() => { getNutritionPlan().then(p => setPlan(p as NutritionPlan | null)); }, []);
 
   if (!plan) return (
-    <div className="p-8">
-      <h1 className="font-display text-4xl tracking-wider text-built-white mb-2">Plan Nutrițional</h1>
-      <p className="text-zinc-500 text-sm">Planul tău nutrițional va fi pregătit de Claudiu în curând.</p>
+    <div className="p-5 md:p-8 max-w-3xl">
+      <h1 className="font-display text-4xl tracking-wider text-built-white mb-6">Plan Nutrițional</h1>
+      <EmptyState icon="◉" title="Planul tău se construiește" subtitle="Claudiu îți pregătește sistemul nutrițional. Apare aici în curând." />
     </div>
   );
 
@@ -32,9 +33,9 @@ export default function NutritiePage() {
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
           { label: "Calorii", value: plan.calories, unit: "kcal", color: "text-built-red" },
-          { label: "Proteine", value: plan.protein_g, unit: "g", color: "text-blue-400" },
-          { label: "Carbohidrați", value: plan.carbs_g, unit: "g", color: "text-yellow-400" },
-          { label: "Grăsimi", value: plan.fat_g, unit: "g", color: "text-green-400" },
+          { label: "Proteine", value: plan.protein_g, unit: "g", color: "text-built-white" },
+          { label: "Carbohidrați", value: plan.carbs_g, unit: "g", color: "text-built-white" },
+          { label: "Grăsimi", value: plan.fat_g, unit: "g", color: "text-built-white" },
         ].map(m => (
           <div key={m.label} className="bg-[#111111] border border-white/10 rounded-xl p-4 text-center">
             <p className={`text-2xl font-bold ${m.color}`}>{m.value}</p>

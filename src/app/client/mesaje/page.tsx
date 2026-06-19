@@ -43,9 +43,10 @@ export default function MesajePage() {
       </div>
       <div className="flex-1 overflow-y-auto p-5 space-y-3">
         {messages.length === 0 && (
-          <div className="text-center py-12">
-            <p className="text-sm text-zinc-500">Nicio conversație încă.</p>
-            <p className="text-xs text-zinc-600 mt-1">Scrie primul mesaj!</p>
+          <div className="flex flex-col items-center justify-center text-center py-16 px-6">
+            <div className="w-12 h-12 rounded-full bg-built-red/10 border border-built-red/20 flex items-center justify-center text-xl text-built-red mb-4">◎</div>
+            <p className="font-condensed text-sm uppercase tracking-wider text-zinc-200">Linie directă cu Claudiu</p>
+            <p className="text-xs text-zinc-500 mt-1 max-w-xs leading-relaxed">Orice întrebare, blocaj sau victorie — scrie aici. Primești răspuns direct.</p>
           </div>
         )}
         {messages.map(msg => (

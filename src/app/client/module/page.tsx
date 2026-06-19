@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getClientModules } from "../actions";
+import { EmptyState } from "../components/EmptyState";
 
 export default function ClientModulesPage() {
   const [modules, setModules] = useState<any[]>([]);
@@ -29,9 +30,7 @@ export default function ClientModulesPage() {
       </div>
 
       {modules.length === 0 ? (
-        <div className="bg-[#111111] border border-white/5 rounded-xl p-8 text-center">
-          <p className="text-zinc-500">Modulele tale educaționale vor apărea aici în curând.</p>
-        </div>
+        <EmptyState icon="📚" title="Academia se deschide curând" subtitle="Modulele tale educaționale vor apărea aici pe măsură ce avansezi în program." />
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {modules.map((m) => (
