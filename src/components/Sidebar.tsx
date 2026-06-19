@@ -52,6 +52,7 @@ const MAIN_ITEMS: NavEntry[] = [
 ];
 
 const TOOLS_ITEMS: NavEntry[] = [
+  { label: "Board Advisori", href: "/dashboard/advisors", icon: <Icons.users /> },
   { label: "Repurpose Engine", href: "/dashboard/repurpose", icon: <Icons.star /> },
   { label: "Generator Carusele", href: "/carusele", icon: <Icons.book /> },
   { label: "Generator Story-uri", href: "/stories", icon: <Icons.message /> },
@@ -67,6 +68,7 @@ const TOOLS_ITEMS: NavEntry[] = [
 const ADMIN_ITEMS: NavEntry[] = [
   { label: "Clienți",            href: "/dashboard/clients",          icon: <Icons.users /> },
   { label: "Rapoarte Progres",   href: "/dashboard/progress-reports", icon: <Icons.report /> },
+  { label: "Profil Coach",       href: "/dashboard/profil",           icon: <Icons.user /> },
 ];
 
 function NavLink({ item, pathname, collapsed }: { item: NavEntry; pathname: string; collapsed: boolean }) {
@@ -141,15 +143,18 @@ export function Sidebar() {
           </div>
           <span className="text-foreground font-semibold text-[13px]">BUILT AI</span>
         </div>
-        <button
-          onClick={() => setMobileOpen(true)}
-          className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
-          aria-label="Deschide meniu"
-        >
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-            <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-          </svg>
-        </button>
+        <div className="flex items-center gap-2">
+          <SignOutButton iconOnly />
+          <button
+            onClick={() => setMobileOpen(true)}
+            className="p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-all"
+            aria-label="Deschide meniu"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+              <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+        </div>
       </header>
 
       {/* Overlay fundal — mobile drawer */}

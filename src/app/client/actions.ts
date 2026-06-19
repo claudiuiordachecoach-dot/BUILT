@@ -5,6 +5,7 @@ import { getSupabaseAuth, getUserRole } from "@/lib/supabase/auth-server";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { sendMessageNotification } from "@/lib/email";
 import { sendPushToClient } from "@/lib/push";
+import { getSettings, getSetting } from "@/lib/settings";
 
 // Seteaza cookie-ul cand admin apasa "View as Client"
 export async function setAdminViewClient(clientId: number) {
@@ -272,12 +273,25 @@ export async function sendAdminMessage(clientId: number, content: string) {
   await db.from("client_messages").insert({ client_id: clientId, sender: "admin", content });
 
   // Notificare push către client (silentios, nu blochează)
-  sendPushToClient(
-    clientId,
-    "Mesaj nou de la Coach",
-    content.length > 120 ? content.slice(0, 117) + "..." : content,
-    "/client/mesaje"
-  ).catch(() => {});
+  (async () => {
+    const title = (await getSetting("push_message_title").catch(() => null)) || "Mesaj nou de la Coach";
+    await sendPushToClient(
+      clientId,
+      title,
+      content.length > 120 ? content.slice(0, 117) + "..." : content,
+      "/client/mesaje"
+    );
+  })().catch(() => {});
+}
+
+// Date publice despre coach (pentru clienți): avatar, nume, bio.
+export async function getCoachPublic(): Promise<{ avatar_url: string | null; name: string | null; bio: string | null }> {
+  const s = await getSettings(["coach_avatar_url", "coach_name", "coach_bio"]).catch(() => ({} as Record<string, string>));
+  return {
+    avatar_url: s.coach_avatar_url ?? null,
+    name: s.coach_name ?? null,
+    bio: s.coach_bio ?? null,
+  };
 }
 
 export async function getAdminUnreadCount(): Promise<number> {
