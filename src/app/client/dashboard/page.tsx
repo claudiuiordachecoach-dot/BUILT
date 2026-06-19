@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { getClientDashboard, getTodayLog, getStreak } from "../actions";
+import { getClientDashboard, getTodayLog, getStreak, getClientBadges } from "../actions";
 import DailyChecklist from "./DailyChecklist";
+import Badges from "./Badges";
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +25,9 @@ export default async function ClientDashboardPage({
 
   const { client, weekNumber, daysInProgram, latestCheckin, unreadCount } = data;
   const clientId = client?.id;
-  const [todayLog, streak] = clientId
-    ? await Promise.all([getTodayLog(clientId), getStreak(clientId)])
-    : [{}, 0];
+  const [todayLog, streak, badges] = clientId
+    ? await Promise.all([getTodayLog(clientId), getStreak(clientId), getClientBadges(clientId)])
+    : [{}, 0, []];
 
   return (
     <div className="p-8 max-w-4xl">
@@ -48,6 +49,8 @@ export default async function ClientDashboardPage({
       </div>
 
       {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
+
+      {badges.length > 0 && <Badges badges={badges} />}
 
       <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
         <div className="flex items-center justify-between mb-2">

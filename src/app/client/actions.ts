@@ -448,6 +448,41 @@ export async function saveCoachAvatar(url: string) {
     .upsert({ key: "coach_avatar_url", value: url, updated_at: new Date().toISOString() });
 }
 
+// ── Jaloane (badge-uri) ──
+export type Badge = { id: string; label: string; icon: string; earned: boolean; hint?: string };
+
+export async function getClientBadges(clientId: number): Promise<Badge[]> {
+  const db = getSupabaseServer();
+  const [{ data: client }, { count: checkinCount }, streak] = await Promise.all([
+    db.from("clients").select("start_date, progress_gallery").eq("id", clientId).single(),
+    db.from("client_checkins").select("id", { count: "exact", head: true }).eq("client_id", clientId),
+    getStreak(clientId),
+  ]);
+
+  const days = client?.start_date
+    ? Math.floor((Date.now() - new Date(client.start_date).getTime()) / 86400000)
+    : 0;
+
+  const gallery = (client?.progress_gallery as { weight_kg: number; date: string }[] | undefined) ?? [];
+  const sorted = [...gallery].filter((g) => typeof g.weight_kg === "number")
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+  const lost = sorted.length >= 2 ? sorted[0].weight_kg - sorted[sorted.length - 1].weight_kg : 0;
+
+  const checkins = checkinCount ?? 0;
+
+  return [
+    { id: "start", label: "Primul pas", icon: "🚀", earned: true },
+    { id: "checkin1", label: "Primul check-in", icon: "✓", earned: checkins >= 1, hint: "Trimite primul check-in" },
+    { id: "day7", label: "7 zile", icon: "📅", earned: days >= 7 },
+    { id: "day30", label: "30 zile", icon: "🗓️", earned: days >= 30 },
+    { id: "day90", label: "90 zile", icon: "🏆", earned: days >= 90 },
+    { id: "streak7", label: "Streak 7", icon: "🔥", earned: streak >= 7, hint: "7 zile de execuție la rând" },
+    { id: "streak30", label: "Streak 30", icon: "⚡", earned: streak >= 30 },
+    { id: "lose5", label: "−5 kg", icon: "💪", earned: lost >= 5, hint: "Adaugă greutatea în Galeria de Progres" },
+    { id: "lose10", label: "−10 kg", icon: "🦾", earned: lost >= 10 },
+  ];
+}
+
 // ── Checklist zilnic ("Azi") ──
 function todayStr() {
   return new Date().toISOString().slice(0, 10);
