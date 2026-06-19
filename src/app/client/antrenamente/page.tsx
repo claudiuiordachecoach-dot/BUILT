@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getWorkoutPlan } from "../actions";
 import WeeklyTraining from "./WeeklyTraining";
 import { EmptyState } from "../components/EmptyState";
+import { PageSkeleton } from "../components/Skeleton";
 
 const DAYS = ["Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă", "Duminică"];
 type Exercise = { name: string; sets: number; reps: string; note?: string };
@@ -11,9 +12,12 @@ type WorkoutPlan = { days: Record<string, Exercise[]>; notes?: string; week_star
 
 export default function AntrenamantePage() {
   const [plan, setPlan] = useState<WorkoutPlan | null>(null);
+  const [loading, setLoading] = useState(true);
   const [activeDay, setActiveDay] = useState("Luni");
 
-  useEffect(() => { getWorkoutPlan().then(p => setPlan(p as WorkoutPlan | null)); }, []);
+  useEffect(() => { getWorkoutPlan().then(p => setPlan(p as WorkoutPlan | null)).finally(() => setLoading(false)); }, []);
+
+  if (loading) return <PageSkeleton cards={4} />;
 
   if (!plan) return (
     <div className="p-5 md:p-8 max-w-3xl">

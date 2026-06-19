@@ -9,9 +9,10 @@ export default function MesajePage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [coach, setCoach] = useState<{ avatar_url: string | null; name: string | null; bio: string | null }>({ avatar_url: null, name: null, bio: null });
+  const [loaded, setLoaded] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { getMessages().then(msgs => setMessages(msgs as Msg[])); }, []);
+  useEffect(() => { getMessages().then(msgs => setMessages(msgs as Msg[])).finally(() => setLoaded(true)); }, []);
   useEffect(() => { getCoachPublic().then(setCoach); }, []);
   useEffect(() => { bottomRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages]);
 
@@ -42,7 +43,7 @@ export default function MesajePage() {
         </div>
       </div>
       <div className="flex-1 overflow-y-auto p-5 space-y-3">
-        {messages.length === 0 && (
+        {loaded && messages.length === 0 && (
           <div className="flex flex-col items-center justify-center text-center py-16 px-6">
             <div className="w-12 h-12 rounded-full bg-built-red/10 border border-built-red/20 flex items-center justify-center text-xl text-built-red mb-4">◎</div>
             <p className="font-condensed text-sm uppercase tracking-wider text-zinc-200">Linie directă cu Claudiu</p>

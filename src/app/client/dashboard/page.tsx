@@ -116,7 +116,7 @@ export default async function ClientDashboardPage({
           <Link
             key={item.href}
             href={item.href}
-            className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all group"
+            className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all active:scale-[0.97] group"
           >
             <span className="text-lg mb-2 block">{item.icon}</span>
             <p className="text-sm font-semibold text-zinc-200 group-hover:text-white">{item.title}</p>
@@ -125,7 +125,7 @@ export default async function ClientDashboardPage({
         ))}
         <Link
           href={`/client/mesaje${overrideId ? `?clientId=${overrideId}` : ""}`}
-          className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all group relative"
+          className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all active:scale-[0.97] group relative"
         >
           <span className="text-lg mb-2 block">◎</span>
           <p className="text-sm font-semibold text-zinc-200 group-hover:text-white">Mesaje</p>

@@ -2,13 +2,17 @@
 import { useState, useEffect } from "react";
 import { getNutritionPlan } from "../actions";
 import { EmptyState } from "../components/EmptyState";
+import { PageSkeleton } from "../components/Skeleton";
 
 type Meal = { name: string; foods: string[]; calories?: number; protein_g?: number };
 type NutritionPlan = { calories: number; protein_g: number; carbs_g: number; fat_g: number; meals: Meal[]; notes?: string; quickref_url?: string };
 
 export default function NutritiePage() {
   const [plan, setPlan] = useState<NutritionPlan | null>(null);
-  useEffect(() => { getNutritionPlan().then(p => setPlan(p as NutritionPlan | null)); }, []);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => { getNutritionPlan().then(p => setPlan(p as NutritionPlan | null)).finally(() => setLoading(false)); }, []);
+
+  if (loading) return <PageSkeleton cards={3} />;
 
   if (!plan) return (
     <div className="p-5 md:p-8 max-w-3xl">
