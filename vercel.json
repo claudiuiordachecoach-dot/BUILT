@@ -5,6 +5,7 @@
   "outputDirectory": ".next",
   "crons": [
     { "path": "/api/cron/sync-instagram", "schedule": "0 7 * * *" },
-    { "path": "/api/cron/weekly-scripts", "schedule": "0 7 * * 1" }
+    { "path": "/api/cron/weekly-scripts", "schedule": "0 7 * * 1" },
+    { "path": "/api/cron/saturday-checkin", "schedule": "0 9 * * 6" }
   ]
 }
