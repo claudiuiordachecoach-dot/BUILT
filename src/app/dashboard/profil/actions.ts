@@ -3,7 +3,7 @@
 import { getSettings, setSettings } from "@/lib/settings";
 import { getSupabaseServer } from "@/lib/supabase/server";
 
-export const COACH_KEYS = [
+const COACH_KEYS = [
   "coach_avatar_url",
   "coach_name",
   "coach_bio",
