@@ -11,7 +11,7 @@ export default function NutritiePage() {
 
   if (!plan) return (
     <div className="p-8">
-      <h1 className="text-xl font-bold text-white mb-2">Plan Nutrițional</h1>
+      <h1 className="font-display text-4xl tracking-wider text-built-white mb-2">Plan Nutrițional</h1>
       <p className="text-zinc-500 text-sm">Planul tău nutrițional va fi pregătit de Claudiu în curând.</p>
     </div>
   );
@@ -28,7 +28,7 @@ export default function NutritiePage() {
 
   return (
     <div className="p-8 max-w-3xl">
-      <h1 className="text-xl font-bold text-white mb-6">Plan Nutrițional</h1>
+      <h1 className="font-display text-4xl tracking-wider text-built-white mb-6">Plan Nutrițional</h1>
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
           { label: "Calorii", value: plan.calories, unit: "kcal", color: "text-built-red" },

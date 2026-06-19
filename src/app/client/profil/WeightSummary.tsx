@@ -24,7 +24,7 @@ export default function WeightSummary({ gallery }: { gallery: Entry[] }) {
   const delta = +(current - start).toFixed(1);
   const deltaLabel =
     delta === 0 ? "stabil" : delta < 0 ? `${delta} kg de la start` : `+${delta} kg de la start`;
-  const deltaColor = delta < 0 ? "text-green-400" : delta > 0 ? "text-amber-400" : "text-zinc-400";
+  const deltaColor = delta < 0 ? "text-green-400" : delta > 0 ? "text-zinc-300" : "text-zinc-400";
 
   const chartData = points.map((p) => ({
     name: p.label,

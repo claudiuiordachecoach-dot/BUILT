@@ -16,7 +16,7 @@ export default function AntrenamantePage() {
 
   if (!plan) return (
     <div className="p-8">
-      <h1 className="text-xl font-bold text-white mb-4">Plan Antrenament</h1>
+      <h1 className="font-display text-4xl tracking-wider text-built-white mb-4">Plan Antrenament</h1>
       <WeeklyTraining />
       <p className="text-zinc-500 text-sm">Planul tău nu a fost creat încă. Claudiu îl va pregăti în curând.</p>
     </div>
@@ -53,7 +53,7 @@ export default function AntrenamantePage() {
   return (
     <div className="p-8 max-w-3xl">
       <div className="mb-6">
-        <h1 className="text-xl font-bold text-white">Plan Antrenament</h1>
+        <h1 className="font-display text-3xl tracking-wider text-built-white">Plan Antrenament</h1>
         {plan.week_start && (
           <p className="text-xs text-zinc-500 mt-1">
             Săptămâna {new Date(plan.week_start).toLocaleDateString("ro-RO", { day: "numeric", month: "long" })}

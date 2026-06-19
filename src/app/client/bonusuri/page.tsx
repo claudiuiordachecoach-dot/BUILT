@@ -34,7 +34,7 @@ export default function BonusuriPage() {
         <span className="text-[10px] font-bold text-built-red uppercase tracking-widest mb-2 block">
           Pachet Exclusiv
         </span>
-        <h1 className="text-2xl font-bold text-white">Biblioteca de Protocol BUILT</h1>
+        <h1 className="font-display text-4xl tracking-wider text-built-white">Biblioteca de Protocol BUILT</h1>
         <p className="text-zinc-500 mt-1 text-sm">
           Orice situație din cele 90 de zile are un protocol. Nu ești niciodată singur.
         </p>

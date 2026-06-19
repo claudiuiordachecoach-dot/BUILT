@@ -49,19 +49,19 @@ export default async function ClientDashboardPage({
 
   return (
     <div className="p-5 md:p-8 max-w-4xl">
-      <div className="mb-8 flex items-start justify-between">
-        <div>
-          <h1 className="text-2xl font-bold text-white">
-            Bună, {client?.name?.split(" ")[0]} 👋
-          </h1>
-          <p className="text-zinc-500 mt-1">
-            Ziua {daysInProgram} din program · Săptămâna {weekNumber}
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div className="min-w-0">
+          <p className="font-condensed text-[11px] text-built-red uppercase tracking-[0.25em] mb-1">
+            Ziua {daysInProgram} / 90 · Săptămâna {weekNumber}
           </p>
+          <h1 className="font-display text-4xl md:text-5xl tracking-wide text-built-white leading-none">
+            SALUT, {(client?.name?.split(" ")[0] ?? "").toUpperCase()}
+          </h1>
         </div>
         {streak > 0 && (
           <div className="text-right shrink-0">
-            <p className="text-2xl font-bold text-built-red">🔥 {streak}</p>
-            <p className="text-[10px] uppercase tracking-widest text-zinc-600">zile la rând</p>
+            <p className="font-display text-4xl text-built-red leading-none">🔥{streak}</p>
+            <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-600 mt-1">zile la rând</p>
           </div>
         )}
       </div>
