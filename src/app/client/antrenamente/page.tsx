@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getWorkoutPlan } from "../actions";
+import WeeklyTraining from "./WeeklyTraining";
 
 const DAYS = ["Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă", "Duminică"];
 type Exercise = { name: string; sets: number; reps: string; note?: string };
@@ -15,7 +16,8 @@ export default function AntrenamantePage() {
 
   if (!plan) return (
     <div className="p-8">
-      <h1 className="text-xl font-bold text-white mb-2">Plan Antrenament</h1>
+      <h1 className="text-xl font-bold text-white mb-4">Plan Antrenament</h1>
+      <WeeklyTraining />
       <p className="text-zinc-500 text-sm">Planul tău nu a fost creat încă. Claudiu îl va pregăti în curând.</p>
     </div>
   );
@@ -23,6 +25,9 @@ export default function AntrenamantePage() {
   if (plan.quickref_url) {
     return (
       <div className="flex flex-col w-full" style={{ height: "calc(100vh - 60px)" }}>
+        <div className="px-4 pt-4 shrink-0">
+          <WeeklyTraining />
+        </div>
         <div className="flex gap-2 px-4 py-2 bg-[#111111] border-b border-white/10 shrink-0">
           <span className="text-xs font-semibold text-built-red border-b-2 border-built-red pb-1 px-1">Sală</span>
           {plan.quickref_acasa_url && (
@@ -55,6 +60,7 @@ export default function AntrenamantePage() {
           </p>
         )}
       </div>
+      <WeeklyTraining />
       <div className="flex gap-2 mb-6 flex-wrap">
         {DAYS.map(day => {
           const hasWorkout = (plan.days?.[day]?.length ?? 0) > 0;

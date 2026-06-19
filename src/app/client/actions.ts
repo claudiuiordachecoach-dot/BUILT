@@ -518,6 +518,58 @@ export async function toggleTodayItem(clientId: number, key: string, value: bool
     .upsert({ client_id: clientId, log_date: date, items, updated_at: new Date().toISOString() }, { onConflict: "client_id,log_date" });
 }
 
+export type TrainingDay = { label: string; date: string; trained: boolean; isToday: boolean; isFuture: boolean };
+
+/** Starea antrenamentelor pe săptămâna curentă (Luni–Duminică) din daily_logs. */
+export async function getMyWeekTraining(): Promise<TrainingDay[]> {
+  const clientId = await getClientId();
+  if (!clientId) return [];
+  const today = new Date();
+  const dow = (today.getDay() + 6) % 7; // 0 = luni
+  const monday = new Date(today);
+  monday.setDate(today.getDate() - dow);
+
+  const dates: string[] = [];
+  for (let i = 0; i < 7; i++) {
+    const d = new Date(monday);
+    d.setDate(monday.getDate() + i);
+    dates.push(d.toISOString().slice(0, 10));
+  }
+
+  let logged = new Set<string>();
+  try {
+    const db = getSupabaseServer();
+    const { data } = await db
+      .from("daily_logs")
+      .select("log_date, items")
+      .eq("client_id", clientId)
+      .gte("log_date", dates[0])
+      .lte("log_date", dates[6]);
+    logged = new Set(
+      (data ?? [])
+        .filter((d) => (d.items as Record<string, boolean>)?.antrenament)
+        .map((d) => d.log_date as string)
+    );
+  } catch { /* tabel lipsă până la DDL */ }
+
+  const labels = ["Lun", "Mar", "Mie", "Joi", "Vin", "Sâm", "Dum"];
+  const todayStr = today.toISOString().slice(0, 10);
+  return dates.map((date, i) => ({
+    label: labels[i],
+    date,
+    trained: logged.has(date),
+    isToday: date === todayStr,
+    isFuture: date > todayStr,
+  }));
+}
+
+/** Bifează un item pentru clientul logat (azi). */
+export async function toggleMyTodayItem(key: string, value: boolean) {
+  const clientId = await getClientId();
+  if (!clientId) return;
+  await toggleTodayItem(clientId, key, value);
+}
+
 /** Numărul de zile consecutive (până azi) cu cel puțin un item bifat. */
 export async function getStreak(clientId: number): Promise<number> {
   try {
