@@ -40,25 +40,69 @@ export default function BonusuriPage() {
         </p>
       </div>
 
-      {/* Cookbook card */}
-      <a
-        href="/BUILT_Cookbook_v2.html"
-        className="flex items-center gap-4 bg-[#111111] border border-built-red/30 hover:border-built-red/60 rounded-xl p-4 mb-8 transition-all group"
-      >
-        <span className="text-3xl">🥩</span>
-        <div className="flex-1 min-w-0">
-          <span className="text-[10px] font-bold text-built-red uppercase tracking-widest block mb-0.5">
-            Nutriție &amp; Performanță
-          </span>
-          <h3 className="text-sm font-bold text-white group-hover:text-built-red transition-colors">
-            BUILT 50 — Performance Cookbook
-          </h3>
-          <p className="text-xs text-zinc-500 mt-0.5 truncate">
-            Cartea de rețete oficială — combustibil pentru cele 90 de zile
-          </p>
-        </div>
-        <span className="text-zinc-600 group-hover:text-built-red transition-colors text-sm shrink-0">→</span>
-      </a>
+      {/* Cookbook cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <a
+          href="/BUILT_Cookbook_v2.html"
+          className="flex items-center gap-4 bg-[#111111] border border-built-red/30 hover:border-built-red/60 rounded-xl p-4 transition-all group"
+        >
+          <span className="text-3xl">🥩</span>
+          <div className="flex-1 min-w-0">
+            <span className="text-[10px] font-bold text-built-red uppercase tracking-widest block mb-0.5">
+              Nutriție &amp; Performanță
+            </span>
+            <h3 className="text-sm font-bold text-white group-hover:text-built-red transition-colors">
+              BUILT 50 — Cookbook
+            </h3>
+            <p className="text-xs text-zinc-500 mt-0.5 truncate">
+              Cartea de rețete oficială
+            </p>
+          </div>
+          <span className="text-zinc-600 group-hover:text-built-red transition-colors text-sm shrink-0">→</span>
+        </a>
+
+        {/* Claudia Cookbook */}
+        <a
+          href="/Cartea_Retete_Claudia.html"
+          className="flex items-center gap-4 bg-[#111111] border border-orange-500/30 hover:border-orange-500/60 rounded-xl p-4 transition-all group relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <span className="text-3xl relative z-10">👩‍🍳</span>
+          <div className="flex-1 min-w-0 relative z-10">
+            <span className="text-[10px] font-bold text-orange-500 uppercase tracking-widest block mb-0.5">
+              Personalizat
+            </span>
+            <h3 className="text-sm font-bold text-white group-hover:text-orange-400 transition-colors">
+              Cartea de Rețete — Claudia
+            </h3>
+            <p className="text-xs text-zinc-500 mt-0.5 truncate">
+              Meniul tău personalizat (7 zile)
+            </p>
+          </div>
+          <span className="text-zinc-600 group-hover:text-orange-400 transition-colors text-sm shrink-0 relative z-10">→</span>
+        </a>
+
+        {/* Alexandru Cookbook */}
+        <a
+          href="/Cartea_Retete_Alex.html"
+          className="flex items-center gap-4 bg-[#111111] border border-blue-500/30 hover:border-blue-500/60 rounded-xl p-4 transition-all group relative overflow-hidden"
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <span className="text-3xl relative z-10">👨‍🍳</span>
+          <div className="flex-1 min-w-0 relative z-10">
+            <span className="text-[10px] font-bold text-blue-500 uppercase tracking-widest block mb-0.5">
+              Personalizat
+            </span>
+            <h3 className="text-sm font-bold text-white group-hover:text-blue-400 transition-colors">
+              Cartea de Rețete — Alex
+            </h3>
+            <p className="text-xs text-zinc-500 mt-0.5 truncate">
+              Meniul tău personalizat (7 zile)
+            </p>
+          </div>
+          <span className="text-zinc-600 group-hover:text-blue-400 transition-colors text-sm shrink-0 relative z-10">→</span>
+        </a>
+      </div>
 
       {/* Tab navigation */}
       <div className="flex overflow-x-auto gap-1 pb-1 mb-6 scrollbar-none border-b border-white/5">
