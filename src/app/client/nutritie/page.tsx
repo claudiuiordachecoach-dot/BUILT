@@ -20,8 +20,7 @@ export default function NutritiePage() {
     return (
       <iframe
         src={plan.quickref_url}
-        className="w-full border-0"
-        style={{ height: "calc(100vh - 60px)" }}
+        className="w-full border-0 h-[calc(100dvh-8rem)] md:h-[calc(100vh-1rem)]"
         title="Plan Nutrițional"
       />
     );

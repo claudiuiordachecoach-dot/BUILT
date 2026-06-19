@@ -24,7 +24,7 @@ export default function AntrenamantePage() {
 
   if (plan.quickref_url) {
     return (
-      <div className="flex flex-col w-full" style={{ height: "calc(100vh - 60px)" }}>
+      <div className="flex flex-col w-full h-[calc(100dvh-8rem)] md:h-[calc(100vh-1rem)]">
         <div className="px-4 pt-4 shrink-0">
           <WeeklyTraining />
         </div>

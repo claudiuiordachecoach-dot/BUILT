@@ -32,7 +32,7 @@ export default function ModuleViewerPage() {
   );
 
   return (
-    <div className="flex flex-col h-screen bg-black overflow-hidden">
+    <div className="flex flex-col h-[calc(100dvh-8rem)] md:h-screen bg-black overflow-hidden">
       {/* Header bar for viewer */}
       <div className="h-14 bg-[#0A0A0A] border-b border-white/10 flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-4">

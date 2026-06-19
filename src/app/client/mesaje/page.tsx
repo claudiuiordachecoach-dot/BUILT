@@ -26,7 +26,7 @@ export default function MesajePage() {
   }
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-[calc(100dvh-8rem)] md:h-screen">
       <div className="p-5 border-b border-white/10">
         <div className="flex items-center gap-3">
           {coachAvatar ? (

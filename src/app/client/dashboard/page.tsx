@@ -48,7 +48,7 @@ export default async function ClientDashboardPage({
     : [{}, 0, []];
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-5 md:p-8 max-w-4xl">
       <div className="mb-8 flex items-start justify-between">
         <div>
           <h1 className="text-2xl font-bold text-white">

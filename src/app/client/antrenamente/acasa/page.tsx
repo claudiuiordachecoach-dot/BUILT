@@ -14,7 +14,7 @@ export default async function AntrenamentAcasaPage() {
   }
 
   return (
-    <div className="flex flex-col w-full" style={{ height: "calc(100vh - 60px)" }}>
+    <div className="flex flex-col w-full h-[calc(100dvh-8rem)] md:h-[calc(100vh-1rem)]">
       <div className="flex gap-2 px-4 py-2 bg-[#111111] border-b border-white/10 shrink-0">
         <Link
           href="/client/antrenamente"

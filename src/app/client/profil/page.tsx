@@ -30,7 +30,7 @@ export default async function ClientProfilePage({
   const clientId = overrideId || data.client?.id;
 
   return (
-    <div className="p-8 max-w-4xl pb-24">
+    <div className="p-5 md:p-8 max-w-4xl pb-24">
       <h1 className="text-3xl font-display tracking-wider text-white mb-8">
         Profilul Meu
       </h1>

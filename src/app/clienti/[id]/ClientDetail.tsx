@@ -140,10 +140,10 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-1 mb-6 border-b border-built-gray-2">
+      <div className="flex gap-1 mb-6 border-b border-built-gray-2 overflow-x-auto scrollbar-none">
         {TABS.map(tab => (
           <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-            className={`px-4 py-2 font-condensed text-xs uppercase tracking-wider transition-colors ${activeTab === tab.id ? "text-built-red border-b-2 border-built-red" : "text-built-gray-text hover:text-built-white"}`}>
+            className={`px-4 py-2 font-condensed text-xs uppercase tracking-wider transition-colors whitespace-nowrap shrink-0 ${activeTab === tab.id ? "text-built-red border-b-2 border-built-red" : "text-built-gray-text hover:text-built-white"}`}>
             {tab.label}
           </button>
         ))}
@@ -547,7 +547,7 @@ function NutritionPlanEditor({ clientId }: { clientId: number }) {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-4 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {(["calories","protein_g","carbs_g","fat_g"] as const).map(k => (
           <div key={k}>
             <label className="block text-xs text-zinc-500 mb-1">
