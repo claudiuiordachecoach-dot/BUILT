@@ -2,6 +2,24 @@ import Link from "next/link";
 import { getClientDashboard, getTodayLog, getStreak, getClientBadges } from "../actions";
 import DailyChecklist from "./DailyChecklist";
 import Badges from "./Badges";
+import PillarRadar, { type PillarScores } from "./PillarRadar";
+
+const clamp = (n: number) => Math.max(0, Math.min(100, n));
+
+function pillarScores(c: {
+  training_adherence?: number | null; nutrition_adherence?: number | null;
+  energy_level?: number | null; sleep_hours?: number | null;
+  hydration_l?: number | null; stress_level?: number | null;
+} | null): PillarScores | null {
+  if (!c) return null;
+  return {
+    B: clamp(c.training_adherence ?? 0),
+    U: clamp((c.energy_level ?? 0) * 10),
+    I: clamp(c.nutrition_adherence ?? 0),
+    L: clamp((((c.sleep_hours ?? 0) / 8) * 100 + ((c.hydration_l ?? 0) / 3) * 100) / 2),
+    T: clamp(100 - (c.stress_level ?? 5) * 10),
+  };
+}
 
 export const dynamic = "force-dynamic";
 
@@ -51,6 +69,11 @@ export default async function ClientDashboardPage({
       {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
 
       {badges.length > 0 && <Badges badges={badges} />}
+
+      {(() => {
+        const scores = pillarScores(latestCheckin);
+        return scores ? <PillarRadar scores={scores} /> : null;
+      })()}
 
       <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
         <div className="flex items-center justify-between mb-2">
