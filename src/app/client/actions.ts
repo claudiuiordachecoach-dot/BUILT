@@ -447,3 +447,73 @@ export async function saveCoachAvatar(url: string) {
     .from("app_settings")
     .upsert({ key: "coach_avatar_url", value: url, updated_at: new Date().toISOString() });
 }
+
+// ── Checklist zilnic ("Azi") ──
+function todayStr() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+export async function getTodayLog(clientId: number): Promise<Record<string, boolean>> {
+  try {
+    const db = getSupabaseServer();
+    const { data } = await db
+      .from("daily_logs")
+      .select("items")
+      .eq("client_id", clientId)
+      .eq("log_date", todayStr())
+      .single();
+    return (data?.items as Record<string, boolean>) ?? {};
+  } catch {
+    return {};
+  }
+}
+
+export async function toggleTodayItem(clientId: number, key: string, value: boolean) {
+  const db = getSupabaseServer();
+  const date = todayStr();
+  const { data: existing } = await db
+    .from("daily_logs")
+    .select("items")
+    .eq("client_id", clientId)
+    .eq("log_date", date)
+    .single();
+  const items = { ...((existing?.items as Record<string, boolean>) ?? {}), [key]: value };
+  await db
+    .from("daily_logs")
+    .upsert({ client_id: clientId, log_date: date, items, updated_at: new Date().toISOString() }, { onConflict: "client_id,log_date" });
+}
+
+/** Numărul de zile consecutive (până azi) cu cel puțin un item bifat. */
+export async function getStreak(clientId: number): Promise<number> {
+  try {
+    const db = getSupabaseServer();
+    const { data } = await db
+      .from("daily_logs")
+      .select("log_date, items")
+      .eq("client_id", clientId)
+      .order("log_date", { ascending: false })
+      .limit(60);
+    if (!data || data.length === 0) return 0;
+
+    const hasAny = (it: unknown) =>
+      it && typeof it === "object" && Object.values(it as Record<string, boolean>).some(Boolean);
+
+    const logged = new Set(
+      data.filter((d) => hasAny(d.items)).map((d) => d.log_date as string)
+    );
+
+    let streak = 0;
+    const cursor = new Date();
+    // permite să nu fi bifat încă azi: pornește de azi, dar dacă azi gol, începe de ieri
+    if (!logged.has(cursor.toISOString().slice(0, 10))) {
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    while (logged.has(cursor.toISOString().slice(0, 10))) {
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    return streak;
+  } catch {
+    return 0;
+  }
+}

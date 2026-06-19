@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { getClientDashboard } from "../actions";
+import { getClientDashboard, getTodayLog, getStreak } from "../actions";
+import DailyChecklist from "./DailyChecklist";
 
 export const dynamic = "force-dynamic";
 
@@ -22,17 +23,31 @@ export default async function ClientDashboardPage({
   }
 
   const { client, weekNumber, daysInProgram, latestCheckin, unreadCount } = data;
+  const clientId = client?.id;
+  const [todayLog, streak] = clientId
+    ? await Promise.all([getTodayLog(clientId), getStreak(clientId)])
+    : [{}, 0];
 
   return (
     <div className="p-8 max-w-4xl">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-white">
-          Bună, {client?.name?.split(" ")[0]} 👋
-        </h1>
-        <p className="text-zinc-500 mt-1">
-          Ziua {daysInProgram} din program · Săptămâna {weekNumber}
-        </p>
+      <div className="mb-8 flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">
+            Bună, {client?.name?.split(" ")[0]} 👋
+          </h1>
+          <p className="text-zinc-500 mt-1">
+            Ziua {daysInProgram} din program · Săptămâna {weekNumber}
+          </p>
+        </div>
+        {streak > 0 && (
+          <div className="text-right shrink-0">
+            <p className="text-2xl font-bold text-built-red">🔥 {streak}</p>
+            <p className="text-[10px] uppercase tracking-widest text-zinc-600">zile la rând</p>
+          </div>
+        )}
       </div>
+
+      {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
 
       <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
         <div className="flex items-center justify-between mb-2">
