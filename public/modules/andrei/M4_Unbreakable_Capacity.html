@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BUILT — Modulul 4: Unbreakable Capacity // Andrei Stamate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:#8B1A1A;--red-bg:rgba(192,57,43,.08);--wht:#F5F5F5;--muted:#888;--muted2:#666;--brd:#252525;--brd2:#1F1F1F;--card:#111111;--grn:#27ae60;--grn-bg:rgba(39,174,96,.06);--amber:#D4A017;--amber-bg:rgba(212,160,23,.07);--blue:#3B7EAB;--blue-bg:rgba(59,126,171,.07);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+strong{color:var(--wht);}em{color:#ddd;font-style:italic;}p{margin-bottom:14px;}p:last-child{margin-bottom:0;}
+.cover{min-height:100vh;padding:60px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background:var(--blk);}
+.cover-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 80% 15%,rgba(192,57,43,.18) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 5% 90%,rgba(139,26,26,.1) 0%,transparent 50%);pointer-events:none;}
+.cover-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(192,57,43,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(192,57,43,.04) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;}
+.brand-bar{display:flex;align-items:center;gap:14px;position:relative;z-index:1;}
+.brand-logo{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:8px;color:var(--red);}
+.brand-sep{width:36px;height:1px;background:var(--red);opacity:.5;}
+.brand-sub{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);}
+.cover-main{position:relative;z-index:1;}
+.mod-label{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:10px;}
+.mod-num{font-family:'Bebas Neue',sans-serif;font-size:220px;line-height:.8;color:var(--red);opacity:.06;position:absolute;right:-20px;top:-60px;pointer-events:none;}
+.cover-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,9vw,120px);line-height:.88;color:var(--wht);margin-bottom:22px;}
+.cover-h1 em{color:var(--red);font-style:normal;}
+.cover-desc{font-size:14px;color:#bbb;max-width:560px;line-height:1.85;border-left:3px solid var(--red);padding-left:20px;}
+.cover-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding-top:26px;border-top:1px solid var(--brd);position:relative;z-index:1;}
+.cm-item label{display:block;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:5px;}
+.cm-item span{font-size:13px;color:var(--wht);font-weight:600;}
+.sec{padding:72px 60px;border-bottom:1px solid var(--brd);position:relative;}
+.sec.alt{background:var(--drk2);}
+.sec-hdr{display:flex;align-items:flex-start;gap:18px;margin-bottom:42px;}
+.sec-n{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:.82;color:var(--red);opacity:.22;min-width:78px;}
+.sec-tag{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:block;margin-bottom:7px;}
+.sec-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,4vw,52px);line-height:.95;color:var(--wht);max-width:880px;}
+.intro{font-size:14px;color:#bbb;max-width:780px;line-height:1.85;border-left:3px solid var(--red);padding-left:20px;margin-bottom:38px;}
+.subsec{margin-bottom:48px;}
+.subsec-hdr{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--brd);}
+.subsec-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);font-weight:600;letter-spacing:1px;}
+.subsec-ttl{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1;}
+.subsec-body{font-size:14px;color:#c8c8c8;line-height:1.85;}
+.subsec-body p{margin-bottom:14px;}
+.card{background:var(--card);border:1px solid var(--brd);padding:26px;margin-bottom:14px;}
+.card-red{border-left:4px solid var(--red);}
+.card-grn{border-left:4px solid var(--grn);}
+.card-ttl{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--red);margin-bottom:12px;}
+.card-ttl.grn{color:var(--grn);}
+.card p{font-size:13px;color:#bbb;line-height:1.7;}
+.alert{background:var(--red-bg);border:1px solid rgba(192,57,43,.28);border-left:4px solid var(--red);padding:20px 24px;margin:22px 0;color:#ccc;line-height:1.78;font-size:14px;}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--red);margin-bottom:8px;}
+.ok{background:var(--grn-bg);border:1px solid rgba(39,174,96,.22);border-left:4px solid var(--grn);padding:20px 24px;margin:22px 0;color:#ccc;line-height:1.78;font-size:14px;}
+.ok-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--grn);margin-bottom:8px;}
+.info{background:var(--blue-bg);border:1px solid rgba(59,126,171,.22);border-left:4px solid var(--blue);padding:20px 24px;margin:22px 0;color:#ccc;line-height:1.78;font-size:14px;}
+.info-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--blue);margin-bottom:8px;}
+.verbatim{background:linear-gradient(135deg,rgba(192,57,43,.07) 0%,rgba(192,57,43,.02) 100%);border:1px solid rgba(192,57,43,.2);border-left:5px solid var(--red);padding:24px 30px;margin:28px 0;position:relative;}
+.verbatim::before{content:'"';position:absolute;top:-18px;left:18px;font-family:'Bebas Neue',sans-serif;font-size:96px;color:var(--red);opacity:.15;line-height:1;}
+.verbatim-tag{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:10px;}
+.verbatim-txt{font-style:italic;font-size:16px;color:#e8e8e8;line-height:1.7;}
+.verbatim-by{font-size:11px;color:var(--muted);margin-top:10px;letter-spacing:1px;}
+.expert{background:var(--drk2);border:1px solid var(--brd);border-top:3px solid var(--red);margin:24px 0;overflow:hidden;}
+.expert-top{padding:18px 24px;display:flex;align-items:center;gap:16px;background:rgba(192,57,43,.04);border-bottom:1px solid var(--brd);}
+.expert-icon{width:44px;height:44px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;flex-shrink:0;}
+.expert-meta{flex:1;}
+.expert-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--wht);line-height:1;}
+.expert-inst{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.5px;}
+.expert-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);font-weight:700;}
+.expert-body{padding:20px 24px;font-size:13px;color:#c0c0c0;line-height:1.78;}
+.expert-work{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px dashed var(--brd);}
+.expert-work strong{color:var(--red);font-weight:500;}
+.mech{background:var(--card);border:1px solid var(--brd);padding:28px;margin:28px 0;}
+.mech-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--red);margin-bottom:18px;text-transform:uppercase;}
+.mech-flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:0;}
+.mech-step{flex:1;min-width:120px;background:var(--drk);border:1px solid var(--brd2);padding:16px 14px;}
+.mech-step-n{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);letter-spacing:1px;margin-bottom:6px;}
+.mech-step-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--wht);letter-spacing:1px;line-height:1.1;margin-bottom:8px;}
+.mech-step-desc{font-size:11.5px;color:#aaa;line-height:1.55;}
+.mech-arr{display:flex;align-items:center;justify-content:center;padding:0 6px;color:var(--red);font-size:24px;font-weight:700;}
+.mech-loop{margin-top:14px;padding:12px 16px;background:rgba(192,57,43,.07);border-left:3px solid var(--red);font-size:12px;color:#ccc;font-style:italic;}
+.zone-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:24px 0;}
+.zone-box{background:var(--card);border:1px solid var(--brd);padding:18px 12px;text-align:center;}
+.zone-box.active{border-color:var(--red);background:var(--red-bg);}
+.zone-n{font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--red);line-height:1;margin-bottom:4px;}
+.zone-name{font-size:11px;font-weight:700;color:var(--wht);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.zone-bpm{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-bottom:6px;}
+.zone-desc{font-size:11px;color:#888;line-height:1.5;}
+.zone-box.active .zone-desc{color:#ccc;}
+.proto{margin:28px 0;}
+.proto-step{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--brd);}
+.proto-step:last-child{border-bottom:none;}
+.proto-num{flex-shrink:0;width:44px;height:44px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;}
+.proto-content{flex:1;}
+.proto-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);letter-spacing:1px;margin-bottom:3px;}
+.proto-what{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--wht);margin-bottom:6px;}
+.proto-how{font-size:13px;color:#bbb;line-height:1.7;}
+.proto-why{font-size:11.5px;color:var(--muted);margin-top:6px;font-style:italic;line-height:1.55;}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:22px 0;border:1px solid var(--brd);overflow:hidden;}
+.vs-col{padding:22px 24px;}
+.vs-col.bad{background:rgba(192,57,43,.04);border-right:1px solid var(--brd);}
+.vs-col.good{background:rgba(39,174,96,.04);}
+.vs-label{font-size:9px;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;font-weight:700;}
+.vs-col.bad .vs-label{color:var(--red);}
+.vs-col.good .vs-label{color:var(--grn);}
+.vs-row{font-size:13px;color:#bbb;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.65;}
+.vs-row:last-child{border-bottom:none;}
+.ift{background:var(--card);border:1px solid var(--brd);margin-bottom:10px;overflow:hidden;}
+.ift-t{background:rgba(192,57,43,.12);padding:13px 18px;display:flex;align-items:center;gap:10px;}
+.ift-b{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;color:var(--red);background:rgba(192,57,43,.2);padding:2px 10px;white-space:nowrap;}
+.ift-t span{font-weight:700;font-size:13px;color:var(--wht);}
+.ift-a{padding:14px 18px;font-size:13px;color:#ccc;line-height:1.7;}
+h3.sh{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--red);margin:30px 0 14px;}
+h3.shw{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--wht);margin:28px 0 14px;}
+.tldr{background:linear-gradient(135deg,rgba(212,160,23,.08) 0%,rgba(212,160,23,.02) 100%);border:1px solid rgba(212,160,23,.25);padding:22px 26px;margin:28px 0 14px;}
+.tldr-ttl{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--amber);margin-bottom:10px;}
+.tldr ul{list-style:none;}
+.tldr li{padding:5px 0 5px 22px;position:relative;font-size:13px;color:#ddd;line-height:1.65;}
+.tldr li::before{content:'◆';position:absolute;left:0;color:var(--amber);font-size:9px;top:8px;}
+ul.sl{list-style:none;margin:14px 0;}
+ul.sl li{padding:9px 0 9px 24px;position:relative;font-size:13.5px;color:#c0c0c0;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.7;}
+ul.sl li::before{content:'→';position:absolute;left:0;color:var(--red);font-weight:700;}
+ul.sl li strong{color:var(--wht);}
+ul.sl li:last-child{border-bottom:none;}
+ul.num{list-style:none;counter-reset:numlist;margin:14px 0;}
+ul.num li{counter-increment:numlist;padding:10px 0 10px 38px;position:relative;font-size:13.5px;color:#c0c0c0;line-height:1.7;border-bottom:1px solid rgba(255,255,255,.04);}
+ul.num li::before{content:counter(numlist,decimal-leading-zero);position:absolute;left:0;font-family:'DM Mono',monospace;font-size:11px;color:var(--red);font-weight:600;top:11px;letter-spacing:1px;}
+ul.num li:last-child{border-bottom:none;}
+.toc{background:var(--drk2);border:1px solid var(--brd);padding:32px 36px;margin:28px 0;}
+.toc-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--red);margin-bottom:18px;}
+.toc-list{display:grid;grid-template-columns:1fr 1fr;gap:8px 30px;}
+.toc-item{padding:9px 0;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#c0c0c0;}
+.toc-item a{color:#c0c0c0;text-decoration:none;flex:1;}
+.toc-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);font-weight:600;margin-right:14px;letter-spacing:1px;}
+.toc-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
+.footer{background:var(--drk2);border-top:1px solid var(--brd);padding:36px 60px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted);}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+hr.rl{border:none;border-top:1px solid var(--red);margin:28px 0;opacity:.22;}
+@media(max-width:900px){.toc-list{grid-template-columns:1fr;}.cover-meta{grid-template-columns:1fr 1fr;}.mech-flow{flex-direction:column;}.mech-arr{transform:rotate(90deg);padding:8px 0;}.zone-grid{grid-template-columns:repeat(3,1fr);}}
+@media(max-width:680px){.cover{padding:32px;}.sec{padding:48px 28px;}.vs-grid{grid-template-columns:1fr;}.vs-col.bad{border-right:none;border-bottom:1px solid var(--brd);}.zone-grid{grid-template-columns:1fr 1fr;}.footer{flex-direction:column;gap:12px;text-align:center;padding:28px;}}
+</style>
+</head>
+<body>
+
+<div class="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-grid"></div>
+  <div class="mod-num">4</div>
+  <div class="brand-bar">
+    <div class="brand-logo">BUILT</div>
+    <div class="brand-sep"></div>
+    <div class="brand-sub">Coaching 1:1 · Andrei Stamate · Modulul 04 / 05</div>
+  </div>
+  <div class="cover-main">
+    <div class="mod-label">Modulul 04 — Unbreakable Capacity</div>
+    <div class="cover-h1">CARDIO<br>NU E <em>CHIN</em>.<br>E <em>FUNCȚIA</em><br>DE BAZĂ A<br>CORPULUI TĂU.</div>
+    <p class="cover-desc">Faci deja 10.000 de pași în zilele libere. Mergi afară la muncă toată ziua. Ai meditații zilnice. Nu știai că toate acestea contează ca antrenament cardiovascular — dar contează. Pilonul U nu adaugă mai mult la ce faci — îl organizează și completează cu 5 minute de cardio finisher după fiecare sesiune de sală.</p>
+  </div>
+  <div class="cover-meta">
+    <div class="cm-item"><label>Cardio curent</label><span>10.000 pași / zi liberă</span></div>
+    <div class="cm-item"><label>Adăugăm</label><span>5–6 min HIIT post-sală</span></div>
+    <div class="cm-item"><label>Meditații</label><span>Deja integrate</span></div>
+    <div class="cm-item"><label>Orizont</label><span>90 de zile</span></div>
+  </div>
+</div>
+
+
+<!-- SECTION 00 -->
+<div class="sec">
+  <div class="sec-hdr">
+    <div class="sec-n">00</div>
+    <div>
+      <span class="sec-tag">Cum se folosește</span>
+      <div class="sec-ttl">CE ACOPERĂ<br>ACEST MODUL</div>
+    </div>
+  </div>
+  <div class="intro">Pilonul U — Unbreakable Capacity — acoperă tot ce ține de capacitatea cardiovasculară și de recuperare. Nu e separat de viața ta — e integrat în ea. Plimbările tale zilnice sunt deja parte din sistem. Cardio finisher-ul de la sală completează. Meditațiile accelerează recuperarea.</div>
+
+  <div class="toc">
+    <div class="toc-ttl">CUPRINS</div>
+    <div class="toc-list">
+      <div class="toc-item"><span class="toc-num">01</span><a href="#sec1">Ce este capacitatea cardiovasculară</a><span class="toc-time">~8 min</span></div>
+      <div class="toc-item"><span class="toc-num">02</span><a href="#sec2">10.000 de pași — cardio invizibil real</a><span class="toc-time">~8 min</span></div>
+      <div class="toc-item"><span class="toc-num">03</span><a href="#sec3">Zone 2 — știința din spatele mersului</a><span class="toc-time">~9 min</span></div>
+      <div class="toc-item"><span class="toc-num">04</span><a href="#sec4">HIIT finisher — 5 minute de impact real</a><span class="toc-time">~7 min</span></div>
+      <div class="toc-item"><span class="toc-num">05</span><a href="#sec5">Meditațiile și recuperarea</a><span class="toc-time">~7 min</span></div>
+      <div class="toc-item"><span class="toc-num">06</span><a href="#sec6">Respirația și controlul cortizolului</a><span class="toc-time">~7 min</span></div>
+      <div class="toc-item"><span class="toc-num">07</span><a href="#sec7">Ce se schimbă în 90 de zile</a><span class="toc-time">~5 min</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SECTION 1 — CE ESTE CAPACITATEA CARDIOVASCULARĂ -->
+<div class="sec alt" id="sec1">
+  <div class="sec-hdr">
+    <div class="sec-n">01</div>
+    <div>
+      <span class="sec-tag">Fundația</span>
+      <div class="sec-ttl">CE ESTE CAPACITATEA<br>CARDIOVASCULARĂ<br>ȘI DE CE CONTEAZĂ</div>
+    </div>
+  </div>
+  <div class="intro">Capacitatea cardiovasculară nu e doar despre cât de repede alergi. E eficiența cu care inima și plămânii tăi livrează oxigen și energie mușchilor — și implicit, eficiența cu care corpul tău metabolizează grăsimile.</div>
+
+  <div class="verbatim">
+    <div class="verbatim-tag">Obiectivul tău, din fișa de start</div>
+    <div class="verbatim-txt">„Să am forță în mâini, să am echilibru. Vreau să mă simt ca la vârsta mea."</div>
+    <div class="verbatim-by">— Andrei Stamate, fișa de start BUILT</div>
+  </div>
+
+
+  <!-- 1.1 VO2 Max explicat simplu -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">1.1</div><div class="subsec-ttl">VO2 MAX — METRICA SĂNĂTĂȚII PE TERMEN LUNG</div></div>
+    <div class="subsec-body">
+      <p>VO2 max e cantitatea maximă de oxigen pe care corpul tău o poate utiliza pe minut per kilogram de greutate corporală. E cel mai bun predictor individual al sănătății cardiovasculare și, conform cercetărilor recente, cel mai bun predictor al longevității.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">PA</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Peter Attia</div>
+            <div class="expert-inst">MD Stanford · Medicina longevității și performanței</div>
+          </div>
+          <div class="expert-tag">VO2 Max & Longevitate</div>
+        </div>
+        <div class="expert-body">
+          Attia a analizat extensiv datele din studii de longevitate pentru cartea sa <em>Outlive</em>. Concluzia sa centrală: VO2 max-ul e cel mai puternic predictor al mortalității pe care îl cunoaștem — mai bun decât nivelul colesterolului, tensiunea sau glicemia.
+          <p style="margin-top:12px;">Comparând persoane cu VO2 max ridicat față de persoane cu VO2 max scăzut, riscul de deces prematur scade cu 40–50%. La 20 de ani, VO2 max-ul tău e în punctul cel mai ridicat al vieții — investiția în menținerea lui e cea mai eficientă investiție în sănătate pe care o poți face acum.</p>
+          <p style="margin-top:12px;">Practic pentru tine: 10.000 de pași pe zi + cardio finisher de 5 minute × 3/săptămână mențin și îmbunătățesc VO2 max-ul tău fără ore de alergare epuizantă.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Attia — <em>Outlive: The Science and Art of Longevity</em> (Harmony Books, 2023) + Kokkinos et al., 2022, <em>Cardiorespiratory Fitness and Mortality Risk</em> — JACC</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 1.2 De ce nu ai nevoie de ore de cardio -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">1.2</div><div class="subsec-ttl">DE CE NU AI NEVOIE DE ORE DE CARDIO</div></div>
+    <div class="subsec-body">
+      <p>Există un mit în fitness: că sănătatea cardiovasculară cere ore de alergare sau ciclism pe săptămână. Nu e adevărat. Studiile sunt clare: <strong>pragul minim de beneficiu cardiovascular e relativ scăzut, iar beneficiul marginal al fiecărei ore adăugate scade rapid</strong>.</p>
+      <p>Ce primești de la antrenamentul cardiovascular:</p>
+      <ul class="sl">
+        <li><strong>Sănătate cardiovasculară</strong> — inimă mai eficientă, tensiune mai mică, risc redus de boli cardio</li>
+        <li><strong>Arderea grăsimilor</strong> — cardio Zone 2 activează arderea grăsimilor ca combustibil</li>
+        <li><strong>Recuperare musculară</strong> — circulația îmbunătățită accelerează eliminarea produților de degradare musculară</li>
+        <li><strong>Reducerea cortizolului</strong> — mișcarea moderată este unul din cele mai eficiente mecanisme de scădere a cortizolului</li>
+        <li><strong>Calitatea somnului</strong> — activitatea fizică regulată îmbunătățește calitatea somnului</li>
+      </ul>
+      <p>Programul tău obține toate aceste beneficii prin: 10.000+ pași în zilele libere (Zone 2 natural) + cardio finisher 5 min la sală (HIIT) + mișcare în aer liber la muncă. Nu ai nevoie de mai mult.</p>
+      <div class="ok"><div class="ok-ttl">NU ADAUGI ORE DE CARDIO EXTRA</div>La stresul tău de 7/10 din bac și job, ore suplimentare de cardio adaugă povară fiziologică (allostatic load) fără beneficiu adăugat semnificativ. Cardio finisher-ul de 5 minute post-antrenament e exact atât cât e necesar acum.</div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 1</div>
+    <ul>
+      <li>VO2 max e cel mai bun predictor al longevității. La 20 de ani, ești la maximul lui natural.</li>
+      <li>Nu ai nevoie de ore de alergare. Ai nevoie de mișcare sistematică și regulată — pe care deja o faci.</li>
+      <li>Cardio-ul tău: 10.000+ pași în zilele libere + 5 min HIIT post-sală + mișcare la muncă. Suficient.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 2 — 10.000 DE PAȘI -->
+<div class="sec" id="sec2">
+  <div class="sec-hdr">
+    <div class="sec-n">02</div>
+    <div>
+      <span class="sec-tag">Cardio invizibil</span>
+      <div class="sec-ttl">10.000 DE PAȘI —<br>CARDIO INVIZIBIL<br>PE CARE ÎL FACI DEJA</div>
+    </div>
+  </div>
+  <div class="intro">Ai menționat că în zilele libere faci cel puțin 10.000 de pași. Și că la muncă stai afară mare parte din tură. Probabil nu ai realizat că asta e un antrenament cardiovascular real, nu doar „mișcare".</div>
+
+  <div class="verbatim">
+    <div class="verbatim-tag">Tu, din fișa de start</div>
+    <div class="verbatim-txt">„Când sunt liber de obicei mă trezesc la 6:30-7:30 și ies la cafele la bârfe, plimbări (10000 pași cel puțin)."</div>
+    <div class="verbatim-by">— Andrei Stamate, fișa de start BUILT</div>
+  </div>
+
+
+  <!-- 2.1 NEAT explicat -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">2.1</div><div class="subsec-ttl">NEAT — ACTIVITATEA CARE ARDE CEL MAI MULT</div></div>
+    <div class="subsec-body">
+      <p>NEAT (Non-Exercise Activity Thermogenesis) — activitatea termogenică non-exercițiu — e tot ce arzi în afara antrenamentelor formale: mersul pe jos, statul în picioare, gesticularea, activitățile zilnice. La persoanele active zilnic, NEAT poate constitui 300–1000 kcal pe zi din totalul caloric ars.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">JL</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. James Levine</div>
+            <div class="expert-inst">Mayo Clinic · Director, NEAT Research</div>
+          </div>
+          <div class="expert-tag">NEAT & Metabolismul</div>
+        </div>
+        <div class="expert-body">
+          Levine este pionierul cercetării NEAT. Studiile sale au arătat că diferența metabolică între persoanele care nu se îngrașă și cele care se îngrașă stând la aceeași dietă se datorează în mare parte NEAT — nu antrenamentelor formale.
+          <p style="margin-top:12px;">Concluzia practică: <strong>10.000 de pași pe zi ard în medie 400–500 kcal</strong> pentru un bărbat de 90 kg. Asta e echivalentul unui antrenament cardio mediu — dar fără impactul de stres fiziologic al unui antrenament cardio formal.</p>
+          <p style="margin-top:12px;">La muncă, dacă stai afară și te miști constant, probabil faci 6.000–8.000 de pași în zilele de muncă fără să te gândești la asta. Aceasta e o parte semnificativă din deficitul caloric necesar slăbitului.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Levine et al. — <em>Interindividual variation in posture allocation: possible role in human obesity</em> (Science, 2005) + <em>Non-exercise activity thermogenesis (NEAT)</em> (Best Practice & Research Clinical Endocrinology & Metabolism, 2002)</div>
+        </div>
+      </div>
+
+      <div class="mech">
+        <div class="mech-ttl">Cât arzi tu zilnic prin NEAT — estimare</div>
+        <div class="mech-flow">
+          <div class="mech-step">
+            <div class="mech-step-n">ZI DE MUNCĂ</div>
+            <div class="mech-step-ttl">~6.000–8.000 pași</div>
+            <div class="mech-step-desc">Stai afară, te miști constant. ~250–350 kcal NEAT suplimentar față de zi sedentară.</div>
+          </div>
+          <div class="mech-arr">+</div>
+          <div class="mech-step">
+            <div class="mech-step-n">ZI LIBERĂ</div>
+            <div class="mech-step-ttl">10.000+ pași</div>
+            <div class="mech-step-desc">Plimbări, cafele, ieșiri. ~400–500 kcal NEAT suplimentar.</div>
+          </div>
+          <div class="mech-arr">=</div>
+          <div class="mech-step">
+            <div class="mech-step-n">SĂPTĂMÂNAL</div>
+            <div class="mech-step-ttl">~2.500–3.000 kcal NEAT</div>
+            <div class="mech-step-desc">Echivalentul a 5–6 sesiuni de cardio moderat. Fără efort dedicat.</div>
+          </div>
+        </div>
+        <div class="mech-loop">NEAT-ul tău e deja o componentă majoră din deficitul caloric săptămânal. Nu e nevoie să adaugi cardio suplimentar — ai deja o „mașinărie de ars calorii" funcțională în rutina zilnică.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 2.2 Cum menții pasul în zilele de muncă -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">2.2</div><div class="subsec-ttl">OBIECTIVUL ZILNIC — MINIM 8.000 PAȘI</div></div>
+    <div class="subsec-body">
+      <p>Obiectivul tău e minim 8.000 de pași pe zi — inclusiv în zilele de muncă. Probabil îi faci deja în zilele de muncă prin activitatea de pe teren. Dar câteva strategii pentru zilele mai sedentare:</p>
+      <ul class="sl">
+        <li><strong>10 minute de mers după cină</strong> — scade cortizolul, îmbunătățește glicemia post-masă, ajută somnul</li>
+        <li><strong>Plimbat în timp ce vorbești la telefon</strong> — dacă ai o convorbire, te plimbi în același timp</li>
+        <li><strong>Ieșitul din casă dimineața</strong> — deja îl faci în zilele libere (cafeaua, plimbările). Menții obiceiul.</li>
+        <li><strong>La muncă, stai afară oricând poți</strong> — nu stai în mașină sau în spații închise dacă ai alternativă</li>
+      </ul>
+
+      <div class="ok"><div class="ok-ttl">DE CE 10 MINUTE DUPĂ CINA DE LA 20:30 SUNT IMPORTANTE</div>Cina ta e la 20:30. Dacă stai direct în pat după, glicemia rămâne ridicată mai mult timp și insulina lucrează ore bune. 10 minute de mers ușor după cină accelerează utilizarea glucozei din masă, scade glicemia mai rapid și semnalează creierului că ziua se încheie — îmbunătățind tranziția spre somn.</div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 2</div>
+    <ul>
+      <li>10.000+ pași în zilele libere = ~400–500 kcal arse. Echivalentul unui antrenament cardio — fără efort dedicat.</li>
+      <li>La muncă stai afară și te miști toată ziua — arzi calorii fără să te gândești la asta.</li>
+      <li>Obiectiv în zilele libere: 10.000 pași. În zilele de muncă: mișcarea de la job e suficientă.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 3 — ZONE 2 -->
+<div class="sec alt" id="sec3">
+  <div class="sec-hdr">
+    <div class="sec-n">03</div>
+    <div>
+      <span class="sec-tag">Știința mersului pe jos</span>
+      <div class="sec-ttl">ZONE 2 — DE CE<br>MERSUL PE JOS E<br>CARDIO REAL</div>
+    </div>
+  </div>
+  <div class="intro">Cardio-ul nu înseamnă neapărat alergat. Există 5 zone de intensitate cardiovasculară. Tu operezi în Zone 2 — intensitate moderată, 60–70% din ritmul cardiac maxim — ori de câte ori mergi alert. Și Zone 2 e cea care arde grăsimile.</div>
+
+  <div class="zone-grid">
+    <div class="zone-box">
+      <div class="zone-n">Z1</div>
+      <div class="zone-name">Recuperare</div>
+      <div class="zone-bpm">50–60% FCmax</div>
+      <div class="zone-desc">Mers lent. Recuperare activă.</div>
+    </div>
+    <div class="zone-box active">
+      <div class="zone-n">Z2</div>
+      <div class="zone-name">Aerob Bază</div>
+      <div class="zone-bpm">60–70% FCmax</div>
+      <div class="zone-desc">Mers alert, discuție posibilă. Arde grăsimi. Plimbările tale.</div>
+    </div>
+    <div class="zone-box">
+      <div class="zone-n">Z3</div>
+      <div class="zone-name">Aerob</div>
+      <div class="zone-bpm">70–80% FCmax</div>
+      <div class="zone-desc">Alergat moderat. Discuție dificilă.</div>
+    </div>
+    <div class="zone-box">
+      <div class="zone-n">Z4</div>
+      <div class="zone-name">Prag lactat</div>
+      <div class="zone-bpm">80–90% FCmax</div>
+      <div class="zone-desc">Sprint moderat. Discuție imposibilă.</div>
+    </div>
+    <div class="zone-box">
+      <div class="zone-n">Z5</div>
+      <div class="zone-name">Maxim</div>
+      <div class="zone-bpm">90–100% FCmax</div>
+      <div class="zone-desc">HIIT maxim. 30–60 secunde.</div>
+    </div>
+  </div>
+
+
+  <!-- 3.1 De ce Zone 2 arde grăsimi -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">3.1</div><div class="subsec-ttl">DE CE ZONE 2 ARDE GRĂSIMI — MECANISMUL</div></div>
+    <div class="subsec-body">
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">IP</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Iñigo San Millán</div>
+            <div class="expert-inst">University of Colorado · Fiziologie & Metabolismul Exercițiului</div>
+          </div>
+          <div class="expert-tag">Zone 2 & Metabolismul Mitocondrial</div>
+        </div>
+        <div class="expert-body">
+          San Millán este unul din cei mai importanți cercetători ai metabolismului în Zone 2. Concluzia sa: Zone 2 este singura zonă de intensitate în care mușchii utilizează grăsimile ca combustibil principal — nu glucoza. Mecanismul: la Zone 2, mitocondriile (centralele energetice ale celulelor) operează la eficiență maximă și preferă oxidarea acizilor grași (arderea grăsimii) față de glicoliză (arderea zahărului).
+          <p style="margin-top:12px;">La intensitate mai mare (Zone 3-5), metabolismul se schimbă spre glicoliză (glucoza devine combustibilul dominant) și producția de lactat crește. Grăsimea nu mai e combustibilul principal.</p>
+          <p style="margin-top:12px;">Concluzie directă pentru tine: <strong>mersul alert = Zone 2 = arderea grăsimilor</strong>. Nu alergatul. Nu bicicleta intensă. Mersul alert, pe care îl faci deja la plimbările tale.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> San Millán & Brooks — <em>Assessment of Metabolic Flexibility by Means of Measuring Blood Lactate, Fat, and Carbohydrate Oxidation During a Standardized Exercise Test</em> (Nutrients, 2018)</div>
+        </div>
+      </div>
+
+      <p>Ritmul cardiac optim pentru Zone 2 la vârsta ta (20 ani):</p>
+      <ul class="sl">
+        <li><strong>Ritmul cardiac maxim estimat</strong>: 220 - 20 = 200 bpm</li>
+        <li><strong>Zone 2 (60–70%)</strong>: 120–140 bpm</li>
+        <li><strong>Test simplu</strong>: dacă poți purta o conversație normală fără să te gâfâi, ești în Zone 2</li>
+        <li><strong>Plimbările tale</strong>: dacă mergi la un ritm alert, ești la ~120–135 bpm — exact Zone 2</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <!-- 3.2 Munca în aer liber ca Zone 2 -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">3.2</div><div class="subsec-ttl">MUNCA TA ÎN AER LIBER — ZONE 2 NEINTENȚIONAT</div></div>
+    <div class="subsec-body">
+      <p>Ai menționat că la muncă stai afară și te miști. Orice activitate fizică moderată continuă în aer liber — mers de la un punct la altul, activități practice, purtatul de materiale ușoare — operează în Zone 2. Arde grăsimi în mod continuu, fără să fie un „antrenament formal".</p>
+      <p>Asta e un avantaj pe care persoanele cu job de birou nu îl au. Un om cu birou sedentare operează în Zone 1 toată ziua (sau deloc). Tu operezi în Zone 2 6–8 ore pe zi în zilele de muncă. Chiar dacă nu realizai asta, corpul tău reacționa biologic.</p>
+      <div class="ok"><div class="ok-ttl">NU SUBESTIMA CE FAI DEJA</div>Mulți clienți vin cu zero activitate și trebuie să construim cardio-ul de la zero. Tu vii cu o bază solidă de Zone 2 prin muncă și plimbări. Adăugăm doar cardio finisher HIIT de 5 minute post-sală pentru a stimula și zonele superioare (Zone 4–5).</div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 3</div>
+    <ul>
+      <li>Zone 2 (60–70% FC max) = mers alert = arderea grăsimilor ca combustibil principal.</li>
+      <li>Plimbările tale zilnice și munca în aer liber sunt Zone 2. Ești în zona de ardere a grăsimilor ore întregi fără să realizezi.</li>
+      <li>Testul simplu: dacă poți vorbi normal, ești în Zone 2. Dacă te gâfâi, ai ieșit din ea.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 4 — HIIT FINISHER -->
+<div class="sec" id="sec4">
+  <div class="sec-hdr">
+    <div class="sec-n">04</div>
+    <div>
+      <span class="sec-tag">Cardio de impact</span>
+      <div class="sec-ttl">HIIT FINISHER —<br>5 MINUTE CARE<br>CONTEAZĂ CÂT 30</div>
+    </div>
+  </div>
+  <div class="intro">La finalul fiecărei sesiuni de sală, faci un interval finisher de 5–6 minute pe bicicletă, vâslit sau eliptică. Nu e pentru a arde calorii — e pentru a stimula adaptări cardiovasculare pe care Zone 2 nu le produce.</div>
+
+
+  <!-- 4.1 Ce produce HIIT pe care Zone 2 nu produce -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">4.1</div><div class="subsec-ttl">DE CE ADĂUGĂM HIIT DACĂ ZONE 2 ARDE GRĂSIMI</div></div>
+    <div class="subsec-body">
+      <p>Zone 2 și HIIT produc adaptări diferite și complementare. Niciunul nu le înlocuiește complet pe celălalt.</p>
+
+      <div class="vs-grid">
+        <div class="vs-col good">
+          <div class="vs-label">→ ZONE 2 PRODUCE</div>
+          <div class="vs-row">Arderea grăsimilor ca combustibil principal</div>
+          <div class="vs-row">Eficiența mitocondrială (celule cu mai multă energie)</div>
+          <div class="vs-row">Recuperare musculară accelerată</div>
+          <div class="vs-row">Reducerea cortizolului</div>
+          <div class="vs-row">Sănătate cardiovasculară de bază</div>
+        </div>
+        <div class="vs-col bad">
+          <div class="vs-label">→ ZONE 2 NU PRODUCE</div>
+          <div class="vs-row">Capacitate anaerobă (sprinturi, efort maxim scurt)</div>
+          <div class="vs-row">VO2 max creștere semnificativă</div>
+          <div class="vs-row">Hormon de creștere post-antrenament maxim</div>
+          <div class="vs-row">EPOC ridicat (ardere extra calorii post-antrenament)</div>
+        </div>
+      </div>
+
+      <p>HIIT (High Intensity Interval Training) — intervale de intensitate maximă (30–45 secunde) alternate cu pauze scurte — produce exact ce Zone 2 nu produce. Cele două se completează.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">MT</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Martin Gibala</div>
+            <div class="expert-inst">McMaster University · Fiziologia Exercițiului</div>
+          </div>
+          <div class="expert-tag">HIIT & Adaptare Cardiovasculară</div>
+        </div>
+        <div class="expert-body">
+          Gibala a condus studiul de referință care a arătat că 10 minute de HIIT (cu pauze) produce adaptări cardiovasculare comparabile cu 45 de minute de cardio moderat continuu — în termeni de VO2 max, biomarkeri de sănătate cardiovasculară și densitate mitocondrială.
+          <p style="margin-top:12px;">Important: Gibala subliniază că HIIT nu înlocuiește complet cardio-ul aerob — ci completează. Cel mai eficient program cardiovascular combină Zone 2 (pe care o ai deja prin plimbări) cu sesiuni scurte de HIIT (finisher-ul tău post-sală). Exact ce face BUILT.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Gibala et al. — <em>Short-term sprint interval versus traditional endurance training</em> (Journal of Physiology, 2006) + <em>Physiological adaptations to low-volume, high-intensity interval training in health and disease</em> (Journal of Physiology, 2012)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 4.2 EPOC — arderea continuă -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">4.2</div><div class="subsec-ttl">EPOC — DE CE ARZI CALORII ȘI DUPĂ CE TERMINI</div></div>
+    <div class="subsec-body">
+      <p>EPOC (Excess Post-Exercise Oxygen Consumption) — consumul crescut de oxigen post-exercițiu — e fenomenul prin care corpul continuă să ardă calorii la un ritm mai ridicat decât normal ore după un antrenament HIIT. Se numește popular „afterburn".</p>
+      <ul class="sl">
+        <li>5 minute de HIIT intens → corpul tău arde calorii la un ritm crescut timp de 12–24 ore post-antrenament</li>
+        <li>Contribuție estimată: 50–150 kcal suplimentare post-HIIT, distribuite pe ore</li>
+        <li>Cardio moderat continuu produce EPOC neglijabil — HIIT produce EPOC semnificativ</li>
+      </ul>
+      <div class="alert"><div class="alert-ttl">NU EXAGERA CU HIIT</div>HIIT e stresor fiziologic real. La stresul tău de 7/10, 5–6 minute post-sală × 3 sesiuni/săptămână e maximul rezonabil. Dacă adaugi ore de HIIT pe lângă antrenamentele de forță și munca fizică, adaugi la allostatic load — exact ce nu vrem.</div>
+    </div>
+  </div>
+
+
+  <!-- 4.3 Protocoalele concrete -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">4.3</div><div class="subsec-ttl">PROTOCOALELE DE CARDIO FINISHER — CONCRETE</div></div>
+    <div class="subsec-body">
+      <p>La finalul fiecărei sesiuni, după ultimul exercițiu, faci unul din aceste protocoale. Timer-ul e inclus în QuickRef Antrenament.</p>
+
+      <div class="card card-red">
+        <div class="card-ttl">Finisher Ziua A — Bicicletă sau Eliptică</div>
+        <p><strong>Protocol:</strong> 5 runde × (40 secunde efort maxim + 20 secunde odihnă = 5 minute total)<br><br>
+        La efort maxim: pedalezi sau mergi cât de repede poți. La odihnă: oprești complet sau ritm foarte lent.<br><br>
+        <strong>De ce bicicleta sau eliptica:</strong> zero impact pe articulații, faci imediat după piept+umeri fără să interfereze cu recuperarea musculară.</p>
+      </div>
+      <div class="card card-red">
+        <div class="card-ttl">Finisher Ziua B — Aparat de Vâslit</div>
+        <p><strong>Protocol:</strong> 6 runde × (30 secunde efort maxim + 30 secunde odihnă = 6 minute total)<br><br>
+        La vâslit: trage cât de exploziv poți, menținând spatele drept. La odihnă: lasă mânerele jos, respiri.<br><br>
+        <strong>De ce vâslit:</strong> lucrează tot corpul (picioare + spate + brațe), zero impact, recuperare mai rapidă post-sală de pull.</p>
+      </div>
+      <div class="card card-red">
+        <div class="card-ttl">Finisher Ziua C — Bicicletă (post-picioare)</div>
+        <p><strong>Protocol:</strong> 5 runde × (40 secunde efort maxim + 20 secunde odihnă = 5 minute total)<br><br>
+        Picioarele sunt deja obosite post-Ziua C. Bicicleta e singura opțiune care nu supraîncarcă articulațiile deja stresate de presa și squat.<br><br>
+        <strong>Dacă nu poți pedala intens</strong>: 10 minute de mers pe bandă la pantă 10% + viteză 5km/h = Zone 2 extra.</p>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 4</div>
+    <ul>
+      <li>5 minute HIIT post-sală produce adaptări cardiovasculare pe care Zone 2 nu le produce.</li>
+      <li>EPOC: corpul continuă să ardă calorii crescut 12–24 ore post-HIIT.</li>
+      <li>Protocoalele concrete: bicicletă/eliptică pentru Ziua A și C, vâslit pentru Ziua B.</li>
+      <li>Nu adaugi mai mult HIIT. 5–6 min × 3/săptămână e maximul la nivelul tău de stres.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 5 — MEDITAȚIILE ȘI RECUPERAREA -->
+<div class="sec alt" id="sec5">
+  <div class="sec-hdr">
+    <div class="sec-n">05</div>
+    <div>
+      <span class="sec-tag">Un avantaj pe care nu îl realizezi</span>
+      <div class="sec-ttl">MEDITAȚIILE ȘI<br>RECUPERAREA —<br>UN AVANTAJ REAL</div>
+    </div>
+  </div>
+  <div class="intro">Ai menționat că faci meditații zilnic. Asta nu e un detaliu minor — e un protocol de recuperare fiziologică documentat, echivalent cu NSDR-ul recomandat de Huberman pentru recuperarea sistemului nervos și reducerea cortizolului.</div>
+
+  <div class="verbatim">
+    <div class="verbatim-tag">Tu, despre zilele libere</div>
+    <div class="verbatim-txt">„Acum am și meditații."</div>
+    <div class="verbatim-by">— Andrei Stamate, fișa de start BUILT</div>
+  </div>
+
+
+  <!-- 5.1 Ce produce meditația fiziologic -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">5.1</div><div class="subsec-ttl">CE PRODUCE MEDITAȚIA FIZIOLOGIC — NU METAFIZIC</div></div>
+    <div class="subsec-body">
+      <p>Meditația a acumulat în ultimii 20 de ani o bază de cercetare solidă în neuroscience. Efectele ei nu sunt metafizice — sunt biologice și măsurabile.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">SK</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Sara Lazar</div>
+            <div class="expert-inst">Harvard Medical School · Neuroimagistică</div>
+          </div>
+          <div class="expert-tag">Neuroplasticitate & Meditație</div>
+        </div>
+        <div class="expert-body">
+          Lazar a condus unele din primele studii de neuroimagistică privind meditația. Concluzia centrală: meditația regulată produce modificări structurale măsurabile în creier — în special în cortexul prefrontal (zona autocontrolului și deciziei) și în amigdală (centrul răspunsului la stres).
+          <p style="margin-top:12px;">Practic pentru tine: meditația regulată reduce volumul amigdalei (mai puțin reactiv la stres) și îngroașă cortexul prefrontal (mai mult autocontrol). Asta înseamnă că, în timp, reacționezi mai puțin intens la stresul din bac și de la muncă — cortizolul cronic scade.</p>
+          <p style="margin-top:12px;">Impactul pe recuperare: niveluri mai mici de cortizol cronic → mai puțin blocare a sintezei proteice musculare → recuperare mai rapidă între sesiunile de antrenament.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Lazar et al. — <em>Meditation experience is associated with increased cortical thickness</em> (NeuroReport, 2005)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 5.2 Cum integrezi meditațiile în sistemul BUILT -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">5.2</div><div class="subsec-ttl">CUM INTEGREZI MEDITAȚIILE ÎN SISTEMUL BUILT</div></div>
+    <div class="subsec-body">
+      <p>Nu schimbi nimic la meditațiile tale. Nu trebuie să faci altceva decât ai face oricum. Câteva observații practice:</p>
+      <ul class="sl">
+        <li><strong>Meditația dimineața</strong> — după cei 5 minute de lumină matinală, înainte de micul dejun. Setezi tonul cortizolului matinal optim pentru toată ziua.</li>
+        <li><strong>Meditația de zi</strong> — dacă o faci în pauzele de la muncă sau în zilele libere, are efect direct de reducere a cortizolului acumulat.</li>
+        <li><strong>Meditația seara</strong> — dacă o faci seara, accelerează tranziția spre somn. Coboară ritmul cardiac și pregătește sistemul nervos pentru Slow-Wave Sleep.</li>
+        <li><strong>Nu trebuie să fie meditație formală</strong> — 10 minute de stat liniștit fără telefon sau o plimbare meditativă (fără căști, fără conținut) au efecte similare.</li>
+      </ul>
+
+      <div class="ok"><div class="ok-ttl">MEDITAȚIILE TALE SUNT DEJA UN AVANTAJ FAȚĂ DE ALȚI CLIENȚI</div>Cei mai mulți clienți au nevoie să construiască o practică de recuperare mentală de la zero. Tu o ai deja. Asta înseamnă că nivelul tău de cortizol cronic e probabil mai mic decât pare din stresul 7/10 pe care l-ai raportat. Recuperarea ta musculară va fi mai rapidă decât media.</div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 5</div>
+    <ul>
+      <li>Meditația reduce volumul amigdalei și îngroașă cortexul prefrontal. Reacționezi mai puțin intens la stres.</li>
+      <li>Cortizol mai mic → recuperare musculară mai rapidă. Meditațiile tale accelerează adaptarea la antrenament.</li>
+      <li>Nu schimbi nimic. Continui ce faci. E deja un avantaj real în sistem.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 6 — RESPIRAȚIA -->
+<div class="sec" id="sec6">
+  <div class="sec-hdr">
+    <div class="sec-n">06</div>
+    <div>
+      <span class="sec-tag">Controlul imediat al stresului</span>
+      <div class="sec-ttl">RESPIRAȚIA —<br>BUTONUL DE RESET<br>AL SISTEMULUI NERVOS</div>
+    </div>
+  </div>
+  <div class="intro">Există un protocol de respirație de 2 minute care scade ritmul cardiac și nivelul de cortizol mai rapid decât orice alt mecanism non-farmacologic. Îl poți folosi oriunde — la muncă, înainte de un moment stresant, după o tură lungă.</div>
+
+
+  <!-- 6.1 Physiological sigh -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">6.1</div><div class="subsec-ttl">SUSPIN FIZIOLOGIC — 2 MINUTE, EFECT IMEDIAT</div></div>
+    <div class="subsec-body">
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">AH</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Andrew Huberman</div>
+            <div class="expert-inst">Stanford School of Medicine · Neurobiologie</div>
+          </div>
+          <div class="expert-tag">Physiological Sigh</div>
+        </div>
+        <div class="expert-body">
+          Huberman a popularizat tehnica „physiological sigh" — suspin fiziologic — bazată pe cercetarea lui David Jaffe și Jack Feldman de la UCLA. Mecanism: o dublă inspirație pe nas urmată de o expirație lentă pe gură activează parasimpaticul (sistemul nervos „odihnă și digestie") mai rapid decât orice altă tehnică de respirație.
+          <p style="margin-top:12px;"><strong>Protocolul:</strong></p>
+          <p>(1) Inspiră adânc pe nas. Fără să dai aerul afară, trage rapid încă o dată aer pe nas (inspirație dublă).</p>
+          <p>(2) Expiră lent și lung pe gură — de 2–3 ori mai lung decât inspirația combinată.</p>
+          <p>(3) Repetă de 5 ori.</p>
+          <p style="margin-top:12px;">Efect: ritm cardiac scăzut în 30–60 secunde. Stare de calm fără somnolență. Cortizol scăzut în 5 minute.</p>
+          <div class="expert-work"><strong>Sursă:</strong> Huberman Lab Podcast, ep. „Physiological Sighs & Breathing" + Balban et al. — <em>Brief structured respiration practices enhance mood and reduce physiological arousal</em> (Cell Reports Medicine, 2023)</div>
+        </div>
+      </div>
+
+      <div class="card card-red">
+        <div class="card-ttl">Când îl folosești — scenarii practice</div>
+        <ul class="sl" style="margin:0;">
+          <li><strong>Înainte de o sesiune de sală dificilă</strong> — resetezi sistemul nervos din modul de stres</li>
+          <li><strong>La finalul turei de muncă</strong> — semnalezi creierului că stresul activ a luat sfârșit</li>
+          <li><strong>Înainte de meditație</strong> — intri în stare de calmare mai rapid</li>
+          <li><strong>Când simți că cedezi la ora 15:00</strong> — nu te ajuți cu zahăr, te ajuți cu respirația</li>
+          <li><strong>Înainte de a adormi</strong> — accelerează tranziția spre somn</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 6.2 Respirația la sală -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">6.2</div><div class="subsec-ttl">RESPIRAȚIA LA SALĂ — REGULA SIMPLĂ</div></div>
+    <div class="subsec-body">
+      <p>La antrenament, respirația corectă reduce riscul de accidentare și crește performanța la ridicare. Regula simplă:</p>
+      <ul class="sl">
+        <li><strong>Expiră la efort</strong> — când ridici, împingi sau tragi: expiri</li>
+        <li><strong>Inspiră la coborâre</strong> — faza excentrică (coborârea controlată): inspiri</li>
+        <li><strong>Nu reții respirația în serii lungi</strong> — vasul Valsalva (reținerea respirației) e util la ridicări maxime, nu la serii de 10–15 repetări</li>
+        <li><strong>Respiră natural la cardio finisher</strong> — nu forța ritmul respirației la intervale</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 6</div>
+    <ul>
+      <li>Suspin fiziologic: dublă inspirație pe nas + expirație lungă pe gură × 5 repetări = cortizol scăzut în 5 minute.</li>
+      <li>Folosit după tura de muncă, înainte de sală, la ora 15:00 când simți stresul crescând.</li>
+      <li>La sală: expiră la efort, inspiră la coborâre. Nu reții respirația în serii normale.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 7 — CE SE SCHIMBĂ -->
+<div class="sec alt" id="sec7">
+  <div class="sec-hdr">
+    <div class="sec-n">07</div>
+    <div>
+      <span class="sec-tag">Progresul în timp</span>
+      <div class="sec-ttl">CE SE SCHIMBĂ<br>ÎN 30 / 60 / 90 ZILE</div>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">7.1</div><div class="subsec-ttl">ZILELE 1–30 — CALIBRAREA</div></div>
+    <div class="subsec-body">
+      <p><strong>Ce se întâmplă:</strong> Corpul se adaptează la finisher-ul de cardio post-sală. Primele 2–3 sesiuni pot părea greu de gestionat după antrenamentul de forță. La sesiunea 4–5, finisher-ul devine mai ușor — corpul s-a adaptat.</p>
+      <p><strong>Meditațiile:</strong> Continuă. Efectele cumulative ale meditației regulate devin vizibile în 3–4 săptămâni.</p>
+      <p><strong>Plimbările:</strong> Menții 8.000–10.000 pași minimum. Nu le reduci în zilele de antrenament.</p>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">7.2</div><div class="subsec-ttl">ZILELE 31–60 — CREȘTEREA CAPACITĂȚII</div></div>
+    <div class="subsec-body">
+      <p><strong>Ce se întâmplă:</strong> Finisher-ul devine mai ușor la aceeași intensitate — semn că VO2 max-ul a crescut. Poți crește intensitatea (mai tare, nu mai mult timp). Recuperarea post-antrenament e mai rapidă — poți face mai mult la sesiunile ulterioare.</p>
+      <p><strong>Cortizolul:</strong> Combinația meditații + mișcare regulată + somn la 22:20 produce o scădere măsurabilă a cortizolului cronic. Fața începe să se subțieze mai repede.</p>
+    </div>
+  </div>
+
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">7.3</div><div class="subsec-ttl">ZILELE 61–90 — CAPACITATE REALĂ</div></div>
+    <div class="subsec-body">
+      <p><strong>Ce se vede:</strong> Poți urca 5–6 etaje fără să te gâfâi (un obiectiv pe care l-ai menționat indirect prin „să am echilibru"). Ritmul cardiac se recuperează mai repede după efort. Energia e mai uniformă pe parcursul zilei — fără prăbușiri la 15:00 (rezolvate prin gustare) și fără epuizare seara.</p>
+      <p><strong>Meditațiile:</strong> Dacă le faci consistent 90 de zile, ești în top 5% al populației ca practică de recuperare mentală. Efectele se acumulează exponențial după primele 30 de zile.</p>
+
+      <div class="ok"><div class="ok-ttl">CAPACITATE = FUNCȚIONALITATE REALĂ</div>Obiectivul tău era să ai echilibru și să te simți la vârsta ta. Un om de 20 de ani cu capacitate cardiovasculară bună urcă etaje ușor, recuperează rapid, nu obosește prematur. Nu e magie — e rezultatul a 90 de zile de mișcare structurată.</div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 7</div>
+    <ul>
+      <li>Zile 1–30: adaptare la finisher-ul post-sală. Devine mai ușor rapid.</li>
+      <li>Zile 31–60: VO2 max crescut, recuperare mai rapidă, cortizol mai mic — fața se subțiază.</li>
+      <li>Zile 61–90: capacitate reală. Urci etaje ușor, energie uniformă, te simți la 20 de ani.</li>
+    </ul>
+  </div>
+</div>
+
+
+<div class="footer">
+  <div class="footer-logo">BUILT</div>
+  <div>Modulul 04/05 · Andrei Stamate · 90 de zile</div>
+  <div>Coach: Iordache Claudiu</div>
+</div>
+
+</body>
+</html>

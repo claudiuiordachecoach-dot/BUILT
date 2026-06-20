@@ -33,7 +33,7 @@ export default async function ClientLayout({ children }: { children: React.React
       )}
       <div className="flex flex-1 min-h-0">
         <ClientNav />
-        <main className="flex-1 min-w-0 pt-12 pb-20 md:pt-0 md:pb-0">{children}</main>
+        <main className="flex-1 min-w-0 mobile-header-offset mobile-bottomnav-offset md:pt-0 md:pb-0">{children}</main>
       </div>
     </div>
   );

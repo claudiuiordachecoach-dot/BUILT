@@ -1,7 +1,7 @@
 "use client";
 import { Suspense } from "react";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams, useRouter } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
 import { SignOutButton } from "./SignOutButton";
 import { UserDisplay } from "./UserDisplay";
@@ -19,9 +19,12 @@ const NAV = [
 
 function ClientNavContent() {
   const pathname = usePathname();
+  const router = useRouter();
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId");
   const qs = clientId ? `?clientId=${clientId}` : "";
+  // Pagină de detaliu = mai mult de 2 segmente (ex: /client/bonusuri/123)
+  const isDetailPage = pathname.split("/").filter(Boolean).length > 2;
 
   return (
     <>
@@ -51,18 +54,33 @@ function ClientNavContent() {
       </aside>
 
       {/* MOBILE — header fix sus cu logout */}
-      <header className="md:hidden fixed top-0 left-0 right-0 z-50 h-12 bg-[#111111] border-b border-white/10 flex items-center justify-between px-4">
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-5 bg-built-red rounded flex items-center justify-center shrink-0">
-            <span className="text-white text-[9px] font-bold">B</span>
-          </div>
-          <span className="text-zinc-200 font-semibold text-[13px]">BUILT</span>
+      <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#111111] border-b border-white/10 mobile-header">
+        <div className="flex items-center justify-between px-4 h-12">
+          {isDetailPage ? (
+            <button
+              onClick={() => router.back()}
+              className="flex items-center gap-1 -ml-1 pr-2 py-1 rounded-lg text-zinc-200 hover:bg-white/5 transition-all"
+              aria-label="Înapoi"
+            >
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6"/>
+              </svg>
+              <span className="text-[13px] font-medium">Înapoi</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 bg-built-red rounded flex items-center justify-center shrink-0">
+                <span className="text-white text-[9px] font-bold">B</span>
+              </div>
+              <span className="text-zinc-200 font-semibold text-[13px]">BUILT</span>
+            </div>
+          )}
+          <SignOutButton iconOnly />
         </div>
-        <SignOutButton iconOnly />
       </header>
 
       {/* MOBILE — bottom nav */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111] border-t border-white/10 flex items-center justify-around px-0 py-2 safe-area-inset-bottom">
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111] border-t border-white/10 flex items-center justify-around px-0 pt-2 mobile-bottomnav">
         {NAV.map(item => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (

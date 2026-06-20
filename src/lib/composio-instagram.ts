@@ -94,7 +94,7 @@ export async function fetchComposioInsights(
       arguments: { ig_media_id: mediaId, metric },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const items: Array<{ name: string; values?: Array<{ value: number }>; value?: number }> =
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       (result as any)?.data?.data ?? (result as any)?.response?.data ?? [];

@@ -28,8 +28,10 @@ create trigger on_auth_user_created
   for each row execute function public.handle_new_user();
 
 alter table public.profiles enable row level security;
+drop policy if exists "Users see own profile" on public.profiles;
 create policy "Users see own profile" on public.profiles
   for select using (auth.uid() = id);
+drop policy if exists "Users update own profile" on public.profiles;
 create policy "Users update own profile" on public.profiles
   for update using (auth.uid() = id);
 
@@ -54,6 +56,7 @@ create table if not exists public.ai_conversations (
 create index if not exists ai_conv_user_idx on public.ai_conversations (user_id, created_at desc);
 
 alter table public.ai_conversations enable row level security;
+drop policy if exists "Users see own convos" on public.ai_conversations;
 create policy "Users see own convos" on public.ai_conversations
   for all using (auth.uid() = user_id);
 
@@ -83,6 +86,7 @@ create table if not exists public.instagram_media (
 create index if not exists ig_media_user_idx on public.instagram_media (user_id, posted_at desc);
 
 alter table public.instagram_media enable row level security;
+drop policy if exists "Users see own media" on public.instagram_media;
 create policy "Users see own media" on public.instagram_media
   for all using (auth.uid() = user_id);
 
@@ -101,6 +105,7 @@ create table if not exists public.weekly_packages (
 create index if not exists weekly_pkg_user_idx on public.weekly_packages (user_id, week_start desc);
 
 alter table public.weekly_packages enable row level security;
+drop policy if exists "Users see own packages" on public.weekly_packages;
 create policy "Users see own packages" on public.weekly_packages
   for all using (auth.uid() = user_id);
 

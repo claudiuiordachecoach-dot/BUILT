@@ -77,7 +77,7 @@ export default async function RootLayout({
           <div className="flex min-h-screen">
             {isAdmin && <Sidebar />}
             <NotificationProvider>
-              <main className={`flex-1 min-w-0 ${isAdmin ? "pt-12 md:pt-0" : ""}`}>{children}</main>
+              <main className={`flex-1 min-w-0 ${isAdmin ? "mobile-header-offset md:pt-0" : ""}`}>{children}</main>
             </NotificationProvider>
           </div>
         </ThemeProvider>

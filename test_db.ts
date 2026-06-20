@@ -8,7 +8,7 @@ const supabase = createClient(
 );
 
 async function run() {
-  const { data, error } = await supabase.from("instagram_media").select("id").limit(5);
-  console.log("DB count:", data?.length, "error:", error);
+  const { data, error } = await supabase.from("clients").select("*").limit(1);
+  console.log("Clients sample:", data, "error:", error);
 }
 run();

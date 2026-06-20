@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BUILT — Modulul 1: Tough Mindset // Andrei Stamate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:#8B1A1A;--red-bg:rgba(192,57,43,.08);--wht:#F5F5F5;--muted:#888;--muted2:#666;--brd:#252525;--brd2:#1F1F1F;--card:#111111;--grn:#27ae60;--grn-bg:rgba(39,174,96,.06);--amber:#D4A017;--amber-bg:rgba(212,160,23,.07);--blue:#3B7EAB;--blue-bg:rgba(59,126,171,.07);}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:15px;line-height:1.75;-webkit-font-smoothing:antialiased;}
+strong{color:var(--wht);}em{color:#ddd;font-style:italic;}p{margin-bottom:14px;}p:last-child{margin-bottom:0;}
+.cover{min-height:100vh;padding:60px;display:flex;flex-direction:column;justify-content:space-between;position:relative;overflow:hidden;background:var(--blk);}
+.cover-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 80% 15%,rgba(192,57,43,.18) 0%,transparent 60%),radial-gradient(ellipse 40% 40% at 5% 90%,rgba(139,26,26,.1) 0%,transparent 50%);pointer-events:none;}
+.cover-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(192,57,43,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(192,57,43,.04) 1px,transparent 1px);background-size:55px 55px;pointer-events:none;}
+.brand-bar{display:flex;align-items:center;gap:14px;position:relative;z-index:1;}
+.brand-logo{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:8px;color:var(--red);}
+.brand-sep{width:36px;height:1px;background:var(--red);opacity:.5;}
+.brand-sub{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);}
+.cover-main{position:relative;z-index:1;}
+.mod-label{font-size:10px;letter-spacing:5px;text-transform:uppercase;color:var(--red);margin-bottom:10px;}
+.mod-num{font-family:'Bebas Neue',sans-serif;font-size:220px;line-height:.8;color:var(--red);opacity:.06;position:absolute;right:-20px;top:-60px;pointer-events:none;}
+.cover-h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(56px,9vw,120px);line-height:.88;color:var(--wht);margin-bottom:22px;}
+.cover-h1 em{color:var(--red);font-style:normal;}
+.cover-desc{font-size:14px;color:#bbb;max-width:560px;line-height:1.85;border-left:3px solid var(--red);padding-left:20px;}
+.cover-meta{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;padding-top:26px;border-top:1px solid var(--brd);position:relative;z-index:1;}
+.cm-item label{display:block;font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:5px;}
+.cm-item span{font-size:13px;color:var(--wht);font-weight:600;}
+.sec{padding:72px 60px;border-bottom:1px solid var(--brd);position:relative;}
+.sec.alt{background:var(--drk2);}
+.sec-hdr{display:flex;align-items:flex-start;gap:18px;margin-bottom:42px;}
+.sec-n{font-family:'Bebas Neue',sans-serif;font-size:72px;line-height:.82;color:var(--red);opacity:.22;min-width:78px;}
+.sec-tag{font-size:9px;letter-spacing:5px;text-transform:uppercase;color:var(--red);display:block;margin-bottom:7px;}
+.sec-ttl{font-family:'Bebas Neue',sans-serif;font-size:clamp(30px,4vw,52px);line-height:.95;color:var(--wht);max-width:880px;}
+.intro{font-size:14px;color:#bbb;max-width:780px;line-height:1.85;border-left:3px solid var(--red);padding-left:20px;margin-bottom:38px;}
+.subsec{margin-bottom:48px;}
+.subsec-hdr{display:flex;align-items:baseline;gap:14px;margin-bottom:18px;padding-bottom:10px;border-bottom:1px solid var(--brd);}
+.subsec-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);font-weight:600;letter-spacing:1px;}
+.subsec-ttl{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1;}
+.subsec-body{font-size:14px;color:#c8c8c8;line-height:1.85;}
+.subsec-body p{margin-bottom:14px;}
+.card{background:var(--card);border:1px solid var(--brd);padding:26px;margin-bottom:14px;}
+.card-red{border-left:4px solid var(--red);}
+.card-ttl{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--red);margin-bottom:12px;}
+.card p{font-size:13px;color:#bbb;line-height:1.7;}
+.alert{background:var(--red-bg);border:1px solid rgba(192,57,43,.28);border-left:4px solid var(--red);padding:20px 24px;margin:22px 0;color:#ccc;line-height:1.78;font-size:14px;}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--red);margin-bottom:8px;}
+.ok{background:var(--grn-bg);border:1px solid rgba(39,174,96,.22);border-left:4px solid var(--grn);padding:20px 24px;margin:22px 0;color:#ccc;line-height:1.78;font-size:14px;}
+.ok-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--grn);margin-bottom:8px;}
+.info{background:var(--blue-bg);border:1px solid rgba(59,126,171,.22);border-left:4px solid var(--blue);padding:20px 24px;margin:22px 0;color:#ccc;line-height:1.78;font-size:14px;}
+.info-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:2px;color:var(--blue);margin-bottom:8px;}
+.verbatim{background:linear-gradient(135deg,rgba(192,57,43,.07) 0%,rgba(192,57,43,.02) 100%);border:1px solid rgba(192,57,43,.2);border-left:5px solid var(--red);padding:24px 30px;margin:28px 0;position:relative;}
+.verbatim::before{content:'"';position:absolute;top:-18px;left:18px;font-family:'Bebas Neue',sans-serif;font-size:96px;color:var(--red);opacity:.15;line-height:1;}
+.verbatim-tag{font-size:9px;letter-spacing:4px;text-transform:uppercase;color:var(--red);font-weight:600;margin-bottom:10px;}
+.verbatim-txt{font-style:italic;font-size:16px;color:#e8e8e8;line-height:1.7;}
+.verbatim-by{font-size:11px;color:var(--muted);margin-top:10px;letter-spacing:1px;}
+.expert{background:var(--drk2);border:1px solid var(--brd);border-top:3px solid var(--red);margin:24px 0;overflow:hidden;}
+.expert-top{padding:18px 24px;display:flex;align-items:center;gap:16px;background:rgba(192,57,43,.04);border-bottom:1px solid var(--brd);}
+.expert-icon{width:44px;height:44px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;flex-shrink:0;}
+.expert-meta{flex:1;}
+.expert-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--wht);line-height:1;}
+.expert-inst{font-size:11px;color:var(--muted);margin-top:4px;letter-spacing:.5px;}
+.expert-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);font-weight:700;}
+.expert-body{padding:20px 24px;font-size:13px;color:#c0c0c0;line-height:1.78;}
+.expert-work{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:14px;padding-top:12px;border-top:1px dashed var(--brd);}
+.expert-work strong{color:var(--red);font-weight:500;}
+.mech{background:var(--card);border:1px solid var(--brd);padding:28px;margin:28px 0;}
+.mech-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--red);margin-bottom:18px;text-transform:uppercase;}
+.mech-flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:0;}
+.mech-step{flex:1;min-width:120px;background:var(--drk);border:1px solid var(--brd2);padding:16px 14px;position:relative;}
+.mech-step-n{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);letter-spacing:1px;margin-bottom:6px;}
+.mech-step-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--wht);letter-spacing:1px;line-height:1.1;margin-bottom:8px;}
+.mech-step-desc{font-size:11.5px;color:#aaa;line-height:1.55;}
+.mech-arr{display:flex;align-items:center;justify-content:center;padding:0 6px;color:var(--red);font-size:24px;font-weight:700;}
+.mech-loop{margin-top:14px;padding:12px 16px;background:rgba(192,57,43,.07);border-left:3px solid var(--red);font-size:12px;color:#ccc;font-style:italic;}
+.proto{margin:28px 0;}
+.proto-ttl{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:3px;color:var(--red);margin-bottom:18px;}
+.proto-step{display:flex;gap:18px;padding:18px 0;border-bottom:1px solid var(--brd);position:relative;}
+.proto-step:last-child{border-bottom:none;}
+.proto-num{flex-shrink:0;width:44px;height:44px;background:var(--red);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;}
+.proto-content{flex:1;}
+.proto-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--red);letter-spacing:1px;margin-bottom:3px;}
+.proto-what{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1px;color:var(--wht);margin-bottom:6px;}
+.proto-how{font-size:13px;color:#bbb;line-height:1.7;}
+.proto-why{font-size:11.5px;color:var(--muted);margin-top:6px;font-style:italic;line-height:1.55;}
+.vs-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:22px 0;border:1px solid var(--brd);overflow:hidden;}
+.vs-col{padding:22px 24px;}
+.vs-col.bad{background:rgba(192,57,43,.04);border-right:1px solid var(--brd);}
+.vs-col.good{background:rgba(39,174,96,.04);}
+.vs-label{font-size:9px;letter-spacing:4px;text-transform:uppercase;margin-bottom:14px;font-weight:700;}
+.vs-col.bad .vs-label{color:var(--red);}
+.vs-col.good .vs-label{color:var(--grn);}
+.vs-scen{font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:18px;margin-bottom:6px;}
+.vs-row{font-size:13px;color:#bbb;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);line-height:1.65;}
+.vs-row:last-child{border-bottom:none;}
+.pillars{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:30px 0;}
+.pillar{background:var(--card);border:1px solid var(--brd);padding:22px 18px;display:flex;flex-direction:column;}
+.pillar.active{border-color:var(--red);background:rgba(192,57,43,.06);border-left-width:3px;}
+.pillar-n{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--red);opacity:.4;line-height:1;margin-bottom:6px;}
+.pillar-ttl{font-weight:700;font-size:12.5px;color:var(--wht);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;line-height:1.2;}
+.pillar-txt{font-size:12px;color:#aaa;line-height:1.6;flex:1;}
+.pillar-ref{font-size:10px;color:var(--red);margin-top:10px;letter-spacing:1px;font-weight:600;}
+.tldr{background:linear-gradient(135deg,rgba(212,160,23,.08) 0%,rgba(212,160,23,.02) 100%);border:1px solid rgba(212,160,23,.25);padding:22px 26px;margin:28px 0 14px;}
+.tldr-ttl{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--amber);margin-bottom:10px;}
+.tldr ul{list-style:none;}
+.tldr li{padding:5px 0 5px 22px;position:relative;font-size:13px;color:#ddd;line-height:1.65;}
+.tldr li::before{content:'◆';position:absolute;left:0;color:var(--amber);font-size:9px;top:8px;}
+ul.sl{list-style:none;margin:14px 0;}
+ul.sl li{padding:9px 0 9px 24px;position:relative;font-size:13.5px;color:#c0c0c0;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.7;}
+ul.sl li::before{content:'→';position:absolute;left:0;color:var(--red);font-weight:700;}
+ul.sl li strong{color:var(--wht);}
+ul.sl li:last-child{border-bottom:none;}
+ul.num{list-style:none;counter-reset:numlist;margin:14px 0;}
+ul.num li{counter-increment:numlist;padding:10px 0 10px 38px;position:relative;font-size:13.5px;color:#c0c0c0;line-height:1.7;border-bottom:1px solid rgba(255,255,255,.04);}
+ul.num li::before{content:counter(numlist,decimal-leading-zero);position:absolute;left:0;font-family:'DM Mono',monospace;font-size:11px;color:var(--red);font-weight:600;top:11px;letter-spacing:1px;}
+ul.num li:last-child{border-bottom:none;}
+.ift{background:var(--card);border:1px solid var(--brd);margin-bottom:10px;overflow:hidden;}
+.ift-t{background:rgba(192,57,43,.12);padding:13px 18px;display:flex;align-items:center;gap:10px;}
+.ift-b{font-family:'Bebas Neue',sans-serif;font-size:11px;letter-spacing:2px;color:var(--red);background:rgba(192,57,43,.2);padding:2px 10px;white-space:nowrap;}
+.ift-t span{font-weight:700;font-size:13px;color:var(--wht);}
+.ift-a{padding:14px 18px;font-size:13px;color:#ccc;line-height:1.7;}
+h3.sh{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:3px;color:var(--red);margin:30px 0 14px;}
+h3.shw{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--wht);margin:28px 0 14px;}
+.toc{background:var(--drk2);border:1px solid var(--brd);padding:32px 36px;margin:28px 0;}
+.toc-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:3px;color:var(--red);margin-bottom:18px;}
+.toc-list{display:grid;grid-template-columns:1fr 1fr;gap:8px 30px;}
+.toc-item{padding:9px 0;border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;font-size:13px;color:#c0c0c0;}
+.toc-item a{color:#c0c0c0;text-decoration:none;flex:1;}
+.toc-item a:hover{color:var(--red);}
+.toc-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);font-weight:600;margin-right:14px;letter-spacing:1px;}
+.toc-time{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1px;}
+blockquote{border-left:3px solid var(--red);padding:16px 22px;margin:22px 0;background:rgba(192,57,43,.05);font-style:italic;color:#ccc;font-size:14.5px;line-height:1.75;}
+blockquote cite{display:block;margin-top:10px;font-size:11px;color:var(--muted);font-style:normal;letter-spacing:1px;}
+.footer{background:var(--drk2);border-top:1px solid var(--brd);padding:36px 60px;display:flex;justify-content:space-between;align-items:center;font-size:10px;color:var(--muted);}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+hr.rl{border:none;border-top:1px solid var(--red);margin:28px 0;opacity:.22;}
+@media(max-width:900px){.pillars{grid-template-columns:repeat(2,1fr);}.toc-list{grid-template-columns:1fr;}.cover-meta{grid-template-columns:1fr 1fr;}.mech-flow{flex-direction:column;}.mech-arr{transform:rotate(90deg);padding:8px 0;}}
+@media(max-width:680px){.cover{padding:32px;}.sec{padding:48px 28px;}.vs-grid{grid-template-columns:1fr;}.vs-col.bad{border-right:none;border-bottom:1px solid var(--brd);}.footer{flex-direction:column;gap:12px;text-align:center;padding:28px;}}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-bg"></div>
+  <div class="cover-grid"></div>
+  <div class="mod-num">1</div>
+  <div class="brand-bar">
+    <div class="brand-logo">BUILT</div>
+    <div class="brand-sep"></div>
+    <div class="brand-sub">Coaching 1:1 · Andrei Stamate · Modulul 01 / 05</div>
+  </div>
+  <div class="cover-main">
+    <div class="mod-label">Modulul 01 — Tough Mindset & Arhitectura Neurală</div>
+    <div class="cover-h1">SISTEMUL<br>BATE <em>VOINȚA</em>.<br>BIOLOGIA<br>BATE <em>RUȘINEA</em>.</div>
+    <p class="cover-desc">Ai 20 de ani și te simți ca un om de 35. Herbalife te-a lăsat cu gust amar. Sala a rămas un loc în care nu știai ce să faci. Nici una, nici alta nu a fost eșecul tău. Ambele au fost lipsa unui sistem. Înainte de orice exercițiu și orice macrocal­cul, trebuie să înțelegi exact ce s-a întâmplat în corpul și mintea ta — și de ce, de data asta, e complet diferit.</p>
+  </div>
+  <div class="cover-meta">
+    <div class="cm-item"><label>Client</label><span>Andrei, 20 ani</span></div>
+    <div class="cm-item"><label>Obiectiv</label><span>Fat Loss + Masă Musculară</span></div>
+    <div class="cm-item"><label>Context</label><span>Inactiv · Job Ture · Bac · Meditații</span></div>
+    <div class="cm-item"><label>Orizont</label><span>90 de zile</span></div>
+  </div>
+</div>
+
+
+<!-- SECTION 00 — CUM SE FOLOSEȘTE -->
+<div class="sec">
+  <div class="sec-hdr">
+    <div class="sec-n">00</div>
+    <div>
+      <span class="sec-tag">Citește asta întâi</span>
+      <div class="sec-ttl">CUM SE FOLOSEȘTE<br>ACEST MODUL</div>
+    </div>
+  </div>
+  <div class="intro">Acesta nu este un plan de mese și nu este un program de antrenament. Acelea sunt în foile QuickRef pe care le-ai primit separat. Acesta este documentul care îți explică <strong>de ce</strong> lucrurile funcționează cum funcționează — și de ce eșecurile anterioare nu au ținut de tine, ci de sistemele greșite cu care ai lucrat.</div>
+
+  <div class="info"><div class="info-ttl">REGULA 1 — CITEȘTE-L DE TREI ORI ÎN 90 DE ZILE</div>Acum (ziua 1), pe la ziua 30 și pe la ziua 75. La fiecare recitire vei extrage altceva, pentru că tu vei fi altfel. La început rezonezi cu diagnosticul. La 30 de zile, cu mecanismele biologice. La 75, cu angajamentul.</div>
+  <div class="info"><div class="info-ttl">REGULA 2 — EXECUȚIA STĂ ÎN QUICKREF, NU AICI</div>Foile QuickRef îți spun ce faci azi, ce mănânci, câte serii și repetări. Acest modul îți explică de ce. Nu sunt interschimbabile — sunt complementare. Nu poți folosi QuickRef-ul fără să înțelegi modulul. Nu ai de ce să citești modulul fără să execuți QuickRef-ul.</div>
+  <div class="info"><div class="info-ttl">REGULA 3 — NU TREBUIE SĂ ÎNȚELEGI TOT DE PRIMA DATĂ</div>Sunt 8 secțiuni. Aproximativ 60-70 de minute de lectură atentă. Termenii tehnici (axa HPA, ego depletion, circadian rhythm) sunt explicați în clar. Dacă ceva nu e limpede — notezi și discutăm pe call.</div>
+
+  <div class="toc">
+    <div class="toc-ttl">CUPRINS</div>
+    <div class="toc-list">
+      <div class="toc-item"><span class="toc-num">01</span><a href="#sec1">De ce nu e vina ta — diagnosticul real</a><span class="toc-time">~14 min</span></div>
+      <div class="toc-item"><span class="toc-num">02</span><a href="#sec2">Mecanismul biologic al blocajului</a><span class="toc-time">~12 min</span></div>
+      <div class="toc-item"><span class="toc-num">03</span><a href="#sec3">Cei 5 piloni BUILT — adaptați la tine</a><span class="toc-time">~7 min</span></div>
+      <div class="toc-item"><span class="toc-num">04</span><a href="#sec4">Voința vs. Sistemul</a><span class="toc-time">~8 min</span></div>
+      <div class="toc-item"><span class="toc-num">05</span><a href="#sec5">Identitatea — cine devii</a><span class="toc-time">~9 min</span></div>
+      <div class="toc-item"><span class="toc-num">06</span><a href="#sec6">Somnul și lumina matinală</a><span class="toc-time">~8 min</span></div>
+      <div class="toc-item"><span class="toc-num">07</span><a href="#sec7">Angajamentul de 90 de zile</a><span class="toc-time">~5 min</span></div>
+      <div class="toc-item"><span class="toc-num">08</span><a href="#sec8">Referințe</a><span class="toc-time">~2 min</span></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SECTION 1 — DIAGNOSTICUL REAL -->
+<div class="sec alt" id="sec1">
+  <div class="sec-hdr">
+    <div class="sec-n">01</div>
+    <div>
+      <span class="sec-tag">Diagnosticul real</span>
+      <div class="sec-ttl">DE CE NU A FOST<br>VINA TA. NICIODATĂ.</div>
+    </div>
+  </div>
+  <div class="intro">Înainte de orice protocol, trebuie să înțelegem exact ce s-a întâmplat. Dacă nu schimbăm <strong>cauza</strong>, planul nou va eșua identic cu cel vechi. Vestea bună: cauza nu ești tu. Cauza a fost o metodă nepotrivită și lipsa completă a unui sistem.</div>
+
+  <div class="verbatim">
+    <div class="verbatim-tag">Cuvintele tale, din fișa de start BUILT</div>
+    <div class="verbatim-txt">„Principalul obstacol: rușinea și neîncrederea în mine."</div>
+    <div class="verbatim-by">— Andrei Stamate, mai 2026</div>
+  </div>
+
+  <p style="font-size:15px;color:#ddd;line-height:1.85;margin-bottom:32px;">Această frază conține <strong>trei erori de diagnostic distincte</strong>. Nu rușinea e problema — rușinea e consecința. Nu neîncrederea e cauza — neîncrederea e rezultatul unor metode care erau construite să eșueze. Hai să le desfacem pe rând.</p>
+
+
+  <!-- 1.1 Herbalife -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">1.1</div><div class="subsec-ttl">DE CE HERBALIFE TE-A LĂSAT SĂ EȘUEZI</div></div>
+    <div class="subsec-body">
+      <div class="verbatim">
+        <div class="verbatim-tag">Tu, despre Herbalife</div>
+        <div class="verbatim-txt">„Herbalife (oribili), te făceau să te simți ca ultimul om."</div>
+        <div class="verbatim-by">— Andrei Stamate, fișa de start</div>
+      </div>
+      <p>Herbalife este un sistem construit pe înlocuitori de masă — shake-uri cu deficit caloric agresiv. Mecanismul e simplu și garantat să eșueze pe termen lung. Creezi un deficit mare, pierzi rapid în primele săptămâni, te simți bine. Corpul tău nu știe că ești „la dietă" — știe că primești insuficientă energie. Reacția e automată și veche de milioane de ani:</p>
+      <ul class="sl">
+        <li><strong>Rata metabolică bazală scade</strong> — corpul devine mai eficient, arde mai puțin</li>
+        <li><strong>Foamea crește semnificativ</strong> — prin creșterea ghrelinului (hormonul foamei)</li>
+        <li><strong>Leptina scade</strong> — semnalul de sațietate devine mai slab</li>
+        <li><strong>Energia scade</strong> — corpul reduce activitatea involuntară (te miști mai puțin fără să realizezi)</li>
+        <li><strong>Pofta de zahăr explodează</strong> — creierul caută compensare rapidă a deficitului energetic</li>
+      </ul>
+      <p>La capătul drumului: te-ai săturat, ai cedat, ai câștigat greutatea înapoi. Asta nu e slăbiciune de caracter. E biologie precisă și predictibilă. Orice om cu o biologie sănătoasă ar fi reacționat identic.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">LN</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Layne Norton</div>
+            <div class="expert-inst">PhD Nutriție & Metabolism · University of Illinois</div>
+          </div>
+          <div class="expert-tag">Adaptarea Metabolică</div>
+        </div>
+        <div class="expert-body">
+          Norton a publicat extensiv despre adaptarea metabolică la deficit caloric prelungit. Corpul nu este o calorimetrie fixă — este un sistem dinamic. Când reduci caloriile brusc și sever, corpul răspunde prin trei mecanisme simultane: scade rata metabolică bazală (cu 5–15%), reduce activitatea spontană non-exercițiu — adică te miști mai puțin fără să realizezi — și crește eficiența mecanică a mișcării, consumând mai puțin pe același efort. Deficitul tău de 800 kcal devine, în 6–8 săptămâni, deficit real de 150 kcal. Și procesul stagnează complet.
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Norton & Trexler — <em>Metabolic adaptation to weight loss: implications for the athlete</em> (J. International Society of Sports Nutrition, 2014)</div>
+        </div>
+      </div>
+
+      <div class="alert"><div class="alert-ttl">DE CE AI RENUNȚAT LA HERBALIFE</div>Nu ai renunțat pentru că nu ai voință. Ai renunțat pentru că orice om cu o biologie funcțională ar fi renunțat. Sistemul era construit să producă eșec garantat după 4–8 săptămâni. Nu tu ai eșuat — Herbalife a eșuat ca metodă.</div>
+    </div>
+  </div>
+
+
+  <!-- 1.2 Sala fără ghidaj -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">1.2</div><div class="subsec-ttl">SALA FĂRĂ GHIDAJ — DE CE NU PRODUCE REZULTATE</div></div>
+    <div class="subsec-body">
+      <div class="verbatim">
+        <div class="verbatim-tag">Tu, despre sală</div>
+        <div class="verbatim-txt">„Sala că nu știu ce să fac."</div>
+        <div class="verbatim-by">— Andrei Stamate, fișa de start</div>
+      </div>
+      <p>Această frază e mai valoroasă decât pare. Ea spune că <strong>ai intrat la sală</strong> — adică voința de a merge acolo a existat. Problema a fost că n-ai avut un sistem de execuție. Asta e o problemă de cunoaștere, nu de caracter.</p>
+      <p>Sala fără un program structurat produce exact ce ai trăit tu: intri, faci câteva aparate la întâmplare, nu știi ce progresie să urmărești, nu simți că faci progres, renunți. Asta nu e lene — e un răspuns rațional la absența feedback-ului pozitiv.</p>
+      <p>Câteva lucruri pe care corpul tău nu poate face fără un sistem:</p>
+      <ul class="sl">
+        <li><strong>Progresie sistematică</strong> — fără să știi ce ai ridicat săptămâna trecută, nu poți crește săptămâna asta</li>
+        <li><strong>Supracompensare</strong> — creșterea musculară se produce exact în fereastra de recuperare post-antrenament, cu stimulul corect de intensitate</li>
+        <li><strong>Specificitate</strong> — exercițiile trebuie alese pentru obiectivele tale concrete (brațe, umeri, piept), nu la întâmplare</li>
+        <li><strong>Volume corect</strong> — prea puțin nu produce nimic; prea mult produce oboseală fără adaptare</li>
+      </ul>
+      <div class="ok"><div class="ok-ttl">CE S-A SCHIMBAT ACUM</div>Ai un program cu exerciții specifice, serii, repetări exacte, cue-uri de execuție pentru fiecare mișcare și un sistem de progresie clar (Double Progression). Nu mai improvizezi nimic. Sistemul e gata — tu execuți.</div>
+    </div>
+  </div>
+
+
+  <!-- 1.3 Rușinea și neîncrederea -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">1.3</div><div class="subsec-ttl">RUȘINEA — CONSECINȚĂ, NU CAUZĂ</div></div>
+    <div class="subsec-body">
+      <p>Ai scris că principalul obstacol e „rușinea și neîncrederea în mine". Asta e diagnosticul greșit. Rușinea față de corp nu e o problemă de caracter sau de valoare personală — e o consecință directă a unui cortizol cronic ridicat și a unor eșecuri anterioare cu sisteme greșite.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">BB</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Brené Brown</div>
+            <div class="expert-inst">University of Houston · Cercetătoare în rușine și vulnerabilitate</div>
+          </div>
+          <div class="expert-tag">Shame Resilience</div>
+        </div>
+        <div class="expert-body">
+          Brown a petrecut 20 de ani cercetând rușinea. Concluzia centrală: rușinea este credința că ești defect la nivel fundamental — nu că ai greșit ceva, ci că ești greșit în esență. Aceasta este cea mai distructivă distincție pe care o face mintea umană, pentru că blochează schimbarea: dacă crezi că ești defect, de ce ai investi în schimbare?
+          <p style="margin-top:12px;">Diferența critică: <strong>vinovăție</strong> („am făcut ceva greșit") poate fi motorul schimbării. <strong>Rușine</strong> („sunt greșit") o blochează sistematic. Rușinea față de corp produce evitare, nu acțiune.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Brown — <em>Daring Greatly</em> (Gotham Books, 2012) · Citat central: „Shame corrodes the very part of us that believes we are capable of change."</div>
+        </div>
+      </div>
+
+      <p>Aplicat la tine: nu ești defect. Ai 20 de ani, 90.6 kg la 188 cm — un IMC de 25.6, practic la limita normalului. Analizele tale sunt excelente biologic. Nu există nicio condiție medicală care să te oprească. Există o metodă greșită (Herbalife), un context fără ghidaj (sala), și un nivel ridicat de cortizol din stres (bac + job). Toate trei se rezolvă cu un sistem. Nu cu mai multă rușine.</p>
+
+      <div class="verbatim">
+        <div class="verbatim-tag">Adevăratul tău obiectiv, în cuvintele tale</div>
+        <div class="verbatim-txt">„Să arăt bombă!!! Să nu mai am gușă, să nu mai arăt ca la 35 de ani, să am forță în mâini, să am echilibru, să am brațul cât capul, să am jawline să tai hârtia, vreau să mă simt ca la vârsta mea, nu cu 15-20 de ani mai mare."</div>
+        <div class="verbatim-by">— Andrei Stamate, fișa de start</div>
+      </div>
+
+      <p>Toate acestea sunt obiective reale, atinse prin slăbit 5–8 kg și prin creștere musculară în zona umerilor, brațelor și pieptului. Nu e magie — e fizică și biochimie. La 20 de ani, corpul tău răspunde la antrenament mai repede decât va răspunde vreodată. Asta e avantajul tău real față de clienți de 35–40 de ani.</p>
+    </div>
+  </div>
+
+
+  <!-- 1.4 Decision fatigue -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">1.4</div><div class="subsec-ttl">VOINȚA DISPARE LA ORA 20:00 — ȘTIINȚA DIN SPATE</div></div>
+    <div class="subsec-body">
+      <p>Ai o tură de muncă de 6:30 la 20:15. La finalul ei, corpul și creierul tău sunt epuizate. Exact în acel moment e nevoie să iei decizii legate de mâncare, antrenament, somn. Și de obicei ai cedat. Asta nu e lipsă de disciplină — e neurologie.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">RB</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Roy Baumeister</div>
+            <div class="expert-inst">Florida State University · Psihologie Socială</div>
+          </div>
+          <div class="expert-tag">Ego Depletion</div>
+        </div>
+        <div class="expert-body">
+          Baumeister a demonstrat că autocontrolul funcționează ca un mușchi. Se obosește. Fenomenul se numește <em>ego depletion</em>: după o perioadă lungă de luare a deciziilor sau rezistență la tentații, capacitatea de a exercita autocontrol în perioadele următoare scade dramatic. Nu pentru că vrei să cedezi — ci pentru că cortexul prefrontal (zona care procesează autocontrolul) rămâne literalmente fără glucoză.
+          <p style="margin-top:12px;">Experimentele lui arată că după sarcini intense de decizie, oamenii cedează mult mai ușor la tentații alimentare — nu pentru că sunt „slabi", ci pentru că resursa cognitivă de rezistență e epuizată.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Baumeister & Tierney — <em>Willpower: Rediscovering the Greatest Human Strength</em> (Penguin Press, 2011)</div>
+        </div>
+      </div>
+
+      <p>Aplicat la tura ta de 6:30–20:15: lucrezi afară în condiții variate, interacționezi cu oameni, iei zeci de decizii. La 20:15 ajungi acasă cu cortexul prefrontal epuizat. Dacă planul tău de mâncare cere să decizi atunci ce gătești și cât mănânci — sistemul va eșua. Dacă planul e pre-decis (cina cu pastele tale obișnuite, de exemplu) — nu mai există decizie. Execuți un automatism.</p>
+
+      <div class="alert"><div class="alert-ttl">CONCLUZIA CARE SCHIMBĂ TOTUL</div>Orice sistem care îți cere să iei decizii alimentare sau de antrenament la 20:30, după o tură de 13 ore, va eșua. BUILT e construit invers: deciziile grele sunt pre-luate, alternativele sunt pregătite, protocoalele de criză sunt definite dinainte. Seara execuți — nu deliberezi.</div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 1</div>
+    <ul>
+      <li>Herbalife a produs eșec garantat biologic — adaptare metabolică, foame crescută, metabolism scăzut. Nu tu ai eșuat.</li>
+      <li>Sala fără ghidaj = efort fără sistem = frustrare garantată. Acum ai un program exact.</li>
+      <li>Rușinea față de corp e consecința, nu cauza. Nu ești defect. Ai avut metode greșite.</li>
+      <li>Voința dispare la 20:00 după o tură lungă. Sistemul BUILT e pre-decis, nu dependent de voință în momentul de epuizare.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 2 — MECANISMUL BIOLOGIC -->
+<div class="sec" id="sec2">
+  <div class="sec-hdr">
+    <div class="sec-n">02</div>
+    <div>
+      <span class="sec-tag">Biologie, nu caracter</span>
+      <div class="sec-ttl">MECANISMUL BIOLOGIC<br>AL BLOCAJULUI</div>
+    </div>
+  </div>
+  <div class="intro">Stresul din bac și din job nu e doar psihologic — are efecte fizice directe și măsurabile pe compoziția corporală. Analizele tale au confirmat acest lucru cu date concrete. Înainte de a construi, trebuie să înțelegem ce a produs blocajul.</div>
+
+
+  <!-- 2.1 Cortizolul -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">2.1</div><div class="subsec-ttl">CORTIZOLUL ȘI GRĂSIMEA PE FAȚĂ ȘI BURTĂ</div></div>
+    <div class="subsec-body">
+      <p>Ai notat un stres de 7/10 din două surse distincte: bacul și locul de muncă. Ambele sunt stresori cronici, nu acuți. Diferența contează enorm.</p>
+      <p>Un stresor acut (o frână bruscă în trafic) produce cortizol 2–3 minute, după care sistemul se resetează. Un stresor cronic (3 luni de bac + ture zilnice de 13 ore) produce cortizol aproape constant. Și asta are un efect specific și documentat pe compoziția corporală.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">RS</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Robert Sapolsky</div>
+            <div class="expert-inst">Stanford University · Biologie, Neurologie</div>
+          </div>
+          <div class="expert-tag">Stress & Cortisol</div>
+        </div>
+        <div class="expert-body">
+          Sapolsky a petrecut 30 de ani studiind stresul cronic — la babuini în Kenya și la oameni. Concluzia lui fundamentală: creierul uman nu face diferența dintre un prădător care te urmărește și un examen de bacalaureat care se apropie. Ambele activează aceeași cascadă hormonală, cu aceleași consecințe biologice.
+          <p style="margin-top:12px;">Diferența crucială: zebra fuge 3 minute și sistemul ei nervos revine la normal. Omul rumegă același gând de îngrijorare 3 ore, 3 zile, 3 luni. Fără recuperare între episoade, cortizolul rămâne cronic ridicat.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Sapolsky — <em>Why Zebras Don't Get Ulcers</em> (Holt Paperbacks, ed. 3, 2004)</div>
+        </div>
+      </div>
+
+      <h3 class="sh">MECANISMUL EXACT — DE CE STRESUL DEPUNE GRĂSIME PE FAȚĂ</h3>
+
+      <div class="mech">
+        <div class="mech-ttl">Cascada cortizol → grăsime facială și abdominală</div>
+        <div class="mech-flow">
+          <div class="mech-step">
+            <div class="mech-step-n">PAS 01</div>
+            <div class="mech-step-ttl">Stres cronic</div>
+            <div class="mech-step-desc">Bac + ture de muncă. Hipotalamusul activat constant.</div>
+          </div>
+          <div class="mech-arr">→</div>
+          <div class="mech-step">
+            <div class="mech-step-n">PAS 02</div>
+            <div class="mech-step-ttl">Axa HPA</div>
+            <div class="mech-step-desc">Hipotalamus → Pituitară → Suprarenale. Cortizol eliberat.</div>
+          </div>
+          <div class="mech-arr">→</div>
+          <div class="mech-step">
+            <div class="mech-step-n">PAS 03</div>
+            <div class="mech-step-ttl">Receptori adipoși</div>
+            <div class="mech-step-desc">Adipocitele faciale și abdominale au densitate de receptori cortizol de 4× mai mare decât restul corpului.</div>
+          </div>
+          <div class="mech-arr">→</div>
+          <div class="mech-step">
+            <div class="mech-step-n">PAS 04</div>
+            <div class="mech-step-ttl">Depunere selectivă</div>
+            <div class="mech-step-desc">Corpul depune grăsime preferențial pe față, gât și abdomen — „gușa" pe care o menționezi.</div>
+          </div>
+          <div class="mech-arr">→</div>
+          <div class="mech-step">
+            <div class="mech-step-n">PAS 05</div>
+            <div class="mech-step-ttl">Rușine</div>
+            <div class="mech-step-desc">Aspectul produce stres suplimentar → mai mult cortizol → bucla se închide.</div>
+          </div>
+        </div>
+        <div class="mech-loop"><strong>BUCLA:</strong> Stresul cronic → grăsime facială → rușine față de aspect → mai mult stres → mai mult cortizol. Ieșirea nu e voință — e scăderea sistematică a stresului + deficit caloric moderat.</div>
+      </div>
+
+      <p>Asta înseamnă că „gușa" pe care o urăști nu e doar o problemă calorică. E o problemă de cortizol. Deficitul caloric singur nu e suficient — trebuie redus și stresul cronic. BUILT atacă ambele fronturi simultan.</p>
+    </div>
+  </div>
+
+
+  <!-- 2.2 Glicemia -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">2.2</div><div class="subsec-ttl">GLICEMIA BORDERLINE — DE CE NU SUNT POFTELE SLĂBICIUNE</div></div>
+    <div class="subsec-body">
+      <p>Analizele tale arată glicemia la <strong>71.44 mg/dL</strong>. Intervalul normal e 70–105 mg/dL. A ta e la limita inferioară — practic la 1.44 mg/dL de hipoglicemie clinică.</p>
+      <p>Asta explică un fenomen specific pe care probabil îl trăiești fără să știi de unde vine: în jurul orei 15:00, fără o masă intermediară, creierul tău rămâne literalmente fără combustibil. Nu metaforic — literal. Glucoza, singurul combustibil pe care creierul îl poate folosi direct, scade sub pragul optim de funcționare.</p>
+
+      <div class="mech">
+        <div class="mech-ttl">Cascada glicemiei scăzute — ziua ta de muncă</div>
+        <div class="mech-flow">
+          <div class="mech-step">
+            <div class="mech-step-n">ORE 13-14</div>
+            <div class="mech-step-ttl">Prânz (dacă există)</div>
+            <div class="mech-step-desc">Glicemia crește. Energie bună.</div>
+          </div>
+          <div class="mech-arr">→</div>
+          <div class="mech-step">
+            <div class="mech-step-n">ORA 15-16</div>
+            <div class="mech-step-ttl">Glicemie scade sub 70</div>
+            <div class="mech-step-desc">Creierul trimite semnal de urgență. Nu e poftă — e biologie.</div>
+          </div>
+          <div class="mech-arr">→</div>
+          <div class="mech-step">
+            <div class="mech-step-n">ORA 16-17</div>
+            <div class="mech-step-ttl">Poftă intensă de zahăr</div>
+            <div class="mech-step-desc">Creierul cere glucoză rapidă — dulciuri, pâine, orice carbohidrat simplu.</div>
+          </div>
+          <div class="mech-arr">→</div>
+          <div class="mech-step">
+            <div class="mech-step-n">ORA 20:30</div>
+            <div class="mech-step-ttl">Ajungi acasă flămând</div>
+            <div class="mech-step-desc">Mănânci rapid și mult. Sațietatea vine cu întârziere — ai mâncat deja prea mult.</div>
+          </div>
+        </div>
+        <div class="mech-loop">Gustarea obligatorie la 15:00–16:00 din planul tău de nutriție nu e un extra — e soluția directă pentru glicemia ta borderline. Fără ea, cascada de mai sus se repetă zilnic.</div>
+      </div>
+
+      <div class="ok"><div class="ok-ttl">CE SPUN RESTUL ANALIZELOR — EȘTI BIOLOGIC EXCELENT</div>
+      Trigliceride: 62.94 mg/dL — excelent (corpul procesează bine carbohidrații). HDL: 63.60 mg/dL — excelent, cardioprotectiv. TSH: 1.02 — tiroidă perfect calibrată, nicio cauză hormonală care să blocheze progresul. CRP: negativ — zero inflamație. VSH: 5 mm/h — aproape inexistentă. <strong>Nicio restricție medicală pentru antrenament. Zero.</strong></div>
+    </div>
+  </div>
+
+
+  <!-- 2.3 Testosteronul la 20 ani -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">2.3</div><div class="subsec-ttl">AVANTAJUL TĂU BIOLOGIC REAL — TESTOSTERONUL LA 20 DE ANI</div></div>
+    <div class="subsec-body">
+      <p>Există ceva pe care trebuie să îl înțelegi clar: la 20 de ani, nivelul de testosteron este cel mai ridicat din viața ta. Testosteronul este hormonul principal responsabil de creșterea masei musculare și de arderea grăsimilor. Nu vei mai fi niciodată în această poziție hormonală avantajoasă.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">AH</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Andrew Huberman</div>
+            <div class="expert-inst">Stanford School of Medicine · Neurobiologie</div>
+          </div>
+          <div class="expert-tag">Hormones & Body Composition</div>
+        </div>
+        <div class="expert-body">
+          Huberman a explicat în detaliu mecanismele hormonale ale compoziției corporale. La 20 de ani, un bărbat are niveluri de testosteron de 600–1000 ng/dL. După 30 de ani, nivelul scade cu 1–2% pe an. Testosteronul acționează direct pe receptorii musculari — accelerând sinteza proteică — și indirect pe metabolismul grăsimilor, prin activarea enzimelor lipolice (care ard grăsimea stocată).
+          <p style="margin-top:12px;">Asta înseamnă că la 20 de ani, cu un antrenament corect și o alimentație adecvată, rata de câștig muscular și pierdere de grăsime este mai mare decât va fi vreodată. Nu e o metaforă — e o realitate hormonală documentată.</p>
+          <div class="expert-work"><strong>Sursă:</strong> Huberman Lab Podcast, ep. „How to Optimize Testosterone & Estrogen" + <em>Journal of Clinical Endocrinology & Metabolism</em>, studii privind testosteronul și compoziția corporală</div>
+        </div>
+      </div>
+
+      <p>Concluzie directă: dacă nu folosești avantajul hormonal de la 20 de ani, îl pierzi. Nu pentru că ești condamnat — ci pentru că fereastra biologică se îngustează în timp. BUILT e construit să maximizeze exact această fereastră.</p>
+
+      <div class="alert"><div class="alert-ttl">DE CE „MĂ APUC CÂND AM MAI MULT TIMP" E GREȘIT</div>Nu vei mai fi niciodată la 20 de ani cu niveluri hormonale de vârf, cu articulații complet sănătoase, cu o capacitate de recuperare maximă și cu analize perfecte. Fiecare an în care aștepți e un an din fereastra biologică optimă care se scurge.</div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 2</div>
+    <ul>
+      <li>Stresul cronic din bac + job produce cortizol care depune grăsime preferențial pe față și abdomen. Asta e „gușa" — nu e un eșec alimentar.</li>
+      <li>Glicemia ta la 71.44 explică poftele de la 15:00. Nu e lipsă de voință — e biologie. Gustarea obligatorie e soluția directă.</li>
+      <li>Restul analizelor sunt excelente. Nicio restricție medicală. Zero cauze hormonale care să blocheze progresul.</li>
+      <li>La 20 de ani ai niveluri hormonale de vârf. Fereastra biologică optimă e acum. Nu se mai întoarce.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 3 — CEI 5 PILONI -->
+<div class="sec alt" id="sec3">
+  <div class="sec-hdr">
+    <div class="sec-n">03</div>
+    <div>
+      <span class="sec-tag">Structura programului</span>
+      <div class="sec-ttl">CEI 5 PILONI BUILT,<br>ADAPTAȚI EXACT<br>PENTRU ANDREI.</div>
+    </div>
+  </div>
+  <div class="intro">BUILT nu e o dietă și nu e un program de sală. Este o <strong>arhitectură pe 5 piloni</strong> — fiecare cu mecanismele lui biologice, fiecare cu protocoalele lui exacte, fiecare construit pentru tine: 20 de ani, 188 cm, 90.6 kg, job cu ture lungi, bac, meditații zilnice și 10.000 de pași în zilele libere.</div>
+
+  <div class="pillars">
+    <div class="pillar active">
+      <div class="pillar-n">B</div>
+      <div class="pillar-ttl">Base Strength</div>
+      <div class="pillar-txt">Push/Pull/Legs, 3 zile pe săptămână, în zilele tale libere. Exerciții compuse + izolare. Progresie Double Progression. Construiești masa musculară pe care vrei să o ai la 20 de ani.</div>
+      <div class="pillar-ref">→ Detaliat în M3</div>
+    </div>
+    <div class="pillar active">
+      <div class="pillar-n">U</div>
+      <div class="pillar-ttl">Unbreakable Capacity</div>
+      <div class="pillar-txt">Plimbările tale zilnice de 10.000 de pași sunt deja pilonul U. Cardio finisher 5 minute la finalul fiecărui antrenament completează tabloul. Nu ai nevoie de ore pe banda de alergare.</div>
+      <div class="pillar-ref">→ Detaliat în M4</div>
+    </div>
+    <div class="pillar active">
+      <div class="pillar-n">I</div>
+      <div class="pillar-ttl">Intelligent Fueling</div>
+      <div class="pillar-txt">Nu dieta. Sistemul de mese adaptat la turele tale. Cina cu paste este deja corectă. Gustarea obligatorie la 15:00 rezolvă glicemia borderline. 2400 kcal / zi de antrenament, 2100 / zi de odihnă.</div>
+      <div class="pillar-ref">→ Detaliat în M2</div>
+    </div>
+    <div class="pillar active">
+      <div class="pillar-n">L</div>
+      <div class="pillar-ttl">Lifestyle Integration</div>
+      <div class="pillar-txt">Cafeaua cu prietenii, plimbările, meditațiile — toate rămân. Zilele de muncă au protocol de nutriție. Zilele libere au antrenament. Nicio obligație care îți strică viața socială la 20 de ani.</div>
+      <div class="pillar-ref">→ Detaliat în M5</div>
+    </div>
+    <div class="pillar active">
+      <div class="pillar-n">T</div>
+      <div class="pillar-ttl">Tough Mindset</div>
+      <div class="pillar-txt">Asta citești acum. Înțelegi mecanismele, recadrezi eșecurile anterioare, construiești identitatea omului care se antrenează — nu a omului care încearcă. Pilonul fundațional.</div>
+      <div class="pillar-ref">→ ACEST modul</div>
+    </div>
+  </div>
+
+  <h3 class="shw">REGULA DE ORDINE — PRIORITY STACK</h3>
+
+  <p style="font-size:14px;color:#c0c0c0;line-height:1.85;margin-bottom:20px;">Pilonii BUILT nu sunt egali în prioritate în primele 30 de zile. Dacă fundația (Tough Mindset + somn + sistem de mese) e șubredă, toate celelalte protocoale sunt limitate. Ordinea:</p>
+
+  <div class="ok"><div class="ok-ttl">PRIORITATEA EXACTĂ ÎN PRIMELE 30 DE ZILE</div>
+  <ol style="margin-left:20px;color:#ddd;line-height:1.85;font-size:14px;margin-top:8px;">
+    <li><strong>T (Tough Mindset)</strong> — somn protejat + meditații (deja faci) + gustarea la 15:00. Începem AICI.</li>
+    <li><strong>I (Intelligent Fueling)</strong> — sistemul de mese pre-decis. Nici o improvizație.</li>
+    <li><strong>B (Base Strength)</strong> — 3 zile sală, formă perfectă, progresie sistematică.</li>
+    <li><strong>U (Unbreakable Capacity)</strong> — plimbările zilnice + cardio finisher la sală.</li>
+    <li><strong>L (Lifestyle Integration)</strong> — automatisme și design zilnic (Modulul 5).</li>
+  </ol></div>
+</div>
+
+
+<!-- SECTION 4 — VOINȚA VS SISTEMUL -->
+<div class="sec" id="sec4">
+  <div class="sec-hdr">
+    <div class="sec-n">04</div>
+    <div>
+      <span class="sec-tag">Resursa greșită</span>
+      <div class="sec-ttl">VOINȚA VS. SISTEMUL —<br>DE CE PIERZI MEREU<br>CU VOINȚA.</div>
+    </div>
+  </div>
+  <div class="intro">Voința e o resursă consumabilă. Se epuizează. Se scurge exact ca glicemia ta la ora 15:00 — și, la fel ca în cazul glicemiei, soluția nu e să „vrei mai tare", ci să schimbi ce primești.</div>
+
+
+  <!-- 4.1 Voința ca resursă limitată -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">4.1</div><div class="subsec-ttl">VOINȚA E O RESURSĂ LIMITATĂ — NEUROLOGIA DIN SPATE</div></div>
+    <div class="subsec-body">
+      <p>Cortexul prefrontal — zona creierului responsabilă de autocontrol, planificare și rezistența la tentații — consumă glucoză pentru a funcționa. Nu metaforic — literal. Fiecare decizie conștientă, fiecare moment de rezistență la o tentație, fiecare planificare consumă această resursă.</p>
+      <p>La finalul unei zile de muncă de 13 ore, cortexul tău prefrontal e epuizat metabolic. Nu mai poate face „munca grea" a deciziei sănătoase. Creierul revine la modul implicit: calea cu cel mai puțin efort cognitiv, adică alegerea haotică, mâncatul rapid, evitarea antrenamentului.</p>
+      <p>Asta nu e lipsă de disciplină. E neurologie. Și are o singură soluție: <strong>sistemul pre-decis</strong>.</p>
+
+      <div class="vs-grid">
+        <div class="vs-col bad">
+          <div class="vs-label">→ ABORDAREA VECHE (voință)</div>
+          <div class="vs-scen">Dimineața, cu energie</div>
+          <div class="vs-row">„Azi mănânc sănătos, mă duc la sală, nu cedez."</div>
+          <div class="vs-scen">Seara, după tura de 13 ore</div>
+          <div class="vs-row">„Mâine reîncep. Azi mânânc orice."</div>
+          <div class="vs-scen">Sâmbătă, zi liberă</div>
+          <div class="vs-row">„Nu știu dacă merg la sală. Poate mai târziu."</div>
+          <div class="vs-scen">După o zi proastă</div>
+          <div class="vs-row">„Oricum nu merge. La ce bun să continui."</div>
+        </div>
+        <div class="vs-col good">
+          <div class="vs-label">→ ABORDAREA BUILT (sistem)</div>
+          <div class="vs-scen">Dimineața, cu energie</div>
+          <div class="vs-row">Micul dejun e ales deja. Gustarea e pregătită în frigider. Cina e pasta cu legume obișnuită.</div>
+          <div class="vs-scen">Seara, după tura de 13 ore</div>
+          <div class="vs-row">Nu există decizie. Execuți pasta. Atât.</div>
+          <div class="vs-scen">Sâmbătă, zi liberă</div>
+          <div class="vs-row">Sâmbăta e zi de antrenament. Nu se pune problema. Mergi.</div>
+          <div class="vs-scen">După o zi proastă</div>
+          <div class="vs-row">O zi proastă nu oprește sistemul. Mâine reiei de unde ai rămas.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 4.2 Design de mediu -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">4.2</div><div class="subsec-ttl">MEDIUL TĂU E MAI PUTERNIC DECÂT VOINȚA TA</div></div>
+    <div class="subsec-body">
+      <p>James Clear, în <em>Atomic Habits</em> (2018, peste 15 milioane de exemplare vândute), a arătat că cel mai puternic mecanism de schimbare comportamentală nu e motivația — e designul de mediu. Pui fructele la vedere → le mănânci mai des. Ții gustarea pregătită în frigider → o iei cu tine. Lași echipamentul de sală pregătit din seara înainte → bariera de a pleca scade dramatic.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">JC</div>
+          <div class="expert-meta">
+            <div class="expert-name">James Clear</div>
+            <div class="expert-inst">Cercetător în comportament uman</div>
+          </div>
+          <div class="expert-tag">Habit Design</div>
+        </div>
+        <div class="expert-body">
+          Clear demonstrează că aderența la obiceiuri noi e determinată în proporție mult mai mare de frecarea mediului decât de motivație. Reducerea fricțiunii (face acțiunea mai ușoară) e de 3–4 ori mai eficientă decât creșterea motivației.
+          <p style="margin-top:12px;">Aplicat concret: nu contează cât de motivat ești seara dacă gustarea nu e deja pregătită. Contează că e acolo, gata, fără niciun efort.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Clear — <em>Atomic Habits</em> (Avery, 2018) · Principiu central: „You don't rise to the level of your goals. You fall to the level of your systems."</div>
+        </div>
+      </div>
+
+      <p>Protocoalele de design de mediu pentru tine, specifice din fișa ta:</p>
+      <ul class="sl">
+        <li><strong>Gustarea la 15:00</strong> — pregătită de seara, pusă în frigider sau în geantă dimineața. Nu mai există decizie.</li>
+        <li><strong>Cina cu paste</strong> — o faci deja. O faci și pe viitor. Nu schimbi nimic acolo.</li>
+        <li><strong>Echipamentul de sală</strong> — lăsat la ușă în seara dinainte. Bariera de plecare scade.</li>
+        <li><strong>Meditațiile</strong> — le faci deja. Integrezi la finalul lor o scanare rapidă: am luat gustarea, am mâncat micul dejun, am programat antrenamentul?</li>
+      </ul>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 4</div>
+    <ul>
+      <li>Voința e o resursă limitată care se epuizează după o zi de muncă lungă. Nu e lipsă de caracter — e neurologie.</li>
+      <li>Sistemul pre-decis elimină nevoia de decizie în momentul de epuizare. Tu execuți, nu deliberezi.</li>
+      <li>Mediul tău e mai puternic decât voința ta. Design simplu: gustarea pregătită, cina pre-știută, echipamentul lăsat la ușă.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 5 — IDENTITATEA -->
+<div class="sec alt" id="sec5">
+  <div class="sec-hdr">
+    <div class="sec-n">05</div>
+    <div>
+      <span class="sec-tag">Cine devii</span>
+      <div class="sec-ttl">NU SCHIMBĂM CE FACI.<br>SCHIMBĂM CINE EȘTI.</div>
+    </div>
+  </div>
+  <div class="intro">Cel mai puternic mecanism de schimbare pe termen lung nu e un plan de dietă și nici un program de sală. Este <strong>identitatea</strong>. Pentru că orice comportament repetat este expresia unei identități. Schimbi identitatea — comportamentele se schimbă singure.</div>
+
+
+  <!-- 5.1 Identitatea precede comportamentul -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">5.1</div><div class="subsec-ttl">IDENTITATEA PRECEDE COMPORTAMENTUL</div></div>
+    <div class="subsec-body">
+      <p>Cei mai mulți oameni încearcă să se schimbe la nivelul greșit. Vor să slăbească 10 kg (rezultat) → încearcă să țină dietă (proces) → eșuează → renunță. Schimbarea s-a făcut de la exterior spre interior, contra direcției biologiei.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">JC</div>
+          <div class="expert-meta">
+            <div class="expert-name">James Clear</div>
+            <div class="expert-inst">Cercetător în comportament uman · Atomic Habits</div>
+          </div>
+          <div class="expert-tag">Identity-Based Habits</div>
+        </div>
+        <div class="expert-body">
+          Clear demonstrează că schimbarea durabilă se face într-o singură direcție: <strong>de la identitate → spre procese → spre rezultate</strong>. Niciodată invers.
+          <p style="margin-top:12px;">Diferența concretă:</p>
+          <p style="margin-top:8px;"><strong>Comportament fără identitate:</strong> „Nu mănânc asta, sunt la dietă." (Se simte ca o obligație exterioară, o pedeapsă temporară. La primul moment de slăbiciune, cazi.)</p>
+          <p style="margin-top:6px;"><strong>Comportament din identitate:</strong> „Nu mănânc asta — nu e genul meu de mâncare." (E o decizie care vine din interior. Nu necesită voință, e o reflexie a persoanei care ești.)</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Clear — <em>Atomic Habits</em> (Avery, 2018) · Citat: „Every action you take is a vote for the type of person you wish to become."</div>
+        </div>
+      </div>
+
+      <p>Aplicat la tine: pentru următoarele 90 de zile, nu „ești la dietă". Ești <strong>un om de 20 de ani care se reconstruiește fizic sistematic</strong>. Nu „încerci să te duci la sală". Tu <strong>te antrenezi de 3 ori pe săptămână</strong>. Nu „încerci să mănânci mai bine". <strong>Mănânci structurat</strong>.</p>
+      <p>Diferența e subtilă în cuvinte și enormă în rezultate.</p>
+    </div>
+  </div>
+
+
+  <!-- 5.2 VS Grid identitate -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">5.2</div><div class="subsec-ttl">OMUL CARE ÎNCEARCĂ vs. OMUL CARE EXECUTĂ</div></div>
+    <div class="subsec-body">
+      <p>Scenariile tale concrete, cu cele două identități posibile. Nu e academic — e harta deciziilor pe care le vei lua zilnic.</p>
+
+      <div class="vs-grid">
+        <div class="vs-col bad">
+          <div class="vs-label">→ OMUL CARE ÎNCEARCĂ</div>
+          <div class="vs-scen">Scena 1 — Ieșire la cafea cu prietenii</div>
+          <div class="vs-row">„Mă scot din program, dar nu pot refuza. Mănânc orice acolo și încep de luni."</div>
+          <div class="vs-scen">Scena 2 — Ajuns acasă la 20:30, obosit</div>
+          <div class="vs-row">„Comand ceva rapid. Mâine mănânc bine."</div>
+          <div class="vs-scen">Scena 3 — O zi slabă de mâncare</div>
+          <div class="vs-row">„M-am stricat. Nu are rost să mai continui săptămâna asta."</div>
+          <div class="vs-scen">Scena 4 — Zi liberă, molatică</div>
+          <div class="vs-row">„Nu am chef de sală azi. Data viitoare."</div>
+          <div class="vs-scen">Scena 5 — Cântar +0.5 kg</div>
+          <div class="vs-row">„Uite că nu funcționează. Nu merge pentru mine."</div>
+        </div>
+        <div class="vs-col good">
+          <div class="vs-label">→ OMUL CARE EXECUTĂ</div>
+          <div class="vs-scen">Scena 1 — Ieșire la cafea cu prietenii</div>
+          <div class="vs-row">„Merg — iau ceva solid lângă cafea. Nu stau ore fără să mănânc nimic. O dată pe săptămână e complet ok."</div>
+          <div class="vs-scen">Scena 2 — Ajuns acasă la 20:30, obosit</div>
+          <div class="vs-row">„Paste cu legume. Deja știu. Nu există altă decizie."</div>
+          <div class="vs-scen">Scena 3 — O zi slabă de mâncare</div>
+          <div class="vs-row">„O zi nu strică nimic. Mâine dimineță micul dejun normal și sistemul continuă."</div>
+          <div class="vs-scen">Scena 4 — Zi liberă, molatică</div>
+          <div class="vs-row">„Zilele libere sunt zile de antrenament. Nu e o decizie. E un fapt."</div>
+          <div class="vs-scen">Scena 5 — Cântar +0.5 kg</div>
+          <div class="vs-row">„Cântarul fluctuează zilnic cu 1–2 kg. Urmăresc tendința de 2 săptămâni, nu numărul de azi."</div>
+        </div>
+      </div>
+
+      <p style="margin-top:24px;">Diferența nu e în <em>ce</em> faci. E în <em>cine ești când faci</em>. Aceeași zi — două filme complet diferite. Aceleași 90 de zile — două rezultate complet diferite.</p>
+    </div>
+  </div>
+
+
+  <!-- 5.3 Growth mindset -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">5.3</div><div class="subsec-ttl">DE CE POȚI SCHIMBA — NEUROPLASTICITATEA</div></div>
+    <div class="subsec-body">
+      <p>Există o frică pe care o au aproape toți cei care au mai „eșuat": „și dacă, fundamental, eu nu sunt capabil?". Aceasta e ceea ce psihologii numesc <strong>fixed mindset</strong>. Și e complet greșit din punct de vedere biologic.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">CD</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Carol Dweck</div>
+            <div class="expert-inst">Stanford University · Psihologie</div>
+          </div>
+          <div class="expert-tag">Growth Mindset</div>
+        </div>
+        <div class="expert-body">
+          În cercetarea ei de 4 decenii, Dweck a demonstrat că credința despre propria capacitate de schimbare este unul dintre cei mai puternici predictori ai schimbării reale.
+          <p style="margin-top:12px;"><strong>Fixed mindset:</strong> „Capacitățile mele sunt date. Eșecul confirmă că nu am ce trebuie."</p>
+          <p style="margin-top:6px;"><strong>Growth mindset:</strong> „Capacitățile se dezvoltă prin efort și strategie. Eșecul e informație despre ce să schimb."</p>
+          <p style="margin-top:12px;">Aceeași persoană, în aceeași situație, ia decizii radical diferite în funcție de care mindset operează. Și mindset-ul nu e genetic — e antrenabil.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Dweck — <em>Mindset: The New Psychology of Success</em> (Random House, 2006)</div>
+        </div>
+      </div>
+
+      <p>Adevărul biologic: creierul tău la 20 de ani este neuroplastic. Noile obiceiuri se întăresc în medie în 66 de zile (Wendy Wood, USC). Tu ai 90. Mai mult decât suficient.</p>
+
+      <div class="ok"><div class="ok-ttl">REÎNCADRAREA EȘECURILOR ANTERIOARE</div>Herbalife și sala fără ghidaj nu au fost eșecuri personale. Au fost <strong>experimente cu sisteme nepotrivite pentru contextul tău</strong>. Acum schimbi sistemul. Nu te schimbi pe tine. Tu ești ok. Sistemul vechi nu era.</div>
+    </div>
+  </div>
+
+
+  <!-- 5.4 Find your WHY -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">5.4</div><div class="subsec-ttl">FIND YOUR WHY — EXERCIȚIU PENTRU TINE</div></div>
+    <div class="subsec-body">
+      <p>Ai scris obiectivul în cel mai onest mod posibil. Îl reproduc integral pentru că trebuie să îl recitești de fiecare dată când o zi e grea:</p>
+
+      <div class="verbatim">
+        <div class="verbatim-tag">Adevăratul tău obiectiv — cuvintele tale exacte</div>
+        <div class="verbatim-txt">„Vreau să arăt bombă!!! Să nu mai am gușă, să nu mai arăt ca la 35 de ani, să am forță în mâini, să am echilibru, să am brațul cât capul, să am jowline să tai hârtia, vreau să mă simt ca la vârsta mea, nu cu 15-20 de ani mai mare."</div>
+        <div class="verbatim-by">— Andrei Stamate, fișa de start BUILT</div>
+      </div>
+
+      <p>Acesta e WHY-ul tău. Nu „vreau să slăbesc 10 kg" — asta e WHAT-ul. WHY-ul e că la 20 de ani vrei să te simți în vârstă ta. Că vrei să te uiți în oglindă fără să te judeci. Că vrei să ai forța și silueta pe care le meriti la vârsta ta.</p>
+
+      <h3 class="sh">EXERCIȚIU — 10 MINUTE ACUM</h3>
+
+      <p>Înainte să mergi mai departe, răspunde în scris la aceste întrebări. Nu mental — scris, pe telefon sau pe hârtie:</p>
+
+      <ul class="num">
+        <li><strong>Cum arată ziua ta la ziua 90?</strong> Dimineața în fața oglinzii. Ce simți? Nu kilograme — senzație concretă.</li>
+        <li><strong>Ce porți la ziua 90 pe care nu îl porți acum?</strong> Nu în general — articolul exact de îmbrăcăminte care stă în șifonier.</li>
+        <li><strong>Ce nu mai faci la ziua 90?</strong> Ce comportament față de corp dispare — evitarea oglinzii, geaca purtată toată vara, poziționarea în poze?</li>
+        <li><strong>Ce observă prietenii la tine?</strong> Nu „că ai slăbit" — energia, atitudinea, cum te miști?</li>
+        <li><strong>De ce contează asta pentru tine, în adâncime?</strong> Întreabă-te „de ce?" de 3 ori la rând. Răspunsul al treilea e WHY-ul real.</li>
+      </ul>
+
+      <div class="info"><div class="info-ttl">PE CALL DISCUTĂM RĂSPUNSURILE</div>Le folosim la fiecare check-in. Când o săptămână e grea, ne întoarcem la ele. Așa funcționează coaching-ul real — nu pe motivație abstractă, ci pe un WHY articulat clar.</div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 5</div>
+    <ul>
+      <li>Schimbarea durabilă: identitate → procese → rezultate. Niciodată invers.</li>
+      <li>Nu „ești la dietă" — ești un om de 20 de ani care se reconstruiește fizic sistematic.</li>
+      <li>Toate eșecurile anterioare au fost sisteme greșite, nu defecte de caracter. Neuroplasticitatea îți permite să reconstruiești orice obicei.</li>
+      <li>WHY-ul tău e clar și specific: să te simți la 20 de ani, nu la 35. Recitești asta de câte ori e grea o zi.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 6 — SOMNUL ȘI LUMINA MATINALĂ -->
+<div class="sec" id="sec6">
+  <div class="sec-hdr">
+    <div class="sec-n">06</div>
+    <div>
+      <span class="sec-tag">Avantajul tău ascuns</span>
+      <div class="sec-ttl">SOMNUL TĂU E BUN.<br>ÎMBUNĂTĂȚIM UN LUCRU.</div>
+    </div>
+  </div>
+  <div class="intro">Spre deosebire de mulți clienți care se culcă la 1:30 sau mai târziu, tu te culci la 22:20 și dormi 7 ore. Asta e un avantaj real față de medie. Nu schimbăm structura somnului — adăugăm un singur protocol de dimineață care îți va dubla eficiența hormonală a zilei.</div>
+
+
+  <!-- 6.1 Ce se întâmplă în corp când dormi -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">6.1</div><div class="subsec-ttl">CE SE ÎNTÂMPLĂ ÎN CORP CÂND DORMI 7 ORE</div></div>
+    <div class="subsec-body">
+      <p>Somnul nu este odihnă pasivă. Este cea mai activă perioadă metabolică și hormonală a zilei tale. În cele 7 ore, corpul tău parcurge 4–5 cicluri de câte ~90 de minute. Fiecare ciclu conține:</p>
+      <ul class="sl">
+        <li><strong>NREM 1 + 2</strong> — adormire, consolidarea memoriei procedurale (mișcările de la sală)</li>
+        <li><strong>NREM 3 (Slow-Wave Sleep)</strong> — somn profund, eliberare de hormon de creștere (HGH), repararea țesuturilor musculare post-antrenament</li>
+        <li><strong>REM (visarea)</strong> — procesare emoțională, consolidarea memoriei, echilibrarea amigdalei</li>
+      </ul>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">MW</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Matthew Walker</div>
+            <div class="expert-inst">UC Berkeley · Director, Center for Human Sleep Science</div>
+          </div>
+          <div class="expert-tag">Sleep Architecture</div>
+        </div>
+        <div class="expert-body">
+          Walker a sintetizat 20 de ani de cercetare în <em>Why We Sleep</em> (2017). Concluzia critică pentru tine: cele 7 ore pe care le dormi conțin aproximativ 70% din hormonul de creștere (HGH) eliberat în 24 de ore. HGH este responsabil direct de repararea fibrei musculare după antrenament și de mobilizarea grăsimilor din depozite. Fără somn suficient, antrenamentul produce oboseală — nu adaptare.
+          <p style="margin-top:12px;">La 20 de ani, nivelurile de HGH sunt de 3–5 ori mai mari decât la 40 de ani. Somnul tău de 7 ore maximizează această fereastră de recuperare.</p>
+          <div class="expert-work"><strong>Lucrare-cheie:</strong> Walker — <em>Why We Sleep: Unlocking the Power of Sleep and Dreams</em> (Scribner, 2017)</div>
+        </div>
+      </div>
+
+      <div class="ok"><div class="ok-ttl">SOMNUL TĂU E DEJA UN AVANTAJ</div>22:20 culcare + 7 ore = trezire ~5:20–5:35. Ești în fereastra de Slow-Wave Sleep maximă (primele 4 ore ale nopții: 22:20–02:20), ceea ce înseamnă că eliberezi HGH-ul de recuperare în intervalul optimal. Nu schimba programul de somn.</div>
+    </div>
+  </div>
+
+
+  <!-- 6.2 Protocolul luminii matinale -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">6.2</div><div class="subsec-ttl">PROTOCOLUL LUMINII MATINALE — 5 MINUTE, IMPACT MAJOR</div></div>
+    <div class="subsec-body">
+      <p>Singurul protocol pe care îl adăugăm la somnul tău. Durează 5 minute. Produce schimbări hormonale măsurabile în 10–14 zile.</p>
+
+      <div class="expert">
+        <div class="expert-top">
+          <div class="expert-icon">AH</div>
+          <div class="expert-meta">
+            <div class="expert-name">Dr. Andrew Huberman</div>
+            <div class="expert-inst">Stanford School of Medicine · Neurobiologie</div>
+          </div>
+          <div class="expert-tag">Circadian Light Protocol</div>
+        </div>
+        <div class="expert-body">
+          Huberman a popularizat protocolul bazat pe cercetare publicată în <em>Cell</em> și <em>Neuron</em>: expunerea ochilor la lumină naturală în primele 30–60 minute de la trezire declanșează o cascadă neuroendocrină specifică. Mecanismul:
+          <p style="margin-top:10px;">(1) Setează vârful natural de cortizol matinal — îți dă energia și alerta zilei fără stimulente.</p>
+          <p>(2) Începe un cronometru de ~14–16 ore care declanșează secreția de melatonină exact la finalul lui — adică induce somnul natural la ora potrivită.</p>
+          <p>(3) Sincronizează ceasurile periferice (ficat, mușchi, pancreas) cu cel central — îmbunătățește sensibilitatea la insulină, adică utilizarea mai eficientă a carbohidraților.</p>
+          <div class="expert-work"><strong>Sursă:</strong> Huberman Lab Podcast, ep. „Using Light to Optimize Health" + cercetare în <em>Sleep Medicine Reviews</em></div>
+        </div>
+      </div>
+
+      <h3 class="sh">PROTOCOLUL EXACT PENTRU TINE</h3>
+
+      <div class="proto">
+        <div class="proto-step">
+          <div class="proto-num">1</div>
+          <div class="proto-content">
+            <div class="proto-time">În primele 30 minute după trezire (5:35-6:05 în zilele de muncă)</div>
+            <div class="proto-what">IEȘI AFARĂ SAU LA GEAM — 5 MINUTE</div>
+            <div class="proto-how">Nu te uita direct la soare — privești în jur, lateral. Lumina naturală de dimineață, chiar și pe cer cloudy, conține spectrul de frecvențe care activează celulele ipRGC din retina ta. Acestea semnalizează direct nucleului suprachiasmatic — ceasul tău circadian central.</div>
+            <div class="proto-why">5 minute de expunere la lumina naturală sunt infinit mai valoroase decât orice expunere la lumina artificială a unui ecran.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num">2</div>
+          <div class="proto-content">
+            <div class="proto-time">Simultan sau imediat după</div>
+            <div class="proto-what">FĂRĂ TELEFON ÎN PRIMELE 10 MINUTE</div>
+            <div class="proto-how">Nu WhatsApp, nu știri, nu social media. Îți prepari micul dejun, bei apă, ești prezent. Lumina ecranului în primele 10 minute suprimă semnalul cortizolului matinal tocmai când ai nevoie de el.</div>
+            <div class="proto-why">Cortizolul matinal e cel care îți dă energia primei ore. Nu cafeaua — cortizolul.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num">3</div>
+          <div class="proto-content">
+            <div class="proto-time">Zilele libere — același protocol</div>
+            <div class="proto-what">CHIAR ȘI CÂND TE TREZEȘTI LA 7:30</div>
+            <div class="proto-how">Consistența contează mai mult decât ora exactă. O trezire la 7:30 urmată de lumină matinală este mai eficientă decât o trezire la 5:35 fără lumină. Ieși la cafea cu prietenii oricum — ieșitul din casă dimineața reprezintă deja un protocol natural excelent.</div>
+            <div class="proto-why">Ceasul circadian se resetează zilnic, nu săptămânal. Fiecare dimineață cu lumină matinală este o calibrare nouă pentru sistemul tău nervos.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 6</div>
+    <ul>
+      <li>Somnul tău de 7 ore la 22:20 e deja un avantaj față de medie. Nu schimbi nimic la structura lui.</li>
+      <li>Adăugăm un singur protocol: 5 minute de lumină naturală în primele 30 minute după trezire. Fără ecran.</li>
+      <li>Efectul: cortizol matinal optim (energie naturală), melatonină seară la timp (somn mai profund), sensibilitate la insulină mai bună (utilizare mai eficientă a carbohidraților).</li>
+      <li>Meditațiile pe care le faci deja sunt compatibile cu protocolul. Le faci după cei 5 minute de lumină.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 7 — ANGAJAMENTUL -->
+<div class="sec alt" id="sec7">
+  <div class="sec-hdr">
+    <div class="sec-n">07</div>
+    <div>
+      <span class="sec-tag">Contractul cu tine însuți</span>
+      <div class="sec-ttl">ANGAJAMENTUL<br>DE 90 DE ZILE</div>
+    </div>
+  </div>
+  <div class="intro">90 de zile e durata minimă pentru schimbări vizibile și durabile. Nu e arbitrar — e cât durează corpul să reconstruiască masa musculară vizibilă, să stabilizeze noi obiceiuri metabolice și să înregistreze pierdere reală de grăsime care nu e retenție de apă.</div>
+
+
+  <!-- 7.1 Cele 3 faze -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">7.1</div><div class="subsec-ttl">CELE 3 FAZE — CE SE ÎNTÂMPLĂ BIOLOGIC</div></div>
+    <div class="subsec-body">
+      <div class="proto">
+        <div class="proto-step">
+          <div class="proto-num">1</div>
+          <div class="proto-content">
+            <div class="proto-time">Zilele 1–30 · FAZA FUNDAȚIE</div>
+            <div class="proto-what">ADAPTARE NEUROLOGICĂ</div>
+            <div class="proto-how">Înveți mișcările la sală. Creierul construiește conexiunile neuromusculare pentru exerciții noi — aceasta este o fază de adaptare neurologică, nu de creștere musculară vizibilă. Sistemul de mese se stabilizează. Poftele haotice de la 15:00 dispar odată cu introducerea gustării. Cântarul poate sta pe loc sau poate scădea 1–2 kg.</div>
+            <div class="proto-why">Nu abandona în această fază. Nu se vede mare lucru în oglindă, dar se reprogramează metabolismul și se construiesc noile obiceiuri care vor susține totul.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num">2</div>
+          <div class="proto-content">
+            <div class="proto-time">Zilele 31–60 · FAZA PROGRESIE</div>
+            <div class="proto-what">CREȘTERE MUSCULARĂ VIZIBILĂ + ARDERE DE GRĂSIME</div>
+            <div class="proto-how">Mușculatura începe să prindă contur. Forța crește vizibil — vei putea ridica cu 20–40% mai mult decât în prima săptămână. Corpul arde grăsime în mod preferențial. Fața se subțiază prima — exact zona în care cortizolul a depus cel mai mult strat adipos. Greutatea scade cu 3–5 kg față de momentul startului.</div>
+            <div class="proto-why">Aceasta e faza în care progresul devine motivant. Fotografia de la ziua 1 comparată cu cea de la ziua 45 arată schimbări reale.</div>
+          </div>
+        </div>
+        <div class="proto-step">
+          <div class="proto-num">3</div>
+          <div class="proto-content">
+            <div class="proto-time">Zilele 61–90 · FAZA DE VÂRF</div>
+            <div class="proto-what">REZULTATE CLARE</div>
+            <div class="proto-how">Scădere totală de 5–8 kg față de start. Fața este vizibil mai subțiată — gușa este diminuată semnificativ. Umerii și brațele arată complet diferit. Forța în mâini este crescută considerabil datorită prizei (grip-ului) constante pe gantere. Energia este net superioară, somnul mai profund, iar stresul mult mai ușor de gestionat.</div>
+            <div class="proto-why">Ziua 90 e baza pentru obiectivul următor — nu capătul drumului. Sistemul continuă.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- 7.2 Regulile jocului -->
+  <div class="subsec">
+    <div class="subsec-hdr"><div class="subsec-num">7.2</div><div class="subsec-ttl">REGULILE JOCULUI — CE ACCEPTI CÂND ÎNCEPI</div></div>
+    <div class="subsec-body">
+      <div class="ift">
+        <div class="ift-t"><div class="ift-b">DACĂ</div><span>O zi e proastă și nu ai mâncat cum trebuie</span></div>
+        <div class="ift-a">Nu te pedepsești. Nu compensezi mâine cu un deficit agresiv. Nu dramatizezi. Spui: „Ieri a fost greu. Azi reiau." Un vot greșit nu anulează 20 de voturi corecte.</div>
+      </div>
+      <div class="ift">
+        <div class="ift-t"><div class="ift-b">DACĂ</div><span>Ai ratat un antrenament sau chiar două</span></div>
+        <div class="ift-a">Săptămâna asta ai mai puține sesiuni. Gata. Nu dramatizezi, nu intri în vinovăție. Sistemul nu se oprește pentru o săptămână slabă.</div>
+      </div>
+      <div class="ift">
+        <div class="ift-t"><div class="ift-b">DACĂ</div><span>Nu se vede nimic după 3 săptămâni</span></div>
+        <div class="ift-a">Normal. Primele 3 săptămâni sunt adaptare neurologică. Creierul învață mișcările. Creșterea musculară vizibilă începe la 4–6 săptămâni. Continui.</div>
+      </div>
+      <div class="ift">
+        <div class="ift-t"><div class="ift-b">DACĂ</div><span>Cineva spune „dieta ta nu funcționează" sau „du-te la cardio"</span></div>
+        <div class="ift-a">Nu îți schimbi programul pe baza sfaturilor nesolicitate. Ai un sistem construit pe datele tale biochimice specifice. Îl urmezi.</div>
+      </div>
+      <div class="ift">
+        <div class="ift-t"><div class="ift-b">DACĂ</div><span>Bacul te stresează la maximum și totul pare imposibil</span></div>
+        <div class="ift-a">Faci cel mai mic pas posibil. Un iaurt. O plimbare de 10 minute. Sesiunea ta de NSDR / meditație obișnuită. Sistemul BUILT funcționează exact în perioadele de stres maxim — nu în ciuda lor.</div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="tldr">
+    <div class="tldr-ttl">◆ TL;DR — Secțiunea 7</div>
+    <ul>
+      <li>Faza 1 (1–30 zile): adaptare. Nu se vede mult, dar se construiește fundația.</li>
+      <li>Faza 2 (31–60 zile): progres vizibil. Masa musculară apare, fața se subțiază.</li>
+      <li>Faza 3 (61–90 zile): rezultate clare. 5–8 kg scăzut, forță crescută, siluetă diferită.</li>
+      <li>O zi proastă, un antrenament ratat, un prânz haotic nu opresc sistemul. Continui.</li>
+    </ul>
+  </div>
+</div>
+
+
+<!-- SECTION 8 — REFERINTE -->
+<div class="sec" id="sec8">
+  <div class="sec-hdr">
+    <div class="sec-n">08</div>
+    <div>
+      <span class="sec-tag">Bibliografie</span>
+      <div class="sec-ttl">REFERINȚE</div>
+    </div>
+  </div>
+
+  <div style="font-size:13px;color:#bbb;line-height:1.85;">
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Baumeister, R.F. & Tierney, J.</strong> — <em>Willpower: Rediscovering the Greatest Human Strength.</em> Penguin Press, 2011.</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Brown, B.</strong> — <em>Daring Greatly: How the Courage to Be Vulnerable Transforms the Way We Live, Love, Parent, and Lead.</em> Gotham Books, 2012.</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Clear, J.</strong> — <em>Atomic Habits: An Easy & Proven Way to Build Good Habits & Break Bad Ones.</em> Avery, 2018.</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Dweck, C.</strong> — <em>Mindset: The New Psychology of Success.</em> Random House, 2006.</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Huberman, A.</strong> — Huberman Lab Podcast. Stanford School of Medicine. Episoade relevante: „Using Light to Optimize Health", „How to Optimize Testosterone & Estrogen".</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Norton, L. & Trexler, E.</strong> — <em>Metabolic adaptation to weight loss: implications for the athlete.</em> Journal of the International Society of Sports Nutrition, 2014.</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Sapolsky, R.M.</strong> — <em>Why Zebras Don't Get Ulcers.</em> Holt Paperbacks, ed. 3, 2004.</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Walker, M.</strong> — <em>Why We Sleep: Unlocking the Power of Sleep and Dreams.</em> Scribner, 2017.</p>
+    <p style="margin-bottom:10px;"><strong style="color:var(--red);">Wood, W.</strong> — <em>Good Habits, Bad Habits: The Science of Making Positive Changes That Stick.</em> Farrar, Straus and Giroux, 2019. (Cercetare privind formarea obiceiurilor: 66 zile medie pentru automatizare.)</p>
+  </div>
+</div>
+
+
+<div class="footer">
+  <div class="footer-logo">BUILT</div>
+  <div>Modulul 01/05 · Andrei Stamate · 90 de zile</div>
+  <div>Coach: Iordache Claudiu</div>
+</div>
+
+</body>
+</html>

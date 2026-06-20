@@ -166,3 +166,16 @@ body {
   0% { opacity: 1; }
   100% { opacity: 0; visibility: hidden; }
 }
+
+/* ─── Safe-area iOS (notch / dynamic island / home indicator) ─────────────── */
+/* Doar pe mobil (<768px = sub breakpoint-ul md). Pe desktop nu se aplică deloc. */
+@media (max-width: 767px) {
+  /* Header mobil: 48px conținut + zona sigură de sus */
+  .mobile-header { padding-top: env(safe-area-inset-top); }
+  /* Offset pentru main ca să nu intre sub header-ul fix */
+  .mobile-header-offset { padding-top: calc(48px + env(safe-area-inset-top)); }
+  /* Bottom nav: zona sigură de jos (home indicator) */
+  .mobile-bottomnav { padding-bottom: env(safe-area-inset-bottom); }
+  /* Offset pentru main ca să nu intre sub bottom nav */
+  .mobile-bottomnav-offset { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+}
