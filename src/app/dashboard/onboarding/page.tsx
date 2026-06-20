@@ -262,7 +262,7 @@ export default function OnboardingPage() {
     });
   }, []);
 
-  const filledCount = Object.values(data).filter((v) => v?.trim().length > 0).length;
+  const filledCount = Object.values(data).filter((v) => String(v ?? "").trim().length > 0).length;
   const progressPct = Math.round((filledCount / TOTAL_FIELDS) * 100);
 
   const handleField = (key: keyof OnboardingData, value: string) => {
@@ -362,7 +362,7 @@ export default function OnboardingPage() {
       {/* Sections Accordion */}
       <div className="space-y-2">
         {SECTIONS.map((section) => {
-          const filled = section.fields.filter((f) => data[f.key]?.trim().length > 0).length;
+          const filled = section.fields.filter((f) => String(data[f.key] ?? "").trim().length > 0).length;
           const isOpen = openSection === section.id;
           const allFilled = filled === section.fields.length;
           return (
