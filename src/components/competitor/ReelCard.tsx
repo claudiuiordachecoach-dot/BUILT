@@ -45,7 +45,7 @@ export function ReelCard({ reel }: { reel: CompetitorReel }) {
           {imgOk ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
-              src={reel.thumbnail_url!}
+              src={`/api/img-proxy?url=${encodeURIComponent(reel.thumbnail_url!)}`}
               alt=""
               onError={() => setImgOk(false)}
               className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"

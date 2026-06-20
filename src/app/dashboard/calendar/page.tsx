@@ -348,9 +348,10 @@ export default function CalendarPage() {
                             <div className="relative rounded-sm overflow-hidden">
                               {/* eslint-disable-next-line @next/next/no-img-element */}
                               <img
-                                src={post.thumbnail_url}
+                                src={`/api/img-proxy?url=${encodeURIComponent(post.thumbnail_url)}`}
                                 alt={post.caption ?? "reel"}
                                 className="w-full h-16 object-cover group-hover:opacity-80 transition-opacity"
+                                onError={e => { e.currentTarget.style.display = "none"; }}
                               />
                               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
                               {/* Recommendations badge */}

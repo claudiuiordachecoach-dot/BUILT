@@ -1,32 +1,45 @@
 import { NextRequest, NextResponse } from "next/server";
 
+// Pixel PNG transparent 1x1 — fallback când imaginea Instagram a expirat sau e blocată.
+const TRANSPARENT_PNG = Buffer.from(
+  "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+  "base64",
+);
+
+// Niciodată eroare. Pe orice eșec → pixel transparent (containerul dark se vede curat).
+function placeholder() {
+  return new NextResponse(TRANSPARENT_PNG, {
+    status: 200,
+    headers: { "Content-Type": "image/png", "Cache-Control": "public, max-age=300" },
+  });
+}
+
 export async function GET(req: NextRequest) {
   const url = req.nextUrl.searchParams.get("url");
-  if (!url) return new NextResponse("Missing url", { status: 400 });
+  if (!url) return placeholder();
 
   // Permite doar CDN-ul Instagram și Facebook
   let parsed: URL;
   try {
     parsed = new URL(url);
   } catch {
-    return new NextResponse("Invalid url", { status: 400 });
+    return placeholder();
   }
   if (!parsed.hostname.endsWith(".cdninstagram.com") && !parsed.hostname.endsWith(".fbcdn.net")) {
-    return new NextResponse("Forbidden", { status: 403 });
+    return placeholder();
   }
 
   try {
     const upstream = await fetch(url, {
       headers: {
-        "User-Agent": "Mozilla/5.0 (compatible; built-proxy/1.0)",
-        "Referer": "https://www.instagram.com/",
+        "User-Agent":
+          "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        Referer: "https://www.instagram.com/",
       },
       next: { revalidate: 86400 }, // cache 24h pe edge
     });
 
-    if (!upstream.ok) {
-      return new NextResponse("Upstream error", { status: upstream.status });
-    }
+    if (!upstream.ok) return placeholder();
 
     const contentType = upstream.headers.get("content-type") ?? "image/jpeg";
     const body = await upstream.arrayBuffer();
@@ -39,6 +52,6 @@ export async function GET(req: NextRequest) {
       },
     });
   } catch {
-    return new NextResponse("Fetch failed", { status: 502 });
+    return placeholder();
   }
 }

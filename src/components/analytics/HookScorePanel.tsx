@@ -160,8 +160,9 @@ export function HookScorePanel({ media }: { media: IgMediaRow[] }) {
               {m.thumbnail_url && (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={m.thumbnail_url}
+                  src={`/api/img-proxy?url=${encodeURIComponent(m.thumbnail_url)}`}
                   alt=""
+                  onError={(e) => { e.currentTarget.style.visibility = "hidden"; }}
                   className="w-12 h-12 object-cover rounded-sm shrink-0 border border-built-gray-2"
                 />
               )}
