@@ -116,8 +116,8 @@ function SectionLabel({ label, collapsed }: { label: string; collapsed: boolean 
 export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  // Pagină de detaliu = mai mult de 2 segmente (ex: /dashboard/clients/123)
-  const isDetailPage = pathname.split("/").filter(Boolean).length > 2;
+  // Buton back peste tot, mai puțin pe home (azi).
+  const showBack = pathname !== "/dashboard/azi";
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [adminOpen, setAdminOpen] = useState(true);
@@ -142,7 +142,7 @@ export function Sidebar() {
       <header className="md:hidden fixed top-0 left-0 right-0 z-40 bg-background border-b border-border mobile-header">
         <div className="flex items-center justify-between px-4 h-12">
           <div className="flex items-center gap-2">
-            {isDetailPage ? (
+            {showBack ? (
               <button
                 onClick={() => router.back()}
                 className="flex items-center gap-1 -ml-1 pr-2 py-1 rounded-lg text-foreground hover:bg-muted/50 transition-all"

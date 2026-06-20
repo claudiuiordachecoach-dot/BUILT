@@ -23,8 +23,8 @@ function ClientNavContent() {
   const searchParams = useSearchParams();
   const clientId = searchParams.get("clientId");
   const qs = clientId ? `?clientId=${clientId}` : "";
-  // Pagină de detaliu = mai mult de 2 segmente (ex: /client/bonusuri/123)
-  const isDetailPage = pathname.split("/").filter(Boolean).length > 2;
+  // Buton back peste tot, mai puțin pe home (dashboard).
+  const showBack = pathname !== "/client/dashboard";
 
   return (
     <>
@@ -56,7 +56,7 @@ function ClientNavContent() {
       {/* MOBILE — header fix sus cu logout */}
       <header className="md:hidden fixed top-0 left-0 right-0 z-50 bg-[#111111] border-b border-white/10 mobile-header">
         <div className="flex items-center justify-between px-4 h-12">
-          {isDetailPage ? (
+          {showBack ? (
             <button
               onClick={() => router.back()}
               className="flex items-center gap-1 -ml-1 pr-2 py-1 rounded-lg text-zinc-200 hover:bg-white/5 transition-all"
