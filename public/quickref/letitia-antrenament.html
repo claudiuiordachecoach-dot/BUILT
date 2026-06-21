@@ -192,6 +192,7 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
   <div class="tab" onclick="showTab('b')">ZIUA B</div>
   <div class="tab" onclick="showTab('c')">ZIUA C</div>
   <div class="tab" onclick="showTab('mcgill')">McGILL</div>
+  <div class="tab" onclick="showTab('ciclu')">CICLU</div>
   <div class="tab" onclick="showTab('reguli')">REGULI</div>
 </div>
 
@@ -850,6 +851,52 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 </div>
 
 <!-- TIMER BAR -->
+
+<!-- ═══════════════ CICLU ═══════════════ -->
+<div class="panel" id="tab-ciclu">
+  <div class="alert">
+    <div class="alert-ttl">ANTRENAMENTUL ÎN JURUL CICLULUI</div>
+    Ciclul nu e o scuză, e informație. <strong>Nu antrenezi împotriva corpului, antrenezi cu el</strong> — adaptezi încărcătura după fază, fără să renunți la sistem.
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-ttl">ZILELE 1–5 · MENSTRUAȚIA</div>
+    <div class="rule-body">
+      Energia poate fi scăzută, pot apărea crampe. <strong>Te miști, dar adaptat:</strong>
+      <div class="rule"><b>Ok</b><div>Dacă te simți bine, antrenezi normal. Mișcarea reduce crampele, nu le agravează.</div></div>
+      <div class="rule"><b>Grea</b><div>Dacă ești epuizată, scazi greutățile cu 20–30%, faci mai puține serii, te concentrezi pe tehnică. Sau înlocuiești cu 30 de minute Zone 2 și mobilitate.</div></div>
+      <div class="rule"><b>Nu</b><div>Fără recorduri în zilele astea. Menții ritmul, nu forțezi.</div></div>
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-ttl">ZILELE 6–14 · FEREASTRA DE PROGRES</div>
+    <div class="rule-body">
+      După menstruație, energia și forța cresc. <strong>Aici ataci recordurile</strong> — împingi greutățile, adaugi repetări. Corpul tolerează cel mai bine efortul intens acum.
+    </div>
+  </div>
+
+  <div class="rule-card">
+    <div class="rule-ttl">ZILELE 15–28 · ÎNAINTE DE MENSTRUAȚIE</div>
+    <div class="rule-body">
+      Energia scade treptat, apar retenție, pofte, iritabilitate, somn mai prost. <strong>Menții antrenamentele</strong>, dar nu te speria de o zi mai slabă — e hormonal, nu lipsă de voință. Retenția de 1–2 kg pe cântar e apă, nu grăsime, și dispare după menstruație.
+    </div>
+  </div>
+
+  <div class="alert green">
+    <div class="alert-ttl">REGULI SIMPLE</div>
+    <div class="rule"><b>Cântar</b><div>Nu te cântări în săptămâna dinainte de menstruație. Retenția dă cifre false și îți strică moralul degeaba.</div></div>
+    <div class="rule"><b>Crampe</b><div>Mișcare ușoară, magneziu seara, căldură pe abdomen. Calmează crampele.</div></div>
+    <div class="rule"><b>Fier</b><div>La menstruație pierzi sânge, deci ai nevoie de fier: carne roșie slabă, leguminoase, spanac. Dacă te simți amețită sau epuizată constant, verifici fierul la analize.</div></div>
+    <div class="rule"><b>Oboseală reală</b><div>Dacă după 10 minute de încălzire corpul tot nu pornește, e oboseală reală — scurtezi. Dacă pornește, era doar inerția de la început.</div></div>
+  </div>
+
+  <div class="alert">
+    <div class="alert-ttl">REÎNCADRARE</div>
+    Nu există „am ratat pentru că am avut ciclu". Există „am adaptat". <strong>O zi mai ușoară în sistem bate o zi sărită din program.</strong>
+  </div>
+</div>
+
 <div class="timer-bar">
   <div class="t-info">
     <div class="t-lbl">TIMP RĂMAS PAUZĂ</div>
@@ -1088,6 +1135,27 @@ function exportCSV() {
 }
 
 document.addEventListener('DOMContentLoaded', loadData);
+</script>
+<script>
+/* BUILT: deschide tabul zilei din hash (#lowera, #upper etc.) — folosit de "Antrenamentul de azi" */
+(function(){
+  function act(){
+    var h=(location.hash||'').replace(/^#/,'');
+    if(!h) return;
+    var panel=document.getElementById('tab-'+h);
+    if(!panel) return;
+    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
+    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+    panel.classList.add('active');
+    document.querySelectorAll('.tab').forEach(function(t){
+      var oc=t.getAttribute('onclick')||'';
+      if(oc.indexOf("'"+h+"'")>-1) t.classList.add('active');
+    });
+    try{window.scrollTo(0,0);}catch(e){}
+  }
+  window.addEventListener('DOMContentLoaded',act);
+  window.addEventListener('hashchange',act);
+})();
 </script>
 </body>
 </html>

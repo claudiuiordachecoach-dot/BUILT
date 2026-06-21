@@ -10,12 +10,27 @@ const DAYS = ["Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă", "Dumi
 type Exercise = { name: string; sets: number; reps: string; note?: string };
 type WorkoutPlan = { days: Record<string, Exercise[]>; notes?: string; week_start?: string; quickref_url?: string; quickref_acasa_url?: string };
 
+// Program săptămânal per client (cheia = ziua JS: 0=Dum .. 6=Sâm) → tabul din quickref.
+// Folosit ca să deschidem direct "Antrenamentul de azi" în sesiunea zilei.
+const TODAY_TAB: Record<string, Record<number, string>> = {
+  claudia: { 1: "lowera", 3: "upper", 5: "lowerb", 2: "program", 4: "program", 6: "program", 0: "program" },
+};
+
+function todayHashFor(quickrefUrl?: string): string {
+  if (!quickrefUrl) return "";
+  const slug = quickrefUrl.match(/\/quickref\/([a-z]+)-antrenament/)?.[1];
+  if (!slug) return "";
+  const tab = TODAY_TAB[slug]?.[new Date().getDay()];
+  return tab ? `#${tab}` : "";
+}
+
 export default function AntrenamantePage() {
   const [plan, setPlan] = useState<WorkoutPlan | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeDay, setActiveDay] = useState("Luni");
+  const [todayHash, setTodayHash] = useState("");
 
-  useEffect(() => { getWorkoutPlan().then(p => setPlan(p as WorkoutPlan | null)).finally(() => setLoading(false)); }, []);
+  useEffect(() => { getWorkoutPlan().then(p => { setPlan(p as WorkoutPlan | null); setTodayHash(todayHashFor((p as WorkoutPlan | null)?.quickref_url)); }).finally(() => setLoading(false)); }, []);
 
   if (loading) return <PageSkeleton cards={4} />;
 
@@ -45,7 +60,8 @@ export default function AntrenamantePage() {
           )}
         </div>
         <iframe
-          src={plan.quickref_url}
+          key={todayHash}
+          src={`${plan.quickref_url}${todayHash}`}
           className="w-full border-0 flex-1"
           title="Plan Antrenament"
         />
