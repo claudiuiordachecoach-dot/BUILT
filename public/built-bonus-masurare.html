@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Cum Te Măsori Corect</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:rgba(192,57,43,0.12);--wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;--orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+.metric{display:flex;gap:11px;align-items:flex-start;background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:13px;margin-bottom:10px;border-left:3px solid var(--green);}
+.m-ic{font-size:22px;line-height:1;flex:0 0 auto;}
+.m-tx{flex:1;}
+.m-tt{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.m-d{font-size:12px;color:#bbb;line-height:1.5;}
+.step4{counter-reset:c;}
+.chk{background:var(--drk);border:1px solid var(--brd);border-radius:6px;padding:14px 14px 14px 52px;margin-bottom:10px;position:relative;counter-increment:c;}
+.chk::before{content:counter(c);position:absolute;left:13px;top:14px;width:26px;height:26px;background:var(--red);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;}
+.chk-t{font-size:13.5px;font-weight:700;color:var(--wht);margin-bottom:3px;}
+.chk-d{font-size:12px;color:#bbb;line-height:1.5;}
+.chk-d b{color:var(--orange);}
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top"><span class="logo">BUILT</span><span class="hdr-name">Cum Te Măsori Corect</span></div>
+  <div class="budget-bar"><span>Cântarul nu spune tot</span><strong>5 SEMNALE · NU 1 CIFRĂ</strong></div>
+</div>
+<div class="wrap">
+
+  <span class="sec-tag">Capcana</span>
+  <div class="sec-h">Cântarul <span class="ac">te minte</span> și te demoralizează.</div>
+  <p class="p">Cea mai mare cauză de abandon nu e lipsa de rezultate. E <strong>cântarul care n-a scăzut azi</strong> și omul care concluzionează „nu merge" — deși slăbește grăsime și pune mușchi.</p>
+  <p class="p">Greutatea ta variază <span class="hl">1-2 kg de la o zi la alta</span> din apă, sare, glicogen, digestie, ciclu. N-are legătură cu grăsimea. Dacă-ți judeci progresul după o singură cifră dimineața, te sabotezi singur.</p>
+
+  <div class="guide-box">
+    <div class="guide-hdr">De ce sare cântarul fără sens</div>
+    <div class="guide-p">Ai mâncat sărat aseară → reții apă → +1kg azi. Ai băgat carbo → glicogen + apă → +1kg. Ai constipație, e cald, e ciclu → cifra se mișcă. <strong>Nimic din astea nu e grăsime.</strong> Grăsimea se schimbă lent, în săptămâni, nu peste noapte.</div>
+  </div>
+
+  <span class="sec-tag">Ce măsori de fapt</span>
+  <div class="sec-h">Cele <span class="ac">5 semnale</span> reale</div>
+  <p class="p">Le urmărești pe toate, nu doar cântarul. Împreună îți spun adevărul:</p>
+
+  <div class="metric"><span class="m-ic">📸</span><div class="m-tx"><div class="m-tt">Pozele de progres</div><div class="m-d">Cel mai sincer semnal. Oglinda nu minte ca cifra. La 2-4 săptămâni vezi schimbări pe care cântarul nu le prinde.</div></div></div>
+  <div class="metric"><span class="m-ic">📏</span><div class="m-tx"><div class="m-tt">Circumferința taliei</div><div class="m-d">Burta scade chiar când greutatea stă pe loc. Un centimetru pierdut la talie &gt; un kg pe cântar.</div></div></div>
+  <div class="metric"><span class="m-ic">👕</span><div class="m-tx"><div class="m-tt">Cum ți se așază hainele</div><div class="m-d">Pantalonii mai largi, tricoul mai bine. Semnalul pe care-l simți zilnic, fără instrument.</div></div></div>
+  <div class="metric"><span class="m-ic">🏋️</span><div class="m-tx"><div class="m-tt">Forța la sală</div><div class="m-d">Ridici mai mult, mai ușor? Construiești mușchi. Progresul la greutăți = mușchi care arde grăsime non-stop.</div></div></div>
+  <div class="metric"><span class="m-ic">🔋</span><div class="m-tx"><div class="m-tt">Energia și somnul</div><div class="m-d">Te trezești mai odihnit, ai energie constantă, mai puține pofte. Semn că sistemul funcționează pe dinăuntru.</div></div></div>
+
+  <span class="sec-tag">Cum faci pozele</span>
+  <div class="sec-h">Corect, ca să <span class="ac">conteze</span></div>
+  <p class="p">Poze proaste = comparație inutilă. Reguli simple ca să fie comparabile lună de lună:</p>
+
+  <div class="step4">
+    <div class="chk"><div class="chk-t">Aceleași condiții de fiecare dată</div><div class="chk-d"><b>Dimineața, pe nemâncate, după baie.</b> Aceeași cameră, aceeași lumină, același loc. Variabilele strică comparația.</div></div>
+    <div class="chk"><div class="chk-t">3 unghiuri: față, lateral, spate</div><div class="chk-d">Lateralul arată burta cel mai sincer. Relaxat, nu încordat — vrei adevărul, nu poza de Instagram.</div></div>
+    <div class="chk"><div class="chk-t">Minim de îmbrăcăminte, mereu la fel</div><div class="chk-d">Boxeri / costum de baie. Aceleași haine de fiecare dată ca să vezi corpul, nu materialul.</div></div>
+    <div class="chk"><div class="chk-t">O dată la 2 săptămâni, nu zilnic</div><div class="chk-d">Schimbarea reală se vede în timp. <b>Compari luna asta cu acum o lună</b>, nu azi cu ieri.</div></div>
+  </div>
+
+  <span class="sec-tag">Cântarul, totuși</span>
+  <div class="sec-h">Cum îl folosești <span class="ac">fără să te mintă</span></div>
+  <p class="p">Nu-l arunci — îl folosești deștept:</p>
+  <div class="metric" style="border-left-color:var(--orange);"><span class="m-ic">📅</span><div class="m-tx"><div class="m-tt">Media săptămânală, nu ziua</div><div class="m-d">Cântărește-te în aceleași condiții (dimineața, nemâncat) și uită-te la <b>tendința pe 2-3 săptămâni</b>, nu la cifra de azi. Scade per total? Mergi bine, indiferent de salturile zilnice.</div></div></div>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Reîncadrarea care te ține în joc</div>
+    <div class="guide-p">Corpul e inginerie, nu morală. O cifră mai mare azi <strong>nu înseamnă că ai eșuat</strong> — înseamnă apă, sare sau glicogen. Judecă sistemul pe semnalele reale, pe termen de săptămâni. Cei care renunță sunt cei care cred cântarul de dimineață. Tu nu ești ăla.</div>
+  </div>
+
+  <div class="foot">Măsori sistemul, nu emoția. <span class="r">BUILT</span> — Tough Mindset.</div>
+</div>
+</body>
+</html>

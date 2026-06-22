@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Ghid Suplimente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:rgba(192,57,43,0.12);--wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;--orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+.supp{background:var(--drk);border:1px solid var(--brd);border-radius:8px;margin-bottom:12px;overflow:hidden;border-left:3px solid var(--green);}
+.supp.maybe{border-left-color:var(--orange);}
+.supp-h{padding:13px 15px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;}
+.supp-n{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;color:var(--wht);}
+.supp-tag{font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:3px;background:rgba(39,174,96,0.15);color:var(--green);border:1px solid rgba(39,174,96,0.4);}
+.supp.maybe .supp-tag{background:rgba(230,126,34,0.12);color:var(--orange);border-color:rgba(230,126,34,0.4);}
+.supp-b{padding:13px 15px;}
+.supp-row{display:flex;gap:8px;font-size:12px;color:#ccc;line-height:1.5;margin-bottom:7px;}
+.supp-row:last-child{margin-bottom:0;}
+.supp-k{flex:0 0 78px;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:700;padding-top:2px;}
+.supp-v b{color:var(--orange);font-family:'DM Mono',monospace;}
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0;}
+.cmp-col{border:1px solid var(--brd);border-radius:6px;padding:13px;}
+.cmp-col.bad{background:rgba(192,57,43,0.06);border-color:rgba(192,57,43,0.3);}
+.cmp-col.good{background:rgba(39,174,96,0.06);border-color:rgba(39,174,96,0.35);}
+.cmp-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.cmp-col.bad .cmp-lbl{color:var(--red);}
+.cmp-col.good .cmp-lbl{color:var(--green);}
+.cmp-col ul{list-style:none;font-size:12px;color:#ccc;line-height:1.5;}
+.cmp-col li{padding:3px 0 3px 16px;position:relative;}
+.cmp-col.bad li::before{content:"✕";position:absolute;left:0;color:var(--red);font-size:10px;top:4px;}
+.cmp-col.good li::before{content:"✓";position:absolute;left:0;color:var(--green);font-size:10px;top:4px;}
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top"><span class="logo">BUILT</span><span class="hdr-name">Ghid Suplimente</span></div>
+  <div class="budget-bar"><span>Ce merită, ce e gunoi</span><strong>4 BAZĂ · RESTUL = MARKETING</strong></div>
+</div>
+<div class="wrap">
+
+  <span class="sec-tag">Adevărul incomod</span>
+  <div class="sec-h">Suplimentele sunt <span class="ac">ultimii 5%.</span></div>
+  <p class="p">Industria de suplimente trăiește din promisiunea că o pudră îți rezolvă ce nu-ți rezolvă mâncarea și antrenamentul. <strong>Minciună.</strong> Niciun supliment nu compensează somnul prost, proteina lipsă sau lipsa de consecvență.</p>
+  <p class="p">Suplimentele sunt <span class="hl">cireașa de pe tort, nu tortul.</span> Dacă baza (mâncare + sală + somn) nu e pusă, banii pe suplimente sunt aruncați. Cu baza pusă, câteva chiar ajută. Uite care, fără bullshit.</p>
+
+  <div class="guide-box">
+    <div class="guide-hdr">Schemele tip Herbalife / MLM</div>
+    <div class="guide-p">Dacă cineva îți vinde „un sistem complet de shake-uri care înlocuiesc mesele" și te pune să recrutezi — <strong>fugi.</strong> Aia nu e nutriție, e o schemă de vânzare. Mâncarea reală bate orice praf scump. Suplimentele bune sunt ieftine și plictisitoare.</div>
+  </div>
+
+  <span class="sec-tag">Merită banii</span>
+  <div class="sec-h">Cele <span class="ac">4 de bază</span></div>
+
+  <div class="supp">
+    <div class="supp-h"><span class="supp-n">Proteina pudră (whey)</span><span class="supp-tag">DA</span></div>
+    <div class="supp-b">
+      <div class="supp-row"><span class="supp-k">La ce</span><span class="supp-v">Atingi ținta de proteină când n-ai timp de gătit. Un shake = ~24g în 30 sec.</span></div>
+      <div class="supp-row"><span class="supp-k">Doză</span><span class="supp-v"><b>1-2 porții/zi</b>, ca să umpli golul, nu să înlocuiești mesele.</span></div>
+      <div class="supp-row"><span class="supp-k">Reper</span><span class="supp-v">Nu e magic — e doar mâncare convenabilă. Mănânci destulă proteină din alimente? N-ai nevoie de ea.</span></div>
+    </div>
+  </div>
+
+  <div class="supp">
+    <div class="supp-h"><span class="supp-n">Creatina monohidrat</span><span class="supp-tag">DA</span></div>
+    <div class="supp-b">
+      <div class="supp-row"><span class="supp-k">La ce</span><span class="supp-v">Cel mai studiat supliment din lume. Forță, putere, recuperare, puțină masă musculară. Sigur, ieftin.</span></div>
+      <div class="supp-row"><span class="supp-k">Doză</span><span class="supp-v"><b>5g/zi, zilnic</b>, oricând (nu contează ora). Fără „fază de încărcare".</span></div>
+      <div class="supp-row"><span class="supp-k">Reper</span><span class="supp-v">„Monohidrat" simplu. Nu plăti dublu pe variante fanteziste — e același lucru.</span></div>
+    </div>
+  </div>
+
+  <div class="supp">
+    <div class="supp-h"><span class="supp-n">Vitamina D3</span><span class="supp-tag">DA</span></div>
+    <div class="supp-b">
+      <div class="supp-row"><span class="supp-k">La ce</span><span class="supp-v">Aproape toți în România sunt în deficit, mai ales iarna. Afectează energie, hormoni, imunitate, dispoziție.</span></div>
+      <div class="supp-row"><span class="supp-k">Doză</span><span class="supp-v"><b>2000-4000 UI/zi</b>, cu o masă care are grăsime (se absoarbe doar așa).</span></div>
+      <div class="supp-row"><span class="supp-k">Reper</span><span class="supp-v">Ideal: un test de sânge o dată. Dar e sigur și fără, la doza asta.</span></div>
+    </div>
+  </div>
+
+  <div class="supp">
+    <div class="supp-h"><span class="supp-n">Magneziu</span><span class="supp-tag">DA</span></div>
+    <div class="supp-b">
+      <div class="supp-row"><span class="supp-k">La ce</span><span class="supp-v">Somn, relaxare musculară, <b>cârcei nocturni</b>, gestionarea stresului. Deficit foarte comun.</span></div>
+      <div class="supp-row"><span class="supp-k">Doză</span><span class="supp-v"><b>300-400mg seara.</b> Formă: citrat sau bisglicinat (nu oxid — se absoarbe prost).</span></div>
+      <div class="supp-row"><span class="supp-k">Reper</span><span class="supp-v">Dacă te trezesc cârceii noaptea, ăsta + hidratare e prima mișcare.</span></div>
+    </div>
+  </div>
+
+  <span class="sec-tag">Opțional</span>
+  <div class="sec-h">Bonus, <span class="ac">dacă vrei</span></div>
+  <div class="supp maybe">
+    <div class="supp-h"><span class="supp-n">Omega-3 (ulei de pește)</span><span class="supp-tag">POATE</span></div>
+    <div class="supp-b">
+      <div class="supp-row"><span class="supp-k">La ce</span><span class="supp-v">Antiinflamator, articulații, creier, inimă. Util mai ales dacă nu mănânci pește de 2x/săptămână.</span></div>
+      <div class="supp-row"><span class="supp-k">Doză</span><span class="supp-v"><b>1-2g EPA+DHA/zi.</b> Mănânci pește gras des? Sări peste.</span></div>
+    </div>
+  </div>
+  <div class="supp maybe">
+    <div class="supp-h"><span class="supp-n">Cofeina (pre-antrenament)</span><span class="supp-tag">POATE</span></div>
+    <div class="supp-b">
+      <div class="supp-row"><span class="supp-k">La ce</span><span class="supp-v">Energie și focus la antrenament. O cafea simplă face treaba — nu-ți trebuie pudre scumpe.</span></div>
+      <div class="supp-row"><span class="supp-k">Reper</span><span class="supp-v">Nu după ora 15-16 — îți strică somnul, care e mai important decât antrenamentul.</span></div>
+    </div>
+  </div>
+
+  <span class="sec-tag">Bani aruncați</span>
+  <div class="sec-h">Ce <span class="ac">NU</span> cumperi</div>
+  <div class="cmp">
+    <div class="cmp-col good">
+      <div class="cmp-lbl">Bază · ieftin · funcționează</div>
+      <ul><li>Proteină whey</li><li>Creatină monohidrat</li><li>Vitamina D3</li><li>Magneziu</li></ul>
+    </div>
+    <div class="cmp-col bad">
+      <div class="cmp-lbl">Marketing · scump · inutil</div>
+      <ul><li>„Fat burnere"</li><li>BCAA (degeaba dacă ai proteină)</li><li>Detox / cleanse</li><li>Shake-uri „meal replacement" MLM</li><li>Testo boostere din plante</li></ul>
+    </div>
+  </div>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Regula de aur</div>
+    <div class="guide-p"><strong>Întâi pui baza, apoi vorbim de suplimente.</strong> Mănânci proteina? Dormi 7h? Ești constant la sală? Dacă da — cele 4 de bază te ajută cu ultimii 5%. Dacă nu — niciun praf din lume nu te salvează. Construiește fundația, nu cumpără scurtături.</div>
+  </div>
+
+  <div class="foot">Baza, nu praful. <span class="r">BUILT</span> — Intelligent Fueling.</div>
+</div>
+</body>
+</html>

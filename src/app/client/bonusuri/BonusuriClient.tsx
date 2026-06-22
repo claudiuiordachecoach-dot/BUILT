@@ -23,6 +23,13 @@ const CATEGORY_DESCRIPTIONS: Record<BonusCategory, string> = {
   events: "Nuntă, all-inclusive, vacanță cu familia",
 };
 
+// Ghiduri de fundație — educație de bază, vizibile tuturor clienților.
+const FOUNDATION_GUIDES: { file: string; title: string; subtitle: string; emoji: string }[] = [
+  { file: "/built-bonus-suplimente.html", title: "Ghid Suplimente", subtitle: "Ce merită, ce e marketing", emoji: "💊" },
+  { file: "/built-bonus-somn.html", title: "Igiena Somnului", subtitle: "Pilonul invizibil al recuperării", emoji: "😴" },
+  { file: "/built-bonus-masurare.html", title: "Cum Te Măsori Corect", subtitle: "5 semnale reale, nu doar cântarul", emoji: "📏" },
+];
+
 export type PersonalCookbook = {
   file: string;
   name: string;
@@ -134,6 +141,31 @@ export default function BonusuriClient({
           </div>
         </div>
       )}
+
+      {/* Ghiduri de fundație — universale */}
+      <div className="mb-8">
+        <span className="text-[10px] font-bold text-built-red uppercase tracking-widest mb-3 block">
+          Ghiduri de Fundație
+        </span>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {FOUNDATION_GUIDES.map((guide) => (
+            <a
+              key={guide.file}
+              href={guide.file}
+              className="flex items-center gap-3 bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-4 transition-all group"
+            >
+              <span className="text-2xl shrink-0">{guide.emoji}</span>
+              <div className="flex-1 min-w-0">
+                <h3 className="text-sm font-bold text-white group-hover:text-built-red transition-colors truncate">
+                  {guide.title}
+                </h3>
+                <p className="text-xs text-zinc-500 mt-0.5 truncate">{guide.subtitle}</p>
+              </div>
+              <span className="text-zinc-600 group-hover:text-built-red transition-colors text-sm shrink-0">→</span>
+            </a>
+          ))}
+        </div>
+      </div>
 
       {/* Tab navigation */}
       <div className="flex overflow-x-auto gap-1 pb-1 mb-6 scrollbar-none border-b border-white/5">

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Igiena Somnului</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:rgba(192,57,43,0.12);--wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;--orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+.cost{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.ccard{background:var(--card);border:1px solid var(--brd);padding:13px;border-radius:6px;border-top:3px solid var(--red);}
+.c-ic{font-size:22px;line-height:1;margin-bottom:6px;}
+.c-tt{font-size:12.5px;font-weight:700;color:var(--wht);margin-bottom:3px;}
+.c-d{font-size:11px;color:var(--muted);line-height:1.45;}
+.step4{counter-reset:c;}
+.chk{background:var(--drk);border:1px solid var(--brd);border-radius:6px;padding:14px 14px 14px 52px;margin-bottom:10px;position:relative;counter-increment:c;}
+.chk::before{content:counter(c);position:absolute;left:13px;top:14px;width:26px;height:26px;background:var(--blue);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;}
+.chk-t{font-size:13.5px;font-weight:700;color:var(--wht);margin-bottom:3px;}
+.chk-d{font-size:12px;color:#bbb;line-height:1.5;}
+.chk-d b{color:var(--orange);}
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top"><span class="logo">BUILT</span><span class="hdr-name">Igiena Somnului</span></div>
+  <div class="budget-bar"><span>Pilonul invizibil</span><strong>DORMI PROST = ANTRENAMENT IROSIT</strong></div>
+</div>
+<div class="wrap">
+
+  <span class="sec-tag">De ce contează</span>
+  <div class="sec-h">Nu te construiești la sală. <span class="ac">Te construiești în somn.</span></div>
+  <p class="p">La sală dărâmi mușchiul. <strong>Se reconstruiește când dormi.</strong> Sari peste somn → te antrenezi degeaba, fiindcă corpul n-are când să repare. Somnul nu e timp pierdut — e tura de noapte a corpului.</p>
+  <p class="p">E pilonul pe care toți îl ignoră fiindcă nu se vede. Dar <span class="hl">somnul prost strică tot restul:</span> mănânci mai mult, recuperezi mai puțin, ai cortizolul sus și voința jos.</p>
+
+  <div class="guide-box">
+    <div class="guide-hdr">Bucla cortizolului</div>
+    <div class="guide-p">Dormi puțin → cortizol (hormonul de stres) ridicat → corpul ține grăsimea pe burtă și-ți dă poftă de zahăr → mănânci prost → dormi și mai prost. <strong>Nu e lipsă de caracter. E o buclă biologică.</strong> O spargi din somn, nu din voință.</div>
+  </div>
+
+  <span class="sec-tag">Costul real</span>
+  <div class="sec-h">Ce-ți fură <span class="ac">o noapte proastă</span></div>
+  <div class="cost">
+    <div class="ccard"><div class="c-ic">🍩</div><div class="c-tt">Poftă de zahăr</div><div class="c-d">Sub 6h somn → mănânci în medie 300-400 kcal în plus a doua zi, mai ales dulce.</div></div>
+    <div class="ccard"><div class="c-ic">💪</div><div class="c-tt">Pierzi mușchi</div><div class="c-d">Recuperare slabă → progres oprit la sală, deși te antrenezi la fel de mult.</div></div>
+    <div class="ccard"><div class="c-ic">🧠</div><div class="c-tt">Voință zero</div><div class="c-d">Creierul obosit cedează mai ușor la tentații și sare antrenamentul.</div></div>
+    <div class="ccard"><div class="c-ic">⚡</div><div class="c-tt">Hormoni jos</div><div class="c-d">Testosteron și recuperare scad. Energie proastă toată ziua.</div></div>
+  </div>
+
+  <span class="sec-tag">Protocolul</span>
+  <div class="sec-h">7 mișcări care <span class="ac">repară somnul</span></div>
+  <p class="p">Nu trebuie toate dintr-odată. Începe cu primele 2 — sunt 80% din rezultat.</p>
+
+  <div class="step4">
+    <div class="chk"><div class="chk-t">Oră fixă de culcare (±30 min)</div><div class="chk-d">Cea mai puternică pârghie. Corpul iubește ritmul. <b>Aceeași oră în fiecare seară</b>, inclusiv weekend. Asta singură schimbă tot.</div></div>
+    <div class="chk"><div class="chk-t">Cofeina STOP după ora 15:00</div><div class="chk-d">Cafeaua stă în corp 6-8 ore. Una la 17:00 încă lucrează la miezul nopții. <b>Ultima cafea: prânz-15:00.</b></div></div>
+    <div class="chk"><div class="chk-t">Lumină dimineața, întuneric seara</div><div class="chk-d">10 min de lumină naturală dimineața îți reglează ceasul. Seara: <b>lumini calde, scăzute</b> cu 1h înainte de somn.</div></div>
+    <div class="chk"><div class="chk-t">Ecranele jos cu 30-60 min înainte</div><div class="chk-d">Lumina albastră + scrollul țin creierul activ. <b>Telefonul în altă cameră</b> sau pe modul noapte. Mindless scroll = somn amânat.</div></div>
+    <div class="chk"><div class="chk-t">Cameră rece, întunecată, liniștită</div><div class="chk-d"><b>18-19°C</b>, draperii groase sau mască. Răcoarea ajută adormirea. Camera = doar somn, nu birou.</div></div>
+    <div class="chk"><div class="chk-t">Fără mese grele înainte de culcare</div><div class="chk-d">Cina cu <b>2-3h înainte</b>. Digestia grea strică somnul profund. Dacă ți-e foame: ceva proteic ușor.</div></div>
+    <div class="chk"><div class="chk-t">Magneziu seara (dacă e cazul)</div><div class="chk-d"><b>300-400mg</b> citrat/bisglicinat ajută relaxarea și previne cârceii. Vezi Ghidul Suplimente.</div></div>
+  </div>
+
+  <div class="guide-box org">
+    <div class="guide-hdr">Lucrezi în ture / program haotic?</div>
+    <div class="guide-p">Nu poți avea oră fixă — atunci ținta e <strong>cantitatea și întunericul.</strong> Prioritizează 7h chiar dacă ora variază, fă camera beznă totală, și ține cofeina departe de ultimele 8h înainte de somn. Un pui de somn de 20 min în tură ajută — peste 30 min strică noaptea.</div>
+  </div>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Dacă faci un singur lucru</div>
+    <div class="guide-p"><strong>Culcă-te la aceeași oră în fiecare seară.</strong> Nu suplimente, nu gadgeturi, nu aplicații. Doar consecvența orei. În 2 săptămâni adormi mai ușor și te trezești mai odihnit — gratis.</div>
+  </div>
+
+  <div class="foot">Recuperarea e antrenament. <span class="r">BUILT</span> — Unbreakable Capacity.</div>
+</div>
+</body>
+</html>
