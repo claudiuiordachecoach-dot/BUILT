@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Bucătăria de la Zero · Andrei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--red-dim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+
+.tech{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:8px;}
+.tcard{background:var(--card);border:1px solid var(--brd);padding:13px;border-radius:6px;border-top:3px solid var(--orange);}
+.t-ic{font-size:24px;line-height:1;margin-bottom:6px;}
+.t-tt{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:3px;}
+.t-d{font-size:11px;color:var(--muted);line-height:1.45;}
+
+.recipe{background:var(--drk);border:1px solid var(--brd);margin-bottom:14px;border-radius:8px;overflow:hidden;}
+.r-head{padding:14px 16px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;}
+.r-name{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:1px;color:var(--wht);}
+.r-name small{display:block;font-family:'DM Sans',sans-serif;font-size:10px;letter-spacing:1px;color:var(--muted);font-weight:400;text-transform:uppercase;margin-top:2px;}
+.r-prot{font-family:'DM Mono',monospace;font-size:11px;color:var(--green);font-weight:600;text-align:right;white-space:nowrap;}
+.r-prot small{display:block;color:var(--muted);font-size:9px;}
+.r-body{padding:14px 16px;}
+.r-ings{font-size:11px;color:var(--orange);font-family:'DM Mono',monospace;line-height:1.6;margin-bottom:12px;padding:10px 12px;background:var(--card);border-radius:4px;border:1px solid var(--brd);}
+.r-ings b{color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:9px;display:block;margin-bottom:4px;font-family:'DM Sans',sans-serif;}
+ol.steps{list-style:none;counter-reset:s;}
+ol.steps li{counter-increment:s;position:relative;padding:0 0 12px 34px;font-size:12.5px;color:#ccc;line-height:1.5;}
+ol.steps li:last-child{padding-bottom:0;}
+ol.steps li::before{content:counter(s);position:absolute;left:0;top:-1px;width:23px;height:23px;background:var(--red-dim);border:1px solid rgba(192,57,43,0.4);color:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:11px;font-weight:600;}
+ol.steps li strong{color:var(--wht);}
+ol.steps li .tip{color:var(--orange);font-style:italic;}
+
+.shop{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.shop-col{background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:13px;}
+.shop-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;color:var(--orange);margin-bottom:8px;}
+.shop-col ul{list-style:none;font-size:12px;color:#ccc;line-height:1.7;}
+.shop-col li{padding-left:16px;position:relative;}
+.shop-col li::before{content:"•";position:absolute;left:2px;color:var(--red);}
+
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <span class="logo">BUILT</span>
+    <span class="hdr-name">Bucătăria de la Zero · Andrei</span>
+  </div>
+  <div class="budget-bar">
+    <span>Nu știi să gătești? Bun.</span>
+    <strong>5 TEHNICI · 0 EXPERIENȚĂ</strong>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <span class="sec-tag">Adevărul</span>
+  <div class="sec-h">Nu devii chef. <span class="ac">Devii autonom.</span></div>
+  <p class="p">Mi-ai zis direct: „pic de idee n-am cum se folosește o bucătărie". Perfect — pornim de la zero, fără rușine. <strong>Nu-ți trebuie talent.</strong> Îți trebuie 5 mișcări pe care le repeți până devin reflex.</p>
+  <p class="p">Dependența de frate-tău care gătește dimineața e o problemă — exact ca plimbările de care depindeai înainte. <span class="hl">Tot ce depinde de altcineva, cade.</span> Construim ceva ce poți face singur, cu ochii închiși, după o tură de 14 ore.</p>
+
+  <div class="guide-box org">
+    <div class="guide-hdr">Regula bucătarului leneș</div>
+    <div class="guide-p">Nu gătești zilnic. <strong>Gătești o dată, mănânci de 3 ori.</strong> Faci o tavă de pui și o oală de orez când ai 30 min libere → ai mâncare 2-3 zile. Asta e tot secretul când lucrezi 6:30-20:15.</div>
+  </div>
+
+  <span class="sec-tag">Fundația</span>
+  <div class="sec-h">Cele <span class="ac">5 tehnici</span> de bază</div>
+  <p class="p">Atât. Cu astea 5 acoperi orice masă din viața ta:</p>
+
+  <div class="tech">
+    <div class="tcard"><div class="t-ic">🍗</div><div class="t-tt">Air fryer</div><div class="t-d">Pui, cartofi, legume. Bagi, setezi, uiți. Cea mai ușoară unealtă pentru un începător.</div></div>
+    <div class="tcard"><div class="t-ic">💧</div><div class="t-tt">Fiert</div><div class="t-d">Orez, paste, ouă. Apă + foc + timp. Imposibil de greșit dacă pui cronometru.</div></div>
+    <div class="tcard"><div class="t-ic">🍳</div><div class="t-tt">Tigaie</div><div class="t-d">Ouă, carne tocată, legume călite. Foc mediu, puțin ulei, amesteci.</div></div>
+    <div class="tcard"><div class="t-ic">🥣</div><div class="t-tt">Ovăz / fără foc</div><div class="t-d">Ovăz, iaurt, brânză vaci. Torni, amesteci, gata. Micul dejun rezolvat în 3 min.</div></div>
+  </div>
+  <div class="tcard" style="border-top-color:var(--green);"><div class="t-ic">🥤</div><div class="t-tt">Shake</div><div class="t-d">Pudra proteică (inclusiv aia de la Herbalife pe care vrei s-o termini) + apă/lapte. 25g proteină în 30 de secunde, când n-ai timp de nimic.</div></div>
+
+  <span class="sec-tag">Rețete idiot-proof</span>
+  <div class="sec-h">Pas cu pas, <span class="ac">fără să ratezi</span></div>
+
+  <div class="recipe">
+    <div class="r-head">
+      <div class="r-name">Ovăzul de dimineață<small>Ce ai cerut · 3 minute</small></div>
+      <div class="r-prot">~30g<small>proteină</small></div>
+    </div>
+    <div class="r-body">
+      <div class="r-ings"><b>Ai nevoie de</b>60g fulgi de ovăz · 250ml lapte (sau apă) · 1 porție pudră proteică · 1 banană / niște fructe · (opțional) o lingură unt de arahide</div>
+      <ol class="steps">
+        <li>Pune <strong>60g ovăz</strong> (un pumn bun) într-un bol. <span class="tip">Fără cântar? Un pumn = aprox.</span></li>
+        <li>Torni <strong>laptele</strong> cât să acopere ovăzul + un deget peste.</li>
+        <li>Microunde <strong>2 minute</strong>, sau pe foc mic 4-5 min, amestecând. Se umflă și se îngroașă.</li>
+        <li>Lași <strong>1 minut să se răcească</strong>, apoi amesteci <strong>porția de pudră</strong>. <span class="tip">Pudra se pune la final, nu pe foc — altfel se face cocoloașe.</span></li>
+        <li>Tai banana / fructele deasupra. Gata. <strong>Asta e prima ta masă completă gătită de tine.</strong></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="recipe">
+    <div class="r-head">
+      <div class="r-name">Pui la air fryer<small>Batch · gătești o dată</small></div>
+      <div class="r-prot">~45g/porție<small>proteină</small></div>
+    </div>
+    <div class="r-body">
+      <div class="r-ings"><b>Ai nevoie de</b>700-900g piept de pui · sare · piper · boia / paprika · puțin ulei</div>
+      <ol class="steps">
+        <li>Pui pieptul într-un bol, presari <strong>sare, piper, boia</strong> și un strop de ulei. Amesteci cu mâna să se ungă tot.</li>
+        <li>Le așezi în air fryer fără să se suprapună.</li>
+        <li><strong>200°C, 18-20 minute.</strong> Le întorci o dată pe la jumate. <span class="tip">Tai unul la mijloc: dacă e alb peste tot, e gata. Roz = mai lasă 3 min.</span></li>
+        <li>Ai <strong>2-3 porții</strong>. Una azi, restul la frigider pentru mâine. Asta e „gătești o dată, mănânci de 3 ori".</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="recipe">
+    <div class="r-head">
+      <div class="r-name">Orez / Paste<small>Combustibilul · în paralel</small></div>
+      <div class="r-prot">carbo<small>1 pumn/masă</small></div>
+    </div>
+    <div class="r-body">
+      <div class="r-ings"><b>Ai nevoie de</b>orez sau paste · apă · sare</div>
+      <ol class="steps">
+        <li><strong>Orez:</strong> 1 cană orez + 2 căni apă + sare. Foc mic, capac, <strong>15 min</strong>, nu ridici capacul. Stinge focul, mai lasă 5 min.</li>
+        <li><strong>Paste:</strong> apă multă + sare, dă în clocot, arunci pastele, <strong>fierbi cât scrie pe pungă</strong> (de obicei 8-10 min), scurgi.</li>
+        <li>Le faci <strong>cât gătești puiul</strong> — pe alt ochi. În 20 min ai și proteină și carbo.</li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="recipe">
+    <div class="r-head">
+      <div class="r-name">Ouă (oricum)<small>Salvarea de seară · 5 min</small></div>
+      <div class="r-prot">~20g<small>la 3 ouă</small></div>
+    </div>
+    <div class="r-body">
+      <div class="r-ings"><b>Ai nevoie de</b>3 ouă · puțin ulei/unt · sare</div>
+      <ol class="steps">
+        <li><strong>Ochiuri:</strong> tigaie cu strop de ulei, foc mediu, spargi ouăle, 3-4 min, sare. Gata.</li>
+        <li><strong>Fierte:</strong> ouă în apă rece, dai în clocot, <strong>9 min</strong>, le treci prin apă rece, le cojești. Le ții la frigider — gustare proteică la pachet în tură.</li>
+        <li>Când vii frânt de la muncă și n-ai nimic gătit: <strong>3 ouă + o felie de pâine + brânză = masă reală în 5 min.</strong></li>
+      </ol>
+    </div>
+  </div>
+
+  <span class="sec-tag">Înainte de toate</span>
+  <div class="sec-h">Lista de <span class="ac">cumpărături</span> de bază</div>
+  <p class="p">Ai astea mereu în casă → nu rămâi niciodată fără opțiune și nu ajungi la Uncle John din disperare:</p>
+
+  <div class="shop">
+    <div class="shop-col">
+      <div class="shop-lbl">Proteină</div>
+      <ul>
+        <li>Piept de pui</li>
+        <li>Ouă (mereu)</li>
+        <li>Brânză de vaci</li>
+        <li>Iaurt grecesc</li>
+        <li>Pudră proteică</li>
+        <li>Ton la conservă</li>
+      </ul>
+    </div>
+    <div class="shop-col">
+      <div class="shop-lbl">Carbo + Legume + Grăsime</div>
+      <ul>
+        <li>Orez / paste / cartofi</li>
+        <li>Fulgi de ovăz</li>
+        <li>Legume congelate (rapid)</li>
+        <li>Roșii, castravete, salată</li>
+        <li>Ulei de măsline</li>
+        <li>Un fruct (banane)</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Primul tău obiectiv în bucătărie</div>
+    <div class="guide-p">Nu „să gătesc zilnic". Doar atât: <strong>fă ovăzul mâine dimineață, singur.</strong> O masă, gătită de tine, fără frate-tău. Aia e prima victorie. Restul vine peste ea.</div>
+  </div>
+
+  <div class="foot">
+    Autonom, nu dependent. <span class="r">BUILT</span> — Lifestyle Integration.
+  </div>
+
+</div>
+</body>
+</html>

@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Ghidul Farfuriei · Andrei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--red-dim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+
+.plate{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0 8px;}
+.pcard{background:var(--card);border:1px solid var(--brd);padding:14px;border-radius:6px;display:flex;flex-direction:column;gap:5px;border-top:3px solid var(--brd);}
+.pcard.p1{border-top-color:var(--red);}
+.pcard.p2{border-top-color:var(--orange);}
+.pcard.p3{border-top-color:var(--green);}
+.pcard.p4{border-top-color:var(--blue);}
+.p-icon{font-size:26px;line-height:1;}
+.p-role{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700;}
+.p-ttl{font-size:14px;font-weight:700;color:var(--wht);}
+.p-port{font-family:'DM Mono',monospace;font-size:12px;color:var(--orange);font-weight:600;}
+.pcard.p1 .p-port{color:var(--red);}
+.pcard.p3 .p-port{color:var(--green);}
+.pcard.p4 .p-port{color:var(--blue);}
+.p-ex{font-size:11px;color:var(--muted);line-height:1.4;}
+
+.macro-row{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:13px;margin-bottom:10px;}
+.macro-ic{font-size:22px;line-height:1;flex:0 0 auto;}
+.macro-tx{flex:1;}
+.macro-tt{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.macro-tt .q{font-family:'DM Mono',monospace;font-size:11px;color:var(--orange);font-weight:600;margin-left:6px;}
+.macro-d{font-size:12px;color:#bbb;line-height:1.5;}
+
+.acc{background:var(--drk);border:1px solid var(--brd);margin-bottom:12px;border-radius:6px;overflow:hidden;}
+.acc.open{border-color:var(--orange);}
+.acc-h{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;background:rgba(255,255,255,0.02);}
+.acc-h:hover{background:rgba(255,255,255,0.04);}
+.acc-t{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px;color:var(--wht);}
+.acc-ic{font-size:12px;color:var(--muted);transition:transform .3s;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--card);border:1px solid var(--brd);border-radius:4px;}
+.acc.open .acc-ic{transform:rotate(180deg);color:var(--orange);border-color:var(--orange);}
+.acc-c{max-height:0;overflow:hidden;transition:max-height .35s cubic-bezier(.4,0,.2,1);}
+.acc.open .acc-c{max-height:1600px;}
+.acc-b{padding:14px 16px;}
+
+table.tt{width:100%;border-collapse:collapse;margin:4px 0 8px;font-size:12px;}
+table.tt th{text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:6px 8px;border-bottom:1px solid var(--brd);font-weight:700;}
+table.tt td{padding:8px;border-bottom:1px solid var(--brd);color:#ccc;}
+table.tt td.q{font-family:'DM Mono',monospace;color:var(--red);font-weight:600;white-space:nowrap;}
+table.tt td.food{color:var(--wht);font-weight:600;}
+
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0;}
+.cmp-col{border:1px solid var(--brd);border-radius:6px;padding:13px;}
+.cmp-col.bad{background:rgba(192,57,43,0.06);border-color:rgba(192,57,43,0.3);}
+.cmp-col.good{background:rgba(39,174,96,0.06);border-color:rgba(39,174,96,0.35);}
+.cmp-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.cmp-col.bad .cmp-lbl{color:var(--red);}
+.cmp-col.good .cmp-lbl{color:var(--green);}
+.cmp-col ul{list-style:none;font-size:12px;color:#ccc;line-height:1.5;}
+.cmp-col li{padding:3px 0 3px 16px;position:relative;}
+.cmp-col.bad li::before{content:"✕";position:absolute;left:0;color:var(--red);font-size:10px;top:4px;}
+.cmp-col.good li::before{content:"✓";position:absolute;left:0;color:var(--green);font-size:10px;top:4px;}
+
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <span class="logo">BUILT</span>
+    <span class="hdr-name">Ghid Farfurie · Andrei</span>
+  </div>
+  <div class="budget-bar">
+    <span>O farfurie corectă</span>
+    <strong>4 COMPONENTE · ~45G PROTEINĂ</strong>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <span class="sec-tag">Principiul</span>
+  <div class="sec-h">Nu numeri calorii. <span class="ac">Construiești farfuria.</span></div>
+  <p class="p">Herbalife te punea să măsori praf și să te simți vinovat. Aici facem invers: <strong>nu calculezi nimic la gram.</strong> Înveți o regulă simplă pe care o aplici la orice masă, oriunde — acasă, la muncă, în oraș.</p>
+  <p class="p">O farfurie BUILT are mereu <span class="hl">aceleași 4 componente</span>. Le pui pe toate → ai mâncat corect. Lipsește una → masa e șchioapă. Atât de simplu trebuie să fie ca să-l ții 90 de zile, nu 9.</p>
+
+  <div class="guide-box">
+    <div class="guide-hdr">Ținta ta, o singură dată</div>
+    <div class="guide-p"><strong>90.6 kg azi → 80-85 kg.</strong> Ca să slăbești fără să rămâi <strong>moale</strong> (slab dar fără formă), ținta e <strong>~180g proteină pe zi</strong>. O spargi în mese de <strong>~45g</strong>. Restul farfuriei (carbo, grăsime, legume) se așază în jurul proteinei — niciodată invers.</div>
+  </div>
+
+  <span class="sec-tag">Regula</span>
+  <div class="sec-h">Cele <span class="ac">4 componente</span> ale farfuriei</div>
+  <p class="p">Fără cântar. Folosești <strong>mâna ta</strong> ca unitate de măsură — merge oriunde, n-o uiți acasă. Gramajele sunt pentru mâncarea <strong>crudă</strong> (înainte de gătit).</p>
+
+  <div class="plate">
+    <div class="pcard p1">
+      <span class="p-icon">✋</span>
+      <span class="p-role">Componenta 1 — Baza</span>
+      <span class="p-ttl">Proteină</span>
+      <span class="p-port">1 palmă · ~180-200g · ≈45g proteină</span>
+      <span class="p-ex">Pui, curcan, vită, pește, ouă, brânză vaci. Asta construiește mușchiul și te ține sătul.</span>
+    </div>
+    <div class="pcard p2">
+      <span class="p-icon">✊</span>
+      <span class="p-role">Componenta 2 — Combustibil</span>
+      <span class="p-ttl">Carbohidrați</span>
+      <span class="p-port">1 pumn · ~200g gătit</span>
+      <span class="p-ex">Orez, cartofi, paste, ovăz, mămăligă. Energia pentru sală și pentru tura de 14 ore.</span>
+    </div>
+    <div class="pcard p3">
+      <span class="p-icon">🥬</span>
+      <span class="p-role">Componenta 3 — Absorbție</span>
+      <span class="p-ttl">Legume / Fibre</span>
+      <span class="p-port">2 pumni · cât mai colorat</span>
+      <span class="p-ex">Salată, broccoli, roșii, ardei, castravete. Vitamine, digestie, sațietate. Umple farfuria fără calorii.</span>
+    </div>
+    <div class="pcard p4">
+      <span class="p-icon">👍</span>
+      <span class="p-role">Componenta 4 — Hormoni</span>
+      <span class="p-ttl">Grăsime bună</span>
+      <span class="p-port">1 deget mare · ~10-15g</span>
+      <span class="p-ex">Ulei de măsline, avocado, un căuș de nuci, gălbenuș. Puțin, dar obligatoriu — vezi de ce mai jos.</span>
+    </div>
+  </div>
+
+  <p class="p" style="font-size:12px;color:var(--muted);"><strong style="color:var(--orange);">Repere rapide:</strong> 1 palmă carne ≈ 45g proteină · 1 ou ≈ 6-7g · 100g brânză vaci ≈ 12g · o porție de pudră ≈ 20-25g. Combini 2 surse și ajungi lejer la 45g pe masă.</p>
+
+  <span class="sec-tag">Gramaje exacte</span>
+  <div class="sec-h">Câtă proteină e <span class="ac">de fapt</span> în mâncare</div>
+  <p class="p">„150g carne" nu înseamnă 150g proteină — îți aduci aminte de confuzia de la început. Uite cât dă <strong>fix</strong> fiecare aliment, ca să nu mai ghicești niciodată. Gramajele de carne sunt <strong>crud</strong> (după gătit scade ~25%).</p>
+
+  <table class="tt">
+    <tr><th>Aliment</th><th>Porție</th><th>Proteină</th></tr>
+    <tr><td class="food">Piept de pui</td><td>200g</td><td class="q">~46g</td></tr>
+    <tr><td class="food">Curcan</td><td>200g</td><td class="q">~44g</td></tr>
+    <tr><td class="food">Vită slabă</td><td>200g</td><td class="q">~42g</td></tr>
+    <tr><td class="food">Somon / pește</td><td>200g</td><td class="q">~40g</td></tr>
+    <tr><td class="food">Ton la conservă</td><td>1 cutie (~150g scurs)</td><td class="q">~30g</td></tr>
+    <tr><td class="food">Ouă</td><td>3 bucăți</td><td class="q">~19g</td></tr>
+    <tr><td class="food">Brânză de vaci</td><td>200g</td><td class="q">~24g</td></tr>
+    <tr><td class="food">Iaurt grecesc</td><td>200g</td><td class="q">~18g</td></tr>
+    <tr><td class="food">Pudră proteică</td><td>1 porție (~30g)</td><td class="q">~24g</td></tr>
+  </table>
+  <p class="p" style="font-size:12px;color:var(--muted);"><strong style="color:var(--green);">Regula:</strong> nicio sursă singură nu-ți dă 45g lejer afară de carne. De-aia <strong>combini două</strong> — ex: 150g pui (35g) + 100g brânză vaci (12g) = 47g. Bifat.</p>
+
+  <span class="sec-tag">Carbo & grăsime — cât</span>
+  <div class="sec-h">Și restul, <span class="ac">în grame</span></div>
+  <div class="cmp">
+    <div class="cmp-col" style="border-color:var(--brd);background:var(--card);">
+      <div class="cmp-lbl" style="color:var(--orange);">Carbo / masă (1 pumn)</div>
+      <ul style="list-style:none;">
+        <li style="padding:3px 0;">🍚 Orez fiert — <b style="color:var(--orange);font-family:'DM Mono',monospace;">~180-200g</b></li>
+        <li style="padding:3px 0;">🥔 Cartofi — <b style="color:var(--orange);font-family:'DM Mono',monospace;">~250g</b></li>
+        <li style="padding:3px 0;">🍝 Paste fierte — <b style="color:var(--orange);font-family:'DM Mono',monospace;">~180g</b></li>
+        <li style="padding:3px 0;">🥣 Ovăz crud — <b style="color:var(--orange);font-family:'DM Mono',monospace;">~60g</b></li>
+        <li style="padding:3px 0;">🍞 Pâine — <b style="color:var(--orange);font-family:'DM Mono',monospace;">2 felii</b></li>
+      </ul>
+    </div>
+    <div class="cmp-col" style="border-color:var(--brd);background:var(--card);">
+      <div class="cmp-lbl" style="color:var(--blue);">Grăsime / masă (1 deget)</div>
+      <ul style="list-style:none;">
+        <li style="padding:3px 0;">🫒 Ulei măsline — <b style="color:var(--blue);font-family:'DM Mono',monospace;">1 lingură ~12g</b></li>
+        <li style="padding:3px 0;">🥑 Avocado — <b style="color:var(--blue);font-family:'DM Mono',monospace;">1/2 buc</b></li>
+        <li style="padding:3px 0;">🥜 Nuci / migdale — <b style="color:var(--blue);font-family:'DM Mono',monospace;">~20-25g</b></li>
+        <li style="padding:3px 0;">🧈 Unt arahide — <b style="color:var(--blue);font-family:'DM Mono',monospace;">1 lingură</b></li>
+        <li style="padding:3px 0;">🥚 Gălbenuș — <b style="color:var(--blue);font-family:'DM Mono',monospace;">vine cu oul</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <span class="sec-tag">Copy-paste</span>
+  <div class="sec-h">3 farfurii <span class="ac">gata calculate</span></div>
+  <p class="p">Nu vrei să gândești? Fă fix astea. Fiecare e ~45g proteină, masă completă:</p>
+
+  <div class="macro-row" style="border-left:3px solid var(--red);">
+    <span class="macro-ic">🌙</span>
+    <div class="macro-tx">
+      <div class="macro-tt">Farfuria de seară (după tură) <span class="q">~47g prot</span></div>
+      <div class="macro-d"><strong>200g piept pui</strong> (46g) + <strong>180g orez fiert</strong> + <strong>200g legume</strong> (broccoli/salată) + <strong>1 lingură ulei măsline</strong>. Asta e pastele tale, doar cu proporțiile corecte.</div>
+    </div>
+  </div>
+  <div class="macro-row" style="border-left:3px solid var(--orange);">
+    <span class="macro-ic">🌅</span>
+    <div class="macro-tx">
+      <div class="macro-tt">Micul dejun <span class="q">~48g prot</span></div>
+      <div class="macro-d"><strong>60g ovăz</strong> + <strong>200g iaurt grecesc</strong> (18g) + <strong>1 porție pudră</strong> (24g) + <strong>1 banană</strong>. Fără gătit, 3 minute. Combinația care-ți rezolvă dimineața.</div>
+    </div>
+  </div>
+  <div class="macro-row" style="border-left:3px solid var(--green);">
+    <span class="macro-ic">⚡</span>
+    <div class="macro-tx">
+      <div class="macro-tt">Salvarea rapidă (n-ai gătit nimic) <span class="q">~45g prot</span></div>
+      <div class="macro-d"><strong>3 ouă</strong> (19g) + <strong>150g brânză vaci</strong> (18g) + <strong>2 felii pâine</strong> + <strong>roșii/castravete</strong>. Adaugi 1 ton la conservă dacă vrei sus de tot. 5 minute.</div>
+    </div>
+  </div>
+
+  <span class="sec-tag">De ce toate 4</span>
+  <div class="sec-h">Fiecare component are <span class="ac">o treabă</span></div>
+  <p class="p">Nu sunt acolo de decor. Dacă scoți unul, plătești:</p>
+
+  <div class="macro-row">
+    <span class="macro-ic">🧱</span>
+    <div class="macro-tx">
+      <div class="macro-tt">Proteina <span class="q">cărămida</span></div>
+      <div class="macro-d">Repară și construiește mușchiul după sală. Fără ea slăbești, dar pierzi și mușchi → rămâi moale. E singurul macro pe care îl ții <strong>fix</strong> în fiecare zi.</div>
+    </div>
+  </div>
+  <div class="macro-row">
+    <span class="macro-ic">🔋</span>
+    <div class="macro-tx">
+      <div class="macro-tt">Carbohidrații <span class="q">combustibilul</span></div>
+      <div class="macro-d">Energia pentru antrenament și pentru tura ta lungă. Îi pui mai mulți în zilele cu sală, mai puțini în zilele libere. Nu sunt dușmanul — proastă e doza, nu pâinea.</div>
+    </div>
+  </div>
+  <div class="macro-row">
+    <span class="macro-ic">⚙️</span>
+    <div class="macro-tx">
+      <div class="macro-tt">Grăsimea <span class="q">hormonii</span></div>
+      <div class="macro-d">La 20 de ani, grăsimea bună ține testosteronul sus (forță, recuperare, libido). De-aia pui mereu degetul mare de grăsime — chiar și când slăbești. Zero grăsime = dezastru hormonal.</div>
+    </div>
+  </div>
+  <div class="macro-row">
+    <span class="macro-ic">🧹</span>
+    <div class="macro-tx">
+      <div class="macro-tt">Legumele <span class="q">absorbția</span></div>
+      <div class="macro-d">Fibrele încetinesc digestia → energie stabilă, fără somnolența de după masă. Plus apă și micronutrienți. Te țin sătul cu aproape zero calorii.</div>
+    </div>
+  </div>
+
+  <span class="sec-tag">Detaliul care lipsește la toți</span>
+  <div class="sec-h">Micronutrienții <span class="ac">= absorbția</span></div>
+  <p class="p">Poți mânca perfect macro și să absorbi prost. Vitaminele și mineralele sunt <strong>cheia</strong> care deschide macronutrienții. Trei reguli practice, fără chimie:</p>
+
+  <div class="acc" onclick="this.classList.toggle('open')">
+    <div class="acc-h"><span class="acc-t">🌈 Colorează farfuria</span><span class="acc-ic">▼</span></div>
+    <div class="acc-c"><div class="acc-b">
+      <p class="p" style="margin:0;">Fiecare culoare = alt set de vitamine. O farfurie maro (carne + paste, atât) e săracă. Adaugă <strong>roșu</strong> (roșii, ardei), <strong>verde</strong> (salată, broccoli), <strong>portocaliu</strong> (morcov, dovleac). Regula: <span class="hl">minim 2 culori de legume</span> pe farfurie.</p>
+    </div></div>
+  </div>
+  <div class="acc" onclick="this.classList.toggle('open')">
+    <div class="acc-h"><span class="acc-t">🍋 Vitamina C + fierul din carne</span><span class="acc-ic">▼</span></div>
+    <div class="acc-c"><div class="acc-b">
+      <p class="p" style="margin:0;">Fierul din carne roșie se absoarbe mult mai bine cu vitamina C lângă. Practic: stoarce <strong>lămâie</strong> peste friptură, pune <strong>ardei/roșii crude</strong> lângă. Gratis, dar contează pentru energie și să nu fii moale.</p>
+    </div></div>
+  </div>
+  <div class="acc" onclick="this.classList.toggle('open')">
+    <div class="acc-h"><span class="acc-t">🥑 Grăsimea deschide vitaminele</span><span class="acc-ic">▼</span></div>
+    <div class="acc-c"><div class="acc-b">
+      <p class="p" style="margin:0;">Vitaminele A, D, E, K se absorb <strong>doar cu grăsime</strong>. O salată „dietetică" fără pic de ulei = vitamine irosite. De-aia degetul mare de ulei de măsline peste salată nu e opțional — e ce face legumele să conteze.</p>
+    </div></div>
+  </div>
+
+  <span class="sec-tag">Aplicat pe tine</span>
+  <div class="sec-h">Farfuria <span class="ac">TA</span>, cea reală</div>
+  <p class="p">Tu mănânci <strong>paste cu legume și carne</strong> seara pe la 20:40, după tură. Mâncarea e bună — doar proporțiile sunt pe dos. Hai s-o reparăm fără să schimbi felul:</p>
+
+  <div class="cmp">
+    <div class="cmp-col bad">
+      <div class="cmp-lbl">Cum o faci acum</div>
+      <ul>
+        <li>Farfurie plină de paste</li>
+        <li>Puțină carne, pierdută prin ele</li>
+        <li>Legume = un pic de sos</li>
+        <li>Te umfli, dar tot ți-e foame în 1h</li>
+      </ul>
+    </div>
+    <div class="cmp-col good">
+      <div class="cmp-lbl">Farfuria BUILT</div>
+      <ul>
+        <li>1 palmă carne întâi (~45g)</li>
+        <li>1 pumn paste, nu jumate de pungă</li>
+        <li>2 pumni legume reale</li>
+        <li>1 deget ulei de măsline deasupra</li>
+      </ul>
+    </div>
+  </div>
+  <p class="p" style="font-size:12px;"><strong style="color:var(--orange);">Trucul de construcție:</strong> pune <strong>întâi proteina</strong> pe farfurie, apoi legumele, și abia la final carbohidrații în spațiul rămas. Așa proteina nu mai e „ce a rămas" — e baza.</p>
+
+  <div class="guide-box org">
+    <div class="guide-hdr">Ziua de tură vs. ziua liberă</div>
+    <div class="guide-p"><strong>Zi de tură (o masă mare seara):</strong> nu poți băga 180g proteină într-o singură farfurie. Ia un <strong>shake la pachet</strong> (din pudra Herbalife pe care vrei s-o termini) + ceva proteic ușor în tură (iaurt grecesc, ouă fierte). Seara faci farfuria mare. <br><br><strong>Zi liberă:</strong> ai timp de 3 mese — împarți proteina în 3 farfurii de ~45-50g. Mai ușor de atins ținta.</div>
+  </div>
+
+  <span class="sec-tag">Greșeli</span>
+  <div class="sec-h">Ce strică <span class="ac">farfuria</span></div>
+
+  <div class="acc" onclick="this.classList.toggle('open')">
+    <div class="acc-h"><span class="acc-t">„Mănânc sănătos" = salată goală</span><span class="acc-ic">▼</span></div>
+    <div class="acc-c"><div class="acc-b"><p class="p" style="margin:0;">Salata fără proteină nu e masă, e garnitură. Te lasă flămând în 1h → cedezi la dulce. Orice farfurie pleacă de la palma de proteină.</p></div></div>
+  </div>
+  <div class="acc" onclick="this.classList.toggle('open')">
+    <div class="acc-h"><span class="acc-t">Sări peste grăsime ca să slăbești</span><span class="acc-ic">▼</span></div>
+    <div class="acc-c"><div class="acc-b"><p class="p" style="margin:0;">Zero grăsime = hormoni la pământ, energie proastă, poftă de dulce. Slăbitul vine din proteină + porții, nu din tăiat uleiul. Ține degetul mare de grăsime.</p></div></div>
+  </div>
+  <div class="acc" onclick="this.classList.toggle('open')">
+    <div class="acc-h"><span class="acc-t">Farfurie monocromă (totul maro)</span><span class="acc-ic">▼</span></div>
+    <div class="acc-c"><div class="acc-b"><p class="p" style="margin:0;">Carne + paste, fără nimic colorat = micronutrienți zero, digestie grea, somnolență. Două culori de legume rezolvă instant.</p></div></div>
+  </div>
+
+  <div class="foot">
+    Construiește, nu socoti. <span class="r">BUILT</span> — Intelligent Fueling.
+  </div>
+
+</div>
+</body>
+</html>

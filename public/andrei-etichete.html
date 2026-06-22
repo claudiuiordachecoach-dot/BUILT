@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Cum Citești o Etichetă · Andrei</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--red-dim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+
+.step4{counter-reset:c;}
+.chk{background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:14px 14px 14px 52px;margin-bottom:10px;position:relative;counter-increment:c;}
+.chk::before{content:counter(c);position:absolute;left:13px;top:14px;width:26px;height:26px;background:var(--red);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;}
+.chk-t{font-size:13.5px;font-weight:700;color:var(--wht);margin-bottom:3px;}
+.chk-d{font-size:12px;color:#bbb;line-height:1.5;}
+.chk-d b{color:var(--orange);}
+
+.trap{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--brd);border-left:3px solid var(--red);border-radius:0 6px 6px 0;padding:12px 13px;margin-bottom:10px;}
+.trap-ic{font-size:18px;line-height:1.2;flex:0 0 auto;}
+.trap-tx{flex:1;}
+.trap-claim{font-size:12.5px;font-weight:700;color:var(--red);margin-bottom:2px;}
+.trap-claim .q{font-style:italic;}
+.trap-real{font-size:12px;color:#ccc;line-height:1.5;}
+.trap-real b{color:var(--wht);}
+
+.ex{background:var(--drk);border:1px solid var(--brd);border-radius:8px;margin-bottom:12px;overflow:hidden;}
+.ex-h{padding:12px 14px;background:rgba(255,255,255,0.02);border-bottom:1px solid var(--brd);display:flex;justify-content:space-between;align-items:center;}
+.ex-n{font-size:13px;font-weight:700;color:var(--wht);}
+.ex-v{font-size:10px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:3px 9px;border-radius:3px;}
+.ex-v.ok{background:rgba(39,174,96,0.15);color:var(--green);border:1px solid rgba(39,174,96,0.4);}
+.ex-v.no{background:var(--red-dim);color:var(--red);border:1px solid rgba(192,57,43,0.4);}
+.ex-b{padding:12px 14px;font-size:12px;color:#ccc;line-height:1.55;}
+.ex-b b{color:var(--orange);font-family:'DM Mono',monospace;}
+
+table.rule{width:100%;border-collapse:collapse;margin:6px 0 4px;font-size:12.5px;}
+table.rule th{text-align:left;font-size:9px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);padding:7px 10px;border-bottom:1px solid var(--brd);font-weight:700;}
+table.rule td{padding:9px 10px;border-bottom:1px solid var(--brd);}
+table.rule td:first-child{color:var(--wht);font-weight:600;}
+table.rule td.g{color:var(--green);font-family:'DM Mono',monospace;font-weight:600;}
+table.rule td.r{color:var(--red);font-family:'DM Mono',monospace;font-weight:600;}
+
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <span class="logo">BUILT</span>
+    <span class="hdr-name">Cum Citești o Etichetă · Andrei</span>
+  </div>
+  <div class="budget-bar">
+    <span>Fața minte. Spatele nu.</span>
+    <strong>4 LUCRURI · 10 SECUNDE</strong>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <span class="sec-tag">De ce contează</span>
+  <div class="sec-h">Fața ambalajului <span class="ac">e reclamă.</span> Spatele e adevărul.</div>
+  <p class="p">Pe față scrie ce vor ei să crezi: „fit", „protein", „natural", „0% zahăr". Pe <strong>spate</strong>, în tabelul ăla mic, scrie ce <strong>chiar</strong> mănânci. Ai cerut să știi ce citești acolo — uite sistemul.</p>
+  <p class="p">Nu trebuie să devii nutriționist. <span class="hl">Te uiți la 4 lucruri, în 10 secunde, întorci produsul pe spate și decizi.</span> Merge la orice — magazin, benzinărie, oriunde în lume.</p>
+
+  <div class="guide-box">
+    <div class="guide-hdr">Capcana #1 — porția vs. 100g</div>
+    <div class="guide-p">Tabelul are mereu 2 coloane: <strong>„per 100g"</strong> și <strong>„per porție"</strong>. Producătorii pun cifre mici alegând o „porție" ridicol de mică (15g). Tu te uiți <strong>MEREU la coloana „per 100g"</strong> — aia nu poate fi păcălită. Așa compari corect 2 produse.</div>
+  </div>
+
+  <span class="sec-tag">Sistemul</span>
+  <div class="sec-h">Cele <span class="ac">4 lucruri</span> de pe spate</div>
+
+  <div class="step4">
+    <div class="chk">
+      <div class="chk-t">Proteina (la 100g)</div>
+      <div class="chk-d">Cât mai mult. Un produs „bun la proteină" are <b>peste 10g/100g</b>. Iaurtul grecesc, brânza vaci, tonul — sus. Asta cauți primul.</div>
+    </div>
+    <div class="chk">
+      <div class="chk-t">Zahărul (din „Glucide, din care zaharuri")</div>
+      <div class="chk-d">Cât mai puțin. Sub <b>5g/100g</b> = ok. Peste <b>15-20g/100g</b> = practic desert, oricât ar scrie „fit" pe față.</div>
+    </div>
+    <div class="chk">
+      <div class="chk-t">Lista de ingrediente (ordinea)</div>
+      <div class="chk-d">Ingredientele sunt scrise <b>în ordinea cantității</b>. Dacă zahărul / siropul de glucoză e printre primele 3 → produsul e bazat pe zahăr. Listă scurtă, cuvinte pe care le înțelegi = mai bine.</div>
+    </div>
+    <div class="chk">
+      <div class="chk-t">Calorii (la 100g)</div>
+      <div class="chk-d">Reper, nu obsesie. Îți spune cât de „dens" e. 500+ kcal/100g = concentrat (nuci, ciocolată) — bun de știut cât bagi.</div>
+    </div>
+  </div>
+
+  <span class="sec-tag">Minciunile de pe față</span>
+  <div class="sec-h">Cuvintele care <span class="ac">te mint</span></div>
+
+  <div class="trap">
+    <span class="trap-ic">🎭</span>
+    <div class="trap-tx">
+      <div class="trap-claim"><span class="q">„0% zahăr adăugat"</span></div>
+      <div class="trap-real">Nu înseamnă fără zahăr. Înseamnă că n-au pus ei în plus — dar fructul/sucul din el poate avea o grămadă. <b>Verifică „din care zaharuri" pe spate.</b></div>
+    </div>
+  </div>
+  <div class="trap">
+    <span class="trap-ic">🥤</span>
+    <div class="trap-tx">
+      <div class="trap-claim"><span class="q">„Protein / High Protein"</span></div>
+      <div class="trap-real">Un baton „protein" cu 10g proteină și 25g zahăr e o ciocolată deghizată. <b>Compară proteina cu zahărul.</b> Dacă zahărul e mai mare ca proteina → e dulce, nu proteic.</div>
+    </div>
+  </div>
+  <div class="trap">
+    <span class="trap-ic">🌿</span>
+    <div class="trap-tx">
+      <div class="trap-claim"><span class="q">„Natural / Bio / Light"</span></div>
+      <div class="trap-real">Cuvinte de marketing, nu garanții. „Light" = doar mai puțin dintr-un lucru (grăsime), des compensat cu mai mult zahăr. <b>Cifrele decid, nu adjectivele.</b></div>
+    </div>
+  </div>
+  <div class="trap">
+    <span class="trap-ic">🥣</span>
+    <div class="trap-tx">
+      <div class="trap-claim"><span class="q">„Cereale / Musli fitness"</span></div>
+      <div class="trap-real">Cele mai multe au 20-30g zahăr/100g. Poza cu sportivul nu schimbă tabelul. <b>Întoarce și citește.</b></div>
+    </div>
+  </div>
+
+  <span class="sec-tag">Pe produse reale</span>
+  <div class="sec-h">Hai să <span class="ac">decidem</span> împreună</div>
+
+  <div class="ex">
+    <div class="ex-h"><span class="ex-n">Iaurt grecesc simplu</span><span class="ex-v ok">DA</span></div>
+    <div class="ex-b">~<b>9-10g proteină</b>/100g, <b>4g zahăr</b>, ingrediente: lapte, culturi. Listă scurtă, proteină &gt; zahăr. Bază solidă pentru mic dejun.</div>
+  </div>
+  <div class="ex">
+    <div class="ex-h"><span class="ex-n">Iaurt „cu fructe / 0% grăsime"</span><span class="ex-v no">ATENȚIE</span></div>
+    <div class="ex-b">Des are <b>13-16g zahăr</b>/100g. „0% grăsime" pe față, dar plin de zahăr ca să aibă gust. <b>Zahăr &gt; proteină = desert.</b></div>
+  </div>
+  <div class="ex">
+    <div class="ex-h"><span class="ex-n">Baton proteic</span><span class="ex-v no">DEPINDE</span></div>
+    <div class="ex-b">Bun doar dacă <b>proteină ≥ zahăr</b> (ex: 20g prot / 2g zahăr). Mulți sunt 10g prot / 25g zahăr = ciocolată scumpă. Întoarce-l și compară cele 2 cifre.</div>
+  </div>
+  <div class="ex">
+    <div class="ex-h"><span class="ex-n">Shake-ul tău Herbalife</span><span class="ex-v ok">TERMINĂ-L</span></div>
+    <div class="ex-b">Are proteină reală — folosește-l până se gată, cum ai zis. Citește totuși tabelul: vezi câtă <b>proteină/porție</b> dă, ca să-l pui la socoteala celor 180g pe zi. După ce-l termini, trecem pe ceva mai curat.</div>
+  </div>
+
+  <span class="sec-tag">Verdictul de buzunar</span>
+  <div class="sec-h">Regula <span class="ac">în 5 secunde</span></div>
+  <p class="p">Când n-ai timp de analiză, doar atât:</p>
+
+  <table class="rule">
+    <tr><th>Te uiți la (per 100g)</th><th>Verde</th><th>Roșu</th></tr>
+    <tr><td>Proteină</td><td class="g">&gt; 10g</td><td class="r">&lt; 5g</td></tr>
+    <tr><td>Zahăr</td><td class="g">&lt; 5g</td><td class="r">&gt; 15g</td></tr>
+    <tr><td>Proteină vs zahăr</td><td class="g">prot &gt; zahăr</td><td class="r">zahăr &gt; prot</td></tr>
+    <tr><td>Listă ingrediente</td><td class="g">scurtă, clară</td><td class="r">zahăr în top 3</td></tr>
+  </table>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Mișcarea pe care o faci de azi</div>
+    <div class="guide-p">Data viitoare la magazin, înainte să pui ceva în coș: <strong>întoarce-l, uită-te la coloana „per 100g", compară proteina cu zahărul.</strong> O secundă. În 2 săptămâni o faci automat și nu te mai poate păcăli nicio cutie.</div>
+  </div>
+
+  <div class="foot">
+    Cifrele, nu reclama. <span class="r">BUILT</span> — Intelligent Fueling.
+  </div>
+
+</div>
+</body>
+</html>

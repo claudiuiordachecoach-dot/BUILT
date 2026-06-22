@@ -29,7 +29,20 @@ export type PersonalCookbook = {
   emoji: string;
 };
 
-export default function BonusuriClient({ personalCookbook }: { personalCookbook: PersonalCookbook | null }) {
+export type PersonalBonus = {
+  file: string;
+  title: string;
+  subtitle: string;
+  emoji: string;
+};
+
+export default function BonusuriClient({
+  personalCookbook,
+  personalBonuses = [],
+}: {
+  personalCookbook: PersonalCookbook | null;
+  personalBonuses?: PersonalBonus[];
+}) {
   const [activeCategory, setActiveCategory] = useState<BonusCategory>("alimentatie");
   const protocols = getBonusesByCategory(activeCategory);
 
@@ -90,6 +103,37 @@ export default function BonusuriClient({ personalCookbook }: { personalCookbook:
           </a>
         )}
       </div>
+
+      {/* Ghiduri personalizate — doar pentru clientul logat */}
+      {personalBonuses.length > 0 && (
+        <div className="mb-8">
+          <span className="text-[10px] font-bold text-orange-500 uppercase tracking-widest mb-3 block">
+            Ghidurile tale — construite pe tine
+          </span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {personalBonuses.map((bonus) => (
+              <a
+                key={bonus.file}
+                href={bonus.file}
+                className="flex items-center gap-4 bg-[#111111] border border-orange-500/30 hover:border-orange-500/60 rounded-xl p-4 transition-all group relative overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <span className="text-3xl relative z-10">{bonus.emoji}</span>
+                <div className="flex-1 min-w-0 relative z-10">
+                  <span className="text-[10px] font-bold text-orange-500 uppercase tracking-widest block mb-0.5">
+                    Personalizat
+                  </span>
+                  <h3 className="text-sm font-bold text-white group-hover:text-orange-400 transition-colors">
+                    {bonus.title}
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-0.5 truncate">{bonus.subtitle}</p>
+                </div>
+                <span className="text-zinc-600 group-hover:text-orange-400 transition-colors text-sm shrink-0 relative z-10">→</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Tab navigation */}
       <div className="flex overflow-x-auto gap-1 pb-1 mb-6 scrollbar-none border-b border-white/5">
