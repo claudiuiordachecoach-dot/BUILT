@@ -31,6 +31,7 @@ const FOUNDATION_GUIDES: { file: string; title: string; subtitle: string; emoji:
   { file: "/built-bonus-hidratare.html", title: "Hidratare & Electroliți", subtitle: "Energie, performanță, zero cârcei", emoji: "💧" },
   { file: "/built-bonus-mobilitate.html", title: "Mobilitate & Articulații", subtitle: "10 min, corp care nu se strică", emoji: "🤸" },
   { file: "/built-bonus-progresie.html", title: "Progresie la Sală", subtitle: "Supraîncărcarea progresivă, simplu", emoji: "📈" },
+  { file: "/built-bonus-zone2.html", title: "Cardio Zone 2", subtitle: "Motorul rezistenței, fără epuizare", emoji: "🚶" },
 ];
 
 export type PersonalCookbook = {

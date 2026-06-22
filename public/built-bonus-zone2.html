@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Cardio Zone 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:rgba(192,57,43,0.12);--wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;--orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-box.blu{border-left-color:var(--blue);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-box.blu .guide-hdr{color:var(--blue);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px;}
+.stat-card{background:var(--card);border:1px solid var(--brd);padding:12px 8px;text-align:center;border-radius:4px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--blue);line-height:1;}
+.stat-unit{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.stat-lbl{font-size:10px;color:#aaa;margin-top:4px;}
+.metric{display:flex;gap:11px;align-items:flex-start;background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:13px;margin-bottom:10px;border-left:3px solid var(--blue);}
+.m-ic{font-size:22px;line-height:1;flex:0 0 auto;}
+.m-tt{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.m-d{font-size:12px;color:#bbb;line-height:1.5;}
+.test{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:6px 0;}
+.test-col{border:1px solid var(--brd);border-radius:6px;padding:13px;}
+.test-col.ok{background:rgba(41,128,185,0.07);border-color:rgba(41,128,185,0.35);}
+.test-col.no{background:rgba(192,57,43,0.06);border-color:rgba(192,57,43,0.3);}
+.test-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px;}
+.test-col.ok .test-lbl{color:var(--blue);}
+.test-col.no .test-lbl{color:var(--red);}
+.test-col ul{list-style:none;font-size:12px;color:#ccc;line-height:1.5;}
+.test-col li{padding:3px 0 3px 16px;position:relative;}
+.test-col.ok li::before{content:"✓";position:absolute;left:0;color:var(--blue);font-size:10px;top:4px;}
+.test-col.no li::before{content:"✕";position:absolute;left:0;color:var(--red);font-size:10px;top:4px;}
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top"><span class="logo">BUILT</span><span class="hdr-name">Cardio Zone 2</span></div>
+  <div class="budget-bar"><span>Motorul rezistenței</span><strong>MERGI UȘOR · CONSTRUIEȘTI MOTORUL</strong></div>
+</div>
+<div class="wrap">
+
+  <span class="sec-tag">Principiul</span>
+  <div class="sec-h">Cardio bun nu te <span class="ac">epuizează.</span></div>
+  <p class="p">Toți cred că pentru cardio trebuie să te omori — alergi până nu mai poți, transpiri, gâfâi. Greșit. Cel mai valoros cardio se face la o intensitate <strong>la care poți ține o conversație.</strong> Ușor. Plictisitor. Eficient.</p>
+  <p class="p">Se numește <span class="hl">Zone 2</span> — efort scăzut, susținut. Aici corpul învață să folosească grăsimea drept combustibil și își construiește motorul cardiovascular. E baza pe care stă toată rezistența ta.</p>
+
+  <div class="guide-box blu">
+    <div class="guide-hdr">De ce nu „cardio intens" tot timpul</div>
+    <div class="guide-p">Cardio-ul intens (alergat, HIIT) e obositor și se bate cap în cap cu recuperarea de la sală — prea mult îți fură progresul la forță. Zone 2 e <strong>ușor de recuperat</strong>, îl poți face des, și construiește baza fără să-ți coste antrenamentele de greutăți. Construiește larg întâi, apoi ascuți.</div>
+  </div>
+
+  <span class="sec-tag">Cum recunoști Zone 2</span>
+  <div class="sec-h">Testul <span class="ac">conversației</span></div>
+  <p class="p">N-ai nevoie de ceas scump. Folosești respirația:</p>
+  <div class="test">
+    <div class="test-col ok">
+      <div class="test-lbl">Zone 2 corect</div>
+      <ul><li>Poți vorbi în propoziții întregi</li><li>Respiri pe nas, controlat</li><li>Simți efort, dar îl poți ține 45 min</li><li>Transpiri ușor, nu te chinui</li></ul>
+    </div>
+    <div class="test-col no">
+      <div class="test-lbl">Prea intens (nu e Zone 2)</div>
+      <ul><li>Gâfâi, vorbești în cuvinte rupte</li><li>Respiri pe gură, greu</li><li>Vrei să te oprești în 10 min</li><li>Te epuizează pentru sală</li></ul>
+    </div>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-val">~180</div><div class="stat-unit">minus vârsta</div><div class="stat-lbl">puls țintă aprox</div></div>
+    <div class="stat-card"><div class="stat-val">30-45</div><div class="stat-unit">minute</div><div class="stat-lbl">per sesiune</div></div>
+    <div class="stat-card"><div class="stat-val">2-3</div><div class="stat-unit">/ săptămână</div><div class="stat-lbl">frecvență</div></div>
+  </div>
+  <p class="p" style="font-size:12px;color:var(--muted);">Ai ceas/banda cu puls? Ținta e aprox <b style="color:var(--blue);font-family:'DM Mono',monospace;">(180 − vârsta)</b> bătăi/min. N-ai? Testul conversației e suficient.</p>
+
+  <span class="sec-tag">Cum o faci</span>
+  <div class="sec-h">Orice <span class="ac">merge</span></div>
+  <p class="p">Nu contează modalitatea — contează intensitatea. Alege ce ți-e la îndemână:</p>
+  <div class="metric"><span class="m-ic">🚶</span><div><div class="m-tt">Mers alert / pe pantă</div><div class="m-d">Cel mai accesibil. Banda la înclinație sau afară în pas vioi. Cei 10.000 de pași zilnici contează deja aici.</div></div></div>
+  <div class="metric"><span class="m-ic">🚲</span><div><div class="m-tt">Bicicletă / eliptică</div><div class="m-d">Blând cu articulațiile. Ușor de ținut pulsul constant 30-45 min. Poți și citi / asculta ceva.</div></div></div>
+  <div class="metric"><span class="m-ic">🏊</span><div><div class="m-tt">Înot / vâslit</div><div class="m-d">Tot corpul, zero impact. Dacă ai acces — variantă excelentă.</div></div></div>
+
+  <div class="guide-box org">
+    <div class="guide-hdr">Integrare cu programul tău</div>
+    <div class="guide-p">Pune Zone 2 în <strong>zilele fără sală</strong>, sau după antrenamentul de forță (nu înainte — îți fură energia de la greutăți). Lucrezi mult / ai timp puțin? <strong>O plimbare alertă de 30 min după cină</strong> bifează și cardio, și digestie, și decompresie de stres. Trei într-una.</div>
+  </div>
+
+  <span class="sec-tag">Ce câștigi</span>
+  <div class="sec-h">De ce <span class="ac">merită</span></div>
+  <div class="metric" style="border-left-color:var(--green);"><span class="m-ic">🔥</span><div><div class="m-tt">Arzi grăsime ca combustibil</div><div class="m-d">Corpul învață să folosească grăsimea pentru energie — exact ce vrei.</div></div></div>
+  <div class="metric" style="border-left-color:var(--green);"><span class="m-ic">❤️</span><div><div class="m-tt">Inimă și plămâni mai puternici</div><div class="m-d">Urci scările fără să gâfâi, ai energie toată ziua, te recuperezi mai repede între serii.</div></div></div>
+  <div class="metric" style="border-left-color:var(--green);"><span class="m-ic">🧘</span><div><div class="m-tt">Scade stresul</div><div class="m-d">Mișcarea ușoară lasă cortizolul jos, spre deosebire de cardio-ul intens care-l urcă. Liniștește mintea.</div></div></div>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Dacă faci un singur lucru</div>
+    <div class="guide-p"><strong>O plimbare alertă de 30 de minute, de 2-3 ori pe săptămână</strong>, la un ritm la care poți vorbi dar simți efortul. Atât. E cel mai subestimat antrenament din lume și baza rezistenței tale.</div>
+  </div>
+
+  <div class="foot">Construiește motorul, nu doar mușchiul. <span class="r">BUILT</span> — Unbreakable Capacity.</div>
+</div>
+</body>
+</html>
