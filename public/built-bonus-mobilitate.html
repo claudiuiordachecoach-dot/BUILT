@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Mobilitate & Articulații</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:rgba(192,57,43,0.12);--wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;--orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-box.pur{border-left-color:var(--purple);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-box.pur .guide-hdr{color:var(--purple);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+.ex{background:var(--drk);border:1px solid var(--brd);border-radius:8px;margin-bottom:11px;overflow:hidden;border-left:3px solid var(--purple);}
+.ex-h{padding:12px 15px;display:flex;justify-content:space-between;align-items:center;background:rgba(255,255,255,0.02);}
+.ex-n{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--wht);}
+.ex-dose{font-family:'DM Mono',monospace;font-size:11px;color:var(--purple);font-weight:600;white-space:nowrap;}
+.ex-b{padding:0 15px 13px;font-size:12px;color:#bbb;line-height:1.5;}
+.ex-b b{color:var(--orange);}
+.pill{display:inline-block;font-size:9px;letter-spacing:1px;text-transform:uppercase;font-weight:700;padding:2px 8px;border-radius:3px;margin-bottom:8px;}
+.pill.warm{background:rgba(230,126,34,0.12);color:var(--orange);border:1px solid rgba(230,126,34,0.3);}
+.pill.cool{background:rgba(41,128,185,0.12);color:var(--blue);border:1px solid rgba(41,128,185,0.3);}
+.pill.desk{background:rgba(142,68,173,0.12);color:var(--purple);border:1px solid rgba(142,68,173,0.3);}
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top"><span class="logo">BUILT</span><span class="hdr-name">Mobilitate & Articulații</span></div>
+  <div class="budget-bar"><span>Asigurarea corpului</span><strong>10 MIN · CORP CARE NU SE STRICĂ</strong></div>
+</div>
+<div class="wrap">
+
+  <span class="sec-tag">De ce contează</span>
+  <div class="sec-h">Forța fără mobilitate <span class="ac">se accidentează.</span></div>
+  <p class="p">Stai 8-10 ore pe scaun → șoldurile se închid, umerii se rotunjesc, spatele înțepenește. Apoi intri la sală peste un corp deja blocat și te miri că te doare genunchiul sau umărul.</p>
+  <p class="p">Mobilitatea nu e stretching de yoga. E <span class="hl">asigurarea care-ți ține articulațiile sănătoase</span> ca să poți ridica greutăți 10 ani de acum încolo, nu 10 luni. 10 minute pe zi — cea mai bună investiție anti-accidentare.</p>
+
+  <div class="guide-box pur">
+    <div class="guide-hdr">Dinamic vs. static — când care</div>
+    <div class="guide-p"><strong>Înainte de antrenament: mișcări dinamice</strong> (mobilizezi, încălzești — niciodată întinderi lungi pe rece, slăbesc forța). <strong>După antrenament / seara: întinderi statice</strong> (ții poziția, relaxezi, alungești mușchiul). Ordinea contează.</p></div>
+  </div>
+
+  <span class="sec-tag">Înainte de sală</span>
+  <div class="sec-h">Încălzirea <span class="ac">dinamică</span> · 5 min</div>
+  <span class="pill warm">Dinamic · mișcare continuă</span>
+
+  <div class="ex"><div class="ex-h"><span class="ex-n">Cercuri din brațe</span><span class="ex-dose">10+10 / sens</span></div><div class="ex-b">Brațele întinse, cercuri mari înainte și înapoi. Deschide umerii înainte de orice împins/tras.</div></div>
+  <div class="ex"><div class="ex-h"><span class="ex-n">Genuflexiuni cu greutatea corpului</span><span class="ex-dose">15 reps</span></div><div class="ex-b">Coboară controlat, deschide șoldurile. Pregătește picioarele și încheieturile pentru greutate.</div></div>
+  <div class="ex"><div class="ex-h"><span class="ex-n">Fandări cu rotație</span><span class="ex-dose">8 / picior</span></div><div class="ex-b">Pas în față, cobori, rotești trunchiul spre piciorul din față. Deschide șoldul și coloana toracică.</div></div>
+  <div class="ex"><div class="ex-h"><span class="ex-n">Balansuri de picior</span><span class="ex-dose">10 / picior</span></div><div class="ex-b">Ținându-te de ceva, balansează piciorul față-spate apoi lateral. Lubrifiază șoldul.</div></div>
+
+  <span class="sec-tag">După sală / seara</span>
+  <div class="sec-h">Întinderile <span class="ac">statice</span> · 5 min</div>
+  <span class="pill cool">Static · ții 30 sec fiecare</span>
+
+  <div class="ex" style="border-left-color:var(--blue);"><div class="ex-h"><span class="ex-n">Întindere flexori șold</span><span class="ex-dose">30s / parte</span></div><div class="ex-b">În genunchi, un picior în față (poziție de cerere în căsătorie), împingi șoldul înainte. <b>Antidotul pentru statul pe scaun.</b></div></div>
+  <div class="ex" style="border-left-color:var(--blue);"><div class="ex-h"><span class="ex-n">Întindere piept la colț/ușă</span><span class="ex-dose">30s</span></div><div class="ex-b">Antebrațul pe tocul ușii, te apleci înainte. Deschide pieptul închis de la birou și de la împins.</div></div>
+  <div class="ex" style="border-left-color:var(--blue);"><div class="ex-h"><span class="ex-n">Întindere ischiogambieri</span><span class="ex-dose">30s / picior</span></div><div class="ex-b">Picior întins pe ceva jos, te apleci spre el cu spatele drept. Spatele picioarelor, scurtat de la sezut.</div></div>
+  <div class="ex" style="border-left-color:var(--blue);"><div class="ex-h"><span class="ex-n">Rotație coloană toracică</span><span class="ex-dose">8 / parte</span></div><div class="ex-b">Pe podea pe o parte, genunchii îndoiți, rotești brațul de sus deschizând pieptul. Pentru spatele înțepenit.</div></div>
+
+  <span class="sec-tag">Pentru cei la birou</span>
+  <div class="sec-h">Resetul de <span class="ac">2 minute</span></div>
+  <span class="pill desk">Oricând în timpul zilei</span>
+  <p class="p">La fiecare 1-2 ore de stat jos, ridică-te și fă astea — previn durerile pe termen lung:</p>
+  <div class="ex" style="border-left-color:var(--orange);"><div class="ex-h"><span class="ex-n">Retragerea bărbiei + umeri jos</span><span class="ex-dose">10 reps</span></div><div class="ex-b">Trage bărbia spre spate (dublă bărbie) și umerii în jos și înapoi. Anulează poziția „cap înainte" de la ecran.</div></div>
+  <div class="ex" style="border-left-color:var(--orange);"><div class="ex-h"><span class="ex-n">Extensie spate în picioare</span><span class="ex-dose">8 reps</span></div><div class="ex-b">Mâinile pe șale, te arcuiești ușor pe spate. Contracarează cocoșarea de pe scaun.</div></div>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Dacă faci un singur lucru</div>
+    <div class="guide-p"><strong>Întinderea flexorilor de șold, 30 sec pe parte, în fiecare seară.</strong> E mușchiul cel mai afectat de statul pe scaun și cauza ascunsă a multor dureri de spate. Două minute care-ți schimbă postura în câteva săptămâni.</div>
+  </div>
+
+  <div class="foot">Articulații pentru 10 ani, nu 10 luni. <span class="r">BUILT</span> — Base Strength.</div>
+</div>
+</body>
+</html>

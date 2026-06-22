@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Progresie la Sală</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:rgba(192,57,43,0.12);--wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;--orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+.step4{counter-reset:c;}
+.chk{background:var(--drk);border:1px solid var(--brd);border-radius:6px;padding:14px 14px 14px 52px;margin-bottom:10px;position:relative;counter-increment:c;}
+.chk::before{content:counter(c);position:absolute;left:13px;top:14px;width:26px;height:26px;background:var(--red);color:#fff;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:16px;}
+.chk-t{font-size:13.5px;font-weight:700;color:var(--wht);margin-bottom:3px;}
+.chk-d{font-size:12px;color:#bbb;line-height:1.5;}
+.chk-d b{color:var(--orange);}
+.demo{background:var(--card);border:1px solid var(--brd);border-radius:8px;padding:14px;margin-bottom:14px;}
+.demo-h{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:700;margin-bottom:10px;}
+.wk{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--brd);font-size:12px;}
+.wk:last-child{border-bottom:none;}
+.wk-d{flex:0 0 60px;font-family:'DM Mono',monospace;color:var(--muted);font-size:10px;text-transform:uppercase;letter-spacing:1px;}
+.wk-v{flex:1;font-family:'DM Mono',monospace;color:var(--wht);font-weight:600;}
+.wk-n{font-size:11px;color:var(--green);}
+.wk.up .wk-v{color:var(--green);}
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top"><span class="logo">BUILT</span><span class="hdr-name">Progresie la Sală</span></div>
+  <div class="budget-bar"><span>Motorul rezultatelor</span><strong>FĂRĂ PROGRESIE = FĂRĂ SCHIMBARE</strong></div>
+</div>
+<div class="wrap">
+
+  <span class="sec-tag">Principiul</span>
+  <div class="sec-h">Mușchiul crește <span class="ac">doar dacă-l forțezi.</span></div>
+  <p class="p">Dacă ridici aceeași greutate, același număr de repetări, lună după lună — corpul n-are niciun motiv să se schimbe. S-a adaptat deja. <strong>Stagnezi.</strong></p>
+  <p class="p">Singura lege care contează la sală se numește <span class="hl">supraîncărcare progresivă:</span> de fiecare dată îi ceri corpului un pic mai mult decât data trecută. Mai multe repetări, sau mai multă greutate. Asta e tot. Restul sunt detalii.</p>
+
+  <div class="guide-box">
+    <div class="guide-hdr">De ce nu vezi rezultate deși mergi la sală</div>
+    <div class="guide-p">Cel mai des motiv: faci aceleași greutăți de luni de zile. Te antrenezi, transpiri, dar nu progresezi — deci corpul nu se schimbă. <strong>Efortul fără progresie e doar oboseală.</strong> Trebuie să urci ștacheta, controlat.</div>
+  </div>
+
+  <span class="sec-tag">Metoda</span>
+  <div class="sec-h">Dubla progresie — <span class="ac">cum urci corect</span></div>
+  <p class="p">Nu adaugi greutate la întâmplare. Folosești o regulă simplă: <strong>întâi crești repetările, apoi greutatea.</strong> Exemplu pe un interval de 8-12 repetări:</p>
+
+  <div class="step4">
+    <div class="chk"><div class="chk-t">Alege un interval de repetări</div><div class="chk-d">Ex: <b>8-12 reps</b>. Începi cu o greutate la care faci 8 cu formă bună.</div></div>
+    <div class="chk"><div class="chk-t">Crește repetările săptămână de săptămână</div><div class="chk-d">Aceeași greutate, dar urci de la 8 → 9 → 10 → 11 → 12 reps în seriile următoare.</div></div>
+    <div class="chk"><div class="chk-t">Ajuns la capătul de sus (12), adaugi greutate</div><div class="chk-d">Pui <b>+2.5kg</b> și scazi înapoi la 8 reps. Apoi reiei urcarea repetărilor.</div></div>
+    <div class="chk"><div class="chk-t">Repeți la nesfârșit</div><div class="chk-d">Asta e bucla care te face mai puternic mereu. Logaritmic — la început urci repede, apoi mai lent, dar constant.</div></div>
+  </div>
+
+  <div class="demo">
+    <div class="demo-h">Exemplu real — Împins cu haltera</div>
+    <div class="wk"><span class="wk-d">Săpt 1</span><span class="wk-v">40kg × 8, 8, 8</span><span class="wk-n">start</span></div>
+    <div class="wk"><span class="wk-d">Săpt 2</span><span class="wk-v">40kg × 10, 9, 8</span><span class="wk-n">+reps</span></div>
+    <div class="wk up"><span class="wk-d">Săpt 3</span><span class="wk-v">40kg × 12, 11, 10</span><span class="wk-n">capăt sus</span></div>
+    <div class="wk up"><span class="wk-d">Săpt 4</span><span class="wk-v">42.5kg × 8, 8, 8</span><span class="wk-n">↑ greutate</span></div>
+  </div>
+
+  <span class="sec-tag">Regulile de aur</span>
+  <div class="sec-h">Ca să nu <span class="ac">o strici</span></div>
+
+  <div class="chk" style="counter-reset:none;padding-left:14px;"><div class="chk-t" style="color:var(--orange);">⬩ Forma înainte de greutate</div><div class="chk-d">O repetare cu formă proastă nu contează și te accidentează. Mai bine 8 corecte decât 12 cu spatele rupt. Ego-ul stă în vestiar.</div></div>
+  <div class="chk" style="counter-reset:none;padding-left:14px;"><div class="chk-t" style="color:var(--orange);">⬩ Lasă 1-2 repetări în rezervă</div><div class="chk-d">Nu duci fiecare serie la epuizare totală. Oprește-te când mai aveai 1-2 reps bune în tine. Progresezi mai sustenabil, te recuperezi mai bine.</div></div>
+  <div class="chk" style="counter-reset:none;padding-left:14px;"><div class="chk-t" style="color:var(--orange);">⬩ Notează-ți greutățile</div><div class="chk-d">Nu poți progresa față de ceva ce nu ții minte. <b>Scrie ce ai ridicat</b> (telefon, caiet). Data viitoare bați cifra. Asta e jocul.</div></div>
+  <div class="chk" style="counter-reset:none;padding-left:14px;"><div class="chk-t" style="color:var(--orange);">⬩ Progresie mică &gt; salturi mari</div><div class="chk-d">+2.5kg pare puțin. Dar +2.5kg de 20 de ori într-un an = transformare. Răbdarea bate graba — exact ca la mâncare.</div></div>
+
+  <div class="guide-box org">
+    <div class="guide-hdr">Când stagnezi (platou)</div>
+    <div class="guide-p">Nu mai urci de 2-3 săptămâni la un exercițiu? Normal, se întâmplă. Verifică întâi: <strong>dormi destul? mănânci proteina? te recuperezi?</strong> De obicei platoul de la sală e de fapt o problemă de somn sau mâncare, nu de antrenament. Repară baza și progresul revine.</div>
+  </div>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Dacă faci un singur lucru</div>
+    <div class="guide-p"><strong>Notează-ți greutățile la fiecare antrenament și încearcă să bați o cifră data viitoare.</strong> O repetare în plus, sau 2.5kg. Atât. Dacă faci doar asta consecvent, progresezi garantat — restul e zgomot.</div>
+  </div>
+
+  <div class="foot">Un pic mai mult decât data trecută. <span class="r">BUILT</span> — Base Strength.</div>
+</div>
+</body>
+</html>

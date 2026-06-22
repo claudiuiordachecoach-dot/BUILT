@@ -28,6 +28,9 @@ const FOUNDATION_GUIDES: { file: string; title: string; subtitle: string; emoji:
   { file: "/built-bonus-suplimente.html", title: "Ghid Suplimente", subtitle: "Ce merită, ce e marketing", emoji: "💊" },
   { file: "/built-bonus-somn.html", title: "Igiena Somnului", subtitle: "Pilonul invizibil al recuperării", emoji: "😴" },
   { file: "/built-bonus-masurare.html", title: "Cum Te Măsori Corect", subtitle: "5 semnale reale, nu doar cântarul", emoji: "📏" },
+  { file: "/built-bonus-hidratare.html", title: "Hidratare & Electroliți", subtitle: "Energie, performanță, zero cârcei", emoji: "💧" },
+  { file: "/built-bonus-mobilitate.html", title: "Mobilitate & Articulații", subtitle: "10 min, corp care nu se strică", emoji: "🤸" },
+  { file: "/built-bonus-progresie.html", title: "Progresie la Sală", subtitle: "Supraîncărcarea progresivă, simplu", emoji: "📈" },
 ];
 
 export type PersonalCookbook = {

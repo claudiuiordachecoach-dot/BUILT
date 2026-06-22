@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Hidratare & Electroliți</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;--red:#C0392B;--red-dim:rgba(192,57,43,0.12);--wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111111;--orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:90px;max-width:680px;margin:0 auto;}
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);letter-spacing:1px;}
+.wrap{padding:18px;}
+.sec-tag{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);font-weight:700;margin:28px 0 8px;display:block;}
+.sec-tag:first-child{margin-top:4px;}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1px;color:var(--wht);line-height:1.05;margin-bottom:12px;}
+.sec-h .ac{color:var(--red);}
+.p{font-size:13px;color:#cfcfcf;line-height:1.6;margin-bottom:12px;}
+.p strong{color:var(--wht);}
+.p .hl{color:var(--orange);font-weight:600;}
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--red);padding:16px;margin-bottom:20px;border-radius:0 6px 6px 0;}
+.guide-box.org{border-left-color:var(--orange);}
+.guide-box.grn{border-left-color:var(--green);}
+.guide-box.blu{border-left-color:var(--blue);}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--red);margin-bottom:8px;}
+.guide-box.org .guide-hdr{color:var(--orange);}
+.guide-box.grn .guide-hdr{color:var(--green);}
+.guide-box.blu .guide-hdr{color:var(--blue);}
+.guide-p{font-size:12.5px;color:#ccc;line-height:1.6;}
+.guide-p strong{color:var(--wht);}
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px;}
+.stat-card{background:var(--card);border:1px solid var(--brd);padding:12px 8px;text-align:center;border-radius:4px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--blue);line-height:1;}
+.stat-unit{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
+.stat-lbl{font-size:10px;color:#aaa;margin-top:4px;}
+.metric{display:flex;gap:11px;align-items:flex-start;background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:13px;margin-bottom:10px;border-left:3px solid var(--blue);}
+.m-ic{font-size:22px;line-height:1;flex:0 0 auto;}
+.m-tt{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.m-tt .q{font-family:'DM Mono',monospace;font-size:11px;color:var(--orange);font-weight:600;margin-left:6px;}
+.m-d{font-size:12px;color:#bbb;line-height:1.5;}
+.urine{display:flex;gap:6px;margin:6px 0 4px;}
+.u-cell{flex:1;text-align:center;border-radius:4px;padding:10px 4px;border:1px solid var(--brd);}
+.u-dot{width:22px;height:22px;border-radius:50%;margin:0 auto 6px;}
+.u-lbl{font-size:9px;color:#ccc;line-height:1.2;}
+.foot{text-align:center;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);padding:30px 18px 0;}
+.foot .r{color:var(--red);}
+</style>
+</head>
+<body>
+<div class="hdr">
+  <div class="hdr-top"><span class="logo">BUILT</span><span class="hdr-name">Hidratare & Electroliți</span></div>
+  <div class="budget-bar"><span>Combustibilul ignorat</span><strong>APĂ + SARE = ENERGIE & ZERO CÂRCEI</strong></div>
+</div>
+<div class="wrap">
+
+  <span class="sec-tag">De ce contează</span>
+  <div class="sec-h">Deshidratat ușor = <span class="ac">slab la tot.</span></div>
+  <p class="p">Nu trebuie să fii însetat ca să fii deshidratat. O scădere de doar <strong>2% din apa corpului</strong> îți taie din forță, focus și energie — și nici nu-ți dai seama. Crezi că ești obosit. De fapt ești uscat.</p>
+  <p class="p">Și mai e o capcană: <span class="hl">creierul confundă setea cu foamea.</span> De multe ori când crezi că ți-e foame între mese, de fapt ți-e sete. Un pahar de apă întâi — și pofta dispare.</p>
+
+  <div class="stat-grid">
+    <div class="stat-card"><div class="stat-val">~35</div><div class="stat-unit">ml / kg corp</div><div class="stat-lbl">ținta zilnică</div></div>
+    <div class="stat-card"><div class="stat-val">2.5-3.5</div><div class="stat-unit">litri / zi</div><div class="stat-lbl">reper simplu</div></div>
+    <div class="stat-card"><div class="stat-val">+500</div><div class="stat-unit">ml / oră sală</div><div class="stat-lbl">peste bază</div></div>
+  </div>
+  <p class="p" style="font-size:12px;color:var(--muted);">Ex: 90 kg × 35 ml = ~3.1 litri pe zi. Mai mult dacă transpiri, e cald, sau lucrezi fizic.</p>
+
+  <span class="sec-tag">Verificarea de 1 secundă</span>
+  <div class="sec-h">Culoarea <span class="ac">spune tot</span></div>
+  <p class="p">Nu numeri litri — te uiți la urină. Galben deschis = ești bine. Închis = bea acum.</p>
+  <div class="urine">
+    <div class="u-cell"><div class="u-dot" style="background:#F4E04D;"></div><div class="u-lbl">Deschis<br>✓ OK</div></div>
+    <div class="u-cell"><div class="u-dot" style="background:#E6C229;"></div><div class="u-lbl">Galben<br>✓ bine</div></div>
+    <div class="u-cell"><div class="u-dot" style="background:#C99A1E;"></div><div class="u-lbl">Intens<br>⚠ bea</div></div>
+    <div class="u-cell"><div class="u-dot" style="background:#9A6B12;"></div><div class="u-lbl">Închis<br>✕ uscat</div></div>
+  </div>
+
+  <span class="sec-tag">Partea ignorată</span>
+  <div class="sec-h">Apa singură <span class="ac">nu ajunge</span></div>
+  <p class="p">Dacă transpiri mult sau lucrezi în ture lungi, pierzi <strong>electroliți</strong> (sare, potasiu, magneziu), nu doar apă. Bei doar apă simplă → diluezi și mai tare ce-a rămas. De-aia apar oboseala, durerile de cap și <span class="hl">cârceii.</span></p>
+
+  <div class="metric"><span class="m-ic">🧂</span><div><div class="m-tt">Sodiu (sare) <span class="q">cel mai pierdut</span></div><div class="m-d">Pleacă prin transpirație. Un praf de sare în apă sau pe mâncare în zilele cu efort/căldură rezolvă oboseala „fără cauză".</div></div></div>
+  <div class="metric"><span class="m-ic">🍌</span><div><div class="m-tt">Potasiu <span class="q">contracția musculară</span></div><div class="m-d">Banane, cartofi, avocado, roșii. Lucrează în pereche cu sodiul pentru mușchi care funcționează corect.</div></div></div>
+  <div class="metric"><span class="m-ic">💊</span><div><div class="m-tt">Magneziu <span class="q">relaxarea</span></div><div class="m-d">300-400mg seara. Cheia împotriva cârceilor nocturni și pentru somn. Vezi Ghidul Suplimente.</div></div></div>
+
+  <div class="guide-box blu">
+    <div class="guide-hdr">Protocolul anti-cârcei</div>
+    <div class="guide-p">Te trezesc cârceii noaptea (pe picior, des)? Ordinea de atac: <strong>1)</strong> bea mai multă apă peste zi (nu doar seara), <strong>2)</strong> adaugă sare în alimentație, <strong>3)</strong> magneziu seara (300-400mg), <strong>4)</strong> un aliment cu potasiu la cină (banană/cartof). În câteva zile dispar. Dacă persistă săptămâni — semnalează-mi.</div>
+  </div>
+
+  <span class="sec-tag">În practică</span>
+  <div class="sec-h">Cum o faci <span class="ac">fără să gândești</span></div>
+  <div class="metric" style="border-left-color:var(--green);"><span class="m-ic">🌅</span><div><div class="m-tt">Primul lucru dimineața</div><div class="m-d">Un pahar mare de apă (cu un praf de sare dacă vrei) înainte de cafea. Te trezești deshidratat după 8h de somn.</div></div></div>
+  <div class="metric" style="border-left-color:var(--green);"><span class="m-ic">🍶</span><div><div class="m-tt">O sticlă mereu la vedere</div><div class="m-d">Pe birou, în mașină, în tură. Ce vezi, bei. Ce nu vezi, uiți. Reumple-o de câteva ori pe zi.</div></div></div>
+  <div class="metric" style="border-left-color:var(--green);"><span class="m-ic">🏋️</span><div><div class="m-tt">În jurul antrenamentului</div><div class="m-d">~500ml înainte, înghițituri în timpul, ~500ml după. Aici contează cel mai mult.</div></div></div>
+
+  <div class="guide-box org">
+    <div class="guide-hdr">Cafea & alcool</div>
+    <div class="guide-p">Ambele sunt diuretice — te fac să elimini apă. Nu trebuie să le elimini, dar <strong>compensează</strong>: un pahar de apă în plus per cafea/băutură. Și nu socoti cafeaua ca hidratare.</div>
+  </div>
+
+  <div class="guide-box grn">
+    <div class="guide-hdr">Dacă faci un singur lucru</div>
+    <div class="guide-p"><strong>Un pahar de apă la trezire + o sticlă mereu la vedere.</strong> Atât rezolvă 80% din problemă. Verifici culoarea urinei o dată — galben deschis = ești pe drumul bun.</div>
+  </div>
+
+  <div class="foot">Uns, nu uscat. <span class="r">BUILT</span> — Unbreakable Capacity.</div>
+</div>
+</body>
+</html>
