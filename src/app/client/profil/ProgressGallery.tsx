@@ -68,96 +68,110 @@ export default function ProgressGallery({ clientId, initialGallery }: { clientId
   };
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {gallery.map((entry) => (
-        <div key={entry.id} className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col relative overflow-hidden group">
-          {/* Imaginea de fundal */}
-          <div 
-            className="absolute inset-0 bg-cover bg-center" 
-            style={{ backgroundImage: `url(${entry.photo_url})` }}
-          />
-          
-          {/* Delete Button (Hover) */}
-          <button 
-            onClick={() => handleDelete(entry.id)}
-            className="absolute top-2 right-2 bg-black/60 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-built-red z-10 text-xs"
-          >
-            ✕
-          </button>
+    <>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {gallery.map((entry) => (
+          <div key={entry.id} className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col relative overflow-hidden group">
+            {/* Imaginea de fundal */}
+            <div
+              className="absolute inset-0 bg-cover bg-center transition-transform duration-300 group-hover:scale-105"
+              style={{ backgroundImage: `url(${entry.photo_url})` }}
+            />
 
-          {/* Footer cu detalii (gradient pentru vizibilitate) */}
-          <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-6 pb-2 px-2 border-t border-white/5">
-            <p className="text-[10px] font-condensed text-built-gray-text uppercase tracking-widest text-center mb-0.5">
-              {entry.label}
-            </p>
-            <p className="text-sm font-bold text-white text-center">
-              {entry.weight_kg} kg
-            </p>
+            {/* Delete Button (Hover) */}
+            <button
+              onClick={() => handleDelete(entry.id)}
+              className="absolute top-2 right-2 bg-black/60 text-white w-6 h-6 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-built-red z-10 text-xs press"
+            >
+              ✕
+            </button>
+
+            {/* Footer cu detalii (gradient pentru vizibilitate) */}
+            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent pt-6 pb-2 px-2 border-t border-white/5">
+              <p className="text-[10px] font-condensed text-built-gray-text uppercase tracking-widest text-center mb-0.5 truncate">
+                {entry.label}
+              </p>
+              <p className="text-sm font-bold text-white text-center">
+                {entry.weight_kg} kg
+              </p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
 
-      {/* Buton Adaugă */}
-      {!isAdding ? (
-        <button 
+        {/* Buton Adaugă — deschide modalul */}
+        <button
           onClick={() => setIsAdding(true)}
-          className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center border-dashed hover:border-built-red/50 transition-colors cursor-pointer group"
+          className="aspect-[3/4] bg-[#111111] border border-white/10 rounded-lg flex flex-col items-center justify-center border-dashed hover:border-built-red/50 hover:bg-white/[0.02] transition-colors cursor-pointer group press"
         >
-          <p className="text-built-gray-text text-2xl font-light group-hover:text-built-red transition-colors mb-2">+</p>
+          <p className="text-built-gray-text text-2xl font-light group-hover:text-built-red transition-colors mb-2 group-hover:scale-110">+</p>
           <p className="text-[10px] font-condensed uppercase tracking-wider text-zinc-500">Adaugă Progres</p>
         </button>
-      ) : (
-        <div className="aspect-[3/4] bg-[#111111] border border-built-red/50 rounded-lg flex flex-col p-3 relative shadow-[0_0_15px_rgba(255,0,0,0.1)]">
-          <button 
-            onClick={() => setIsAdding(false)}
-            className="absolute top-2 right-2 text-zinc-500 hover:text-white"
+      </div>
+
+      {/* Modal — bottom-sheet pe mobil, centrat pe desktop */}
+      {isAdding && (
+        <div
+          className="fixed inset-0 z-[90] bg-black/80 backdrop-blur-sm flex items-end sm:items-center justify-center sm:p-4 anim-fade-in"
+          onClick={() => !isSubmitting && setIsAdding(false)}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="anim-scale-in w-full sm:max-w-sm bg-[#111111] border border-white/10 rounded-t-2xl sm:rounded-2xl p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))]"
           >
-            ✕
-          </button>
-          
-          <h3 className="text-[10px] uppercase tracking-wider font-condensed text-built-red mb-3 mt-1">Nouă Intrare</h3>
-          
-          <div className="space-y-3 flex-1 flex flex-col justify-center">
-            <div>
-              <label className="text-[9px] text-zinc-500 mb-1 block">ETICHETĂ (Ex: Ziua 1)</label>
-              <input 
-                type="text" 
-                value={formData.label}
-                onChange={e => setFormData({...formData, label: e.target.value})}
-                className="w-full bg-black/50 border border-white/10 rounded text-xs p-1.5 text-white focus:outline-none focus:border-built-red"
-              />
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="font-condensed text-xs uppercase tracking-widest text-built-red">Intrare nouă de progres</h3>
+              <button
+                onClick={() => setIsAdding(false)}
+                className="text-zinc-500 hover:text-white press"
+                aria-label="Închide"
+              >
+                ✕
+              </button>
             </div>
-            <div>
-              <label className="text-[9px] text-zinc-500 mb-1 block">KILOGRAME (Ex: 85.5)</label>
-              <input 
-                type="number" 
-                step="0.1"
-                value={formData.weight_kg}
-                onChange={e => setFormData({...formData, weight_kg: e.target.value})}
-                className="w-full bg-black/50 border border-white/10 rounded text-xs p-1.5 text-white focus:outline-none focus:border-built-red"
-              />
+
+            <div className="space-y-4">
+              <div>
+                <label className="text-[10px] font-condensed uppercase tracking-wider text-zinc-500 mb-1.5 block">Etichetă (ex: Ziua 1)</label>
+                <input
+                  type="text"
+                  value={formData.label}
+                  onChange={e => setFormData({ ...formData, label: e.target.value })}
+                  className="w-full bg-black/50 border border-white/10 rounded-lg text-sm p-2.5 text-white focus:outline-none focus:border-built-red transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-condensed uppercase tracking-wider text-zinc-500 mb-1.5 block">Kilograme (ex: 85.5)</label>
+                <input
+                  type="number"
+                  step="0.1"
+                  inputMode="decimal"
+                  value={formData.weight_kg}
+                  onChange={e => setFormData({ ...formData, weight_kg: e.target.value })}
+                  className="w-full bg-black/50 border border-white/10 rounded-lg text-sm p-2.5 text-white focus:outline-none focus:border-built-red transition-colors"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-condensed uppercase tracking-wider text-zinc-500 mb-1.5 block">Poză</label>
+                <ImageUpload
+                  folder="progress"
+                  shape="rect"
+                  value={formData.photo_url || undefined}
+                  label="Alege poza"
+                  onUploaded={(url) => setFormData({ ...formData, photo_url: url })}
+                />
+              </div>
             </div>
-            <div>
-              <label className="text-[9px] text-zinc-500 mb-1 block">POZĂ</label>
-              <ImageUpload
-                folder="progress"
-                shape="rect"
-                value={formData.photo_url || undefined}
-                label="Alege poza"
-                onUploaded={(url) => setFormData({ ...formData, photo_url: url })}
-              />
-            </div>
+
+            <button
+              onClick={handleSave}
+              disabled={isSubmitting || !formData.label || !formData.weight_kg || !formData.photo_url}
+              className="w-full bg-built-red hover:bg-red-700 text-white text-xs font-semibold uppercase tracking-wider py-3 rounded-lg mt-5 disabled:opacity-50 transition-colors press"
+            >
+              {isSubmitting ? "Se salvează..." : "Salvează progresul"}
+            </button>
           </div>
-          
-          <button 
-            onClick={handleSave}
-            disabled={isSubmitting || !formData.label || !formData.weight_kg || !formData.photo_url}
-            className="w-full bg-built-red hover:bg-red-700 text-white text-[10px] uppercase tracking-wider py-2 rounded mt-3 disabled:opacity-50 transition-colors"
-          >
-            {isSubmitting ? "Se salvează..." : "Salvează"}
-          </button>
         </div>
       )}
-    </div>
+    </>
   );
 }

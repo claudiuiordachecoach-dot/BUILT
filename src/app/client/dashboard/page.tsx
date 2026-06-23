@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getClientDashboard, getTodayLog, getStreak, getClientBadges } from "../actions";
+import { NAV_ICONS } from "@/components/nav-icons";
 import DailyChecklist from "./DailyChecklist";
 import Badges from "./Badges";
 import PillarRadar, { type PillarScores } from "./PillarRadar";
@@ -82,7 +83,7 @@ export default async function ClientDashboardPage({
         </div>
         <div className="h-2 bg-white/5 rounded-full overflow-hidden">
           <div
-            className="h-full bg-built-red rounded-full"
+            className="h-full bg-gradient-to-r from-built-red-dark to-built-red rounded-full transition-[width] duration-700 ease-out"
             style={{ width: `${Math.min((daysInProgram / 90) * 100, 100)}%` }}
           />
         </div>
@@ -107,27 +108,27 @@ export default async function ClientDashboardPage({
 
       <div className="stagger grid grid-cols-2 gap-3">
         {[
-          { href: `/client/antrenamente${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "⚡", title: "Antrenamentul de azi", sub: "Vezi planul săptămânii" },
-          { href: `/client/checkin${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "✓", title: "Check-in săptămânal", sub: "Trimite raportul săptămânii" },
-          { href: `/client/nutritie${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "◉", title: "Plan nutrițional", sub: "Macros + mese zilnice" },
-          { href: `/client/module${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "📚", title: "Academia BUILT", sub: "Module educaționale" },
-          { href: `/client/bonusuri${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "🎁", title: "Bonusuri", sub: "Materiale exclusive" },
+          { href: `/client/antrenamente${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "antrenamente", title: "Antrenamentul de azi", sub: "Vezi planul săptămânii" },
+          { href: `/client/checkin${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "checkin", title: "Check-in săptămânal", sub: "Trimite raportul săptămânii" },
+          { href: `/client/nutritie${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "nutritie", title: "Plan nutrițional", sub: "Macros + mese zilnice" },
+          { href: `/client/module${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "module", title: "Academia BUILT", sub: "Module educaționale" },
+          { href: `/client/bonusuri${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "bonusuri", title: "Bonusuri", sub: "Materiale exclusive" },
         ].map((item) => (
           <Link
             key={item.href}
             href={item.href}
-            className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all active:scale-[0.97] group"
+            className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all active:scale-[0.97] hover:-translate-y-0.5 group"
           >
-            <span className="text-lg mb-2 block">{item.icon}</span>
+            <span className="text-[22px] leading-none mb-2.5 block text-built-red transition-transform group-hover:scale-110">{NAV_ICONS[item.icon]}</span>
             <p className="text-sm font-semibold text-zinc-200 group-hover:text-white">{item.title}</p>
             <p className="text-xs text-zinc-500 mt-0.5">{item.sub}</p>
           </Link>
         ))}
         <Link
           href={`/client/mesaje${overrideId ? `?clientId=${overrideId}` : ""}`}
-          className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all active:scale-[0.97] group relative"
+          className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all active:scale-[0.97] hover:-translate-y-0.5 group relative"
         >
-          <span className="text-lg mb-2 block">◎</span>
+          <span className="text-[22px] leading-none mb-2.5 block text-built-red transition-transform group-hover:scale-110">{NAV_ICONS.mesaje}</span>
           <p className="text-sm font-semibold text-zinc-200 group-hover:text-white">Mesaje</p>
           <p className="text-xs text-zinc-500 mt-0.5">Chat cu Claudiu</p>
           {unreadCount > 0 && (

@@ -4,7 +4,7 @@ import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { submitCheckin, updateClientStatus, inviteClient, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, saveTargetWeight, type Client, type CheckIn, type ClientStatus, type ClientModule, type IntakeRecord, getClientModules, saveClientModule, deleteClientModule } from "../actions";
+import { submitCheckin, updateClientStatus, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, saveTargetWeight, type Client, type CheckIn, type ClientStatus, type ClientModule, type IntakeRecord, getClientModules, saveClientModule, deleteClientModule } from "../actions";
 import { CopyIntakeLink } from "./CopyIntakeLink";
 import { ALL_INTAKE_FIELDS } from "@/app/fisa-start/[token]/fields";
 import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages, setAdminViewClient } from "@/app/client/actions";
@@ -34,8 +34,6 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<ClientStatus>(client.status);
   const [activeTab, setActiveTab] = useState("checkin");
-  const [inviting, setInviting] = useState(false);
-  const [inviteMsg, setInviteMsg] = useState<string | null>(null);
   const [draftState, setDraftState] = useState<Record<number, { loading: boolean; text: string; sent: boolean }>>({});
   const [targetWeight, setTargetWeight] = useState<string>(client.target_weight_kg != null ? String(client.target_weight_kg) : "");
   const [targetSaved, setTargetSaved] = useState(false);
@@ -108,34 +106,14 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
           >
             <span>◈</span> View as Client
           </a>
-          {(!client.status || client.status === "active") && (
-            <button
-              onClick={async () => {
-                setInviting(true); setInviteMsg(null);
-                const r = await inviteClient(client.id);
-                setInviting(false);
-                setInviteMsg(r.ok ? `✓ Invitație trimisă` : `✖ Eroare`);
-                setTimeout(() => setInviteMsg(null), 5000);
-              }}
-              disabled={inviting}
-              className="px-3 py-1.5 font-condensed text-[10px] border border-zinc-600 text-zinc-400 hover:border-built-red hover:text-built-red transition-colors disabled:opacity-50 uppercase"
-            >
-              {inviting ? "Se trimite..." : "✉ Invită"}
-            </button>
-          )}
-          {inviteMsg && (
-            <span className={`text-[10px] font-condensed ${inviteMsg.startsWith("✓") ? "text-emerald-400" : "text-orange-400"}`}>
-              {inviteMsg}
-            </span>
-          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-8">
-        {[["Săptămâna", currentWeek], ["Check-in-uri", checkins.length], ["Start", new Date(client.start_date).toLocaleDateString("ro-RO")]].map(([l, v]) => (
-          <div key={l} className="p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
-            <p className="font-condensed text-[10px] text-built-gray-text uppercase">{l}</p>
-            <p className="font-display text-2xl text-built-red mt-1">{v}</p>
+      <div className="grid grid-cols-3 gap-3 mb-8">
+        {[["Săptămâna", currentWeek], ["Check-in-uri", checkins.length], ["Start", new Date(client.start_date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" })]].map(([l, v]) => (
+          <div key={l} className="min-w-0 p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
+            <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wider truncate">{l}</p>
+            <p className={`font-display text-built-red mt-1 leading-none whitespace-nowrap tabular-nums ${typeof v === "number" ? "text-2xl" : "text-base sm:text-lg"}`}>{v}</p>
           </div>
         ))}
       </div>
