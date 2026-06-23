@@ -58,9 +58,9 @@ export function ProspectsBoard({ initial }: { initial: Prospect[] }) {
       </div>
 
       {/* KPI */}
-      <div className="grid grid-cols-3 md:grid-cols-6 gap-3">
+      <div className="stagger grid grid-cols-3 md:grid-cols-6 gap-3">
         {STATUS.map((s) => (
-          <div key={s.key} className="bg-[#111111] border border-white/[0.08] rounded-xl p-4">
+          <div key={s.key} className="hover-lift bg-[#111111] border border-white/[0.08] rounded-xl p-4">
             <div className="flex items-center gap-2 mb-2">
               <span className={`w-2 h-2 rounded-full ${s.dot}`} />
               <p className="text-[9px] text-zinc-500 uppercase tracking-wider font-mono">{s.label}</p>
@@ -80,7 +80,7 @@ export function ProspectsBoard({ initial }: { initial: Prospect[] }) {
         />
       ) : (
         <button onClick={() => setAdding(true)}
-          className="text-sm text-zinc-300 border border-white/[0.12] rounded-lg px-4 py-2 hover:bg-white/[0.04]">
+          className="press text-sm text-zinc-300 border border-white/[0.12] rounded-lg px-4 py-2 hover:bg-white/[0.04] hover:border-white/25 transition-colors">
           + Adaugă prospect
         </button>
       )}
@@ -152,7 +152,7 @@ function ProspectCard({ p, ring, onChange, onDelete, startTransition }: {
   }
 
   return (
-    <div className={`bg-[#0E0E0E] border ${ring} rounded-xl p-4`}>
+    <div className={`hover-lift bg-[#0E0E0E] border ${ring} rounded-xl p-4`}>
       <div className="flex items-start justify-between gap-2">
         <div>
           <p className="text-zinc-100 font-medium">{p.name}</p>

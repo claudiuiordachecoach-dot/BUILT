@@ -831,7 +831,7 @@ export default function AziPage() {
 
   return (
     <div className="p-4 md:p-8">
-      <div className="grid grid-cols-1 md:grid-cols-[minmax(0,520px)_minmax(0,420px)] gap-6 items-start">
+      <div className="stagger grid grid-cols-1 md:grid-cols-[minmax(0,520px)_minmax(0,420px)] gap-6 items-start">
 
         {/* ── Coloana stângă: jurnal ── */}
         <div>

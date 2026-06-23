@@ -32,10 +32,10 @@ export default function ClientModulesPage() {
       {modules.length === 0 ? (
         <EmptyState icon="📚" title="Academia se deschide curând" subtitle="Modulele tale educaționale vor apărea aici pe măsură ce avansezi în program." />
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="stagger grid grid-cols-1 md:grid-cols-2 gap-4">
           {modules.map((m) => (
             <Link key={m.id} href={`/client/module/${m.id}`}
-              className="bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-5 transition-all group relative overflow-hidden">
+              className="hover-lift bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-5 transition-all group relative overflow-hidden">
               <div className="relative z-10">
                 <span className="text-[10px] font-bold text-built-red uppercase tracking-widest mb-2 block">Modulul {m.module_number}</span>
                 <h3 className="text-lg font-bold text-white group-hover:text-built-red transition-colors">{m.title}</h3>

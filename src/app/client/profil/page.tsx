@@ -35,7 +35,7 @@ export default async function ClientProfilePage({
         Profilul Meu
       </h1>
 
-      <div className="space-y-8">
+      <div className="stagger space-y-8">
         {/* Avatar */}
         <section>
           <div className="bg-[#111111] border border-white/10 rounded-lg p-6">

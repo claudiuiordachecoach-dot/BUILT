@@ -74,7 +74,7 @@ export default function BonusuriClient({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
         <a
           href="/BUILT_Cookbook_v2.html"
-          className="flex items-center gap-4 bg-[#111111] border border-built-red/30 hover:border-built-red/60 rounded-xl p-4 transition-all group"
+          className="hover-lift flex items-center gap-4 bg-[#111111] border border-built-red/30 hover:border-built-red/60 rounded-xl p-4 transition-all group"
         >
           <span className="text-3xl">🥩</span>
           <div className="flex-1 min-w-0">
@@ -95,7 +95,7 @@ export default function BonusuriClient({
         {personalCookbook && (
           <a
             href={personalCookbook.file}
-            className="flex items-center gap-4 bg-[#111111] border border-orange-500/30 hover:border-orange-500/60 rounded-xl p-4 transition-all group relative overflow-hidden"
+            className="hover-lift flex items-center gap-4 bg-[#111111] border border-orange-500/30 hover:border-orange-500/60 rounded-xl p-4 transition-all group relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
             <span className="text-3xl relative z-10">{personalCookbook.emoji}</span>
@@ -126,7 +126,7 @@ export default function BonusuriClient({
               <a
                 key={bonus.file}
                 href={bonus.file}
-                className="flex items-center gap-4 bg-[#111111] border border-orange-500/30 hover:border-orange-500/60 rounded-xl p-4 transition-all group relative overflow-hidden"
+                className="hover-lift flex items-center gap-4 bg-[#111111] border border-orange-500/30 hover:border-orange-500/60 rounded-xl p-4 transition-all group relative overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                 <span className="text-3xl relative z-10">{bonus.emoji}</span>
@@ -156,7 +156,7 @@ export default function BonusuriClient({
             <a
               key={guide.file}
               href={guide.file}
-              className="flex items-center gap-3 bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-4 transition-all group"
+              className="hover-lift flex items-center gap-3 bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-4 transition-all group"
             >
               <span className="text-2xl shrink-0">{guide.emoji}</span>
               <div className="flex-1 min-w-0">
@@ -177,7 +177,7 @@ export default function BonusuriClient({
           <button
             key={cat}
             onClick={() => setActiveCategory(cat)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0 border-b-2 ${
+            className={`press flex items-center gap-2 px-4 py-2.5 rounded-t-lg text-xs font-semibold whitespace-nowrap transition-all shrink-0 border-b-2 ${
               activeCategory === cat
                 ? "text-white border-built-red bg-built-red/5"
                 : "text-zinc-500 border-transparent hover:text-zinc-300 hover:bg-white/5"
@@ -198,12 +198,12 @@ export default function BonusuriClient({
       </p>
 
       {/* Protocol cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="stagger grid grid-cols-1 md:grid-cols-2 gap-4">
         {protocols.map((protocol) => (
           <Link
             key={protocol.id}
             href={`/client/bonusuri/${protocol.id}`}
-            className="bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-5 transition-all group flex flex-col h-full"
+            className="hover-lift bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-5 transition-all group flex flex-col h-full"
           >
             <div className="flex items-start justify-between mb-3">
               <span className="text-[10px] font-bold text-built-red uppercase tracking-widest">

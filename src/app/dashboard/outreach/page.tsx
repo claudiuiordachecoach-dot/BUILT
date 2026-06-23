@@ -177,11 +177,11 @@ export default function OutreachPage() {
       </div>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="stagger grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {KPI_STATS.map((k) => (
           <div
             key={k.label}
-            className="bg-[#111111] border border-white/[0.08] rounded-xl p-5"
+            className="hover-lift bg-[#111111] border border-white/[0.08] rounded-xl p-5"
           >
             <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-mono mb-2">
               {k.label}

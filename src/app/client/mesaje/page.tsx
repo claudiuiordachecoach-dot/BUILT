@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
 import { getMessages, sendClientMessage, getCoachPublic } from "../actions";
+import { NAV_ICONS } from "@/components/nav-icons";
 
 type Msg = { id: number; sender: string; content: string; created_at: string };
 
@@ -45,13 +46,13 @@ export default function MesajePage() {
       <div className="flex-1 overflow-y-auto p-5 space-y-3">
         {loaded && messages.length === 0 && (
           <div className="flex flex-col items-center justify-center text-center py-16 px-6">
-            <div className="w-12 h-12 rounded-full bg-built-red/10 border border-built-red/20 flex items-center justify-center text-xl text-built-red mb-4">◎</div>
+            <div className="w-12 h-12 rounded-full bg-built-red/10 border border-built-red/20 flex items-center justify-center text-xl text-built-red mb-4">{NAV_ICONS.mesaje}</div>
             <p className="font-condensed text-sm uppercase tracking-wider text-zinc-200">Linie directă cu Claudiu</p>
             <p className="text-xs text-zinc-500 mt-1 max-w-xs leading-relaxed">Orice întrebare, blocaj sau victorie — scrie aici. Primești răspuns direct.</p>
           </div>
         )}
         {messages.map(msg => (
-          <div key={msg.id} className={`flex ${msg.sender === "client" ? "justify-end" : "justify-start"}`}>
+          <div key={msg.id} className={`anim-fade-up flex ${msg.sender === "client" ? "justify-end" : "justify-start"}`}>
             <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm ${
               msg.sender === "client" ? "bg-built-red text-white rounded-br-sm" : "bg-[#1a1a1a] border border-white/10 text-zinc-200 rounded-bl-sm"
             }`}>
@@ -71,7 +72,7 @@ export default function MesajePage() {
             placeholder="Scrie un mesaj..."
             className="flex-1 bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-built-red/50" />
           <button onClick={handleSend} disabled={!input.trim() || sending}
-            className="bg-built-red hover:bg-built-red/90 disabled:opacity-40 text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all">
+            className="press bg-built-red hover:bg-built-red/90 disabled:opacity-40 text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all">
             →
           </button>
         </div>

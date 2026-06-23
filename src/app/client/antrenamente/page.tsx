@@ -96,7 +96,7 @@ export default function AntrenamantePage() {
           const hasWorkout = (plan.days?.[day]?.length ?? 0) > 0;
           return (
             <button key={day} onClick={() => setActiveDay(day)}
-              className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+              className={`press px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                 activeDay === day ? "bg-built-red text-white"
                   : hasWorkout ? "bg-white/10 text-zinc-200 hover:bg-white/15"
                   : "bg-white/5 text-zinc-600"
@@ -111,9 +111,9 @@ export default function AntrenamantePage() {
           <p className="text-zinc-500 text-sm">Zi de recuperare 🧘</p>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="stagger space-y-3">
           {todayExercises.map((ex, i) => (
-            <div key={i} className="bg-[#111111] border border-white/10 rounded-xl p-4 flex items-start gap-4">
+            <div key={i} className="hover-lift bg-[#111111] border border-white/10 rounded-xl p-4 flex items-start gap-4">
               <div className="w-8 h-8 rounded-lg bg-built-red/10 border border-built-red/20 flex items-center justify-center text-xs font-bold text-built-red shrink-0">
                 {i + 1}
               </div>

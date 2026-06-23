@@ -34,23 +34,23 @@ export default function NutritiePage() {
   return (
     <div className="p-8 max-w-3xl">
       <h1 className="font-display text-4xl tracking-wider text-built-white mb-6">Plan Nutrițional</h1>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+      <div className="stagger grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         {[
           { label: "Calorii", value: plan.calories, unit: "kcal", color: "text-built-red" },
           { label: "Proteine", value: plan.protein_g, unit: "g", color: "text-built-white" },
           { label: "Carbohidrați", value: plan.carbs_g, unit: "g", color: "text-built-white" },
           { label: "Grăsimi", value: plan.fat_g, unit: "g", color: "text-built-white" },
         ].map(m => (
-          <div key={m.label} className="bg-[#111111] border border-white/10 rounded-xl p-4 text-center">
+          <div key={m.label} className="hover-lift bg-[#111111] border border-white/10 rounded-xl p-4 text-center">
             <p className={`text-2xl font-bold ${m.color}`}>{m.value}</p>
             <p className="text-xs text-zinc-500 mt-0.5">{m.unit}</p>
             <p className="text-[11px] text-zinc-600 mt-1">{m.label}</p>
           </div>
         ))}
       </div>
-      <div className="space-y-3">
+      <div className="stagger space-y-3">
         {plan.meals?.map((meal, i) => (
-          <div key={i} className="bg-[#111111] border border-white/10 rounded-xl p-4">
+          <div key={i} className="hover-lift bg-[#111111] border border-white/10 rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <p className="text-sm font-semibold text-zinc-200">{meal.name}</p>
               {meal.calories && <span className="text-xs text-zinc-500">{meal.calories} kcal · {meal.protein_g}g prot</span>}
