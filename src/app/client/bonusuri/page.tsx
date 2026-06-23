@@ -5,6 +5,7 @@ import BonusuriClient, { type PersonalCookbook, type PersonalBonus } from "./Bon
 const PERSONAL_COOKBOOKS: Record<number, PersonalCookbook> = {
   1: { file: "/Cartea_Retete_Alex.html", name: "Alex", emoji: "👨‍🍳" },
   2: { file: "/Cartea_Retete_Letitia.html", name: "Letitia", emoji: "👩‍🍳" },
+  4: { file: "/Cartea_Retete_Ciprian.html", name: "Ciprian", emoji: "👨‍🍳" },
   6: { file: "/Cartea_Retete_Claudia.html", name: "Claudia", emoji: "👩‍🍳" },
 };
 
