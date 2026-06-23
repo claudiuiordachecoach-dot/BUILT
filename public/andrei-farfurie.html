@@ -61,6 +61,12 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .pcard.p4 .p-port{color:var(--blue);}
 .p-ex{font-size:11px;color:var(--muted);line-height:1.4;}
 
+.split-bar{display:flex;height:22px;border-radius:6px;overflow:hidden;margin:18px 0 8px;border:1px solid var(--brd);}
+.sb-p{background:var(--red);width:40%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;}
+.sb-v{background:var(--green);width:30%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;}
+.sb-c{background:var(--orange);width:30%;display:flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:700;color:#fff;}
+.sb-lbls{display:flex;justify-content:space-between;font-size:9.5px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:24px;font-weight:700;}
+
 .macro-row{display:flex;gap:10px;align-items:flex-start;background:var(--card);border:1px solid var(--brd);border-radius:6px;padding:13px;margin-bottom:10px;}
 .macro-ic{font-size:22px;line-height:1;flex:0 0 auto;}
 .macro-tx{flex:1;}
@@ -128,36 +134,47 @@ table.tt td.food{color:var(--wht);font-weight:600;}
 
   <span class="sec-tag">Regula</span>
   <div class="sec-h">Cele <span class="ac">4 componente</span> ale farfuriei</div>
-  <p class="p">Fără cântar. Folosești <strong>mâna ta</strong> ca unitate de măsură — merge oriunde, n-o uiți acasă. Gramajele sunt pentru mâncarea <strong>crudă</strong> (înainte de gătit).</p>
+  <p class="p">Din punct de vedere științific, o farfurie orientată spre recompunere corporală se împarte volumetric în <strong>40% proteină, 30% fibre și 30% surse de energie (carbo + grăsimi)</strong>. Fără cântar — folosești <strong>mâna ta</strong>. Gramajele sunt mereu pentru hrana <strong>crudă</strong>.</p>
+
+  <div class="split-bar">
+    <div class="sb-p">40%</div>
+    <div class="sb-v">30%</div>
+    <div class="sb-c">30%</div>
+  </div>
+  <div class="sb-lbls">
+    <span style="color:var(--red);width:40%;text-align:center;">Proteină</span>
+    <span style="color:var(--green);width:30%;text-align:center;">Legume / Fibre</span>
+    <span style="color:var(--orange);width:30%;text-align:center;">Carbo & Grăsimi</span>
+  </div>
 
   <div class="plate">
     <div class="pcard p1">
       <span class="p-icon">✋</span>
-      <span class="p-role">Componenta 1 — Baza</span>
-      <span class="p-ttl">Proteină</span>
+      <span class="p-role">Componenta 1 — 40%</span>
+      <span class="p-ttl">Proteină (MPS & TEF)</span>
       <span class="p-port">1 palmă · ~180-200g · ≈45g proteină</span>
-      <span class="p-ex">Pui, curcan, vită, pește, ouă, brânză vaci. Asta construiește mușchiul și te ține sătul.</span>
-    </div>
-    <div class="pcard p2">
-      <span class="p-icon">✊</span>
-      <span class="p-role">Componenta 2 — Combustibil</span>
-      <span class="p-ttl">Carbohidrați</span>
-      <span class="p-port">1 pumn · ~70-80g crud</span>
-      <span class="p-ex">Orez, cartofi, paste, ovăz, mămăligă. Energia pentru sală și pentru tura de 14 ore.</span>
+      <span class="p-ex">Declanșează Sinteza Proteică Musculară (MPS) și are un Efect Termic ridicat (TEF). Asigură o balanță azotată pozitivă necesară reparației.</span>
     </div>
     <div class="pcard p3">
       <span class="p-icon">🥬</span>
-      <span class="p-role">Componenta 3 — Absorbție</span>
-      <span class="p-ttl">Legume / Fibre</span>
+      <span class="p-role">Componenta 2 — 30%</span>
+      <span class="p-ttl">Legume (Microbiom)</span>
       <span class="p-port">2 pumni · cât mai colorat</span>
-      <span class="p-ex">Salată, broccoli, roșii, ardei, castravete. Vitamine, digestie, sațietate. Oferă volum farfuriei fără un surplus de calorii.</span>
+      <span class="p-ex">Reglează răspunsul glicemic (blunts insulin spike) și oferă o volumizare gastrică mecanică excelentă pentru sațietate.</span>
+    </div>
+    <div class="pcard p2">
+      <span class="p-icon">✊</span>
+      <span class="p-role">Componenta 3 — 25-30%</span>
+      <span class="p-ttl">Carbohidrați (Glicogen)</span>
+      <span class="p-port">1 pumn · ~70-80g crud</span>
+      <span class="p-ex">Reumple rezervele de glicogen hepatic și intramuscular, prevenind astfel catabolismul indus de cortizol după antrenament.</span>
     </div>
     <div class="pcard p4">
       <span class="p-icon">👍</span>
-      <span class="p-role">Componenta 4 — Hormoni</span>
-      <span class="p-ttl">Grăsime bună</span>
+      <span class="p-role">Componenta 4 — 0-5%</span>
+      <span class="p-ttl">Grăsimi (Endocrin)</span>
       <span class="p-port">1 deget mare · ~10-15g</span>
-      <span class="p-ex">Ulei de măsline, avocado, un pumn mic de nuci, gălbenuș. Cantitate mică, dar absolut necesară pentru hormoni.</span>
+      <span class="p-ex">Esențiale pentru sinteza hormonilor steroizi (ex. testosteron) și asimilarea vitaminelor liposolubile (A, D, E, K).</span>
     </div>
   </div>
 
@@ -239,29 +256,29 @@ table.tt td.food{color:var(--wht);font-weight:600;}
   <div class="macro-row">
     <span class="macro-ic">🧱</span>
     <div class="macro-tx">
-      <div class="macro-tt">Proteina <span class="q">cărămida</span></div>
-      <div class="macro-d">Repară și construiește țesutul muscular după sală. Dacă nu mănânci suficientă proteină, vei pierde masă musculară în loc de grăsime. Este singurul macronutrient pe care trebuie să îl menții <strong>constant</strong> în fiecare zi.</div>
+      <div class="macro-tt">Proteina <span class="q">Balanță Azotată</span></div>
+      <div class="macro-d">Sinteza țesutului contractil depinde exclusiv de prezența aminoacizilor esențiali. Un deficit proteic duce direct la catabolism muscular (pierzi mușchi pentru energie). Parametrul nutrițional non-negociabil.</div>
     </div>
   </div>
   <div class="macro-row">
     <span class="macro-ic">🔋</span>
     <div class="macro-tx">
-      <div class="macro-tt">Carbohidrații <span class="q">combustibilul</span></div>
-      <div class="macro-d">Energia pentru antrenament și pentru zilele lungi de muncă. Mănânci o porție mai mare în zilele cu antrenament și o reduci în zilele de odihnă. Problema nu este pâinea sau orezul în sine, ci cantitatea.</div>
+      <div class="macro-tt">Carbohidrații <span class="q">Performanță ATP</span></div>
+      <div class="macro-d">Se convertesc în glucoză și se stochează ca glicogen în mușchi. Fără glicogen, performanța la intensitate maximă scade dramatic. Ajustezi cantitatea direct proporțional cu cheltuiala calorică zilnică.</div>
     </div>
   </div>
   <div class="macro-row">
     <span class="macro-ic">⚙️</span>
     <div class="macro-tx">
-      <div class="macro-tt">Grăsimea <span class="q">hormonii</span></div>
-      <div class="macro-d">Grăsimile sănătoase mențin producția optimă de testosteron (esențial pentru forță și recuperare). De aceea, o porție mică de grăsimi este obligatorie la masă, chiar și când vrei să slăbești. Evitarea totală a grăsimilor este o greșeală.</div>
+      <div class="macro-tt">Grăsimea <span class="q">Optimizare Endocrină</span></div>
+      <div class="macro-d">Restricția severă de grăsimi dietetice prăbușește nivelul de testosteron liber și afectează neuroplasticitatea. Dincolo de calorii, ele oferă blocurile de construcție pentru toți hormonii anabolici principali.</div>
     </div>
   </div>
   <div class="macro-row">
     <span class="macro-ic">🧹</span>
     <div class="macro-tx">
-      <div class="macro-tt">Legumele <span class="q">absorbția</span></div>
-      <div class="macro-d">Fibrele încetinesc digestia → energie stabilă, fără somnolența de după masă. Plus apă și micronutrienți. Te țin sătul cu aproape zero calorii.</div>
+      <div class="macro-tt">Legumele <span class="q">Control Glicemic</span></div>
+      <div class="macro-d">Fibrele încetinesc golirea gastrică, rezultând într-o eliberare lentă a insulinei. O floră intestinală sănătoasă crește capacitatea de asimilare și reduce markerii de inflamație sistemică (precum proteina C-reactivă).</div>
     </div>
   </div>
 
