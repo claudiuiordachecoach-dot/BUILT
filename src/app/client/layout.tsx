@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ClientNav } from "@/components/ClientNav";
+import { RouteTransition } from "@/components/RouteTransition";
 import { getUserRole, getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { linkAuthToClient } from "./actions";
 
@@ -33,7 +34,9 @@ export default async function ClientLayout({ children }: { children: React.React
       )}
       <div className="flex flex-1 min-h-0">
         <ClientNav />
-        <main className="flex-1 min-w-0 mobile-header-offset mobile-bottomnav-offset md:pt-0 md:pb-0">{children}</main>
+        <main className="flex-1 min-w-0 mobile-header-offset mobile-bottomnav-offset md:pt-0 md:pb-0">
+          <RouteTransition>{children}</RouteTransition>
+        </main>
       </div>
     </div>
   );

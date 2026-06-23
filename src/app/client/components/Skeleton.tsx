@@ -1,5 +1,5 @@
 export function Skeleton({ className = "" }: { className?: string }) {
-  return <div className={`animate-pulse rounded-lg bg-white/[0.06] ${className}`} />;
+  return <div className={`shimmer rounded-lg ${className}`} />;
 }
 
 /** Skeleton generic pentru paginile care încarcă: titlu + câteva carduri. */

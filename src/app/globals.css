@@ -12,6 +12,11 @@
   /* BUILT Brand Colors (Fixed) */
   --color-built-red: #C0392B;
   --color-built-red-dark: #8B1A1A;
+  --color-built-black: #0A0A0A;
+  --color-built-gray-1: #1A1A1A;
+  --color-built-gray-2: #2A2A2A;
+  --color-built-gray-text: #888888;
+  --color-built-white: #F5F5F5;
 
   /* Font Variables */
   --font-display: var(--font-bebas-neue);
@@ -47,12 +52,19 @@ html, body {
   color: var(--color-foreground);
 }
 
+html {
+  scroll-behavior: smooth;
+  /* fără flash gri la tap pe mobil — senzație nativă */
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   font-family: var(--font-sans);
   font-weight: 400;
   line-height: 1.7;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 /* Selection styling — roșu BUILT */
@@ -61,20 +73,39 @@ body {
   color: var(--color-built-white);
 }
 
+/* Focus vizibil doar la tastatură — inel roșu BUILT, nu outline urât pe click */
+:focus-visible {
+  outline: 2px solid var(--color-built-red);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+:focus:not(:focus-visible) { outline: none; }
+
+/* Tranziții implicite line pe controale interactive (culoare/transform), nu pe layout */
+a, button, [role="button"], input, textarea, select, summary {
+  transition: color .18s ease, background-color .18s ease, border-color .18s ease,
+              opacity .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+button:not(:disabled), [role="button"]:not([aria-disabled="true"]) { cursor: pointer; }
+
 /* Scrollbar discret pe dark */
+* { scrollbar-width: thin; scrollbar-color: var(--color-muted) transparent; }
 ::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
+  width: 8px;
+  height: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--color-background);
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--color-muted);
-  border-radius: 4px;
+  border-radius: 99px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 ::-webkit-scrollbar-thumb:hover {
   background: var(--color-built-red-dark);
+  background-clip: padding-box;
 }
 
 /* Display headings — Bebas Neue cu letter-spacing */
@@ -165,6 +196,79 @@ body {
 @keyframes splashFadeOut {
   0% { opacity: 1; }
   100% { opacity: 0; visibility: hidden; }
+}
+
+/* ─── Sistem de mișcare BUILT (intrări, hover, skeleton) ──────────────────── */
+
+@keyframes builtFadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+@keyframes builtFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes builtScaleIn {
+  from { opacity: 0; transform: scale(.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Intrare conținut pe pagină — folosit de RouteTransition + manual */
+.anim-fade-up { animation: builtFadeUp .42s cubic-bezier(.22,.61,.36,1) both; }
+.anim-fade-in { animation: builtFadeIn .42s ease both; }
+.anim-scale-in { animation: builtScaleIn .32s cubic-bezier(.22,.61,.36,1) both; }
+
+/* Stagger: pune .stagger pe părinte, copiii intră secvențial.
+   Funcționează pentru primii ~12 copii direcți. */
+.stagger > * { animation: builtFadeUp .42s cubic-bezier(.22,.61,.36,1) both; }
+.stagger > *:nth-child(1)  { animation-delay: .02s; }
+.stagger > *:nth-child(2)  { animation-delay: .06s; }
+.stagger > *:nth-child(3)  { animation-delay: .10s; }
+.stagger > *:nth-child(4)  { animation-delay: .14s; }
+.stagger > *:nth-child(5)  { animation-delay: .18s; }
+.stagger > *:nth-child(6)  { animation-delay: .22s; }
+.stagger > *:nth-child(7)  { animation-delay: .26s; }
+.stagger > *:nth-child(8)  { animation-delay: .30s; }
+.stagger > *:nth-child(9)  { animation-delay: .34s; }
+.stagger > *:nth-child(10) { animation-delay: .38s; }
+.stagger > *:nth-child(11) { animation-delay: .42s; }
+.stagger > *:nth-child(12) { animation-delay: .46s; }
+
+/* Lift discret la hover pe carduri/iteme apăsabile */
+.hover-lift { transition: transform .2s cubic-bezier(.22,.61,.36,1), box-shadow .2s ease, border-color .2s ease; }
+.hover-lift:hover { transform: translateY(-2px); box-shadow: 0 8px 24px -12px rgba(0,0,0,.55); }
+.hover-lift:active { transform: translateY(0); }
+
+/* Feedback tactil la apăsare — senzație de buton fizic */
+.press { transition: transform .12s ease; }
+.press:active { transform: scale(.96); }
+
+/* Skeleton shimmer — înlocuiește pulse-ul plat */
+@keyframes builtShimmer {
+  100% { transform: translateX(100%); }
+}
+.shimmer {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-muted);
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.06), transparent);
+  animation: builtShimmer 1.5s infinite;
+}
+
+/* Respectă preferința de reducere a mișcării (accesibilitate) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* ─── Safe-area iOS (notch / dynamic island / home indicator) ─────────────── */

@@ -80,13 +80,19 @@ function NavLink({ item, pathname, collapsed }: { item: NavEntry; pathname: stri
     <Link
       href={item.href}
       title={collapsed ? item.label : undefined}
-      className={`flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] transition-all w-full ${
+      className={`group relative flex items-center gap-3 px-3 py-2 rounded-lg text-[13px] press transition-all w-full ${
         isActive
           ? "text-foreground bg-muted"
           : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
       } ${collapsed ? "justify-center" : ""}`}
     >
-      <span className={`relative ${isActive ? "text-foreground" : ""}`}>
+      {/* accent roșu pe item activ */}
+      {!collapsed && (
+        <span className={`absolute left-0 top-1/2 -translate-y-1/2 w-[3px] rounded-r-full bg-built-red transition-all ${
+          isActive ? "h-5 opacity-100" : "h-0 opacity-0"
+        }`} />
+      )}
+      <span className={`relative transition-transform group-hover:scale-110 ${isActive ? "text-built-red" : ""}`}>
         {item.icon}
         {(item.badge ?? 0) > 0 && (
           <span className="absolute -top-1.5 -right-1.5 min-w-[14px] h-[14px] bg-built-red text-white text-[9px] font-bold rounded-full flex items-center justify-center px-0.5">

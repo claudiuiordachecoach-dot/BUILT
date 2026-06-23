@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { SplashScreen } from "@/components/SplashScreen";
+import { RouteTransition } from "@/components/RouteTransition";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await getSupabaseAuth();
@@ -9,7 +10,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
   return (
     <>
       <SplashScreen />
-      {children}
+      <RouteTransition>{children}</RouteTransition>
     </>
   );
 }
