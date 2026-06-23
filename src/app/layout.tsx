@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Bebas_Neue, Barlow_Condensed, Barlow, JetBrains_Mono } from "next/font/google";
 import { Sidebar } from "@/components/Sidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { BrandToaster } from "@/components/BrandToaster";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { getUserRole } from "@/lib/supabase/auth-server";
 import "./globals.css";
@@ -80,6 +81,7 @@ export default async function RootLayout({
               <main className={`flex-1 min-w-0 ${isAdmin ? "mobile-header-offset md:pt-0" : ""}`}>{children}</main>
             </NotificationProvider>
           </div>
+          <BrandToaster />
         </ThemeProvider>
       </body>
     </html>

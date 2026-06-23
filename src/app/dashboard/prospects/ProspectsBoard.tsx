@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import toast from "react-hot-toast";
 import {
   type Prospect, type ProspectStatus,
   createProspect, updateProspect, deleteProspect,
@@ -132,21 +133,21 @@ function ProspectCard({ p, ring, onChange, onDelete, startTransition }: {
       });
       setSaving(false);
       if (res.ok) { onChange(draft); setOpen(false); }
-      else alert(res.error);
+      else toast.error(res.error);
     });
   }
   function quickStatus(status: ProspectStatus) {
     setDraft((d) => ({ ...d, status }));
     startTransition(async () => {
       const res = await updateProspect(p.id, { status });
-      if (res.ok) onChange({ status }); else alert(res.error);
+      if (res.ok) onChange({ status }); else toast.error(res.error);
     });
   }
   function remove() {
     if (!confirm(`Ștergi prospectul "${p.name}"?`)) return;
     startTransition(async () => {
       const res = await deleteProspect(p.id);
-      if (res.ok) onDelete(); else alert(res.error);
+      if (res.ok) onDelete(); else toast.error(res.error);
     });
   }
 
@@ -231,7 +232,7 @@ function AddForm({ onCancel, onCreated }: { onCancel: () => void; onCreated: (p:
     setBusy(true);
     const res = await createProspect({ name, status, next_step: next });
     setBusy(false);
-    if (!res.ok) return alert(res.error);
+    if (!res.ok) { toast.error(res.error); return; }
     onCreated({
       id: res.id!, name: name.trim(), profile: null, status, package: null,
       next_step: next || null, next_step_date: null, notes: null, source: null,

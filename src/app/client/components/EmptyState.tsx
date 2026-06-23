@@ -8,7 +8,7 @@ export function EmptyState({
   subtitle?: string;
 }) {
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-xl px-6 py-12 text-center">
+    <div className="anim-scale-in bg-[#111111] border border-white/10 rounded-xl px-6 py-12 text-center">
       <div className="w-12 h-12 rounded-full bg-built-red/10 border border-built-red/20 flex items-center justify-center text-xl text-built-red mx-auto mb-4">
         {icon}
       </div>

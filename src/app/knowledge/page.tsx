@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 import { sendMessage, importConversation, listConversations } from "./actions";
 
 const QUICK_QUESTIONS = [
@@ -55,11 +56,11 @@ export default function KnowledgePage() {
   async function handleImport() {
     if (!importText.trim()) return;
     const result = await importConversation(importText, importSource);
-    if ("error" in result && result.error) { alert(result.error); return; }
+    if ("error" in result && result.error) { toast.error(result.error); return; }
     setShowImport(false);
     setImportText("");
     listConversations(undefined, 20).then(setConversations);
-    alert("Conversație importată cu succes!");
+    toast.success("Conversație importată cu succes!");
   }
 
   return (

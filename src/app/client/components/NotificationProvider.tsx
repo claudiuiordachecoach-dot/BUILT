@@ -24,12 +24,12 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
 
   const requestPermission = async () => {
     if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
-      toast.error('Push notifications are not supported on this browser.');
+      toast.error('Notificările push nu sunt suportate pe acest browser.');
       return;
     }
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
-      toast.error('Permission denied for notifications.');
+      toast.error('Permisiunea pentru notificări a fost refuzată.');
       return;
     }
     setGranted(true);
@@ -49,7 +49,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
       p256dh: subscription.toJSON().keys?.p256dh,
       auth: subscription.toJSON().keys?.auth,
     });
-    toast.success('Push notifications enabled.');
+    toast.success('Notificările push sunt active.');
   };
 
   // Realtime fallback for browsers without push (e.g., iOS Safari)
@@ -68,7 +68,7 @@ export const NotificationProvider = ({ children }: { children: ReactNode }) => {
             filter: `client_id=eq.${clientId}`,
           },
           (payload) => {
-            toast('⏰ You have a progress‑entry reminder!');
+            toast('⏰ Ai un memento pentru check-in!');
           }
         )
         .subscribe();

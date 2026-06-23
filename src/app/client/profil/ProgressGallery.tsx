@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import toast from "react-hot-toast";
 import { saveProgressEntry, deleteProgressEntry } from "../actions";
 import { ImageUpload } from "@/components/ImageUpload";
 
@@ -46,7 +47,7 @@ export default function ProgressGallery({ clientId, initialGallery }: { clientId
       console.error("Eroare la salvare:", error);
       // Revert in case of error
       setGallery(gallery);
-      alert("A apărut o eroare la salvarea imaginii.");
+      toast.error("A apărut o eroare la salvarea imaginii.");
     } finally {
       setIsSubmitting(false);
     }

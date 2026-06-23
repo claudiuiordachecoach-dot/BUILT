@@ -38,7 +38,7 @@ export default async function ClientsDashboardPage() {
       </div>
 
       {/* KPI Row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="stagger grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
           ["Total", clients.length],
           ["Activi", active.length],
@@ -75,12 +75,12 @@ export default async function ClientsDashboardPage() {
           </p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="stagger space-y-2">
           {clients.map((c) => (
             <Link
               key={c.id}
               href={`/dashboard/clients/${c.id}`}
-              className="flex items-center justify-between gap-3 p-4 bg-[#111111] border border-white/[0.08] hover:border-built-red/40 rounded-xl transition-colors"
+              className="hover-lift flex items-center justify-between gap-3 p-4 bg-[#111111] border border-white/[0.08] hover:border-built-red/40 rounded-xl transition-colors"
             >
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2 mb-0.5 flex-wrap">

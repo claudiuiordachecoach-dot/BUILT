@@ -88,7 +88,7 @@ export default async function ClientDashboardPage({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+      <div className="stagger grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
         {[
           { label: "Antrenament", value: `${latestCheckin?.training_adherence ?? "--"}%`, sub: "Săptămâna trecută" },
           { label: "Nutriție", value: `${latestCheckin?.nutrition_adherence ?? "--"}%`, sub: "Săptămâna trecută" },
@@ -105,7 +105,7 @@ export default async function ClientDashboardPage({
         ))}
       </div>
 
-      <div className="grid grid-cols-2 gap-3">
+      <div className="stagger grid grid-cols-2 gap-3">
         {[
           { href: `/client/antrenamente${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "⚡", title: "Antrenamentul de azi", sub: "Vezi planul săptămânii" },
           { href: `/client/checkin${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "✓", title: "Check-in săptămânal", sub: "Trimite raportul săptămânii" },

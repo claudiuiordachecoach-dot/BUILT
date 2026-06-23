@@ -2,6 +2,7 @@
 
 import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { submitCheckin, updateClientStatus, inviteClient, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, saveTargetWeight, type Client, type CheckIn, type ClientStatus, type ClientModule, type IntakeRecord, getClientModules, saveClientModule, deleteClientModule } from "../actions";
 import { CopyIntakeLink } from "./CopyIntakeLink";
@@ -388,7 +389,7 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
                       if (confirm("Sigur vrei să ștergi acest check-in?")) {
                         const r = await deleteCheckin(c.id, client.id);
                         if (r.ok) setCheckins(prev => prev.filter(x => x.id !== c.id));
-                        else alert("Eroare la ștergere: " + r.error);
+                        else toast.error("Eroare la ștergere: " + r.error);
                       }
                     }} className="absolute top-4 right-4 text-zinc-500 hover:text-built-red text-xs">
                       ✕
@@ -490,7 +491,7 @@ function WorkoutPlanEditor({ clientId }: { clientId: number }) {
     setSaving(true);
     await saveWorkoutPlan(clientId, days, notes);
     setSaving(false);
-    alert("Plan salvat!");
+    toast.success("Plan salvat!");
   }
 
   const exs = days[activeDay] ?? [];
@@ -542,7 +543,7 @@ function NutritionPlanEditor({ clientId }: { clientId: number }) {
     setSaving(true);
     await saveNutritionPlan(clientId, {...macros, meals, notes});
     setSaving(false);
-    alert("Plan nutrițional salvat!");
+    toast.success("Plan nutrițional salvat!");
   }
 
   return (
@@ -641,13 +642,13 @@ function ClientModuleManager({ clientId }: { clientId: number }) {
     try {
       const res = (await saveClientModule(clientId, editing)) as any;
       if (res && res.ok === false) {
-        alert("Eroare la salvare: " + res.error);
+        toast.error("Eroare la salvare: " + res.error);
       } else {
         setEditing(null);
         await fetchModules();
       }
     } catch (e) {
-      alert("Eroare critică: " + (e instanceof Error ? e.message : "Necunoscută"));
+      toast.error("Eroare critică: " + (e instanceof Error ? e.message : "Necunoscută"));
     } finally {
       setSaving(false);
     }
