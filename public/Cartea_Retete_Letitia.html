@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BUILT — Cartea de rețete · Letitia · 1400 / 1600 kcal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow+Condensed:ital,wght@0,400;0,600;0,700;0,800;1,400&family=Barlow:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --ink:#0A0A0A; --red:#C0392B; --white:#FFFFFF;
+      --soft:#F5F5F5; --border:#E5E5E5; --mid:#888888;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{background:#C8C8C8;font-family:'Barlow',sans-serif;-webkit-font-smoothing:antialiased;}
+    .page{width:900px;background:var(--white);margin:32px auto;box-shadow:0 24px 80px rgba(0,0,0,0.2);position:relative;overflow:hidden;page-break-after:always;}
+
+    /* ─── COVER ─── */
+    .cover{height:1200px;position:relative;background:var(--ink);}
+    .cover .ph-fill{position:absolute;inset:0;background:repeating-linear-gradient(45deg,#141414,#141414 18px,#171717 18px,#171717 36px);display:flex;align-items:center;justify-content:center;}
+    .cover .ph-fill span{font-family:'Barlow Condensed',sans-serif;letter-spacing:6px;font-size:13px;color:rgba(255,255,255,0.22);text-transform:uppercase;}
+    .cover-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.97) 0%,rgba(0,0,0,0.85) 40%,rgba(0,0,0,0.45) 70%,rgba(0,0,0,0.15) 100%);}
+    .cover-content{position:absolute;bottom:80px;left:64px;right:64px;}
+    .cover-eyebrow{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:6px;color:var(--red);text-transform:uppercase;margin-bottom:14px;}
+    .cover-title{font-family:'Bebas Neue',sans-serif;font-size:128px;line-height:0.82;color:var(--white);letter-spacing:-3px;margin-bottom:22px;}
+    .cover-title span{color:var(--red);display:block;}
+    .cover-rule{width:56px;height:3px;background:var(--red);margin-bottom:18px;}
+    .cover-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;font-weight:400;letter-spacing:5px;color:rgba(255,255,255,0.5);text-transform:uppercase;}
+    .cover-bar{position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--red);}
+
+    /* ─── PAGINĂ TEXT (intro / cuprins) ─── */
+    .doc-page{padding:80px 70px 60px;min-height:1200px;}
+    .doc-title{font-family:'Bebas Neue',sans-serif;font-size:78px;line-height:0.85;letter-spacing:-1px;margin-bottom:14px;}
+    .doc-title span{color:var(--red);}
+    .doc-lead{font-size:15px;line-height:1.7;color:#333;max-width:640px;margin-bottom:40px;}
+    .doc-lead strong{color:var(--ink);font-weight:600;}
+
+    .macro-grid{display:grid;grid-template-columns:1.3fr 1fr 1fr 1fr;border:1.5px solid var(--ink);margin-bottom:24px;}
+    .mg{padding:18px 20px;border-right:1.5px solid var(--ink);}
+    .mg:last-child{border-right:none;}
+    .mg.cal{background:var(--ink);}
+    .mg-l{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;display:block;margin-bottom:4px;}
+    .mg.cal .mg-l{color:rgba(255,255,255,0.45);}
+    .mg-v{font-family:'Bebas Neue',sans-serif;font-size:46px;line-height:1;color:var(--ink);}
+    .mg.cal .mg-v{color:var(--white);}
+
+    .daybox{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1.5px solid var(--ink);margin-bottom:40px;}
+    .db{padding:18px 22px;}
+    .db.train{background:var(--red);}
+    .db-l{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#888;display:block;margin-bottom:4px;}
+    .db.train .db-l{color:rgba(255,255,255,0.7);}
+    .db-v{font-family:'Bebas Neue',sans-serif;font-size:40px;line-height:1;color:var(--ink);}
+    .db.train .db-v{color:var(--white);}
+    .db-n{font-size:12px;color:#555;margin-top:6px;line-height:1.4;}
+    .db.train .db-n{color:rgba(255,255,255,0.85);}
+
+    .rule-h{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;color:var(--red);margin:34px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--ink);}
+    .point{display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--border);}
+    .point-n{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;color:var(--red);opacity:0.25;min-width:30px;}
+    .point-t{font-size:14px;line-height:1.6;color:#222;padding-top:3px;}
+    .point-t strong{color:var(--ink);font-weight:600;}
+
+    /* ─── CUPRINS ─── */
+    .idx-day{margin-bottom:26px;break-inside:avoid;}
+    .idx-day-h{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;color:var(--ink);padding-bottom:8px;border-bottom:2px solid var(--red);margin-bottom:8px;display:flex;justify-content:space-between;align-items:baseline;}
+    .idx-day-h em{font-family:'Barlow Condensed',sans-serif;font-style:normal;font-size:12px;font-weight:600;letter-spacing:1px;color:var(--mid);text-transform:uppercase;}
+    .idx-row{display:flex;align-items:baseline;padding:6px 0;border-bottom:1px solid var(--border);}
+    .idx-tag{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:1px;color:var(--red);min-width:90px;text-transform:uppercase;}
+    .idx-name{font-size:13px;font-weight:500;flex:1;color:var(--ink);}
+    .idx-cols{column-count:2;column-gap:48px;}
+
+    /* ─── ANTET ZI ─── */
+    .day-header{height:560px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;}
+    .dh-accent{position:absolute;top:0;left:0;right:0;height:4px;background:var(--red);}
+    .dh-num{font-family:'Barlow Condensed',sans-serif;font-size:12px;font-weight:700;letter-spacing:8px;color:var(--red);margin-bottom:16px;text-transform:uppercase;}
+    .dh-title{font-family:'Bebas Neue',sans-serif;font-size:150px;line-height:0.82;color:var(--white);letter-spacing:-4px;text-align:center;}
+    .dh-sub{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:6px;color:rgba(255,255,255,0.4);margin-top:22px;text-transform:uppercase;}
+    .dh-total{margin-top:34px;display:flex;gap:0;border:1px solid rgba(255,255,255,0.18);}
+    .dh-t{padding:10px 22px;border-right:1px solid rgba(255,255,255,0.18);text-align:center;}
+    .dh-t:last-child{border-right:none;}
+    .dh-t-l{font-family:'Barlow Condensed',sans-serif;font-size:9px;letter-spacing:2px;color:rgba(255,255,255,0.4);text-transform:uppercase;display:block;margin-bottom:3px;}
+    .dh-t-v{font-family:'Bebas Neue',sans-serif;font-size:26px;color:var(--white);line-height:1;}
+    .dh-t-v.red{color:var(--red);}
+
+    /* ─── PAGINĂ REȚETĂ ─── */
+    .rp{display:flex;flex-direction:column;min-height:1100px;}
+    .rp-photo{position:relative;height:420px;background:var(--ink);overflow:hidden;flex-shrink:0;}
+    .rp-photo img{width:100%;height:100%;object-fit:cover;filter:brightness(0.88) contrast(1.06);}
+    .rp-photo .ph{position:absolute;inset:0;background:repeating-linear-gradient(45deg,#141414,#141414 16px,#181818 16px,#181818 32px);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:0 40px;}
+    .rp-photo .ph-k{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:700;letter-spacing:4px;color:rgba(255,255,255,0.32);text-transform:uppercase;margin-bottom:10px;}
+    .rp-photo .ph-d{font-family:'Bebas Neue',sans-serif;font-size:30px;letter-spacing:1px;color:rgba(255,255,255,0.55);line-height:0.95;}
+    .rp-photo-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.12) 0%,rgba(0,0,0,0) 38%,rgba(10,10,10,0.72) 100%);}
+    .rp-badge{position:absolute;top:26px;left:26px;background:var(--red);color:var(--white);font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;padding:6px 15px;z-index:2;}
+    .rp-diff{position:absolute;top:30px;right:30px;display:flex;gap:5px;z-index:2;}
+    .rp-diff span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.25);}
+    .rp-diff span.on{background:rgba(255,255,255,0.92);}
+
+    .rp-body{padding:36px 52px 0;flex:1;display:flex;flex-direction:column;}
+    .rp-head{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:6px;gap:20px;}
+    .rp-title{font-family:'Bebas Neue',sans-serif;font-size:60px;line-height:0.85;letter-spacing:-1px;color:var(--ink);flex:1;}
+    .rp-tags{display:flex;flex-direction:column;align-items:flex-end;gap:6px;padding-bottom:6px;}
+    .tag-p{background:var(--ink);color:var(--white);font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;padding:5px 11px;text-transform:uppercase;}
+    .tag-m{font-family:'Barlow Condensed',sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;color:var(--red);border:1px solid var(--red);padding:4px 10px;text-transform:uppercase;}
+    .tag-t{font-family:'Barlow Condensed',sans-serif;font-size:11px;font-weight:600;letter-spacing:1px;color:#999;text-transform:uppercase;white-space:nowrap;}
+
+    .rp-nut{display:grid;grid-template-columns:1.25fr 1fr 1fr 1fr;border:1.5px solid var(--ink);margin:18px 0 24px;}
+    .nut{padding:13px 16px;border-right:1.5px solid var(--ink);}
+    .nut:last-child{border-right:none;}
+    .nut.cal{background:var(--ink);}
+    .nut-l{font-family:'Barlow Condensed',sans-serif;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#999;display:block;margin-bottom:3px;}
+    .nut.cal .nut-l{color:rgba(255,255,255,0.4);}
+    .nut-v{font-family:'Bebas Neue',sans-serif;font-size:34px;line-height:1;color:var(--ink);}
+    .nut.cal .nut-v{color:var(--white);}
+
+    .rp-content{display:grid;grid-template-columns:0.85fr 1.15fr;gap:44px;flex:1;padding-bottom:34px;}
+    .col-h{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:3px;margin-bottom:14px;display:flex;align-items:center;gap:10px;}
+    .col-h::after{content:'';flex:1;height:1.5px;background:var(--ink);}
+    .ing{display:flex;justify-content:space-between;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+    .ing-n{font-weight:500;color:var(--ink);}
+    .ing-q{font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--red);letter-spacing:0.5px;white-space:nowrap;padding-left:14px;}
+    .step{display:flex;gap:13px;margin-bottom:13px;}
+    .sn{font-family:'Bebas Neue',sans-serif;font-size:36px;line-height:1;color:var(--red);opacity:0.14;min-width:30px;flex-shrink:0;}
+    .st{font-size:13.5px;line-height:1.65;color:#1A1A1A;padding-top:4px;}
+    .st strong{font-weight:600;color:var(--ink);}
+
+    .rp-tip{background:var(--ink);padding:20px 52px;display:flex;align-items:flex-start;gap:18px;flex-shrink:0;}
+    .tip-tag{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:3px;color:var(--red);white-space:nowrap;padding-top:2px;min-width:70px;}
+    .tip-div{width:1px;align-self:stretch;background:rgba(255,255,255,0.12);}
+    .tip-txt{font-size:12.5px;line-height:1.65;color:rgba(255,255,255,0.68);}
+    .tip-txt strong{color:rgba(255,255,255,0.95);font-weight:600;}
+
+    /* ─── MOD CARTE ─── */
+    body.book{background:#0e0e0e;overflow:hidden;height:100vh;}
+    body.book .page{position:absolute;top:50%;left:50%;margin:0;transform:translate(-50%,-50%) scale(var(--fit,1));transform-origin:center center;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .35s ease, transform .45s cubic-bezier(.4,0,.2,1);box-shadow:0 30px 90px rgba(0,0,0,0.6);max-height:none;}
+    body.book .page.cur{opacity:1;visibility:visible;pointer-events:auto;z-index:5;transform:translate(-50%,-50%) scale(var(--fit,1));overflow-y:auto;}
+
+    .nav{position:fixed;bottom:0;left:0;right:0;height:56px;background:rgba(10,10,10,0.92);backdrop-filter:blur(8px);border-top:1px solid #222;display:none;align-items:center;justify-content:center;gap:24px;z-index:50;}
+    body.book .nav{display:flex;}
+    .nav button{background:none;border:1px solid #333;color:#F5F5F5;width:40px;height:36px;border-radius:6px;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+    .nav button:hover{border-color:#C0392B;color:#C0392B;}
+    .nav button:disabled{opacity:0.25;cursor:default;border-color:#333;color:#F5F5F5;}
+    .nav-count{font-family:'Barlow Condensed',sans-serif;font-size:13px;letter-spacing:2px;color:#999;text-transform:uppercase;min-width:120px;text-align:center;}
+    .nav-count b{color:#C0392B;}
+    .tap{position:fixed;top:0;bottom:56px;width:18%;z-index:40;cursor:pointer;display:none;}
+    body.book .tap{display:block;}
+    .tap.left{left:0;} .tap.right{right:0;}
+    .book-toggle{position:fixed;top:14px;right:14px;z-index:60;background:rgba(10,10,10,0.92);color:#F5F5F5;border:1px solid #333;border-radius:6px;padding:8px 14px;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;}
+    .book-toggle:hover{border-color:#C0392B;color:#C0392B;}
+    @media print{body{background:white;}body.book .page{position:static;transform:none;opacity:1;visibility:visible;}.nav,.tap,.book-toggle{display:none !important;}.page{margin:0;box-shadow:none;width:100%;page-break-after:always;}}
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════ COPERTĂ ═══════════════════════ -->
+<div class="page cover">
+  <!-- înlocuiește .ph-fill cu: <img src="/cookbook-images/letitia/cover.png" style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;"> -->
+  <div class="ph-fill"><span>Poză copertă · Letitia</span></div>
+  <div class="cover-overlay"></div>
+  <div class="cover-content">
+    <div class="cover-eyebrow">Intelligent Fueling · Pilonul 3</div>
+    <div class="cover-title">CARTEA DE<br><span>REȚETE</span></div>
+    <div class="cover-rule"></div>
+    <div class="cover-sub">Letitia · 7 zile · 1400 / 1600 kcal · reconstrucție, nu înfometare</div>
+  </div>
+  <div class="cover-bar"></div>
+</div>
+
+<!-- ═══════════════════════ CUM FOLOSEȘTI ═══════════════════════ -->
+<div class="page doc-page">
+  <div class="doc-title">CUM<br><span>FOLOSEȘTI</span></div>
+  <p class="doc-lead">
+    Ai aici <strong>7 zile complete</strong>, gata calculate pe porția ta. Nu treci nimic în nicio aplicație și nu cântărești la gram — porțiile sunt scrise pentru tine.
+    Alegi ziua, gătești, mănânci. Asta nu e încă o dietă de înfometat — e mâncare adevărată, așezată corect pentru tonus și energie.
+  </p>
+
+  <div class="macro-grid">
+    <div class="mg cal"><span class="mg-l">Bază / zi</span><span class="mg-v">1400</span></div>
+    <div class="mg"><span class="mg-l">Proteină</span><span class="mg-v">125<span style="font-size:20px;">g</span></span></div>
+    <div class="mg"><span class="mg-l">Carbohidrați</span><span class="mg-v">110<span style="font-size:20px;">g</span></span></div>
+    <div class="mg"><span class="mg-l">Grăsimi</span><span class="mg-v">45<span style="font-size:20px;">g</span></span></div>
+  </div>
+
+  <div class="daybox">
+    <div class="db"><span class="db-l">Zi de pauză</span><span class="db-v">1400</span><div class="db-n">Baza. Atâta mănânci în zilele fără sală.</div></div>
+    <div class="db train"><span class="db-l">Zi de antrenament</span><span class="db-v">1600</span><div class="db-n">Aceleași mese + 200 kcal, <strong>doar din carbohidrați și grăsimi</strong>, ca să-ți alimentezi efortul.</div></div>
+  </div>
+
+  <div class="rule-h">REGULILE CĂRȚII</div>
+  <div class="point"><span class="point-n">1</span><div class="point-t"><strong>Cele 200 kcal de antrenament vin doar din carbohidrați și grăsimi.</strong> Proteina rămâne la fel în orice zi. În zilele cu sală adaugi banana de dinainte de antrenament și o porție mică de orez sau cartof la cină. Atât. Nu e „trișat", e biologie: refaci energia consumată la efort.</div></div>
+  <div class="point"><span class="point-n">2</span><div class="point-t"><strong>Mesele se schimbă între zile.</strong> Orice mic dejun merge cu orice prânz și orice cină din carte — toate sunt construite pe aceleași valori. Combini liber, ziua tot la țintă iese.</div></div>
+  <div class="point"><span class="point-n">3</span><div class="point-t"><strong>Proteină la fiecare masă.</strong> Ăsta e firul care leagă toată cartea. Ține foamea departe și taie pofta de dulce de seara — exact partea care te-a sabotat înainte.</div></div>
+  <div class="point"><span class="point-n">4</span><div class="point-t"><strong>Gustarea de la 16:00 nu e opțională.</strong> E plasa de siguranță anti-poftă. O masă proteică mică în după-amiază te ține departe de dulciuri seara.</div></div>
+  <div class="point"><span class="point-n">5</span><div class="point-t"><strong>Gătești o dată, mănânci de mai multe ori.</strong> Puiul, orezul, ciorba — le faci în porții mai mari și ai pachetul gata. Ce e pregătit seara nu te lasă să cazi pe rapid și prost a doua zi.</div></div>
+
+  <div class="rule-h" style="margin-top:38px;">DE REȚINUT</div>
+  <p class="doc-lead" style="margin-bottom:0;">
+    Porțiile sunt scrise la greutatea ta, pentru reconstrucție și tonus, nu pentru deficit agresiv. Dacă într-o zi mănânci puțin mai mult sau mai puțin, nu e nicio dramă — te întorci la masa următoare, nu „de luni".
+    <strong>80% structură, 20% plăcere.</strong> Asta o ții toată viața.
+  </p>
+</div>
+
+<!-- ═══════════════════════ CUPRINS ═══════════════════════ -->
+<div class="page doc-page">
+  <div class="doc-title">CE<br><span>GĂTEȘTI</span></div>
+  <div class="idx-cols">
+
+    <div class="idx-day">
+      <div class="idx-day-h">Ziua 1 <em>Cremă & crispy</em></div>
+      <div class="idx-row"><span class="idx-tag">Mic dejun</span><span class="idx-name">Cremă de orez cu proteină și fructe</span></div>
+      <div class="idx-row"><span class="idx-tag">Gustare</span><span class="idx-name">Iaurt grecesc cu fructe de pădure</span></div>
+      <div class="idx-row"><span class="idx-tag">Prânz</span><span class="idx-name">Pui crispy la cuptor cu orez și broccoli</span></div>
+      <div class="idx-row"><span class="idx-tag">Cină</span><span class="idx-name">Brânză de vaci cu legume crocante</span></div>
+    </div>
+
+    <div class="idx-day">
+      <div class="idx-day-h">Ziua 2 <em>Sărat & rapid</em></div>
+      <div class="idx-row"><span class="idx-tag">Mic dejun</span><span class="idx-name">Omletă cu brânză, șuncă și legume</span></div>
+      <div class="idx-row"><span class="idx-tag">Gustare</span><span class="idx-name">Brânză de vaci cu măr și scorțișoară</span></div>
+      <div class="idx-row"><span class="idx-tag">Prânz</span><span class="idx-name">Salată mare cu ouă și ton</span></div>
+      <div class="idx-row"><span class="idx-tag">Cină</span><span class="idx-name">Supă cremă de legume cu pui</span></div>
+    </div>
+
+    <div class="idx-day">
+      <div class="idx-day-h">Ziua 3 <em>Confort</em></div>
+      <div class="idx-row"><span class="idx-tag">Mic dejun</span><span class="idx-name">Clătite proteice cu iaurt și fructe</span></div>
+      <div class="idx-row"><span class="idx-tag">Gustare</span><span class="idx-name">Ou fiert și telemea cu roșii</span></div>
+      <div class="idx-row"><span class="idx-tag">Prânz</span><span class="idx-name">Wrap proteic cu pui și legume</span></div>
+      <div class="idx-row"><span class="idx-tag">Cină</span><span class="idx-name">Pește alb la cuptor cu legume</span></div>
+    </div>
+
+    <div class="idx-day">
+      <div class="idx-day-h">Ziua 4 <em>De casă</em></div>
+      <div class="idx-row"><span class="idx-tag">Mic dejun</span><span class="idx-name">Brânză dulce cu fructe de pădure</span></div>
+      <div class="idx-row"><span class="idx-tag">Gustare</span><span class="idx-name">Iaurt grecesc cu nucă</span></div>
+      <div class="idx-row"><span class="idx-tag">Prânz</span><span class="idx-name">Ciorbă de pui consistentă cu pâine</span></div>
+      <div class="idx-row"><span class="idx-tag">Cină</span><span class="idx-name">Omletă voluminoasă cu legume</span></div>
+    </div>
+
+    <div class="idx-day">
+      <div class="idx-day-h">Ziua 5 <em>Rapid</em></div>
+      <div class="idx-row"><span class="idx-tag">Mic dejun</span><span class="idx-name">Iaurt grecesc cu ovăz și miere</span></div>
+      <div class="idx-row"><span class="idx-tag">Gustare</span><span class="idx-name">Brânză de vaci cu nucă și fruct</span></div>
+      <div class="idx-row"><span class="idx-tag">Prânz</span><span class="idx-name">Paste integrale cu ton și sos de roșii</span></div>
+      <div class="idx-row"><span class="idx-tag">Cină</span><span class="idx-name">Iaurt grecesc fin cu scorțișoară</span></div>
+    </div>
+
+    <div class="idx-day">
+      <div class="idx-day-h">Ziua 6 <em>Tradițional</em></div>
+      <div class="idx-row"><span class="idx-tag">Mic dejun</span><span class="idx-name">Omletă cu mămăligă la tigaie și legume</span></div>
+      <div class="idx-row"><span class="idx-tag">Gustare</span><span class="idx-name">Iaurt grecesc cu semințe și fruct</span></div>
+      <div class="idx-row"><span class="idx-tag">Prânz</span><span class="idx-name">Pui cu cartof copt și salată verde</span></div>
+      <div class="idx-row"><span class="idx-tag">Cină</span><span class="idx-name">Supă curată cu friptură slabă</span></div>
+    </div>
+
+    <div class="idx-day">
+      <div class="idx-day-h">Ziua 7 <em>De weekend</em></div>
+      <div class="idx-row"><span class="idx-tag">Mic dejun</span><span class="idx-name">Ouă jumări cu avocado și șuncă</span></div>
+      <div class="idx-row"><span class="idx-tag">Gustare</span><span class="idx-name">Smoothie cu iaurt și fructe de pădure</span></div>
+      <div class="idx-row"><span class="idx-tag">Prânz</span><span class="idx-name">Crispy de pui cu orez și salată</span></div>
+      <div class="idx-row"><span class="idx-tag">Cină</span><span class="idx-name">Pește alb cu salată mare</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════ ZIUA 1 ═══════════════════════════════════════ -->
+<div class="page day-header">
+  <div class="dh-accent"></div>
+  <div class="dh-num">Ziua 01</div>
+  <div class="dh-title">CREMĂ &<br>CRISPY</div>
+  <div class="dh-sub">Cremă de orez · iaurt · pui crispy · brânză de vaci</div>
+  <div class="dh-total">
+    <div class="dh-t"><span class="dh-t-l">Pauză</span><span class="dh-t-v red">1400</span></div>
+    <div class="dh-t"><span class="dh-t-l">Antren.</span><span class="dh-t-v">1600</span></div>
+    <div class="dh-t"><span class="dh-t-l">Prot.</span><span class="dh-t-v">126g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Carbi</span><span class="dh-t-v">115g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Grăs.</span><span class="dh-t-v">44g</span></div>
+  </div>
+</div>
+
+<!-- Z1 · Mic dejun -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z1 · Mic dejun</div><div class="ph-d">Cremă de orez<br>cu proteină</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z1 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CREMĂ DE OREZ<br>CU PROTEINĂ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Dimineața</span><span class="tag-t">⏱ 6 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">400</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">10G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Cremă de orez (fulgi fini)</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Lapte degresat</span><span class="ing-q">200 ml</span></div>
+        <div class="ing"><span class="ing-n">Pudră proteică (vanilie)</span><span class="ing-q">1 porție</span></div>
+        <div class="ing"><span class="ing-n">Fructe de pădure</span><span class="ing-q">80 g</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară</span><span class="ing-q">un vârf</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Pune crema de orez cu laptele într-o crăticioară, la foc mic. Amestecă <strong>2-3 minute</strong>, până se îngroașă.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Ia de pe foc și lasă <strong>un minut să se mai răcească</strong>. Abia apoi amesteci pudra proteică — altfel se face cocoloașe.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Pune fructele deasupra și un vârf de scorțișoară. Gata.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt"><strong>Zi de antrenament:</strong> adaugă o banană mică alături (+90 kcal carbo). E energia pentru sală, nu un plus de care să te ferești.</div></div>
+</div>
+
+<!-- Z1 · Gustare -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z1 · Gustare 16:00</div><div class="ph-d">Iaurt grecesc<br>cu fructe de pădure</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z1 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT GRECESC<br>CU FRUCTE DE PĂDURE</div>
+      <div class="rp-tags"><span class="tag-p">Anti-binge</span><span class="tag-m">16:00</span><span class="tag-t">⏱ 2 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">190</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">22G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">4G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Fructe de pădure</span><span class="ing-q">60 g</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară (opțional)</span><span class="ing-q">un vârf</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Pune iaurtul în bol, adaugă fructele deasupra. <strong>Atât.</strong></div></div>
+        <div class="step"><span class="sn">02</span><div class="st">O mănânci la <strong>16:00</strong>, fix când apare pofta de dulce. Proteina din iaurt o oprește înainte să se transforme în atac la dulciuri seara.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Gustarea asta e <strong>plasa ta de siguranță</strong>. Cele mai multe căderi pe dulce vin din after­noon-ul în care n-ai mâncat nimic. Aici o tai din rădăcină.</div></div>
+</div>
+
+<!-- Z1 · Prânz -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z1 · Prânz</div><div class="ph-d">Pui crispy<br>cu orez și broccoli</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z1 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PUI CRISPY<br>CU OREZ ȘI BROCCOLI</div>
+      <div class="rp-tags"><span class="tag-p">Base Strength</span><span class="tag-m">Prânz</span><span class="tag-t">⏱ 25 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">510</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">55G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">160 g</span></div>
+        <div class="ing"><span class="ing-n">Orez fiert</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Broccoli</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Ou (pentru crustă)</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Fulgi de ovăz măcinați</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Boia, sare, piper</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Taie pieptul în fâșii. Trece-le prin ou bătut, apoi prin ovăzul măcinat cu boia și sare. <strong>Asta e crusta crocantă, fără prăjeală.</strong></div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Pune-le în air fryer sau pe hârtie de copt, <strong>200°C, 18 minute</strong>, întorcându-le o dată.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Fierbe broccoli 5 minute în apă cu sare și încălzește orezul. Servește tot pe o farfurie.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Fă <strong>3 porții de pui și orez odată</strong>. Ai prânzul la pachet pentru toată săptămâna și zero decizii la prânz, când ești prinsă cu munca.</div></div>
+</div>
+
+<!-- Z1 · Cină -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z1 · Cină</div><div class="ph-d">Brânză de vaci<br>cu legume crocante</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z1 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BRÂNZĂ DE VACI<br>CU LEGUME CROCANTE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Seara</span><span class="tag-t">⏱ 5 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">260</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Brânză de vaci slabă</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Castravete și ardei</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Roșii cherry</span><span class="ing-q">80 g</span></div>
+        <div class="ing"><span class="ing-n">Ulei de măsline</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Mărar, sare</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Taie legumele cubulețe și amestecă-le cu brânza de vaci.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Adaugă lingurița de ulei, mărar și sare. Amestecă ușor.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Cină ușoară, proteică, care nu te încarcă înainte de somn.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt"><strong>Zi de antrenament:</strong> adaugă 50 g orez fiert sau un cartof mic alături (+110 kcal carbo). Refaci energia consumată la sală.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ ZIUA 2 ═══════════════════════════════════════ -->
+<div class="page day-header">
+  <div class="dh-accent"></div>
+  <div class="dh-num">Ziua 02</div>
+  <div class="dh-title">SĂRAT &<br>RAPID</div>
+  <div class="dh-sub">Omletă · brânză cu măr · salată cu ton · supă cremă</div>
+  <div class="dh-total">
+    <div class="dh-t"><span class="dh-t-l">Pauză</span><span class="dh-t-v red">1400</span></div>
+    <div class="dh-t"><span class="dh-t-l">Antren.</span><span class="dh-t-v">1600</span></div>
+    <div class="dh-t"><span class="dh-t-l">Prot.</span><span class="dh-t-v">128g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Carbi</span><span class="dh-t-v">90g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Grăs.</span><span class="dh-t-v">58g</span></div>
+  </div>
+</div>
+
+<!-- Z2 · Mic dejun -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z2 · Mic dejun</div><div class="ph-d">Omletă cu brânză,<br>șuncă și legume</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z2 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OMLETĂ CU BRÂNZĂ,<br>ȘUNCĂ ȘI LEGUME</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Dimineața</span><span class="tag-t">⏱ 8 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">400</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">20G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">22G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ou întreg</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Albușuri</span><span class="ing-q">3 buc</span></div>
+        <div class="ing"><span class="ing-n">Telemea slabă</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Șuncă de pui</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Roșii și ardei</span><span class="ing-q">120 g</span></div>
+        <div class="ing"><span class="ing-n">Felie pâine secară</span><span class="ing-q">1 buc</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Bate oul cu albușurile. Călește ușor legumele și șunca într-o tigaie cu un strop de ulei.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Toarnă ouăle peste, presară telemeaua și lasă <strong>la foc mic până se leagă</strong>.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Servește cu o felie de pâine de secară.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Micul dejun sărat te ține sătulă mai mult decât cel dulce. <strong>Mai puțină poftă de gustări</strong> până la prânz.</div></div>
+</div>
+
+<!-- Z2 · Gustare -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z2 · Gustare 16:00</div><div class="ph-d">Brânză de vaci<br>cu măr și scorțișoară</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z2 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BRÂNZĂ DE VACI<br>CU MĂR ȘI SCORȚIȘOARĂ</div>
+      <div class="rp-tags"><span class="tag-p">Anti-binge</span><span class="tag-m">16:00</span><span class="tag-t">⏱ 3 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">200</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">24G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">18G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">4G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Brânză de vaci slabă</span><span class="ing-q">180 g</span></div>
+        <div class="ing"><span class="ing-n">Măr</span><span class="ing-q">1 mic</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară</span><span class="ing-q">un vârf</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Taie mărul cubulețe și amestecă-l cu brânza de vaci.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Presară scorțișoară. Dulce natural, fără zahăr adăugat, exact cât să tai pofta.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Scorțișoara dă senzația de „dulce de prăjitură" fără zahăr. <strong>Truc simplu împotriva poftei.</strong></div></div>
+</div>
+
+<!-- Z2 · Prânz -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z2 · Prânz</div><div class="ph-d">Salată mare<br>cu ouă și ton</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z2 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SALATĂ MARE<br>CU OUĂ ȘI TON</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Prânz</span><span class="tag-t">⏱ 12 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">380</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ton în suc propriu</span><span class="ing-q">1 conservă</span></div>
+        <div class="ing"><span class="ing-n">Ouă fierte</span><span class="ing-q">2 buc</span></div>
+        <div class="ing"><span class="ing-n">Salată verde mixtă</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Castravete, roșii, ardei</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Ulei de măsline</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Lămâie, sare</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Scurge tonul. Taie legumele și ouăle fierte.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Amestecă tot într-un bol mare, adaugă uleiul, zeamă de lămâie și sare.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">O salată mare, sățioasă, gata în câteva minute — bună și la pachet.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt"><strong>Zi de antrenament:</strong> adaugă o felie de pâine de secară sau 50 g orez (+90 kcal carbo) ca să nu rămâi fără energie.</div></div>
+</div>
+
+<!-- Z2 · Cină -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z2 · Cină</div><div class="ph-d">Supă cremă<br>de legume cu pui</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z2 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SUPĂ CREMĂ<br>DE LEGUME CU PUI</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Seara</span><span class="tag-t">⏱ 25 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">310</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">20G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">10G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">130 g</span></div>
+        <div class="ing"><span class="ing-n">Dovlecel, morcov, țelină</span><span class="ing-q">300 g</span></div>
+        <div class="ing"><span class="ing-n">Ceapă</span><span class="ing-q">1 mică</span></div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc (pentru cremă)</span><span class="ing-q">1 lingură</span></div>
+        <div class="ing"><span class="ing-n">Sare, piper, pătrunjel</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fierbe legumele tăiate cu puiul în apă cu sare, <strong>20 de minute</strong>.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Scoate puiul, mărunțește-l. Pasează legumele cu blenderul până se face cremă.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Adaugă puiul înapoi, o lingură de iaurt grecesc pentru cremozitate și pătrunjel. Cină caldă și ușoară.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Fă o oală mai mare de supă. <strong>Ai cină gata 2-3 zile</strong> — caldă, sățioasă și fără efort când vii obosită.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ ZIUA 3 ═══════════════════════════════════════ -->
+<div class="page day-header">
+  <div class="dh-accent"></div>
+  <div class="dh-num">Ziua 03</div>
+  <div class="dh-title">CONFORT</div>
+  <div class="dh-sub">Clătite proteice · ou cu telemea · wrap cu pui · pește alb</div>
+  <div class="dh-total">
+    <div class="dh-t"><span class="dh-t-l">Pauză</span><span class="dh-t-v red">1400</span></div>
+    <div class="dh-t"><span class="dh-t-l">Antren.</span><span class="dh-t-v">1600</span></div>
+    <div class="dh-t"><span class="dh-t-l">Prot.</span><span class="dh-t-v">130g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Carbi</span><span class="dh-t-v">95g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Grăs.</span><span class="dh-t-v">48g</span></div>
+  </div>
+</div>
+
+<!-- Z3 · Mic dejun -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z3 · Mic dejun</div><div class="ph-d">Clătite proteice<br>cu iaurt și fructe</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z3 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CLĂTITE PROTEICE<br>CU IAURT ȘI FRUCTE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Dimineața</span><span class="tag-t">⏱ 10 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">10G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ou întreg</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Fulgi de ovăz</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Pudră proteică</span><span class="ing-q">1/2 porție</span></div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Fructe de pădure</span><span class="ing-q">60 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Mixează oul, ovăzul și pudra proteică până se face un aluat fin.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Toarnă în tigaia antiaderentă încinsă, <strong>2-3 clătite mici</strong>, câte un minut pe fiecare parte.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Servește cu iaurtul grecesc deasupra și fructele de pădure.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Au gust de desert, dar sunt o masă completă. <strong>Așa scoți „prăjitura" din ecuație</strong> fără să te simți în deficit.</div></div>
+</div>
+
+<!-- Z3 · Gustare -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z3 · Gustare 16:00</div><div class="ph-d">Ou fiert și telemea<br>cu roșii</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z3 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OU FIERT ȘI TELEMEA<br>CU ROȘII</div>
+      <div class="rp-tags"><span class="tag-p">Anti-binge</span><span class="tag-m">16:00</span><span class="tag-t">⏱ 2 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">190</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">18G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">6G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">11G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ouă fierte</span><span class="ing-q">2 buc</span></div>
+        <div class="ing"><span class="ing-n">Telemea slabă</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Roșii</span><span class="ing-q">1 mare</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fierbe ouăle din timp și ține-le la frigider. <strong>Gata oricând.</strong></div></div>
+        <div class="step"><span class="sn">02</span><div class="st">La 16:00 le tai cu telemeaua și roșia. Gustare sărată, proteică, fără gătit.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Fierbe <strong>6 ouă duminică</strong>. Ai gustarea rezolvată pentru jumătate de săptămână.</div></div>
+</div>
+
+<!-- Z3 · Prânz -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z3 · Prânz</div><div class="ph-d">Wrap proteic<br>cu pui și legume</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z3 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">WRAP PROTEIC<br>CU PUI ȘI LEGUME</div>
+      <div class="rp-tags"><span class="tag-p">Lifestyle Integration</span><span class="tag-m">Prânz</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">435</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">15G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Lipie integrală</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">140 g</span></div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc (sos)</span><span class="ing-q">2 linguri</span></div>
+        <div class="ing"><span class="ing-n">Salată, roșii, castravete</span><span class="ing-q">120 g</span></div>
+        <div class="ing"><span class="ing-n">Muștar, usturoi, sare</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Gătește puiul la grătar sau tigaie și taie-l fâșii.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Fă un sos rapid din iaurt grecesc cu muștar și usturoi. <strong>Înlocuiește maioneza</strong>, la o fracțiune din calorii.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Umple lipia cu pui, legume și sos. Rulează strâns și taie în două.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Sosul de iaurt grecesc cu usturoi e arma ta secretă: <strong>gust de fast-food, macros de plan</strong>.</div></div>
+</div>
+
+<!-- Z3 · Cină -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z3 · Cină</div><div class="ph-d">Pește alb la cuptor<br>cu legume</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z3 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PEȘTE ALB LA CUPTOR<br>CU LEGUME</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Seara</span><span class="tag-t">⏱ 22 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">250</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">10G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">File de cod sau merluciu</span><span class="ing-q">180 g</span></div>
+        <div class="ing"><span class="ing-n">Dovlecel și ardei</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Roșii cherry</span><span class="ing-q">80 g</span></div>
+        <div class="ing"><span class="ing-n">Ulei de măsline</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Lămâie, usturoi, sare</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Așază peștele și legumele tăiate într-o tavă. Stropește cu ulei, lămâie, usturoi și sare.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Coace la <strong>200°C, 18-20 minute</strong>, până peștele se desface ușor cu furculița.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Cină slabă și luminoasă, perfectă seara când nu vrei să te încarci.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt"><strong>Zi de antrenament:</strong> adaugă un cartof mic copt în tavă (+110 kcal carbo). Se coace odată cu peștele.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ ZIUA 4 ═══════════════════════════════════════ -->
+<div class="page day-header">
+  <div class="dh-accent"></div>
+  <div class="dh-num">Ziua 04</div>
+  <div class="dh-title">DE CASĂ</div>
+  <div class="dh-sub">Brânză dulce · iaurt cu nucă · ciorbă de pui · omletă</div>
+  <div class="dh-total">
+    <div class="dh-t"><span class="dh-t-l">Pauză</span><span class="dh-t-v red">1400</span></div>
+    <div class="dh-t"><span class="dh-t-l">Antren.</span><span class="dh-t-v">1600</span></div>
+    <div class="dh-t"><span class="dh-t-l">Prot.</span><span class="dh-t-v">124g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Carbi</span><span class="dh-t-v">100g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Grăs.</span><span class="dh-t-v">46g</span></div>
+  </div>
+</div>
+
+<!-- Z4 · Mic dejun -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z4 · Mic dejun</div><div class="ph-d">Brânză dulce<br>cu fructe de pădure</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z4 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BRÂNZĂ DULCE<br>CU FRUCTE DE PĂDURE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Dimineața</span><span class="tag-t">⏱ 4 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">330</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">25G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Brânză de vaci slabă</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Fructe de pădure</span><span class="ing-q">80 g</span></div>
+        <div class="ing"><span class="ing-n">Nucă</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Miere</span><span class="ing-q">1 linguriță</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Pune brânza de vaci în bol, adaugă fructele și nuca mărunțită.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">O linguriță de miere deasupra, doar pentru aromă. Amestecă și gata.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Dulce, cremos și gata în 4 minute. <strong>Mic dejun care nu cere gătit</strong> în diminețile grăbite.</div></div>
+</div>
+
+<!-- Z4 · Gustare -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z4 · Gustare 16:00</div><div class="ph-d">Iaurt grecesc<br>cu nucă</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z4 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT GRECESC<br>CU NUCĂ</div>
+      <div class="rp-tags"><span class="tag-p">Anti-binge</span><span class="tag-m">16:00</span><span class="tag-t">⏱ 2 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">200</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">20G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">10G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">9G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">170 g</span></div>
+        <div class="ing"><span class="ing-n">Nucă</span><span class="ing-q">10 g</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară</span><span class="ing-q">un vârf</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Iaurtul în bol, nuca mărunțită deasupra, un vârf de scorțișoară.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Grăsimile sănătoase din nucă te țin sătulă până la cină.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Doar 10 g de nucă — măsoară, nu turna din pungă. <strong>E sănătoasă, dar densă caloric.</strong></div></div>
+</div>
+
+<!-- Z4 · Prânz -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z4 · Prânz</div><div class="ph-d">Ciorbă de pui<br>consistentă cu pâine</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z4 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CIORBĂ DE PUI<br>CONSISTENTĂ CU PÂINE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Prânz</span><span class="tag-t">⏱ 30 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">10G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">140 g</span></div>
+        <div class="ing"><span class="ing-n">Morcov, ardei, ceapă, țelină</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Roșii pasate</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Felie pâine secară</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Leuștean, sare</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fierbe puiul tăiat cubulețe cu legumele în apă cu sare, <strong>25 de minute</strong>.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Adaugă roșiile pasate și leușteanul la final. Mai dă un clocot.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Servește cu o felie de pâine de secară. Caldă, sățioasă, foarte puține calorii pentru cât te umple.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Ciorba e cea mai bună prietenă a ta: <strong>volum mare, calorii puține, sațietate lungă</strong>. Fă o oală pentru câteva zile.</div></div>
+</div>
+
+<!-- Z4 · Cină -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z4 · Cină</div><div class="ph-d">Omletă voluminoasă<br>cu legume</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z4 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OMLETĂ VOLUMINOASĂ<br>CU LEGUME</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Seara</span><span class="tag-t">⏱ 8 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">250</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">10G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">10G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ou întreg</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Albușuri</span><span class="ing-q">4 buc</span></div>
+        <div class="ing"><span class="ing-n">Spanac și ciuperci</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Telemea slabă</span><span class="ing-q">20 g</span></div>
+        <div class="ing"><span class="ing-n">Sare, piper</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Călește spanacul și ciupercile în tigaie până lasă apa și scade.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Toarnă oul cu albușurile peste, presară telemeaua și lasă să se lege la foc mic.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Volum mare din legume, proteină din albușuri, foarte puține calorii. Cină ușoară perfectă.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Albușurile dau proteină fără grăsime. <strong>Volum și sațietate la cost caloric mic</strong> — ideal seara.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ ZIUA 5 ═══════════════════════════════════════ -->
+<div class="page day-header">
+  <div class="dh-accent"></div>
+  <div class="dh-num">Ziua 05</div>
+  <div class="dh-title">RAPID</div>
+  <div class="dh-sub">Iaurt cu ovăz · brânză cu nucă · paste cu ton · iaurt fin</div>
+  <div class="dh-total">
+    <div class="dh-t"><span class="dh-t-l">Pauză</span><span class="dh-t-v red">1400</span></div>
+    <div class="dh-t"><span class="dh-t-l">Antren.</span><span class="dh-t-v">1600</span></div>
+    <div class="dh-t"><span class="dh-t-l">Prot.</span><span class="dh-t-v">120g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Carbi</span><span class="dh-t-v">125g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Grăs.</span><span class="dh-t-v">40g</span></div>
+  </div>
+</div>
+
+<!-- Z5 · Mic dejun -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z5 · Mic dejun</div><div class="ph-d">Iaurt grecesc<br>cu ovăz și miere</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z5 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT GRECESC<br>CU OVĂZ ȘI MIERE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Dimineața</span><span class="tag-t">⏱ 3 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">360</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">28G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Fulgi de ovăz</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Miere</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Fruct la alegere</span><span class="ing-q">1 mic</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Amestecă iaurtul cu ovăzul și lasă <strong>2 minute să se înmoaie</strong> (sau peste noapte, la frigider).</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Adaugă mierea și fructul tăiat deasupra. Gata în trei minute.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Lasă-l <strong>peste noapte la frigider</strong> („overnight oats") și dimineața doar îl scoți. Zero efort în diminețile grăbite.</div></div>
+</div>
+
+<!-- Z5 · Gustare -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z5 · Gustare 16:00</div><div class="ph-d">Brânză de vaci<br>cu nucă și fruct</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z5 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BRÂNZĂ DE VACI<br>CU NUCĂ ȘI FRUCT</div>
+      <div class="rp-tags"><span class="tag-p">Anti-binge</span><span class="tag-m">16:00</span><span class="tag-t">⏱ 2 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">210</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">22G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">15G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">7G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Brânză de vaci slabă</span><span class="ing-q">180 g</span></div>
+        <div class="ing"><span class="ing-n">Nucă</span><span class="ing-q">8 g</span></div>
+        <div class="ing"><span class="ing-n">Fruct mic (pară/măr)</span><span class="ing-q">1 buc</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Amestecă brânza cu fructul tăiat și nuca mărunțită.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Combinația proteină + grăsime + fibră te ține sătulă până la cină.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Aceeași idee anti-poftă, variație de gust. <strong>Plictiseala e cel mai mare dușman al unui plan</strong> — de-aia rotim.</div></div>
+</div>
+
+<!-- Z5 · Prânz -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z5 · Prânz</div><div class="ph-d">Paste integrale<br>cu ton și sos de roșii</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z5 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PASTE INTEGRALE<br>CU TON ȘI SOS DE ROȘII</div>
+      <div class="rp-tags"><span class="tag-p">Base Strength</span><span class="tag-m">Prânz</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">410</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">50G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Paste integrale (uscate)</span><span class="ing-q">60 g</span></div>
+        <div class="ing"><span class="ing-n">Ton în suc propriu</span><span class="ing-q">1 conservă</span></div>
+        <div class="ing"><span class="ing-n">Roșii pasate</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Usturoi, busuioc</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Ulei de măsline</span><span class="ing-q">1 linguriță</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fierbe pastele integrale conform pungii. Scurge-le.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Încinge roșiile pasate cu usturoi și un strop de ulei, adaugă tonul scurs.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Amestecă sosul cu pastele, busuioc deasupra. Prânz cu carbohidrați buni, bun mai ales în zi de antrenament.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Pastele <strong>integrale</strong> țin mai mult de foame decât cele albe și au fibre. Aceeași porție, sațietate dublă.</div></div>
+</div>
+
+<!-- Z5 · Cină -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z5 · Cină</div><div class="ph-d">Iaurt grecesc fin<br>cu scorțișoară</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z5 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT GRECESC FIN<br>CU SCORȚIȘOARĂ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Seara</span><span class="tag-t">⏱ 3 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">210</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">12G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">5G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc 0-2%</span><span class="ing-q">250 g</span></div>
+        <div class="ing"><span class="ing-n">Scorțișoară</span><span class="ing-q">un vârf</span></div>
+        <div class="ing"><span class="ing-n">Fructe de pădure (opțional)</span><span class="ing-q">40 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Iaurtul în bol, scorțișoară deasupra, eventual câteva fructe.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Cazeina din iaurtul grecesc se digeră lent — <strong>te ține sătulă peste noapte</strong> și hrănește mușchiul în somn.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Cină „de desert" care e de fapt o masă proteică. <strong>Răspunsul perfect</strong> la pofta de dulce de seara.</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ ZIUA 6 ═══════════════════════════════════════ -->
+<div class="page day-header">
+  <div class="dh-accent"></div>
+  <div class="dh-num">Ziua 06</div>
+  <div class="dh-title">TRADIȚIONAL</div>
+  <div class="dh-sub">Omletă cu mămăligă · iaurt cu semințe · pui cu cartof · supă cu friptură</div>
+  <div class="dh-total">
+    <div class="dh-t"><span class="dh-t-l">Pauză</span><span class="dh-t-v red">1400</span></div>
+    <div class="dh-t"><span class="dh-t-l">Antren.</span><span class="dh-t-v">1600</span></div>
+    <div class="dh-t"><span class="dh-t-l">Prot.</span><span class="dh-t-v">122g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Carbi</span><span class="dh-t-v">105g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Grăs.</span><span class="dh-t-v">46g</span></div>
+  </div>
+</div>
+
+<!-- Z6 · Mic dejun -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z6 · Mic dejun</div><div class="ph-d">Omletă cu mămăligă<br>la tigaie și legume</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z6 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OMLETĂ CU MĂMĂLIGĂ<br>LA TIGAIE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Dimineața</span><span class="tag-t">⏱ 10 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">390</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">35G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">13G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ou întreg</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Albușuri</span><span class="ing-q">3 buc</span></div>
+        <div class="ing"><span class="ing-n">Mămăligă caldă</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Telemea slabă</span><span class="ing-q">30 g</span></div>
+        <div class="ing"><span class="ing-n">Roșii și ardei</span><span class="ing-q">120 g</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Bate oul cu albușurile. Toarnă în tigaia caldă cu un strop de ulei.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Presară telemeaua, lasă să se lege și servește lângă mămăliga caldă și legumele proaspete.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Fă mămăliga seara și încălzește-o dimineața la tigaie. <strong>Mâncare de acasă, pusă în porția corectă.</strong></div></div>
+</div>
+
+<!-- Z6 · Gustare -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z6 · Gustare 16:00</div><div class="ph-d">Iaurt grecesc<br>cu semințe și fruct</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z6 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT GRECESC<br>CU SEMINȚE ȘI FRUCT</div>
+      <div class="rp-tags"><span class="tag-p">Anti-binge</span><span class="tag-m">16:00</span><span class="tag-t">⏱ 2 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">200</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">20G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">14G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">8G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">170 g</span></div>
+        <div class="ing"><span class="ing-n">Semințe (dovleac/in)</span><span class="ing-q">8 g</span></div>
+        <div class="ing"><span class="ing-n">Fruct mic</span><span class="ing-q">1 buc</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Iaurtul cu fructul tăiat și semințele deasupra.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Semințele dau crocant și grăsimi bune. Variație de gust pentru aceeași gustare anti-poftă.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Ține gustarea la îndemână la birou. <strong>Dacă e pregătită, o mănânci; dacă nu, ajungi la automatul cu napolitane.</strong></div></div>
+</div>
+
+<!-- Z6 · Prânz -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z6 · Prânz</div><div class="ph-d">Pui cu cartof copt<br>și salată verde</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z6 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PUI CU CARTOF COPT<br>ȘI SALATĂ VERDE</div>
+      <div class="rp-tags"><span class="tag-p">Base Strength</span><span class="tag-m">Prânz</span><span class="tag-t">⏱ 30 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">440</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">40G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">160 g</span></div>
+        <div class="ing"><span class="ing-n">Cartof</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Salată verde mixtă</span><span class="ing-q">100 g</span></div>
+        <div class="ing"><span class="ing-n">Ulei de măsline</span><span class="ing-q">1 linguriță</span></div>
+        <div class="ing"><span class="ing-n">Condimente, sare</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Condimentează puiul și cartoful tăiat felii. Pune-le în tavă la <strong>200°C, 25-30 minute</strong>.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Pregătește salata verde cu o linguriță de ulei și lămâie.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Servește totul împreună. Mâncare simplă, sățioasă, pe care o ții fără efort.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Cartoful copt cu coajă, nu prăjit. <strong>Carbohidrat bun, sățios, fără uleiul în plus</strong> al cartofilor prăjiți.</div></div>
+</div>
+
+<!-- Z6 · Cină -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z6 · Cină</div><div class="ph-d">Supă curată<br>cu friptură slabă</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z6 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SUPĂ CURATĂ<br>CU FRIPTURĂ SLABĂ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Seara</span><span class="tag-t">⏱ 20 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">280</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">12G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">11G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Vită slabă (mușchi)</span><span class="ing-q">130 g</span></div>
+        <div class="ing"><span class="ing-n">Morcov, țelină, ceapă</span><span class="ing-q">200 g</span></div>
+        <div class="ing"><span class="ing-n">Pătrunjel verde</span><span class="ing-q">după gust</span></div>
+        <div class="ing"><span class="ing-n">Sare, piper, foi de dafin</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fierbe carnea cu legumele întregi în apă cu sare, până e fragedă.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Scoate carnea, taie-o felii. Strecoară zeama curată și pune carnea înapoi.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Pătrunjel verde la final. Supă clară, caldă, ușoară pentru seară.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt"><strong>Zi de antrenament:</strong> adaugă o felie de pâine sau câteva linguri de orez în supă (+100 kcal carbo).</div></div>
+</div>
+
+<!-- ═══════════════════════════════════════ ZIUA 7 ═══════════════════════════════════════ -->
+<div class="page day-header">
+  <div class="dh-accent"></div>
+  <div class="dh-num">Ziua 07</div>
+  <div class="dh-title">DE<br>WEEKEND</div>
+  <div class="dh-sub">Ouă cu avocado · smoothie · crispy de pui · pește cu salată</div>
+  <div class="dh-total">
+    <div class="dh-t"><span class="dh-t-l">Pauză</span><span class="dh-t-v red">1400</span></div>
+    <div class="dh-t"><span class="dh-t-l">Antren.</span><span class="dh-t-v">1600</span></div>
+    <div class="dh-t"><span class="dh-t-l">Prot.</span><span class="dh-t-v">123g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Carbi</span><span class="dh-t-v">95g</span></div>
+    <div class="dh-t"><span class="dh-t-l">Grăs.</span><span class="dh-t-v">50g</span></div>
+  </div>
+</div>
+
+<!-- Z7 · Mic dejun -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z7 · Mic dejun</div><div class="ph-d">Ouă jumări cu<br>avocado și șuncă</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z7 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OUĂ JUMĂRI CU<br>AVOCADO ȘI ȘUNCĂ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Dimineața</span><span class="tag-t">⏱ 8 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">400</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">30G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">18G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">22G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Ou întreg</span><span class="ing-q">1 buc</span></div>
+        <div class="ing"><span class="ing-n">Albușuri</span><span class="ing-q">3 buc</span></div>
+        <div class="ing"><span class="ing-n">Avocado</span><span class="ing-q">1/3 buc</span></div>
+        <div class="ing"><span class="ing-n">Șuncă de pui</span><span class="ing-q">40 g</span></div>
+        <div class="ing"><span class="ing-n">Felie pâine secară</span><span class="ing-q">1 buc</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Fă jumări din ou și albușuri la foc mic, cu șunca tăiată cubulețe.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Servește cu avocado feliat și o felie de pâine de secară. Mic dejun de weekend, fără să ieși din plan.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Avocado dă grăsimi bune și cremozitate. <strong>O treime e suficient</strong> — e sănătos, dar dens caloric.</div></div>
+</div>
+
+<!-- Z7 · Gustare -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z7 · Gustare 16:00</div><div class="ph-d">Smoothie cu iaurt<br>și fructe de pădure</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z7 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SMOOTHIE CU IAURT<br>ȘI FRUCTE DE PĂDURE</div>
+      <div class="rp-tags"><span class="tag-p">Anti-binge</span><span class="tag-m">16:00</span><span class="tag-t">⏱ 3 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">200</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">23G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">18G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">4G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Fructe de pădure congelate</span><span class="ing-q">80 g</span></div>
+        <div class="ing"><span class="ing-n">Apă sau lapte</span><span class="ing-q">100 ml</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Pune toate ingredientele în blender și mixează până e fin.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Răcoritor, proteic, cu gust de desert. Bun mai ales în zilele călduroase.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Folosește fructe congelate — sunt la fel de bune ca proaspetele, mereu la îndemână și dau textura de înghețată.</div></div>
+</div>
+
+<!-- Z7 · Prânz -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z7 · Prânz</div><div class="ph-d">Crispy de pui<br>cu orez și salată</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z7 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CRISPY DE PUI<br>CU OREZ ȘI SALATĂ</div>
+      <div class="rp-tags"><span class="tag-p">Base Strength</span><span class="tag-m">Prânz</span><span class="tag-t">⏱ 25 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">460</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">45G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">Piept de pui</span><span class="ing-q">150 g</span></div>
+        <div class="ing"><span class="ing-n">Orez fiert</span><span class="ing-q">130 g</span></div>
+        <div class="ing"><span class="ing-n">Salată verde, roșii</span><span class="ing-q">120 g</span></div>
+        <div class="ing"><span class="ing-n">Ou + ovăz măcinat (crustă)</span><span class="ing-q">1 buc + 20 g</span></div>
+        <div class="ing"><span class="ing-n">Boia, sare</span><span class="ing-q">după gust</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Treci fâșiile de pui prin ou și ovăz cu boia. Coace la air fryer, <strong>200°C, 18 minute</strong>.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Servește cu orezul cald și salata verde proaspătă. Varianta sănătoasă de „crispy de weekend".</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Pofta de „crispy" rezolvată fără prăjeală. <strong>Aceeași textură, jumătate din calorii</strong> — și fără vinovăție.</div></div>
+</div>
+
+<!-- Z7 · Cină -->
+<div class="page rp">
+  <div class="rp-photo">
+    <div class="ph"><div class="ph-k">Z7 · Cină</div><div class="ph-d">Pește alb<br>cu salată mare</div></div>
+    <div class="rp-photo-overlay"></div>
+    <div class="rp-badge">Z7 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PEȘTE ALB<br>CU SALATĂ MARE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-m">Seara</span><span class="tag-t">⏱ 18 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">250</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">33G</span></div>
+      <div class="nut"><span class="nut-l">Carbohidrați</span><span class="nut-v">10G</span></div>
+      <div class="nut"><span class="nut-l">Grăsimi</span><span class="nut-v">9G</span></div>
+    </div>
+    <div class="rp-content">
+      <div>
+        <div class="col-h">Ingrediente</div>
+        <div class="ing"><span class="ing-n">File pește alb</span><span class="ing-q">170 g</span></div>
+        <div class="ing"><span class="ing-n">Salată verde mixtă</span><span class="ing-q">120 g</span></div>
+        <div class="ing"><span class="ing-n">Castravete, roșii</span><span class="ing-q">120 g</span></div>
+        <div class="ing"><span class="ing-n">Ulei de măsline, lămâie</span><span class="ing-q">1 linguriță</span></div>
+      </div>
+      <div>
+        <div class="col-h">Execuție</div>
+        <div class="step"><span class="sn">01</span><div class="st">Gătește peștele la tigaie sau cuptor cu lămâie și sare, până se desface ușor.</div></div>
+        <div class="step"><span class="sn">02</span><div class="st">Pregătește o salată mare cu uleiul și lămâia.</div></div>
+        <div class="step"><span class="sn">03</span><div class="st">Cină ușoară care încheie săptămâna fără să te încarce înainte de somn.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="rp-tip"><span class="tip-tag">PONT</span><div class="tip-div"></div><div class="tip-txt">Închei cele 7 zile cum le-ai început: <strong>proteină, legume, gust curat</strong>. Asta nu e o săptămână — e felul în care mănânci de acum.</div></div>
+</div>
+
+<!-- ═══════════════════════ FINAL ═══════════════════════ -->
+<div class="page day-header">
+  <div class="dh-accent"></div>
+  <div class="dh-num">BUILT</div>
+  <div class="dh-title">ASTA E<br>SISTEMUL</div>
+  <p style="font-size:15px;line-height:1.7;color:rgba(255,255,255,0.7);max-width:520px;margin-top:24px;text-align:center;">
+    Nu numeri obsesiv și nu-ți interzici nimic. Alegi ziua, gătești, mănânci.<br>
+    Asta nu e o dietă de câteva luni — e felul în care mănânci de acum încolo.
+  </p>
+  <div style="font-family:'Barlow Condensed',sans-serif;font-size:11px;letter-spacing:4px;color:rgba(255,255,255,0.35);text-transform:uppercase;margin-top:40px;">Arhitectura corpului pe 90 de zile</div>
+</div>
+
+<!-- ─── NAVIGARE CARTE ─── -->
+<button class="book-toggle" id="bookToggle">☰ Scroll</button>
+<div class="tap left" id="tapL"></div>
+<div class="tap right" id="tapR"></div>
+<div class="nav">
+  <button id="navFirst" title="Prima pagină">«</button>
+  <button id="navPrev" title="Înapoi">‹</button>
+  <span class="nav-count"><b id="navCur">1</b> / <span id="navTot">39</span></span>
+  <button id="navNext" title="Înainte">›</button>
+  <button id="navLast" title="Ultima pagină">»</button>
+</div>
+
+<script>
+(function(){
+  var pages = Array.prototype.slice.call(document.querySelectorAll('.page'));
+  var idx = 0, bookMode = true;
+  var elCur = document.getElementById('navCur'),
+      elTot = document.getElementById('navTot'),
+      bPrev = document.getElementById('navPrev'),
+      bNext = document.getElementById('navNext'),
+      bFirst = document.getElementById('navFirst'),
+      bLast = document.getElementById('navLast'),
+      toggle = document.getElementById('bookToggle');
+  elTot.textContent = pages.length;
+
+  function fit(){
+    var vw = window.innerWidth, vh = window.innerHeight - 56;
+    var p = pages[idx];
+    var pw = 900, ph = p.scrollHeight || p.offsetHeight;
+    var s = Math.min((vw - 40) / pw, (vh - 30) / ph, 1);
+    if (s < 0.2) s = 0.2;
+    document.body.style.setProperty('--fit', s);
+  }
+
+  function show(n){
+    idx = Math.max(0, Math.min(pages.length - 1, n));
+    pages.forEach(function(p,i){ p.classList.toggle('cur', i === idx); });
+    elCur.textContent = idx + 1;
+    bPrev.disabled = bFirst.disabled = (idx === 0);
+    bNext.disabled = bLast.disabled = (idx === pages.length - 1);
+    pages[idx].scrollTop = 0;
+    fit();
+  }
+
+  function setBook(on){
+    bookMode = on;
+    document.body.classList.toggle('book', on);
+    toggle.textContent = on ? '☰ Scroll' : '▭ Carte';
+    if (on) show(idx); else document.body.style.removeProperty('--fit');
+  }
+
+  bPrev.onclick = function(){ show(idx - 1); };
+  bNext.onclick = function(){ show(idx + 1); };
+  bFirst.onclick = function(){ show(0); };
+  bLast.onclick = function(){ show(pages.length - 1); };
+  document.getElementById('tapL').onclick = function(){ show(idx - 1); };
+  document.getElementById('tapR').onclick = function(){ show(idx + 1); };
+  toggle.onclick = function(){ setBook(!bookMode); };
+
+  document.addEventListener('keydown', function(e){
+    if (!bookMode) return;
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') { show(idx + 1); }
+    else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { show(idx - 1); }
+    else if (e.key === 'Home') { show(0); }
+    else if (e.key === 'End') { show(pages.length - 1); }
+  });
+
+  var x0 = null;
+  document.addEventListener('touchstart', function(e){ x0 = e.touches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', function(e){
+    if (!bookMode || x0 === null) return;
+    var dx = e.changedTouches[0].clientX - x0;
+    if (Math.abs(dx) > 50) { show(dx < 0 ? idx + 1 : idx - 1); }
+    x0 = null;
+  }, {passive:true});
+
+  window.addEventListener('resize', function(){ if (bookMode) fit(); });
+
+  setBook(true);
+  show(0);
+})();
+</script>
+
+</body>
+</html>

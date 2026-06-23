@@ -4,6 +4,7 @@ import BonusuriClient, { type PersonalCookbook, type PersonalBonus } from "./Bon
 // Cartea de rețete personalizată e legată de clientul logat — nu o vede nimeni altcineva.
 const PERSONAL_COOKBOOKS: Record<number, PersonalCookbook> = {
   1: { file: "/Cartea_Retete_Alex.html", name: "Alex", emoji: "👨‍🍳" },
+  2: { file: "/Cartea_Retete_Letitia.html", name: "Letitia", emoji: "👩‍🍳" },
   6: { file: "/Cartea_Retete_Claudia.html", name: "Claudia", emoji: "👩‍🍳" },
 };
 
