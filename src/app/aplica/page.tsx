@@ -57,9 +57,22 @@ export default function AplicaPage() {
           <p className="text-zinc-400 text-[15px] leading-relaxed mb-3">
             O citesc personal — nu un robot. Dacă văd că te pot ajuta cu adevărat, îți scriu în DM în <span className="text-white">maxim 24 de ore</span>.
           </p>
-          <p className="text-zinc-500 text-sm leading-relaxed">
+          <p className="text-zinc-500 text-sm leading-relaxed mb-10">
             Nu trimit oferte automate. Întâi diagnostichez, apoi îți spun sincer dacă e pentru tine. <span className="text-built-white font-medium">BUILT selectează, nu vinde.</span>
           </p>
+
+          {/* Lead magnet — valoare instant cât aștepți DM-ul */}
+          <div className="text-left rounded-2xl border border-built-red/25 bg-built-red/[0.04] p-5">
+            <p className="font-condensed text-[11px] uppercase tracking-[0.22em] text-built-red mb-2">Până îți scriu — citește asta</p>
+            <p className="text-built-white font-display text-2xl leading-[0.95] mb-2">Capcana Cortizolului</p>
+            <p className="text-zinc-400 text-[13px] leading-relaxed mb-4">
+              De ce voința n-a fost niciodată problema ta — și ce ține grăsimea pe burtă chiar dacă te miști. 10 minute care îți schimbă felul în care vezi tot.
+            </p>
+            <a href="/lead-magnet/Capcana-Cortizolului-BUILT.pdf" download
+              className="inline-flex items-center gap-2 bg-built-red text-white font-condensed uppercase tracking-widest text-[13px] px-5 py-3 rounded-xl hover:bg-built-red/90 active:scale-[0.99] transition-all">
+              ↓ Descarcă PDF-ul gratuit
+            </a>
+          </div>
         </div>
       </div>
     );
