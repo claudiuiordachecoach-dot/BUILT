@@ -30,6 +30,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/login") ||
     pathname.startsWith("/api") ||
     pathname.startsWith("/p/") ||
+    pathname.startsWith("/aplica") ||
     pathname.startsWith("/debug") ||
     pathname.startsWith("/fisa-start")
   ) {
