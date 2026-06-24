@@ -2,8 +2,9 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import toast from "react-hot-toast";
 import {
-  getDailyPlan, saveDailyPlan, getDailySignals,
+  getDailyPlan, saveDailyPlan, getDailySignals, logProspectOutcome,
   type DailyPlan, type DailyItem, type Appointment, type DailySignals, type CallSignal,
 } from "./actions";
 
@@ -457,9 +458,9 @@ const CLIENT_LEVEL: Record<string, { label: string; cls: string }> = {
   atentie: { label: "ATENȚIE", cls: "text-zinc-400 border-white/20 bg-white/5" },
 };
 
-function SignalRow({ chip, title, sub, href, onAdd, added }: {
+function SignalRow({ chip, title, sub, href, onAdd, added, rightSlot }: {
   chip: { label: string; cls: string }; title: string; sub: string;
-  href: string; onAdd: () => void; added: boolean;
+  href: string; onAdd?: () => void; added?: boolean; rightSlot?: React.ReactNode;
 }) {
   return (
     <div className="flex items-center gap-3 py-2 group">
@@ -470,20 +471,74 @@ function SignalRow({ chip, title, sub, href, onAdd, added }: {
         <p className="text-sm text-white truncate">{title}</p>
         {sub && <p className="text-[11px] text-zinc-500 truncate">{sub}</p>}
       </Link>
-      <button type="button" onClick={onAdd} disabled={added}
-        className={`text-[10px] font-condensed uppercase tracking-wider px-2.5 py-1.5 rounded-lg border shrink-0 transition-colors ${
-          added ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/5 cursor-default"
-                : "text-zinc-400 border-white/10 hover:border-built-red/40 hover:text-built-red"
-        }`}>
-        {added ? "✓ pe listă" : "+ azi"}
-      </button>
+      {rightSlot ?? (
+        <button type="button" onClick={onAdd} disabled={added}
+          className={`text-[10px] font-condensed uppercase tracking-wider px-2.5 py-1.5 rounded-lg border shrink-0 transition-colors ${
+            added ? "text-emerald-400 border-emerald-500/30 bg-emerald-500/5 cursor-default"
+                  : "text-zinc-400 border-white/10 hover:border-built-red/40 hover:text-built-red"
+          }`}>
+          {added ? "✓ pe listă" : "+ azi"}
+        </button>
+      )}
     </div>
   );
 }
 
-function SignalsPanel({ signals, onAddToDay }: {
+// ─── Rezultatul apelului — închiderea buclei cu un tap ───────────────────────
+
+function OutcomeControl({ id, name, onResolved }: {
+  id: number; name: string; onResolved: () => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const [note, setNote] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  async function fire(outcome: "castigat" | "followup" | "pierdut", days?: number) {
+    setBusy(true);
+    const r = await logProspectOutcome(id, outcome, { note: note.trim() || undefined, days });
+    setBusy(false);
+    if (!r.ok) { toast.error(r.error || "N-a mers, încearcă din nou."); return; }
+    toast.success(
+      outcome === "castigat" ? `${name} → client. Felicitări.`
+        : outcome === "pierdut" ? `${name} marcat pierdut.`
+          : `Follow-up pentru ${name}, programat.`
+    );
+    setOpen(false); setNote(""); onResolved();
+  }
+
+  if (!open) {
+    return (
+      <button type="button" onClick={() => setOpen(true)}
+        className="text-[10px] font-condensed uppercase tracking-wider px-2.5 py-1.5 rounded-lg border border-white/10 text-zinc-400 hover:border-built-red/40 hover:text-built-red transition-colors shrink-0">
+        rezultat
+      </button>
+    );
+  }
+
+  const btn = "text-[10px] font-condensed uppercase tracking-wider px-2 py-1.5 rounded-lg border transition-colors disabled:opacity-40";
+  return (
+    <div className="flex flex-col gap-1.5 shrink-0 w-[244px]">
+      <div className="flex items-center gap-1.5">
+        <button type="button" disabled={busy} onClick={() => fire("castigat")}
+          className={`${btn} text-emerald-400 border-emerald-500/30 hover:bg-emerald-500/10`}>✓ Câștigat</button>
+        <button type="button" disabled={busy} onClick={() => fire("followup", 2)}
+          className={`${btn} text-amber-400 border-amber-500/30 hover:bg-amber-500/10`}>↻ Follow-up</button>
+        <button type="button" disabled={busy} onClick={() => fire("pierdut")}
+          className={`${btn} text-zinc-400 border-white/15 hover:border-built-red/40 hover:text-built-red`}>✕ Pierdut</button>
+        <button type="button" onClick={() => { setOpen(false); setNote(""); }}
+          className="text-zinc-600 hover:text-white w-5 text-center text-base shrink-0">×</button>
+      </div>
+      <input value={note} onChange={(e) => setNote(e.target.value)}
+        placeholder="motiv / ce urmărești (opțional)"
+        className="bg-transparent border-b border-white/10 focus:border-built-red/40 px-1 py-1 text-[12px] text-white placeholder-zinc-700 focus:outline-none transition-colors" />
+    </div>
+  );
+}
+
+function SignalsPanel({ signals, onAddToDay, onResolved }: {
   signals: DailySignals | null;
   onAddToDay: (list: "clients" | "tasks", text: string) => void;
+  onResolved: () => void;
 }) {
   const [added, setAdded] = useState<Set<string>>(new Set());
   if (!signals) return null;
@@ -521,8 +576,7 @@ function SignalsPanel({ signals, onAddToDay }: {
                   title={`${p.name} · ${PROSPECT_STATUS_LABEL[p.status] ?? p.status}`}
                   sub={action}
                   href="/dashboard/prospects"
-                  added={added.has(k)}
-                  onAdd={() => { onAddToDay("clients", `${p.name} — ${action}`); markAdded(k); }}
+                  rightSlot={<OutcomeControl id={p.id} name={p.name} onResolved={onResolved} />}
                 />
               );
             })}
@@ -569,7 +623,7 @@ function fmtCountdown(min: number): { label: string; cls: string } {
   return { label: `peste ${h}h${m ? ` ${m}m` : ""}`, cls: "text-zinc-400" };
 }
 
-function CallsBanner({ appointments, signalCalls, notifPerm, onEnableReminders, onAdd, onEdit, onDelete, onToggle }: {
+function CallsBanner({ appointments, signalCalls, notifPerm, onEnableReminders, onAdd, onEdit, onDelete, onToggle, onResolved }: {
   appointments: Appointment[];
   signalCalls: CallSignal[];
   notifPerm: NotificationPermission;
@@ -578,6 +632,7 @@ function CallsBanner({ appointments, signalCalls, notifPerm, onEnableReminders, 
   onEdit: (id: string, a: Omit<Appointment, "id" | "done">) => void;
   onDelete: (id: string) => void;
   onToggle: (id: string) => void;
+  onResolved: () => void;
 }) {
   const [nowMs, setNowMs] = useState(Date.now());
   const [editId, setEditId] = useState<string | null>(null);
@@ -652,15 +707,22 @@ function CallsBanner({ appointments, signalCalls, notifPerm, onEnableReminders, 
       )}
 
       {pipelineToday.length > 0 && (
-        <Link href="/dashboard/prospects"
-          className="flex items-center gap-2 mt-3 pt-3 border-t border-white/[0.06] hover:opacity-80 transition-opacity">
-          <span className="text-[9px] font-condensed uppercase tracking-wider px-2 py-1 rounded-md border border-amber-500/40 bg-amber-500/10 text-amber-400 shrink-0">
-            FĂRĂ ORĂ
-          </span>
-          <p className="text-[11px] text-zinc-400">
-            {pipelineToday.length} {pipelineToday.length === 1 ? "apel programat" : "apeluri programate"} din pipeline azi — pune-le oră în calendar ca să primești reminder →
-          </p>
-        </Link>
+        <div className="mt-3 pt-3 border-t border-white/[0.06] space-y-1">
+          <p className="text-[10px] uppercase tracking-wider text-zinc-600 mb-1">Apeluri din pipeline azi</p>
+          {pipelineToday.map((c) => (
+            <div key={c.id} className="flex items-center gap-3 py-1">
+              <span className="text-[9px] font-condensed uppercase tracking-wider px-2 py-1 rounded-md border border-amber-500/40 bg-amber-500/10 text-amber-400 shrink-0 w-[88px] text-center">
+                FĂRĂ ORĂ
+              </span>
+              <Link href="/dashboard/prospects" className="flex-1 min-w-0 hover:opacity-80 transition-opacity">
+                <p className="text-sm text-white truncate">{c.name}</p>
+                {c.next_step && <p className="text-[11px] text-zinc-500 truncate">{c.next_step}</p>}
+              </Link>
+              <OutcomeControl id={c.id} name={c.name} onResolved={onResolved} />
+            </div>
+          ))}
+          <p className="text-[11px] text-zinc-600 pt-1">Pune-le oră în calendar ca să primești reminder — sau marchează rezultatul direct după apel.</p>
+        </div>
       )}
 
       {notifSupported() && (
@@ -699,10 +761,11 @@ export default function AziPage() {
     getDailyPlan(dateStr).then((p) => { setPlan(p); skipSave.current = false; });
   }, [dateStr]);
 
-  // Semnalele zilei — „acum", nu per dată. Le tragem o dată, la încărcare.
-  useEffect(() => {
+  // Semnalele zilei — „acum", nu per dată. Reîncărcabile după ce marchezi un rezultat.
+  const reloadSignals = useCallback(() => {
     getDailySignals().then(setSignals).catch(() => setSignals({ calls: [], prospects: [], clients: [] }));
   }, []);
+  useEffect(() => { reloadSignals(); }, [reloadSignals]);
 
   // Starea permisiunii de notificare la încărcare.
   useEffect(() => {
@@ -881,6 +944,7 @@ export default function AziPage() {
               onEdit={editAppointment}
               onDelete={deleteAppointment}
               onToggle={toggleAppointment}
+              onResolved={reloadSignals}
             />
           )}
 
@@ -896,7 +960,7 @@ export default function AziPage() {
 
           {/* Semnale — ce contează azi (doar pe ziua curentă) */}
           {isToday(dateStr) && (
-            <SignalsPanel signals={signals} onAddToDay={(list, text) => addItem(list, text)} />
+            <SignalsPanel signals={signals} onAddToDay={(list, text) => addItem(list, text)} onResolved={reloadSignals} />
           )}
 
           {/* Dimineață */}

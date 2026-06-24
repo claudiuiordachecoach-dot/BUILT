@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { listProspects } from "@/app/dashboard/prospects/actions";
 import { listClientsWithRisk } from "@/app/clienti/actions";
@@ -177,6 +178,56 @@ export async function getDailySignals(): Promise<DailySignals> {
   }
 
   return { calls, prospects, clients };
+}
+
+// ─── Închiderea buclei: rezultatul apelului, cu un tap din „Azi" ──────────────
+
+export type ProspectOutcome = "castigat" | "followup" | "pierdut";
+
+/**
+ * Marchează rezultatul unui apel/prospect direct din cockpit — plombează gaura
+ * cu apeluri netrackuite. Câștigat → client. Follow-up → reprogramat peste `days`.
+ * Pierdut → status pierdut + motivul scris în notițe (cu dată), ca să înveți din el.
+ */
+export async function logProspectOutcome(
+  id: number,
+  outcome: ProspectOutcome,
+  opts?: { note?: string; days?: number }
+): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const s = getSupabaseServer();
+    const today = new Date().toISOString().slice(0, 10);
+    const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+
+    if (outcome === "castigat") {
+      patch.status = "client";
+      patch.next_step = null;
+      patch.next_step_date = null;
+    } else if (outcome === "followup") {
+      const days = opts?.days && opts.days > 0 ? opts.days : 2;
+      const d = new Date(); d.setDate(d.getDate() + days);
+      patch.next_step = opts?.note?.trim() || "Follow-up după apel";
+      patch.next_step_date = d.toISOString().slice(0, 10);
+    } else {
+      patch.status = "pierdut";
+      patch.next_step = null;
+      patch.next_step_date = null;
+      const reason = opts?.note?.trim();
+      if (reason) {
+        const { data } = await s.from("prospects").select("notes").eq("id", id).single();
+        const prev = (data?.notes ?? "").trim();
+        patch.notes = (prev ? prev + "\n" : "") + `[${today}] Pierdut: ${reason}`;
+      }
+    }
+
+    const { error } = await s.from("prospects").update(patch).eq("id", id);
+    if (error) return { ok: false, error: error.message };
+    revalidatePath("/dashboard/prospects");
+    revalidatePath("/dashboard/azi");
+    return { ok: true };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare necunoscută." };
+  }
 }
 
 export async function saveDailyPlan(plan: DailyPlan): Promise<{ ok: boolean; error?: string }> {
