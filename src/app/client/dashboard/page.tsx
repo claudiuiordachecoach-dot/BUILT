@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { getClientDashboard, getTodayLog, getStreak, getClientBadges } from "../actions";
+import { getClientDashboard, getTodayLog, getTodayMetrics, getStreak, getClientBadges } from "../actions";
 import { NAV_ICONS } from "@/components/nav-icons";
 import DailyChecklist from "./DailyChecklist";
+import DailyMetrics from "./DailyMetrics";
 import Badges from "./Badges";
 import PillarRadar, { type PillarScores } from "./PillarRadar";
 
@@ -44,9 +45,9 @@ export default async function ClientDashboardPage({
 
   const { client, weekNumber, daysInProgram, latestCheckin, unreadCount } = data;
   const clientId = client?.id;
-  const [todayLog, streak, badges] = clientId
-    ? await Promise.all([getTodayLog(clientId), getStreak(clientId), getClientBadges(clientId)])
-    : [{}, 0, []];
+  const [todayLog, todayMetrics, streak, badges] = clientId
+    ? await Promise.all([getTodayLog(clientId), getTodayMetrics(clientId), getStreak(clientId), getClientBadges(clientId)])
+    : [{}, {}, 0, []];
 
   return (
     <div className="p-5 md:p-8 max-w-4xl">
@@ -68,6 +69,8 @@ export default async function ClientDashboardPage({
       </div>
 
       {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
+
+      {clientId && <DailyMetrics clientId={clientId} initial={todayMetrics} />}
 
       {badges.length > 0 && <Badges badges={badges} />}
 

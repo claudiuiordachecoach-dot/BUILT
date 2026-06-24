@@ -532,6 +532,42 @@ export async function toggleTodayItem(clientId: number, key: string, value: bool
     .upsert({ client_id: clientId, log_date: date, items, updated_at: new Date().toISOString() }, { onConflict: "client_id,log_date" });
 }
 
+/** Salvează o valoare numerică zilnică (pași, ore somn, greutate) în items. value null → șterge. */
+export async function saveTodayMetric(clientId: number, key: string, value: number | null) {
+  const db = getSupabaseServer();
+  const date = todayStr();
+  const { data: existing } = await db
+    .from("daily_logs")
+    .select("items")
+    .eq("client_id", clientId)
+    .eq("log_date", date)
+    .single();
+  const items: Record<string, unknown> = { ...((existing?.items as Record<string, unknown>) ?? {}) };
+  if (value === null || Number.isNaN(value)) delete items[key];
+  else items[key] = value;
+  await db
+    .from("daily_logs")
+    .upsert({ client_id: clientId, log_date: date, items, updated_at: new Date().toISOString() }, { onConflict: "client_id,log_date" });
+}
+
+/** Valorile numerice de azi (pași/somn/greutate) pentru pre-completarea formularului. */
+export async function getTodayMetrics(clientId: number): Promise<Record<string, number | undefined>> {
+  try {
+    const db = getSupabaseServer();
+    const { data } = await db
+      .from("daily_logs")
+      .select("items")
+      .eq("client_id", clientId)
+      .eq("log_date", todayStr())
+      .single();
+    const items = (data?.items as Record<string, unknown>) ?? {};
+    const num = (v: unknown) => (typeof v === "number" ? v : undefined);
+    return { steps: num(items.steps), sleep_h: num(items.sleep_h), weight: num(items.weight) };
+  } catch {
+    return {};
+  }
+}
+
 export type TrainingDay = { label: string; date: string; trained: boolean; isToday: boolean; isFuture: boolean };
 
 /** Starea antrenamentelor pe săptămâna curentă (Luni–Duminică) din daily_logs. */
