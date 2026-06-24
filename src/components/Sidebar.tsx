@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { SignOutButton } from "./SignOutButton";
+import { BuiltPillars, BuiltWordmark } from "./BrandLogo";
 import { getAdminUnreadCount } from "@/app/client/actions";
 
 /* ─── Icons ──────────────────────────────────────────────────────────────────*/
@@ -47,7 +48,7 @@ const MAIN_ITEMS: NavEntry[] = [
   { label: "Calendar Conținut",   href: "/dashboard/calendar",        icon: <Icons.calendar /> },
   { label: "DM Sales",            href: "/dashboard/outreach",        icon: <Icons.message /> },
   { label: "Pipeline Prospecți",  href: "/dashboard/prospects",       icon: <Icons.users /> },
-  { label: "Întreabă BUILT AI",   href: "/dashboard/knowledge-base",  icon: <Icons.brain /> },
+  { label: "Întreabă BUILT",      href: "/dashboard/knowledge-base",  icon: <Icons.brain /> },
   { label: "Audit Creier",        href: "/dashboard/creier-audit",    icon: <Icons.settings /> },
 ];
 
@@ -160,10 +161,8 @@ export function Sidebar() {
               </button>
             ) : (
               <>
-                <div className="w-6 h-6 bg-built-red rounded flex items-center justify-center shrink-0">
-                  <span className="text-white text-[10px] font-bold">B</span>
-                </div>
-                <span className="text-foreground font-semibold text-[13px]">BUILT</span>
+                <BuiltPillars size={16} />
+                <BuiltWordmark className="text-lg text-foreground" />
               </>
             )}
           </div>
@@ -201,11 +200,9 @@ export function Sidebar() {
     >
       {/* Header */}
       <div className={`border-b border-border ${collapsed ? "p-3" : "p-4"}`}>
-        <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2"} mb-3`}>
-          <div className="w-6 h-6 bg-built-red rounded flex items-center justify-center shrink-0">
-            <span className="text-white text-[10px] font-bold">B</span>
-          </div>
-          {!collapsed && <span className="text-foreground font-semibold text-[13px]">BUILT AI</span>}
+        <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2.5"} mb-3`}>
+          <BuiltPillars size={18} />
+          {!collapsed && <BuiltWordmark className="text-xl text-foreground" />}
         </div>
         {!collapsed && (
           <div className="flex items-center gap-2 px-2 py-1.5 bg-muted/50 rounded-lg">

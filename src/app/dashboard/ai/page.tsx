@@ -112,7 +112,7 @@ function AskAIContent() {
               </svg>
               <div>
                 <p className="text-[18px] font-semibold text-zinc-300 mb-2">
-                  Ask BUILT AI anything
+                  Ask BUILT anything
                 </p>
                 <p className="text-[13px] text-zinc-500 text-center max-w-xs leading-relaxed">
                   Primești sfaturi personalizate pentru creșterea pe Instagram, conținut mai bun și conversia followerilor în clienți.
@@ -169,7 +169,7 @@ function AskAIContent() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 disabled={loading}
-                placeholder="Întreabă BUILT AI orice..."
+                placeholder="Întreabă BUILT orice..."
                 rows={1}
                 className="flex-1 bg-transparent text-[13px] text-zinc-100 placeholder-zinc-600 resize-none outline-none max-h-32 disabled:opacity-50"
               />

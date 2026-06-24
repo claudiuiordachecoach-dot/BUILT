@@ -43,7 +43,7 @@ export default function LoginPage() {
           {!resetMode ? (
             <>
               <h1 className="text-xl font-bold text-white mb-1">Intră în cont</h1>
-              <p className="text-sm text-zinc-500 mb-6">BUILT AI Command Center</p>
+              <p className="text-sm text-zinc-500 mb-6">Command Center</p>
               <form action={handleSubmit} className="space-y-4">
                 <div>
                   <label className="block text-xs text-zinc-400 mb-1.5">Email</label>
@@ -137,7 +137,7 @@ export default function LoginPage() {
           )}
         </div>
         <p className="text-center text-[11px] text-zinc-700 mt-6">
-          BUILT AI Command Center
+          BUILT · Command Center
         </p>
       </div>
     </div>

@@ -18,7 +18,7 @@ export async function sendMessage(conversationId: number | null, userMessage: st
     `## ${s.title}\n${JSON.stringify(s.content)}`
   ).join('\n\n') ?? "";
 
-  const systemPrompt = `Ești BUILT AI — asistentul personal al lui Iordache Claudiu, construit pe baza sistemului BUILT (Arhitectura Corpului pe 90 de zile).
+  const systemPrompt = `Ești BUILT — asistentul personal al lui Iordache Claudiu, construit pe baza sistemului BUILT (Arhitectura Corpului pe 90 de zile).
 
 CUNOȘTINȚELE TALE DESPRE CLAUDIU:
 ${creierContext}

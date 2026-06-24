@@ -68,7 +68,7 @@ export default function KnowledgePage() {
       {/* Sidebar */}
       <aside className="w-64 shrink-0 bg-[#0d0d0d] border-r border-white/10 flex flex-col">
         <div className="p-4 border-b border-white/10">
-          <h2 className="text-xs font-semibold text-zinc-400 tracking-widest uppercase mb-3">Ask BUILT AI</h2>
+          <h2 className="text-xs font-semibold text-zinc-400 tracking-widest uppercase mb-3">Ask BUILT</h2>
           <button
             onClick={newConversation}
             className="w-full bg-built-red/10 hover:bg-built-red/20 border border-built-red/30 text-built-red text-xs font-semibold py-2 rounded-lg transition-all"
@@ -119,7 +119,7 @@ export default function KnowledgePage() {
           {messages.length === 0 && (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <div className="w-16 h-16 rounded-2xl bg-built-red/10 border border-built-red/20 flex items-center justify-center text-2xl mb-4">◎</div>
-              <h3 className="text-lg font-semibold text-zinc-200 mb-1">Ask BUILT AI</h3>
+              <h3 className="text-lg font-semibold text-zinc-200 mb-1">Ask BUILT</h3>
               <p className="text-sm text-zinc-500 max-w-sm">Sfaturi personalizate pentru content, DM-uri, clienți — bazate pe sistemul BUILT al lui Claudiu.</p>
             </div>
           )}
@@ -152,7 +152,7 @@ export default function KnowledgePage() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }}}
-              placeholder="Întreabă BUILT AI orice..."
+              placeholder="Întreabă BUILT orice..."
               className="flex-1 bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none focus:border-built-red/50"
             />
             <button onClick={() => handleSend()} disabled={loading || !input.trim()}

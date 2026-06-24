@@ -2,10 +2,14 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { usePathname, useSearchParams, useRouter } from "next/navigation";
-import { BrandLogo } from "./BrandLogo";
+import { BrandLogo, BuiltPillars, BuiltWordmark } from "./BrandLogo";
 import { SignOutButton } from "./SignOutButton";
 import { UserDisplay } from "./UserDisplay";
 import { NAV_ICONS as ICONS } from "./nav-icons";
+
+// Bara de jos (mobil): doar cele 5 esențiale. Restul (Profil/Academia/Bonusuri)
+// sunt accesibile din header (Profil) și din cardurile de pe Acasă.
+const BOTTOM_KEYS = ["dashboard", "antrenamente", "nutritie", "checkin", "mesaje"];
 
 const NAV = [
   { label: "Acasă", short: "Acasă", href: "/client/dashboard", key: "dashboard" },
@@ -76,19 +80,26 @@ function ClientNavContent() {
             </button>
           ) : (
             <div className="flex items-center gap-2">
-              <div className="w-5 h-5 bg-built-red rounded flex items-center justify-center shrink-0">
-                <span className="text-white text-[9px] font-bold">B</span>
-              </div>
-              <span className="text-zinc-100 font-semibold text-[13px]">BUILT</span>
+              <BuiltPillars size={16} />
+              <BuiltWordmark className="text-lg text-zinc-100" />
             </div>
           )}
-          <SignOutButton iconOnly />
+          <div className="flex items-center gap-1">
+            <Link
+              href={`/client/profil${qs}`}
+              aria-label="Profilul meu"
+              className="p-2 rounded-lg text-zinc-300 hover:text-white hover:bg-white/5 press transition-colors"
+            >
+              <span className="text-[18px] leading-none block">{ICONS.profil}</span>
+            </Link>
+            <SignOutButton iconOnly />
+          </div>
         </div>
       </header>
 
-      {/* MOBILE — bottom nav */}
+      {/* MOBILE — bottom nav: 5 esențiale */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111]/95 backdrop-blur-md border-t border-white/10 flex items-stretch px-1 pt-1 mobile-bottomnav">
-        {NAV.map(item => {
+        {NAV.filter(item => BOTTOM_KEYS.includes(item.key)).map(item => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link key={item.href} href={`${item.href}${qs}`}
@@ -97,12 +108,12 @@ function ClientNavContent() {
               }`}>
               {/* indicator roșu sus pe tab activ */}
               <span className={`absolute top-0 left-1/2 -translate-x-1/2 h-[2px] rounded-b-full bg-built-red transition-all ${
-                isActive ? 'w-5 opacity-100' : 'w-0 opacity-0'
+                isActive ? 'w-6 opacity-100' : 'w-0 opacity-0'
               }`} />
-              <span className="text-[18px] leading-none">{ICONS[item.key]}</span>
-              <span className={`text-[8.5px] font-semibold leading-none whitespace-nowrap ${
-                isActive ? 'text-built-red' : 'text-zinc-600'
-              }`}>{item.short ?? item.label}</span>
+              <span className="text-[21px] leading-none">{ICONS[item.key]}</span>
+              <span className={`text-[10px] font-semibold leading-none whitespace-nowrap ${
+                isActive ? 'text-built-red' : 'text-zinc-500'
+              }`}>{item.label}</span>
             </Link>
           );
         })}
