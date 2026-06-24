@@ -23,6 +23,62 @@ function Field({ label, children, hint }: { label: string; children: React.React
 const inputCls =
   "w-full bg-white/[0.03] border border-white/10 focus:border-built-red/50 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none transition-colors";
 
+// ─── Dovadă socială — testimonialele video reale (găzduite pe landing-ul live) ─
+
+const PROOF_BASE = "https://metoda-built.netlify.app/";
+const PROOF: { name: string; role: string; quote: string; thumb: string; video: string }[] = [
+  { name: "Dana", role: "Product Manager, IT", quote: "Am învățat că sistemul e singurul care nu te trădează.",
+    thumb: PROOF_BASE + "Dana_thumbnail.jpg", video: PROOF_BASE + encodeURI("testimoniale meet/Dana.mp4") },
+  { name: "Andreea", role: "Medic veterinar", quote: "Nici măcar un etaj nu puteam urca fără să gâfâi.",
+    thumb: PROOF_BASE + "Andreea_thumbnail.jpg", video: PROOF_BASE + encodeURI("testimoniale meet/andreea.mp4") },
+  { name: "Alexandru", role: "Product Manager, IT", quote: "Mâncam când nu mă vedea nimeni și nu mă putea judeca nimeni.",
+    thumb: PROOF_BASE + "Alex_thumbnail.jpg", video: PROOF_BASE + encodeURI("testimoniale meet/alexandru.mp4") },
+  { name: "Tudor", role: "Software Engineer", quote: "De la epuizare zilnică la antrenament eficient de 45 de minute.",
+    thumb: PROOF_BASE + "Tudor_thumbnail.jpg", video: PROOF_BASE + encodeURI("testimoniale meet/tudor-asta.mp4") },
+];
+
+function VideoTestimonials() {
+  const [active, setActive] = useState<string | null>(null);
+  return (
+    <div className="mb-12">
+      <p className="font-condensed text-[11px] uppercase tracking-[0.22em] text-built-red mb-2">Nu mă crede pe mine</p>
+      <h2 className="font-display text-[32px] text-built-white leading-[0.95] mb-6">Ascultă-i <span className="text-built-red">pe ei.</span></h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {PROOF.map((p) => (
+          <button key={p.name} type="button" onClick={() => setActive(p.video)}
+            className="text-left group rounded-2xl overflow-hidden border border-white/10 bg-white/[0.02] hover:border-built-red/40 transition-colors">
+            <div className="relative aspect-video overflow-hidden">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src={p.thumb} alt={`Testimonial ${p.name}`} loading="lazy"
+                className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-[1.03] transition-all duration-300" />
+              <span className="absolute inset-0 flex items-center justify-center">
+                <span className="w-12 h-12 rounded-full bg-built-red/90 flex items-center justify-center shadow-lg">
+                  <svg width="13" height="15" viewBox="0 0 13 15" fill="white"><path d="M0 0l13 7.5L0 15z" /></svg>
+                </span>
+              </span>
+            </div>
+            <div className="p-4">
+              <p className="text-built-white text-sm leading-snug mb-1.5">„{p.quote}”</p>
+              <p className="text-zinc-500 text-[12px]">{p.name} · {p.role}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {active && (
+        <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4" onClick={() => setActive(null)}>
+          <div className="relative w-full max-w-2xl" onClick={(e) => e.stopPropagation()}>
+            <button type="button" onClick={() => setActive(null)}
+              className="absolute -top-9 right-0 text-zinc-400 hover:text-white text-sm font-condensed uppercase tracking-wider">închide ✕</button>
+            {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+            <video src={active} controls autoPlay playsInline className="w-full rounded-xl bg-black max-h-[80vh]" />
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // ─── Slot de diagnostic — aplicantul își alege singur ora ────────────────────
 
 function BookingSection({ prospectId, name, contact }: {
@@ -156,6 +212,9 @@ export default function AplicaPage() {
             BUILT nu e pentru oricine, și nu cerșim clienți — selectăm oameni gata să se reconstruiască. Răspunde sincer la cele de jos. Dacă ești un fit, îți scriu personal.
           </p>
         </div>
+
+        {/* Dovadă socială — oameni reali, înainte să întreb ceva */}
+        <VideoTestimonials />
 
         {/* Form */}
         <form onSubmit={submit} className="space-y-7">
