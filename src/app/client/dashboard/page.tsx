@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { getClientDashboard, getTodayLog, getTodayMetrics, getStreak, getClientBadges } from "../actions";
+import { getClientDashboard, getTodayLog, getTodayMetrics, getTodayNote, getStreak, getClientBadges } from "../actions";
 import { NAV_ICONS } from "@/components/nav-icons";
 import DailyChecklist from "./DailyChecklist";
 import DailyMetrics from "./DailyMetrics";
+import DailyReflection from "./DailyReflection";
 import Badges from "./Badges";
 import PillarRadar, { type PillarScores } from "./PillarRadar";
 
@@ -45,9 +46,9 @@ export default async function ClientDashboardPage({
 
   const { client, weekNumber, daysInProgram, latestCheckin, unreadCount } = data;
   const clientId = client?.id;
-  const [todayLog, todayMetrics, streak, badges] = clientId
-    ? await Promise.all([getTodayLog(clientId), getTodayMetrics(clientId), getStreak(clientId), getClientBadges(clientId)])
-    : [{}, {}, 0, []];
+  const [todayLog, todayMetrics, todayNote, streak, badges] = clientId
+    ? await Promise.all([getTodayLog(clientId), getTodayMetrics(clientId), getTodayNote(clientId), getStreak(clientId), getClientBadges(clientId)])
+    : [{}, {}, "", 0, []];
 
   return (
     <div className="p-5 md:p-8 max-w-4xl">
@@ -71,6 +72,8 @@ export default async function ClientDashboardPage({
       {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
 
       {clientId && <DailyMetrics clientId={clientId} initial={todayMetrics} />}
+
+      {clientId && <DailyReflection clientId={clientId} initial={todayNote} />}
 
       {badges.length > 0 && <Badges badges={badges} />}
 

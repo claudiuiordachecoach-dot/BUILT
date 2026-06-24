@@ -498,9 +498,9 @@ export async function sendCheckinReminderNow(): Promise<
 
 // ─── Numere zilnice (pași/somn/greutate) introduse de client ──────────────────
 
-export type DailyMetricRow = { date: string; steps?: number; sleep_h?: number; weight?: number };
+export type DailyMetricRow = { date: string; steps?: number; sleep_h?: number; weight?: number; note?: string };
 
-/** Istoricul numerelor zilnice ale unui client (ultimele `days` zile cu valori). */
+/** Istoricul numerelor + reflecțiilor zilnice ale unui client (ultimele `days` zile cu conținut). */
 export async function getClientDailyMetrics(clientId: number, days = 21): Promise<DailyMetricRow[]> {
   const s = getSupabaseServer({ useServiceRole: true });
   const since = new Date();
@@ -520,7 +520,8 @@ export async function getClientDailyMetrics(clientId: number, days = 21): Promis
         steps: num(it.steps),
         sleep_h: num(it.sleep_h),
         weight: num(it.weight),
+        note: typeof it.note === "string" ? it.note : undefined,
       };
     })
-    .filter((r) => r.steps != null || r.sleep_h != null || r.weight != null);
+    .filter((r) => r.steps != null || r.sleep_h != null || r.weight != null || r.note);
 }

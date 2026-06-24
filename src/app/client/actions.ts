@@ -568,6 +568,42 @@ export async function getTodayMetrics(clientId: number): Promise<Record<string, 
   }
 }
 
+/** Salvează reflecția zilnică (text liber) în items.note. Gol → șterge. */
+export async function saveTodayNote(clientId: number, text: string) {
+  const db = getSupabaseServer();
+  const date = todayStr();
+  const { data: existing } = await db
+    .from("daily_logs")
+    .select("items")
+    .eq("client_id", clientId)
+    .eq("log_date", date)
+    .single();
+  const items: Record<string, unknown> = { ...((existing?.items as Record<string, unknown>) ?? {}) };
+  const clean = text.trim();
+  if (clean === "") delete items.note;
+  else items.note = clean.slice(0, 2000);
+  await db
+    .from("daily_logs")
+    .upsert({ client_id: clientId, log_date: date, items, updated_at: new Date().toISOString() }, { onConflict: "client_id,log_date" });
+}
+
+/** Reflecția de azi a clientului (pentru pre-completare). */
+export async function getTodayNote(clientId: number): Promise<string> {
+  try {
+    const db = getSupabaseServer();
+    const { data } = await db
+      .from("daily_logs")
+      .select("items")
+      .eq("client_id", clientId)
+      .eq("log_date", todayStr())
+      .single();
+    const note = (data?.items as Record<string, unknown>)?.note;
+    return typeof note === "string" ? note : "";
+  } catch {
+    return "";
+  }
+}
+
 export type TrainingDay = { label: string; date: string; trained: boolean; isToday: boolean; isFuture: boolean };
 
 /** Starea antrenamentelor pe săptămâna curentă (Luni–Duminică) din daily_logs. */

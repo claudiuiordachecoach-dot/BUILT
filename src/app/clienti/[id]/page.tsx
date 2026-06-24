@@ -19,11 +19,13 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
   ]);
   if (!client) notFound();
 
+  const metricRows = dailyMetrics.filter((r) => r.steps != null || r.sleep_h != null || r.weight != null);
+  const noteRows = dailyMetrics.filter((r) => r.note);
   const avg = (vals: number[]) => (vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : null);
-  const avgSteps = avg(dailyMetrics.map((r) => r.steps).filter((v): v is number => v != null));
-  const sleepVals = dailyMetrics.map((r) => r.sleep_h).filter((v): v is number => v != null);
+  const avgSteps = avg(metricRows.map((r) => r.steps).filter((v): v is number => v != null));
+  const sleepVals = metricRows.map((r) => r.sleep_h).filter((v): v is number => v != null);
   const avgSleep = sleepVals.length ? (sleepVals.reduce((a, b) => a + b, 0) / sleepVals.length).toFixed(1) : null;
-  const lastWeight = dailyMetrics.find((r) => r.weight != null)?.weight ?? null;
+  const lastWeight = metricRows.find((r) => r.weight != null)?.weight ?? null;
   return (
     <div className="p-8 max-w-4xl">
       <div className="flex items-center gap-3 mb-2">
@@ -41,46 +43,66 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
         </p>
 
         {dailyMetrics.length === 0 ? (
-          <p className="text-sm text-zinc-500">Clientul nu a logat încă numere zilnice.</p>
+          <p className="text-sm text-zinc-500">Clientul nu a logat încă numere sau reflecții zilnice.</p>
         ) : (
           <>
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              {[
-                { label: "Media pași", value: avgSteps != null ? avgSteps.toLocaleString("ro-RO") : "—" },
-                { label: "Media somn", value: avgSleep != null ? `${avgSleep}h` : "—" },
-                { label: "Greutate", value: lastWeight != null ? `${lastWeight} kg` : "—" },
-              ].map((s) => (
-                <div key={s.label} className="min-w-0 p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
-                  <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wide whitespace-nowrap">{s.label}</p>
-                  <p className="font-display text-2xl text-built-red mt-1 leading-none whitespace-nowrap tabular-nums">{s.value}</p>
-                </div>
-              ))}
-            </div>
-
-            <div className="overflow-hidden rounded-lg border border-white/10">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-white/[0.03] font-condensed text-[10px] uppercase tracking-wider text-built-gray-text">
-                    <th className="text-left px-4 py-2.5 font-normal">Zi</th>
-                    <th className="text-right px-3 py-2.5 font-normal">Pași</th>
-                    <th className="text-right px-3 py-2.5 font-normal">Somn</th>
-                    <th className="text-right px-4 py-2.5 font-normal">Greutate</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/[0.06]">
-                  {dailyMetrics.map((r) => (
-                    <tr key={r.date}>
-                      <td className="px-4 py-2.5 text-zinc-400 whitespace-nowrap">
-                        {new Date(r.date + "T12:00:00").toLocaleDateString("ro-RO", { weekday: "short", day: "numeric", month: "short" })}
-                      </td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-zinc-200">{r.steps != null ? r.steps.toLocaleString("ro-RO") : "—"}</td>
-                      <td className="px-3 py-2.5 text-right tabular-nums text-zinc-200">{r.sleep_h != null ? `${r.sleep_h}h` : "—"}</td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-zinc-200">{r.weight != null ? `${r.weight} kg` : "—"}</td>
-                    </tr>
+            {metricRows.length > 0 && (
+              <>
+                <div className="grid grid-cols-3 gap-3 mb-4">
+                  {[
+                    { label: "Media pași", value: avgSteps != null ? avgSteps.toLocaleString("ro-RO") : "—" },
+                    { label: "Media somn", value: avgSleep != null ? `${avgSleep}h` : "—" },
+                    { label: "Greutate", value: lastWeight != null ? `${lastWeight} kg` : "—" },
+                  ].map((s) => (
+                    <div key={s.label} className="min-w-0 p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
+                      <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wide whitespace-nowrap">{s.label}</p>
+                      <p className="font-display text-2xl text-built-red mt-1 leading-none whitespace-nowrap tabular-nums">{s.value}</p>
+                    </div>
                   ))}
-                </tbody>
-              </table>
-            </div>
+                </div>
+
+                <div className="overflow-hidden rounded-lg border border-white/10">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-white/[0.03] font-condensed text-[10px] uppercase tracking-wider text-built-gray-text">
+                        <th className="text-left px-4 py-2.5 font-normal">Zi</th>
+                        <th className="text-right px-3 py-2.5 font-normal">Pași</th>
+                        <th className="text-right px-3 py-2.5 font-normal">Somn</th>
+                        <th className="text-right px-4 py-2.5 font-normal">Greutate</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/[0.06]">
+                      {metricRows.map((r) => (
+                        <tr key={r.date}>
+                          <td className="px-4 py-2.5 text-zinc-400 whitespace-nowrap">
+                            {new Date(r.date + "T12:00:00").toLocaleDateString("ro-RO", { weekday: "short", day: "numeric", month: "short" })}
+                          </td>
+                          <td className="px-3 py-2.5 text-right tabular-nums text-zinc-200">{r.steps != null ? r.steps.toLocaleString("ro-RO") : "—"}</td>
+                          <td className="px-3 py-2.5 text-right tabular-nums text-zinc-200">{r.sleep_h != null ? `${r.sleep_h}h` : "—"}</td>
+                          <td className="px-4 py-2.5 text-right tabular-nums text-zinc-200">{r.weight != null ? `${r.weight} kg` : "—"}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </>
+            )}
+
+            {noteRows.length > 0 && (
+              <div className="mt-6">
+                <p className="font-condensed text-[10px] uppercase tracking-wider text-built-gray-text mb-3">Reflecții recente</p>
+                <div className="space-y-2">
+                  {noteRows.map((r) => (
+                    <div key={r.date} className="bg-[#111111] border border-white/10 rounded-lg p-4">
+                      <p className="font-condensed text-[10px] uppercase tracking-wider text-built-red mb-1.5">
+                        {new Date(r.date + "T12:00:00").toLocaleDateString("ro-RO", { weekday: "long", day: "numeric", month: "long" })}
+                      </p>
+                      <p className="text-sm text-zinc-200 whitespace-pre-wrap leading-relaxed">{r.note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </>
         )}
       </section>
