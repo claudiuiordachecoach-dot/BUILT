@@ -13,7 +13,7 @@ export interface ApplicationInput {
   budget: Budget;
 }
 
-export type SubmitResult = { ok: true } | { ok: false; error: string };
+export type SubmitResult = { ok: true; prospectId: number | null } | { ok: false; error: string };
 
 const BUDGET_LABEL: Record<Budget, string> = {
   gata: "Gata să investească acum (200–700€)",
@@ -79,14 +79,108 @@ ${(input.a3 || "—").trim()}`;
   };
 
   const s = getSupabaseServer({ useServiceRole: true });
-  let { error } = await s.from("prospects").insert(row);
+  let { data, error } = await s.from("prospects").insert(row).select("id").single();
 
   // Numele are constrângere UNIQUE — dacă mai există unul la fel, îl discriminăm cu contactul.
   if (error && (error.code === "23505" || /duplicate|unique/i.test(error.message))) {
     const short = contact.replace(/\s+/g, " ").slice(0, 20);
-    ({ error } = await s.from("prospects").insert({ ...row, name: `${name} · ${short}` }));
+    ({ data, error } = await s.from("prospects").insert({ ...row, name: `${name} · ${short}` }).select("id").single());
   }
 
   if (error) return { ok: false, error: "Ceva n-a mers la trimitere. Mai încearcă o dată." };
-  return { ok: true };
+  return { ok: true, prospectId: data?.id ?? null };
+}
+
+// ─── Slot de diagnostic — aplicantul își alege singur ora ─────────────────────
+// Rezervarea scrie direct în planul zilei (creier_metadata → appointments), deci
+// apare automat în calendarul „Azi" + „Apeluri azi" cu reminder. ZERO tabel nou.
+
+const SLOT_TIMES = ["10:00", "13:00", "17:00", "18:00", "19:00"];
+const SLOT_LEAD_MIN = 120; // nu oferi sloturi în următoarele 2 ore
+
+function dailyKey(d: string): string { return `daily_${d}`; }
+
+function prettyRo(d: string): string {
+  return new Date(d + "T12:00:00").toLocaleDateString("ro-RO", { weekday: "long", day: "numeric", month: "long" });
+}
+
+export interface DaySlots { date: string; label: string; times: string[]; }
+
+export async function getAvailableSlots(): Promise<DaySlots[]> {
+  const s = getSupabaseServer({ useServiceRole: true });
+  const now = new Date();
+
+  // Următoarele zile lucrătoare (sare duminica), max 5.
+  const candidates: string[] = [];
+  const cursor = new Date(now);
+  for (let i = 0; i < 14 && candidates.length < 5; i++) {
+    if (cursor.getDay() !== 0) candidates.push(cursor.toISOString().slice(0, 10));
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  // Orele deja ocupate, dintr-o singură citire.
+  const { data } = await s.from("creier_metadata").select("key, value").in("key", candidates.map(dailyKey));
+  const takenByDate = new Map<string, Set<string>>();
+  for (const row of data ?? []) {
+    const d = (row.key as string).replace("daily_", "");
+    const appts = ((row.value as { appointments?: { time: string }[] })?.appointments) ?? [];
+    takenByDate.set(d, new Set(appts.map((a) => a.time)));
+  }
+
+  const todayStr = now.toISOString().slice(0, 10);
+  const nowMin = now.getHours() * 60 + now.getMinutes();
+  const out: DaySlots[] = [];
+  for (const d of candidates) {
+    const taken = takenByDate.get(d) ?? new Set<string>();
+    const times = SLOT_TIMES.filter((t) => {
+      if (taken.has(t)) return false;
+      if (d === todayStr) {
+        const [h, m] = t.split(":").map(Number);
+        if (h * 60 + m < nowMin + SLOT_LEAD_MIN) return false;
+      }
+      return true;
+    });
+    if (times.length) out.push({ date: d, label: prettyRo(d), times });
+  }
+  return out;
+}
+
+export type BookResult = { ok: true; label: string } | { ok: false; error: string };
+
+export async function bookDiagnostic(input: {
+  prospectId: number | null; name: string; contact: string; date: string; time: string;
+}): Promise<BookResult> {
+  if (!input.date || !input.time) return { ok: false, error: "Alege o oră." };
+  const s = getSupabaseServer({ useServiceRole: true });
+  const key = dailyKey(input.date);
+
+  const { data } = await s.from("creier_metadata").select("value").eq("key", key).single();
+  const plan = (data?.value as Record<string, unknown>) ?? null;
+  const appts = Array.isArray(plan?.appointments) ? (plan!.appointments as { time: string }[]) : [];
+
+  if (appts.some((a) => a.time === input.time))
+    return { ok: false, error: "Slotul tocmai a fost ocupat. Alege altul." };
+
+  const appt = {
+    id: `apl_${Date.now()}`, time: input.time, duration: 30,
+    name: input.name, phone: input.contact, email: "",
+    notes: "Apel de diagnostic — programat din aplicare web", done: false,
+  };
+  const newPlan = plan
+    ? { ...plan, appointments: [...appts, appt] }
+    : { date: input.date, top3: ["", "", ""], posts: [], tasks: [], clients: [], appointments: [appt], tomorrow: [], lesson: "", notes: "" };
+
+  const { error } = await s.from("creier_metadata").upsert({ key, value: newPlan });
+  if (error) return { ok: false, error: "N-a mers rezervarea. Mai încearcă o dată." };
+
+  if (input.prospectId) {
+    await s.from("prospects").update({
+      status: "apel_programat",
+      next_step: `Apel de diagnostic — ${input.time}`,
+      next_step_date: input.date,
+      updated_at: new Date().toISOString(),
+    }).eq("id", input.prospectId);
+  }
+
+  return { ok: true, label: `${prettyRo(input.date)}, ora ${input.time}` };
 }

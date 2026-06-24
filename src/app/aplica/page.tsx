@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { BuiltWordmark } from "@/components/BrandLogo";
-import { submitApplication, type Budget } from "./actions";
+import { submitApplication, getAvailableSlots, bookDiagnostic, type Budget, type DaySlots } from "./actions";
 
 const BUDGET_OPTIONS: { value: Budget; label: string; sub: string }[] = [
   { value: "gata", label: "Sunt gata să investesc în mine acum", sub: "Programele merg de la 200 la 700€, în funcție de cât de aproape lucrăm." },
@@ -23,6 +23,64 @@ function Field({ label, children, hint }: { label: string; children: React.React
 const inputCls =
   "w-full bg-white/[0.03] border border-white/10 focus:border-built-red/50 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none transition-colors";
 
+// ─── Slot de diagnostic — aplicantul își alege singur ora ────────────────────
+
+function BookingSection({ prospectId, name, contact }: {
+  prospectId: number | null; name: string; contact: string;
+}) {
+  const [slots, setSlots] = useState<DaySlots[] | null>(null);
+  const [booked, setBooked] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState("");
+
+  useEffect(() => { getAvailableSlots().then(setSlots).catch(() => setSlots([])); }, []);
+
+  async function pick(date: string, time: string) {
+    setBusy(true); setErr("");
+    const r = await bookDiagnostic({ prospectId, name, contact, date, time });
+    setBusy(false);
+    if (r.ok) setBooked(r.label); else setErr(r.error);
+  }
+
+  if (booked) {
+    return (
+      <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.05] p-5 text-left">
+        <p className="font-condensed text-[11px] uppercase tracking-[0.22em] text-emerald-400 mb-2">Apel rezervat ✓</p>
+        <p className="text-built-white text-[15px] leading-relaxed">
+          Ne auzim <span className="font-medium">{booked}</span>. Îți confirm și în DM. Vino pregătit să vorbești sincer — e un diagnostic, nu o prezentare.
+        </p>
+      </div>
+    );
+  }
+
+  if (slots === null) return <p className="text-zinc-600 text-sm text-center">Se încarcă orele disponibile...</p>;
+  if (slots.length === 0) return null;
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-5 text-left">
+      <p className="font-condensed text-[11px] uppercase tracking-[0.22em] text-built-red mb-1">Nu vrei să aștepți?</p>
+      <p className="text-built-white text-[15px] font-medium mb-1">Alege-ți direct ora pentru diagnostic</p>
+      <p className="text-zinc-500 text-[13px] mb-4">15 minute, video. Înțelegem împreună unde ești blocat — fără pitch.</p>
+      <div className="space-y-3.5">
+        {slots.map((d) => (
+          <div key={d.date}>
+            <p className="text-[12px] text-zinc-400 mb-1.5 capitalize">{d.label}</p>
+            <div className="flex flex-wrap gap-2">
+              {d.times.map((t) => (
+                <button key={t} type="button" disabled={busy} onClick={() => pick(d.date, t)}
+                  className="font-mono text-sm text-white border border-white/15 hover:border-built-red/60 hover:bg-built-red/10 rounded-lg px-3.5 py-2 transition-colors disabled:opacity-40">
+                  {t}
+                </button>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+      {err && <p className="text-sm text-built-red mt-3">{err}</p>}
+    </div>
+  );
+}
+
 export default function AplicaPage() {
   const [name, setName] = useState("");
   const [contact, setContact] = useState("");
@@ -33,6 +91,7 @@ export default function AplicaPage() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
+  const [prospectId, setProspectId] = useState<number | null>(null);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,7 +100,7 @@ export default function AplicaPage() {
     setBusy(true);
     const r = await submitApplication({ name, contact, a1, a2, a3, budget });
     setBusy(false);
-    if (r.ok) { setDone(true); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    if (r.ok) { setProspectId(r.prospectId); setDone(true); window.scrollTo({ top: 0, behavior: "smooth" }); }
     else setError(r.error);
   }
 
@@ -57,9 +116,14 @@ export default function AplicaPage() {
           <p className="text-zinc-400 text-[15px] leading-relaxed mb-3">
             O citesc personal — nu un robot. Dacă văd că te pot ajuta cu adevărat, îți scriu în DM în <span className="text-white">maxim 24 de ore</span>.
           </p>
-          <p className="text-zinc-500 text-sm leading-relaxed mb-10">
+          <p className="text-zinc-500 text-sm leading-relaxed mb-8">
             Nu trimit oferte automate. Întâi diagnostichez, apoi îți spun sincer dacă e pentru tine. <span className="text-built-white font-medium">BUILT selectează, nu vinde.</span>
           </p>
+
+          {/* Slot de diagnostic — taie așteptarea, alege ora pe loc */}
+          <div className="mb-6">
+            <BookingSection prospectId={prospectId} name={name} contact={contact} />
+          </div>
 
           {/* Lead magnet — valoare instant cât aștepți DM-ul */}
           <div className="text-left rounded-2xl border border-built-red/25 bg-built-red/[0.04] p-5">
