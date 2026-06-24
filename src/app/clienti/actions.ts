@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { getUserRole } from "@/lib/supabase/auth-server";
+import { sendCheckinReminderToAll } from "@/lib/push";
 import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 
@@ -447,4 +449,49 @@ export async function saveCheckinFeedback(
   if (error) return { ok: false, error: error.message };
   revalidatePath(`/clienti/${clientId}`);
   return { ok: true };
+}
+
+// ─── Remindere push (check-in) ───────────────────────────────────────────────
+
+export type PushStatus = {
+  total: number;
+  reachable: number;
+  clients: { id: number; name: string; hasPush: boolean }[];
+};
+
+/** Cine poate primi push (are cel puțin un abonament). Pentru indicatorul din dashboard. */
+export async function getPushStatus(): Promise<PushStatus> {
+  const s = getSupabaseServer({ useServiceRole: true });
+  const { data: clients } = await s
+    .from("clients")
+    .select("id, name, status")
+    .eq("status", "active")
+    .order("id");
+  const { data: subs } = await s.from("push_subscriptions").select("client_id");
+  const withPush = new Set((subs ?? []).map((x) => x.client_id as number));
+  const list = (clients ?? []).map((c) => ({
+    id: c.id as number,
+    name: (c.name as string) ?? "?",
+    hasPush: withPush.has(c.id as number),
+  }));
+  return { total: list.length, reachable: list.filter((c) => c.hasPush).length, clients: list };
+}
+
+/** Trimite acum nudge-ul de check-in către clienții cu notificări active. Doar admin. */
+export async function sendCheckinReminderNow(): Promise<
+  { ok: true; sent: number; reached: string[]; cleaned: number } | { ok: false; error: string }
+> {
+  const role = await getUserRole().catch(() => null);
+  if (role !== "admin") return { ok: false, error: "Doar adminul poate trimite remindere." };
+  try {
+    const res = await sendCheckinReminderToAll();
+    const s = getSupabaseServer({ useServiceRole: true });
+    const { data: clients } = await s.from("clients").select("id, name");
+    const nameOf = new Map((clients ?? []).map((c) => [c.id as number, (c.name as string) ?? "?"]));
+    const reached = res.reachedClientIds.map((id) => nameOf.get(id) ?? String(id));
+    revalidatePath("/dashboard/clients");
+    return { ok: true, sent: res.sent, reached, cleaned: res.cleaned };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare la trimitere." };
+  }
 }

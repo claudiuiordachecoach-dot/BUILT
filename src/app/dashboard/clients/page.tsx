@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { listClients, listClientsWithRisk } from "@/app/clienti/actions";
+import { listClients, listClientsWithRisk, getPushStatus } from "@/app/clienti/actions";
 import { NewClientForm } from "@/app/clienti/NewClientForm";
 import { getUnreadCountPerClient } from "@/app/client/actions";
 import { RetentionPanel } from "@/components/clients/RetentionPanel";
+import { CheckinPushPanel } from "@/components/clients/CheckinPushPanel";
 
 export const dynamic = "force-dynamic";
 
@@ -20,10 +21,11 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function ClientsDashboardPage() {
-  const [clients, unreadPerClient, risks] = await Promise.all([
+  const [clients, unreadPerClient, risks, pushStatus] = await Promise.all([
     listClients().catch(() => []),
     getUnreadCountPerClient().catch(() => ({} as Record<number, number>)),
     listClientsWithRisk().catch(() => []),
+    getPushStatus().catch(() => ({ total: 0, reachable: 0, clients: [] })),
   ]);
   const active = clients.filter((c) => c.status === "active");
   const atRisk = clients.filter((c) => c.status === "at_risk");
@@ -58,6 +60,9 @@ export default async function ClientsDashboardPage() {
 
       {/* Retenție — auto-detectat + intervenție Skill 3 */}
       <RetentionPanel risks={risks} />
+
+      {/* Reminder check-in — trimite push acum + cine poate primi */}
+      <CheckinPushPanel status={pushStatus} />
 
       {/* Header + Add */}
       <div className="flex items-center justify-between mb-4">
