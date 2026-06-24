@@ -4,6 +4,7 @@ import { NAV_ICONS } from "@/components/nav-icons";
 import DailyChecklist from "./DailyChecklist";
 import DailyMetrics from "./DailyMetrics";
 import DailyReflection from "./DailyReflection";
+import OnboardingJourney from "./OnboardingJourney";
 import Badges from "./Badges";
 import PillarRadar, { type PillarScores } from "./PillarRadar";
 
@@ -68,6 +69,10 @@ export default async function ClientDashboardPage({
           </div>
         )}
       </div>
+
+      {clientId && daysInProgram >= 1 && daysInProgram <= 7 && (
+        <OnboardingJourney day={daysInProgram} qs={overrideId ? `?clientId=${overrideId}` : ""} />
+      )}
 
       {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
 
