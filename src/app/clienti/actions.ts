@@ -495,3 +495,32 @@ export async function sendCheckinReminderNow(): Promise<
     return { ok: false, error: e instanceof Error ? e.message : "Eroare la trimitere." };
   }
 }
+
+// ─── Numere zilnice (pași/somn/greutate) introduse de client ──────────────────
+
+export type DailyMetricRow = { date: string; steps?: number; sleep_h?: number; weight?: number };
+
+/** Istoricul numerelor zilnice ale unui client (ultimele `days` zile cu valori). */
+export async function getClientDailyMetrics(clientId: number, days = 21): Promise<DailyMetricRow[]> {
+  const s = getSupabaseServer({ useServiceRole: true });
+  const since = new Date();
+  since.setDate(since.getDate() - days);
+  const { data } = await s
+    .from("daily_logs")
+    .select("log_date, items")
+    .eq("client_id", clientId)
+    .gte("log_date", since.toISOString().slice(0, 10))
+    .order("log_date", { ascending: false });
+  const num = (v: unknown) => (typeof v === "number" ? v : undefined);
+  return (data ?? [])
+    .map((d) => {
+      const it = (d.items as Record<string, unknown>) ?? {};
+      return {
+        date: d.log_date as string,
+        steps: num(it.steps),
+        sleep_h: num(it.sleep_h),
+        weight: num(it.weight),
+      };
+    })
+    .filter((r) => r.steps != null || r.sleep_h != null || r.weight != null);
+}
