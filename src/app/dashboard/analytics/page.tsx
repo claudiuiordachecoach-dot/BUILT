@@ -352,7 +352,7 @@ function AnalysisPanel({
       {analysisTab === "breakdown" && (
         <>
           {/* Score bars */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <div className="flex justify-between text-[11px] text-zinc-500 mb-1.5">
                 <span>Performanță</span>
@@ -869,7 +869,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* ── CHARTS ROW ────────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Views over time */}
         <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
@@ -930,7 +930,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* ── ENGAGEMENT BREAKDOWN + FORMAT PERFORMANCE ─────────────────────── */}
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Engagement breakdown — matches William Scott */}
         <div className="built-card bg-[#111111] border border-white/10 rounded-xl p-5">
           <p className="text-[11px] font-bold uppercase tracking-widest text-zinc-500 mb-1">Breakdown Engagement</p>

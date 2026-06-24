@@ -102,9 +102,9 @@ export function AgentTab() {
   }
 
   return (
-    <div className="flex gap-6 h-[calc(100vh-280px)] min-h-[500px]">
-      {/* Chat — stânga */}
-      <div className="flex-1 flex flex-col min-w-0">
+    <div className="flex flex-col lg:flex-row gap-6 lg:h-[calc(100vh-280px)] lg:min-h-[500px]">
+      {/* Chat — stânga (sus pe mobil) */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-[60vh] lg:min-h-0">
         <div className="flex items-center justify-between mb-4">
           <p className="font-condensed text-[10px] text-built-red uppercase tracking-wider">Agent Carusel</p>
           {state.phase !== "idle" && (
@@ -125,8 +125,8 @@ export function AgentTab() {
         />
       </div>
 
-      {/* Preview — dreapta */}
-      <div className="w-[420px] flex-shrink-0 flex flex-col">
+      {/* Preview — dreapta (jos pe mobil) */}
+      <div className="w-full lg:w-[420px] lg:flex-shrink-0 flex flex-col min-h-[60vh] lg:min-h-0">
         <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wider mb-4">Preview</p>
         <div className="flex-1 min-h-0">
           <PreviewPanel

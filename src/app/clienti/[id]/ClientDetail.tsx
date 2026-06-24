@@ -110,9 +110,9 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
       </div>
 
       <div className="grid grid-cols-3 gap-3 mb-8">
-        {[["Săptămâna", currentWeek], ["Check-in-uri", checkins.length], ["Start", new Date(client.start_date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" })]].map(([l, v]) => (
+        {[["Săpt.", currentWeek], ["Check-in", checkins.length], ["Start", new Date(client.start_date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short", year: "numeric" })]].map(([l, v]) => (
           <div key={l} className="min-w-0 p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
-            <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wider truncate">{l}</p>
+            <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wide whitespace-nowrap">{l}</p>
             <p className={`font-display text-built-red mt-1 leading-none whitespace-nowrap tabular-nums ${typeof v === "number" ? "text-2xl" : "text-base sm:text-lg"}`}>{v}</p>
           </div>
         ))}
