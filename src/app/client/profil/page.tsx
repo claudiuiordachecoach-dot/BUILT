@@ -67,7 +67,7 @@ export default async function ClientProfilePage({
           <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Notificări</h2>
           <div className="bg-[#111111] border border-white/10 rounded-lg p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-zinc-300">Activează notificările pentru a primi remindere şi mesaje de la antrenor.</p>
+              <p className="text-sm text-zinc-300">Remindere de check-in și mesaje de la antrenor, direct pe telefon.</p>
             </div>
             <EnableNotificationsButton clientId={clientId!} />
           </div>

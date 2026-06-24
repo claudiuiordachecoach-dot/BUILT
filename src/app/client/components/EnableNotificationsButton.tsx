@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -15,75 +15,111 @@ function urlBase64ToUint8Array(base64String: string) {
   return Uint8Array.from([...raw].map((c) => c.charCodeAt(0)));
 }
 
-export function EnableNotificationsButton({ clientId }: { clientId: number }) {
-  const [loading, setLoading] = useState(false);
-  const [status, setStatus] = useState<"idle" | "done" | "error">("idle");
-  const [msg, setMsg] = useState("");
+type State = "checking" | "active" | "inactive" | "denied" | "unsupported" | "working";
 
-  const handleClick = async () => {
-    setLoading(true);
-    try {
-      if (!("serviceWorker" in navigator) || !("PushManager" in window)) {
-        setMsg("Browserul nu suportă notificări push.");
-        setStatus("error");
+export function EnableNotificationsButton({ clientId }: { clientId: number }) {
+  const [state, setState] = useState<State>("checking");
+  const [err, setErr] = useState("");
+
+  // Detectează starea REALĂ la montare → persistă între vizite (nu mai apare butonul dacă e deja activ).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (typeof window === "undefined" || !("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+        if (!cancelled) setState("unsupported");
         return;
       }
+      if (Notification.permission === "denied") {
+        if (!cancelled) setState("denied");
+        return;
+      }
+      try {
+        const reg = await Promise.race([
+          navigator.serviceWorker.ready,
+          new Promise<null>((r) => setTimeout(() => r(null), 3000)),
+        ]);
+        const sub = reg ? await reg.pushManager.getSubscription() : null;
+        if (!cancelled) setState(sub ? "active" : "inactive");
+      } catch {
+        if (!cancelled) setState("inactive");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
+  const enable = async () => {
+    setErr("");
+    setState("working");
+    try {
       const permission = await Notification.requestPermission();
       if (permission !== "granted") {
-        setMsg("Permisiune refuzată.");
-        setStatus("error");
+        setState(permission === "denied" ? "denied" : "inactive");
         return;
       }
-
-      const registration = await navigator.serviceWorker.register("/sw.js");
+      const reg = await navigator.serviceWorker.register("/sw.js");
       await navigator.serviceWorker.ready;
 
-      const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: true,
-        applicationServerKey: urlBase64ToUint8Array(
-          process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!
-        ),
-      });
+      // Reutilizează abonamentul existent dacă e deja pe acest device (evită duplicate).
+      let sub = await reg.pushManager.getSubscription();
+      if (!sub) {
+        sub = await reg.pushManager.subscribe({
+          userVisibleOnly: true,
+          applicationServerKey: urlBase64ToUint8Array(process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!),
+        });
+      }
 
-      const subJson = subscription.toJSON();
+      const subJson = sub.toJSON();
       const { error } = await supabase.from("push_subscriptions").upsert({
         client_id: clientId,
-        endpoint: subscription.endpoint,
+        endpoint: sub.endpoint,
         p256dh: subJson.keys?.p256dh,
         auth: subJson.keys?.auth,
       });
-
       if (error) {
-        setMsg("Eroare la salvare: " + error.message);
-        setStatus("error");
-      } else {
-        setMsg("Notificările sunt activate! ✅");
-        setStatus("done");
+        setErr(error.message);
+        setState("inactive");
+        return;
       }
-    } catch (e: any) {
-      setMsg("Eroare: " + (e?.message || "necunoscută"));
-      setStatus("error");
-    } finally {
-      setLoading(false);
+      setState("active");
+    } catch (e: unknown) {
+      setErr(e instanceof Error ? e.message : "necunoscută");
+      setState("inactive");
     }
   };
 
-  if (status === "done") {
-    return <span className="text-green-400 text-sm font-medium">{msg}</span>;
+  if (state === "checking") {
+    return <span className="text-zinc-600 text-sm">Se verifică…</span>;
   }
 
-  if (status === "error") {
-    return <span className="text-red-400 text-sm font-medium">{msg}</span>;
+  if (state === "active") {
+    return (
+      <span className="inline-flex items-center gap-2 text-green-400 text-sm font-medium whitespace-nowrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
+        Notificările sunt active
+      </span>
+    );
+  }
+
+  if (state === "unsupported") {
+    return <span className="text-zinc-500 text-xs leading-relaxed text-right max-w-[180px]">Browserul acesta nu suportă notificări. Pe iPhone, adaugă întâi aplicația pe ecranul principal.</span>;
+  }
+
+  if (state === "denied") {
+    return <span className="text-orange-400 text-xs leading-relaxed text-right max-w-[180px]">Notificările sunt blocate din setările telefonului. Activează-le din Setări → notificări pentru BUILT.</span>;
   }
 
   return (
-    <button
-      onClick={handleClick}
-      disabled={loading}
-      className="flex items-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-lg hover:bg-red-500 transition-colors disabled:opacity-50 whitespace-nowrap"
-    >
-      {loading ? "Se activează..." : "🔔 Activează Notificările"}
-    </button>
+    <div className="flex flex-col items-end gap-1">
+      <button
+        onClick={enable}
+        disabled={state === "working"}
+        className="press flex items-center gap-2 px-4 py-2 bg-built-red text-white text-sm font-medium rounded-lg hover:bg-built-red/90 transition-colors disabled:opacity-50 whitespace-nowrap"
+      >
+        {state === "working" ? "Se activează…" : "🔔 Activează Notificările"}
+      </button>
+      {err && <span className="text-red-400 text-xs max-w-[180px] text-right">{err}</span>}
+    </div>
   );
 }
