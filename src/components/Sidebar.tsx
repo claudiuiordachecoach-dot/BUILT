@@ -68,6 +68,7 @@ const TOOLS_ITEMS: NavEntry[] = [
 
 const ADMIN_ITEMS: NavEntry[] = [
   { label: "Clienți",            href: "/dashboard/clients",          icon: <Icons.users /> },
+  { label: "Check-in-uri",       href: "/dashboard/checkins",         icon: <Icons.report /> },
   { label: "Rapoarte Progres",   href: "/dashboard/progress-reports", icon: <Icons.report /> },
   { label: "Profil Coach",       href: "/dashboard/profil",           icon: <Icons.user /> },
 ];

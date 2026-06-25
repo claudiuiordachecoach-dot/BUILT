@@ -617,7 +617,7 @@ function SignalsPanel({ signals, onAddToDay, onResolved }: {
                   chip={{ label: "CHECK-IN", cls: "text-sky-400 border-sky-500/40 bg-sky-500/10" }}
                   title={c.name}
                   sub={`Săptămâna ${c.week} · ${when} · așteaptă feedback`}
-                  href={`/clienti/${c.clientId}`}
+                  href="/dashboard/checkins"
                   added={added.has(k)}
                   onAdd={() => { onAddToDay("clients", `Răspunde check-in: ${c.name}`); markAdded(k); }}
                 />

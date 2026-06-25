@@ -391,6 +391,20 @@ export async function generateCheckinFeedbackDraft(
   const client = await getClient(clientId);
   if (!client) return { ok: false, error: "Client negăsit." };
 
+  // Istoricul recent — ca feedback-ul să sune ca un coach care-și amintește clientul, nu ca un robot per săptămână.
+  const sDb = getSupabaseServer();
+  const { data: prior } = await sDb
+    .from("client_checkins")
+    .select("week_number, training_adherence, nutrition_adherence, energy_level, sleep_hours, stress_level, ai_feedback")
+    .eq("client_id", clientId)
+    .lt("week_number", checkin.week_number)
+    .order("week_number", { ascending: false })
+    .limit(3);
+  const trend = prior && prior.length
+    ? prior.slice().reverse().map((p) => `S${p.week_number}: antren ${p.training_adherence}%, nutr ${p.nutrition_adherence}%, energie ${p.energy_level}/10, stres ${p.stress_level ?? "—"}/10`).join("\n")
+    : "Prima săptămână raportată — fără istoric.";
+  const lastFb = prior?.[0]?.ai_feedback ? `\n## Ce i-ai spus data trecută (continuă firul, nu repeta):\n"${prior[0].ai_feedback}"` : "";
+
   const avg = (checkin.training_adherence + checkin.nutrition_adherence + checkin.energy_level * 10) / 3;
 
   const task = `# TASK: Generează feedback check-in client BUILT
@@ -408,6 +422,9 @@ export async function generateCheckinFeedbackDraft(
 
 ## Obiective client: ${client.objectives || "—"}
 
+## Istoric recent (cea mai veche → cea mai nouă):
+${trend}${lastFb}
+
 ## Misiunea ta (Skill 3 — Manager de Succes Client)
 ${avg < 40
   ? "Client la risc de abandon. Aplică MVR. Elimini vinovăția, dai UN singur pas mic."
@@ -416,7 +433,7 @@ ${avg < 40
   : "Săptămână bună. Celebrezi specific, ancorezi comportamentul, anticipezi săptămâna viitoare."
 }
 
-Răspunde cu un mesaj scurt (3-5 propoziții) în vocea BUILT. Direct, uman, fără clișee.`;
+Răspunde cu un mesaj scurt (3-5 propoziții) în vocea BUILT. Direct, uman, fără clișee. Dacă există istoric, leagă feedback-ul de evoluție (ce a crescut, ce a scăzut, ce tipar se repetă) — nu trata săptămâna izolat. Numește clientul pe nume o dată.`;
 
   try {
     const creier = await readCreierFromSupabase();
@@ -455,7 +472,55 @@ export async function saveCheckinFeedback(
     "Claudiu ți-a analizat săptămâna. Intră să vezi ce ai de ajustat.",
     "/client/checkin"
   ).catch(() => {});
+  revalidatePath("/dashboard/checkins");
   return { ok: true };
+}
+
+export interface PendingCheckin {
+  id: number;
+  clientId: number;
+  clientName: string;
+  objectives: string | null;
+  week: number;
+  created_at: string;
+  training_adherence: number;
+  nutrition_adherence: number;
+  energy_level: number;
+  sleep_hours: number | null;
+  hydration_l: number | null;
+  stress_level: number | null;
+  notes: string | null;
+}
+
+/** Toate check-in-urile fără feedback, din toți clienții — coada de răspuns a coach-ului. Cel mai vechi întâi. */
+export async function listPendingCheckins(): Promise<PendingCheckin[]> {
+  const role = await getUserRole().catch(() => null);
+  if (role !== "admin") return [];
+  const s = getSupabaseServer({ useServiceRole: true });
+  const { data: rows } = await s
+    .from("client_checkins")
+    .select("id, client_id, week_number, created_at, training_adherence, nutrition_adherence, energy_level, sleep_hours, hydration_l, stress_level, notes")
+    .is("ai_feedback", null)
+    .order("created_at", { ascending: true });
+  if (!rows?.length) return [];
+  const ids = [...new Set(rows.map((r) => r.client_id as number))];
+  const { data: cls } = await s.from("clients").select("id, name, objectives").in("id", ids);
+  const byId = new Map((cls ?? []).map((c) => [c.id as number, c]));
+  return rows.map((r) => ({
+    id: r.id as number,
+    clientId: r.client_id as number,
+    clientName: (byId.get(r.client_id as number)?.name as string) ?? String(r.client_id),
+    objectives: (byId.get(r.client_id as number)?.objectives as string | null) ?? null,
+    week: (r.week_number as number) ?? 0,
+    created_at: r.created_at as string,
+    training_adherence: r.training_adherence as number,
+    nutrition_adherence: r.nutrition_adherence as number,
+    energy_level: r.energy_level as number,
+    sleep_hours: r.sleep_hours as number | null,
+    hydration_l: r.hydration_l as number | null,
+    stress_level: r.stress_level as number | null,
+    notes: r.notes as string | null,
+  }));
 }
 
 // ─── Remindere push (check-in) ───────────────────────────────────────────────
