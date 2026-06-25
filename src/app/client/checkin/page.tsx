@@ -52,7 +52,7 @@ export default function CheckinPage() {
         <div className="anim-scale-in flex flex-col items-center justify-center py-10 mb-12">
           <div className="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center text-2xl mb-4 text-green-400">✓</div>
           <h2 className="text-lg font-bold text-white mb-1">Check-in trimis!</h2>
-          <p className="text-sm text-zinc-500 text-center">Claudiu analizează săptămâna ta și îți trimite feedback în curând.</p>
+          <p className="text-sm text-zinc-500 text-center">Claudiu îți analizează săptămâna. Primești o notificare când vine feedback-ul — ține notificările pornite.</p>
           <button onClick={() => setSubmitted(false)} className="mt-4 text-xs text-zinc-500 hover:text-white transition-colors">← Trimite alt check-in</button>
         </div>
       ) : (

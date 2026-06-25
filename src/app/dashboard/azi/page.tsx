@@ -542,7 +542,7 @@ function SignalsPanel({ signals, onAddToDay, onResolved }: {
 }) {
   const [added, setAdded] = useState<Set<string>>(new Set());
   if (!signals) return null;
-  const total = signals.prospects.length + signals.clients.length;
+  const total = signals.prospects.length + signals.clients.length + signals.checkins.length;
   const markAdded = (k: string) => setAdded((s) => new Set(s).add(k));
 
   if (total === 0) {
@@ -598,6 +598,28 @@ function SignalsPanel({ signals, onAddToDay, onResolved }: {
                   href="/dashboard/clients"
                   added={added.has(k)}
                   onAdd={() => { onAddToDay("clients", `Check-in: ${c.name}`); markAdded(k); }}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {signals.checkins.length > 0 && (
+        <div className="mt-3">
+          <p className="text-[10px] uppercase tracking-wider text-zinc-600 mb-1">Check-in-uri de răspuns</p>
+          <div className="divide-y divide-white/[0.04]">
+            {signals.checkins.map((c) => {
+              const k = `ci${c.id}`;
+              const when = c.daysAgo <= 0 ? "azi" : c.daysAgo === 1 ? "ieri" : `acum ${c.daysAgo} zile`;
+              return (
+                <SignalRow key={k}
+                  chip={{ label: "CHECK-IN", cls: "text-sky-400 border-sky-500/40 bg-sky-500/10" }}
+                  title={c.name}
+                  sub={`Săptămâna ${c.week} · ${when} · așteaptă feedback`}
+                  href={`/clienti/${c.clientId}`}
+                  added={added.has(k)}
+                  onAdd={() => { onAddToDay("clients", `Răspunde check-in: ${c.name}`); markAdded(k); }}
                 />
               );
             })}
@@ -763,7 +785,7 @@ export default function AziPage() {
 
   // Semnalele zilei — „acum", nu per dată. Reîncărcabile după ce marchezi un rezultat.
   const reloadSignals = useCallback(() => {
-    getDailySignals().then(setSignals).catch(() => setSignals({ calls: [], prospects: [], clients: [] }));
+    getDailySignals().then(setSignals).catch(() => setSignals({ calls: [], prospects: [], clients: [], checkins: [] }));
   }, []);
   useEffect(() => { reloadSignals(); }, [reloadSignals]);
 

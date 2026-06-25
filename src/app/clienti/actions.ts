@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 import { getSupabaseServer } from "@/lib/supabase/server";
 import { getUserRole } from "@/lib/supabase/auth-server";
-import { sendCheckinReminderToAll } from "@/lib/push";
+import { sendCheckinReminderToAll, sendPushToClient } from "@/lib/push";
 import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 
@@ -448,6 +448,13 @@ export async function saveCheckinFeedback(
     .eq("id", checkinId);
   if (error) return { ok: false, error: error.message };
   revalidatePath(`/clienti/${clientId}`);
+  // Anunță clientul că i-a venit feedback — altfel nu revine să-l citească (bucla moartă).
+  sendPushToClient(
+    clientId,
+    "Feedback nou la check-in",
+    "Claudiu ți-a analizat săptămâna. Intră să vezi ce ai de ajustat.",
+    "/client/checkin"
+  ).catch(() => {});
   return { ok: true };
 }
 

@@ -112,10 +112,19 @@ export interface CallSignal {
   isToday: boolean;
 }
 
+export interface CheckinSignal {
+  id: number;
+  clientId: number;
+  name: string;
+  week: number;
+  daysAgo: number;
+}
+
 export interface DailySignals {
   calls: CallSignal[];
   prospects: ProspectSignal[];
   clients: ClientSignal[];
+  checkins: CheckinSignal[];
 }
 
 // Prospecți încă în joc, în etapa de follow-up (apel_programat e tratat separat ca „apel").
@@ -177,7 +186,34 @@ export async function getDailySignals(): Promise<DailySignals> {
     clients = [];
   }
 
-  return { calls, prospects, clients };
+  // Check-in-uri fără răspuns — clientul așteaptă feedback. Cel mai vechi întâi.
+  let checkins: CheckinSignal[] = [];
+  try {
+    const db = getSupabaseServer({ useServiceRole: true });
+    const { data: rows } = await db
+      .from("client_checkins")
+      .select("id, client_id, week_number, created_at")
+      .is("ai_feedback", null)
+      .order("created_at", { ascending: true });
+    if (rows && rows.length) {
+      const ids = [...new Set(rows.map((r) => r.client_id as number))];
+      const { data: cls } = await db.from("clients").select("id, name").in("id", ids);
+      const nameById = new Map((cls ?? []).map((c) => [c.id as number, c.name as string]));
+      const dayMs = 86400000;
+      const todayIdx = Math.floor(Date.now() / dayMs);
+      checkins = rows.map((r) => ({
+        id: r.id as number,
+        clientId: r.client_id as number,
+        name: nameById.get(r.client_id as number) ?? String(r.client_id),
+        week: (r.week_number as number) ?? 0,
+        daysAgo: todayIdx - Math.floor(Date.parse(r.created_at as string) / dayMs),
+      }));
+    }
+  } catch {
+    checkins = [];
+  }
+
+  return { calls, prospects, clients, checkins };
 }
 
 // ─── Închiderea buclei: rezultatul apelului, cu un tap din „Azi" ──────────────

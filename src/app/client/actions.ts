@@ -189,6 +189,19 @@ export async function submitCheckin(formData: {
     week_number: weekNumber,
     ...formData,
   });
+
+  // Anunță coach-ul — altfel nu știe că a venit un check-in și clientul rămâne fără feedback.
+  if (!error) {
+    const { data: client } = await db.from("clients").select("name").eq("id", clientId).single();
+    const f = formData;
+    const summary =
+      `Check-in săptămâna ${weekNumber}: antrenament ${f.training_adherence}%, nutriție ${f.nutrition_adherence}%, ` +
+      `energie ${f.energy_level}/10, somn ${f.sleep_hours}h, stres ${f.stress_level}/10.` +
+      (f.notes ? ` Notă: „${f.notes}”` : "") +
+      ` — răspunde-i din fișa clientului.`;
+    sendMessageNotification(client?.name ?? "Client", summary).catch(() => {});
+  }
+
   return { error: error?.message, weekNumber };
 }
 
