@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import { SignOutButton } from "./SignOutButton";
 import { BuiltPillars, BuiltWordmark } from "./BrandLogo";
 import { getAdminUnreadCount } from "@/app/client/actions";
+import { getPendingCheckinCount } from "@/app/clienti/actions";
 
 /* ─── Icons ──────────────────────────────────────────────────────────────────*/
 function Icon({ d, d2 }: { d: string; d2?: string }) {
@@ -131,12 +132,16 @@ export function Sidebar() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
+  const [pendingCheckins, setPendingCheckins] = useState(0);
 
   useEffect(() => {
     setMounted(true);
-    const fetchUnread = () => getAdminUnreadCount().then(setUnreadCount).catch(() => {});
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 30_000);
+    const fetchCounts = () => {
+      getAdminUnreadCount().then(setUnreadCount).catch(() => {});
+      getPendingCheckinCount().then(setPendingCheckins).catch(() => {});
+    };
+    fetchCounts();
+    const interval = setInterval(fetchCounts, 30_000);
     return () => clearInterval(interval);
   }, []);
 
@@ -262,7 +267,11 @@ export function Sidebar() {
               {ADMIN_ITEMS.map(item => (
                 <li key={item.label}>
                   <NavLink
-                    item={item.href === "/dashboard/clients" ? { ...item, badge: unreadCount } : item}
+                    item={
+                      item.href === "/dashboard/clients" ? { ...item, badge: unreadCount }
+                        : item.href === "/dashboard/checkins" ? { ...item, badge: pendingCheckins }
+                        : item
+                    }
                     pathname={pathname}
                     collapsed={collapsed}
                   />

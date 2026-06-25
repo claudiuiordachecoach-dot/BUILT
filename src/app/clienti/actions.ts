@@ -492,6 +492,15 @@ export interface PendingCheckin {
   notes: string | null;
 }
 
+/** Numărul de check-in-uri fără feedback — pentru badge-ul din sidebar. */
+export async function getPendingCheckinCount(): Promise<number> {
+  const role = await getUserRole().catch(() => null);
+  if (role !== "admin") return 0;
+  const s = getSupabaseServer({ useServiceRole: true });
+  const { count } = await s.from("client_checkins").select("*", { count: "exact", head: true }).is("ai_feedback", null);
+  return count ?? 0;
+}
+
 /** Toate check-in-urile fără feedback, din toți clienții — coada de răspuns a coach-ului. Cel mai vechi întâi. */
 export async function listPendingCheckins(): Promise<PendingCheckin[]> {
   const role = await getUserRole().catch(() => null);

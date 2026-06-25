@@ -120,11 +120,19 @@ export interface CheckinSignal {
   daysAgo: number;
 }
 
+export interface MilestoneSignal {
+  clientId: number;
+  name: string;
+  milestone: number; // 30 / 60 / 90
+  daysSince: number; // de câte zile a trecut jalonul
+}
+
 export interface DailySignals {
   calls: CallSignal[];
   prospects: ProspectSignal[];
   clients: ClientSignal[];
   checkins: CheckinSignal[];
+  milestones: MilestoneSignal[];
 }
 
 // Prospecți încă în joc, în etapa de follow-up (apel_programat e tratat separat ca „apel").
@@ -213,7 +221,29 @@ export async function getDailySignals(): Promise<DailySignals> {
     checkins = [];
   }
 
-  return { calls, prospects, clients, checkins };
+  // Jaloane 30/60/90 — fereastră de 7 zile după ce clientul trece pragul.
+  // Momentul de măsurat + cerut testimonial (flywheel-ul de creștere → dovadă socială pe /aplica).
+  let milestones: MilestoneSignal[] = [];
+  try {
+    const db = getSupabaseServer({ useServiceRole: true });
+    const { data: cls } = await db.from("clients").select("id, name, start_date, status").eq("status", "active");
+    const dayMs = 86400000;
+    const todayIdx = Math.floor(Date.now() / dayMs);
+    for (const c of (cls ?? []) as { id: number; name: string | null; start_date: string | null }[]) {
+      if (!c.start_date) continue;
+      const days = todayIdx - Math.floor(Date.parse(c.start_date + "T12:00:00Z") / dayMs);
+      for (const m of [30, 60, 90]) {
+        if (days >= m && days <= m + 6) {
+          milestones.push({ clientId: c.id, name: c.name ?? String(c.id), milestone: m, daysSince: days - m });
+        }
+      }
+    }
+    milestones.sort((a, b) => b.milestone - a.milestone);
+  } catch {
+    milestones = [];
+  }
+
+  return { calls, prospects, clients, checkins, milestones };
 }
 
 // ─── Închiderea buclei: rezultatul apelului, cu un tap din „Azi" ──────────────

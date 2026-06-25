@@ -542,7 +542,7 @@ function SignalsPanel({ signals, onAddToDay, onResolved }: {
 }) {
   const [added, setAdded] = useState<Set<string>>(new Set());
   if (!signals) return null;
-  const total = signals.prospects.length + signals.clients.length + signals.checkins.length;
+  const total = signals.prospects.length + signals.clients.length + signals.checkins.length + signals.milestones.length;
   const markAdded = (k: string) => setAdded((s) => new Set(s).add(k));
 
   if (total === 0) {
@@ -598,6 +598,28 @@ function SignalsPanel({ signals, onAddToDay, onResolved }: {
                   href="/dashboard/clients"
                   added={added.has(k)}
                   onAdd={() => { onAddToDay("clients", `Check-in: ${c.name}`); markAdded(k); }}
+                />
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {signals.milestones.length > 0 && (
+        <div className="mt-3">
+          <p className="text-[10px] uppercase tracking-wider text-zinc-600 mb-1">Jaloane — măsoară + cere testimonial</p>
+          <div className="divide-y divide-white/[0.04]">
+            {signals.milestones.map((m) => {
+              const k = `m${m.clientId}_${m.milestone}`;
+              const when = m.daysSince <= 0 ? "azi" : m.daysSince === 1 ? "ieri" : `acum ${m.daysSince} zile`;
+              return (
+                <SignalRow key={k}
+                  chip={{ label: `ZIUA ${m.milestone}`, cls: "text-emerald-400 border-emerald-500/40 bg-emerald-500/10" }}
+                  title={m.name}
+                  sub={`Jalon atins ${when} · măsurători oficiale + cere testimonial`}
+                  href={`/clienti/${m.clientId}`}
+                  added={added.has(k)}
+                  onAdd={() => { onAddToDay("clients", `Jalon ${m.milestone}z ${m.name}: măsurători + testimonial`); markAdded(k); }}
                 />
               );
             })}
@@ -785,7 +807,7 @@ export default function AziPage() {
 
   // Semnalele zilei — „acum", nu per dată. Reîncărcabile după ce marchezi un rezultat.
   const reloadSignals = useCallback(() => {
-    getDailySignals().then(setSignals).catch(() => setSignals({ calls: [], prospects: [], clients: [], checkins: [] }));
+    getDailySignals().then(setSignals).catch(() => setSignals({ calls: [], prospects: [], clients: [], checkins: [], milestones: [] }));
   }, []);
   useEffect(() => { reloadSignals(); }, [reloadSignals]);
 
