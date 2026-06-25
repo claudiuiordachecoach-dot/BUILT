@@ -21,6 +21,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
 
   const metricRows = dailyMetrics.filter((r) => r.steps != null || r.sleep_h != null || r.weight != null || r.waist != null);
   const noteRows = dailyMetrics.filter((r) => r.note);
+  const trainingRows = dailyMetrics.filter((r) => r.training_status === "skipped" || r.training_status === "other");
   const avg = (vals: number[]) => (vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : null);
   const avgSteps = avg(metricRows.map((r) => r.steps).filter((v): v is number => v != null));
   const sleepVals = metricRows.map((r) => r.sleep_h).filter((v): v is number => v != null);
@@ -102,6 +103,27 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
                         {new Date(r.date + "T12:00:00").toLocaleDateString("ro-RO", { weekday: "long", day: "numeric", month: "long" })}
                       </p>
                       <p className="text-sm text-zinc-200 whitespace-pre-wrap leading-relaxed">{r.note}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {trainingRows.length > 0 && (
+              <div className="mt-6">
+                <p className="font-condensed text-[10px] uppercase tracking-wider text-built-gray-text mb-3">Antrenamente sărite / schimbate</p>
+                <div className="space-y-2">
+                  {trainingRows.map((r) => (
+                    <div key={r.date} className="bg-[#111111] border border-white/10 rounded-lg p-3 flex items-start gap-3">
+                      <span className={`font-condensed text-[10px] uppercase tracking-wider px-2 py-1 rounded shrink-0 ${r.training_status === "skipped" ? "text-amber-400 bg-amber-500/10 border border-amber-500/30" : "text-sky-400 bg-sky-500/10 border border-sky-500/30"}`}>
+                        {r.training_status === "skipped" ? "Sărit" : "Altceva"}
+                      </span>
+                      <div className="min-w-0">
+                        <p className="font-condensed text-[10px] uppercase tracking-wider text-built-gray-text">
+                          {new Date(r.date + "T12:00:00").toLocaleDateString("ro-RO", { weekday: "long", day: "numeric", month: "long" })}
+                        </p>
+                        {r.training_note && <p className="text-sm text-zinc-200 mt-0.5">{r.training_note}</p>}
+                      </div>
                     </div>
                   ))}
                 </div>

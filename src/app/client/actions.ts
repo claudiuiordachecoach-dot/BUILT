@@ -581,6 +581,39 @@ export async function getTodayMetrics(clientId: number): Promise<Record<string, 
   }
 }
 
+export type TrainingStatus = "done" | "skipped" | "other";
+
+/** Marchează antrenamentul de azi: făcut / sărit / altceva (+ notă). Sincronizează și flag-ul `antrenament` (streak/checklist). */
+export async function setMyTodayTraining(status: TrainingStatus, note?: string) {
+  const clientId = await getClientId();
+  if (!clientId) return;
+  const db = getSupabaseServer();
+  const date = todayStr();
+  const { data: existing } = await db.from("daily_logs").select("items").eq("client_id", clientId).eq("log_date", date).single();
+  const items: Record<string, unknown> = { ...((existing?.items as Record<string, unknown>) ?? {}) };
+  items.training_status = status;
+  if (note && note.trim()) items.training_note = note.trim(); else delete items.training_note;
+  items.antrenament = status === "done"; // ține checklist-ul/streak-ul în sincron
+  await db.from("daily_logs").upsert({ client_id: clientId, log_date: date, items, updated_at: new Date().toISOString() }, { onConflict: "client_id,log_date" });
+}
+
+export async function getMyTodayTraining(): Promise<{ status?: TrainingStatus; note?: string }> {
+  try {
+    const clientId = await getClientId();
+    if (!clientId) return {};
+    const db = getSupabaseServer();
+    const { data } = await db.from("daily_logs").select("items").eq("client_id", clientId).eq("log_date", todayStr()).single();
+    const items = (data?.items as Record<string, unknown>) ?? {};
+    const s = items.training_status;
+    return {
+      status: s === "done" || s === "skipped" || s === "other" ? s : undefined,
+      note: typeof items.training_note === "string" ? items.training_note : undefined,
+    };
+  } catch {
+    return {};
+  }
+}
+
 export interface MetricPoint { date: string; weight?: number; waist?: number }
 
 /** Istoricul greutății + taliei din daily_logs — pentru graficul „Evoluția ta". */

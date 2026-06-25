@@ -3,10 +3,13 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getWorkoutPlan } from "../actions";
 import WeeklyTraining from "./WeeklyTraining";
+import TodayTrainingLog from "./TodayTrainingLog";
 import { EmptyState } from "../components/EmptyState";
 import { PageSkeleton } from "../components/Skeleton";
 
 const DAYS = ["Luni", "Marți", "Miercuri", "Joi", "Vineri", "Sâmbătă", "Duminică"];
+const RO_DAYS: Record<number, string> = { 0: "Duminică", 1: "Luni", 2: "Marți", 3: "Miercuri", 4: "Joi", 5: "Vineri", 6: "Sâmbătă" };
+function todayDayName() { return RO_DAYS[new Date().getDay()]; }
 type Exercise = { name: string; sets: number; reps: string; note?: string };
 type WorkoutPlan = { days: Record<string, Exercise[]>; notes?: string; week_start?: string; quickref_url?: string; quickref_acasa_url?: string };
 
@@ -36,7 +39,7 @@ function todayHashFor(quickrefUrl?: string): string {
 export default function AntrenamantePage() {
   const [plan, setPlan] = useState<WorkoutPlan | null>(null);
   const [loading, setLoading] = useState(true);
-  const [activeDay, setActiveDay] = useState("Luni");
+  const [activeDay, setActiveDay] = useState(todayDayName());
   const [todayHash, setTodayHash] = useState("");
 
   useEffect(() => { getWorkoutPlan().then(p => { setPlan(p as WorkoutPlan | null); setTodayHash(todayHashFor((p as WorkoutPlan | null)?.quickref_url)); }).finally(() => setLoading(false)); }, []);
@@ -56,6 +59,7 @@ export default function AntrenamantePage() {
       <div className="flex flex-col w-full h-[calc(100dvh-8rem)] md:h-[calc(100vh-1rem)]">
         <div className="px-4 pt-4 shrink-0">
           <WeeklyTraining />
+          <TodayTrainingLog daySummary={todayHash ? "Antrenamentul de azi e deschis mai jos ↓" : "Planul tău, mai jos ↓"} />
         </div>
         <div className="flex gap-2 px-4 py-2 bg-[#111111] border-b border-white/10 shrink-0">
           <span className="text-xs font-semibold text-built-red border-b-2 border-built-red pb-1 px-1">Sală</span>
@@ -79,6 +83,9 @@ export default function AntrenamantePage() {
   }
 
   const todayExercises: Exercise[] = plan.days?.[activeDay] ?? [];
+  const todayName = todayDayName();
+  const todayCount = plan.days?.[todayName]?.length ?? 0;
+  const todaySummary = todayCount > 0 ? `${todayCount} ${todayCount === 1 ? "exercițiu" : "exerciții"} azi` : "Zi de recuperare azi";
 
   return (
     <div className="p-8 max-w-3xl">
@@ -91,9 +98,11 @@ export default function AntrenamantePage() {
         )}
       </div>
       <WeeklyTraining />
+      <TodayTrainingLog daySummary={todaySummary} />
       <div className="flex gap-2 mb-6 flex-wrap">
         {DAYS.map(day => {
           const hasWorkout = (plan.days?.[day]?.length ?? 0) > 0;
+          const isToday = day === todayName;
           return (
             <button key={day} onClick={() => setActiveDay(day)}
               className={`press px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
@@ -101,7 +110,7 @@ export default function AntrenamantePage() {
                   : hasWorkout ? "bg-white/10 text-zinc-200 hover:bg-white/15"
                   : "bg-white/5 text-zinc-600"
               }`}>
-              {day}
+              {day}{isToday && <span className="ml-1 opacity-70">· azi</span>}
             </button>
           );
         })}
