@@ -3,9 +3,13 @@ import { Bebas_Neue, Barlow_Condensed, Barlow, JetBrains_Mono } from "next/font/
 import { Sidebar } from "@/components/Sidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { BrandToaster } from "@/components/BrandToaster";
+import { headers } from "next/headers";
 import { getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { getUserRole } from "@/lib/supabase/auth-server";
 import "./globals.css";
+
+// Pagini publice — fără chrome de dashboard, chiar dacă un admin e logat.
+const PUBLIC_PREFIXES = ["/aplica", "/p/", "/login", "/fisa-start", "/debug"];
 
 const bebasNeue = Bebas_Neue({
   variable: "--font-bebas-neue",
@@ -56,10 +60,15 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const pathname = (await headers()).get("x-pathname") ?? "";
+  const isPublicPage = PUBLIC_PREFIXES.some((p) => pathname.startsWith(p));
+
   const supabase = await getSupabaseAuth();
   const { data: { user } } = await supabase.auth.getUser();
   const role = user ? await getUserRole().catch(() => null) : null;
   const isAdmin = role === "admin";
+  // Sidebar + padding de admin doar în dashboard, niciodată pe o pagină publică.
+  const showChrome = isAdmin && !isPublicPage;
 
   return (
     <html
@@ -76,9 +85,9 @@ export default async function RootLayout({
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
           <div className="flex min-h-screen">
-            {isAdmin && <Sidebar />}
+            {showChrome && <Sidebar />}
             <NotificationProvider>
-              <main className={`flex-1 min-w-0 ${isAdmin ? "mobile-header-offset md:pt-0" : ""}`}>{children}</main>
+              <main className={`flex-1 min-w-0 ${showChrome ? "mobile-header-offset md:pt-0" : ""}`}>{children}</main>
             </NotificationProvider>
           </div>
           <BrandToaster />
