@@ -7,19 +7,17 @@ import { SignOutButton } from "./SignOutButton";
 import { UserDisplay } from "./UserDisplay";
 import { NAV_ICONS as ICONS } from "./nav-icons";
 
-// Bara de jos (mobil): doar cele 5 esențiale. Restul (Profil/Academia/Bonusuri)
-// sunt accesibile din header (Profil) și din cardurile de pe Acasă.
-const BOTTOM_KEYS = ["dashboard", "antrenamente", "nutritie", "checkin", "mesaje"];
-
+// Bara de jos (mobil): TOATE paginile, scrollabile orizontal. Principalele întâi,
+// restul se descoperă la scroll. Ordinea = prioritatea de folosire zilnică.
 const NAV = [
   { label: "Acasă", short: "Acasă", href: "/client/dashboard", key: "dashboard" },
-  { label: "Profilul Meu", short: "Profil", href: "/client/profil", key: "profil" },
   { label: "Antrenamente", short: "Antren.", href: "/client/antrenamente", key: "antrenamente" },
   { label: "Nutriție", short: "Nutriție", href: "/client/nutritie", key: "nutritie" },
-  { label: "Academia", short: "Academia", href: "/client/module", key: "module" },
   { label: "Check-in", short: "Check-in", href: "/client/checkin", key: "checkin" },
-  { label: "Bonusuri", short: "Bonus", href: "/client/bonusuri", key: "bonusuri" },
   { label: "Mesaje", short: "Mesaje", href: "/client/mesaje", key: "mesaje" },
+  { label: "Academia", short: "Academia", href: "/client/module", key: "module" },
+  { label: "Bonusuri", short: "Bonus", href: "/client/bonusuri", key: "bonusuri" },
+  { label: "Profilul Meu", short: "Profil", href: "/client/profil", key: "profil" },
 ];
 
 function ClientNavContent() {
@@ -30,6 +28,10 @@ function ClientNavContent() {
   const qs = clientId ? `?clientId=${clientId}` : "";
   // Buton back peste tot, mai puțin pe home (dashboard).
   const showBack = pathname !== "/client/dashboard";
+  // Înapoi DETERMINIST (nu istoricul browserului, care ducea pe pagini vechi):
+  // sub-pagină imbricată → un nivel mai sus; pagină de top → Acasă.
+  const segs = pathname.split("/");
+  const backHref = (segs.length > 3 ? segs.slice(0, -1).join("/") : "/client/dashboard") + qs;
 
   return (
     <>
@@ -69,7 +71,7 @@ function ClientNavContent() {
         <div className="flex items-center justify-between px-4 h-12">
           {showBack ? (
             <button
-              onClick={() => router.back()}
+              onClick={() => router.push(backHref)}
               className="flex items-center gap-1 -ml-1 pr-2 py-1 rounded-lg text-zinc-100 hover:bg-white/5 press transition-all"
               aria-label="Înapoi"
             >
@@ -97,13 +99,13 @@ function ClientNavContent() {
         </div>
       </header>
 
-      {/* MOBILE — bottom nav: 5 esențiale */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111]/95 backdrop-blur-md border-t border-white/10 flex items-stretch px-1 pt-1 mobile-bottomnav">
-        {NAV.filter(item => BOTTOM_KEYS.includes(item.key)).map(item => {
+      {/* MOBILE — bottom nav: TOATE paginile, scrollabile orizontal */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111]/95 backdrop-blur-md border-t border-white/10 flex items-stretch overflow-x-auto pt-1 mobile-bottomnav [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+        {NAV.map(item => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link key={item.href} href={`${item.href}${qs}`}
-              className={`relative flex flex-col items-center justify-center gap-1 flex-1 min-w-0 pt-2 pb-1 press transition-colors ${
+              className={`relative flex flex-col items-center justify-center gap-1 shrink-0 w-[19vw] min-w-[68px] pt-2 pb-1 press transition-colors ${
                 isActive ? 'text-built-red' : 'text-zinc-500'
               }`}>
               {/* indicator roșu sus pe tab activ */}
@@ -113,7 +115,7 @@ function ClientNavContent() {
               <span className="text-[21px] leading-none">{ICONS[item.key]}</span>
               <span className={`text-[10px] font-semibold leading-none whitespace-nowrap ${
                 isActive ? 'text-built-red' : 'text-zinc-500'
-              }`}>{item.label}</span>
+              }`}>{item.short}</span>
             </Link>
           );
         })}

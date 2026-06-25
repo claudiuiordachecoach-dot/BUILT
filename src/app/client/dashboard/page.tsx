@@ -71,6 +71,22 @@ export default async function ClientDashboardPage({
         )}
       </div>
 
+      {/* Scurtături „de azi" — direct la ce ai de făcut azi */}
+      <div className="grid grid-cols-2 gap-3 mb-5">
+        <Link href={`/client/antrenamente${overrideId ? `?clientId=${overrideId}` : ""}`}
+          className="bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-4 press transition-colors">
+          <span className="text-[22px] leading-none text-built-red">{NAV_ICONS.antrenamente}</span>
+          <p className="text-[10px] font-condensed uppercase tracking-wider text-built-red mt-2">Azi · {new Date().toLocaleDateString("ro-RO", { weekday: "long" })}</p>
+          <p className="text-sm font-semibold text-zinc-100">Antrenamentul de azi</p>
+        </Link>
+        <Link href={`/client/nutritie${overrideId ? `?clientId=${overrideId}` : ""}`}
+          className="bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-4 press transition-colors">
+          <span className="text-[22px] leading-none text-built-red">{NAV_ICONS.nutritie}</span>
+          <p className="text-[10px] font-condensed uppercase tracking-wider text-built-red mt-2">Azi</p>
+          <p className="text-sm font-semibold text-zinc-100">Nutriția de azi</p>
+        </Link>
+      </div>
+
       {clientId && daysInProgram >= 1 && daysInProgram <= 7 && (
         <OnboardingJourney day={daysInProgram} qs={overrideId ? `?clientId=${overrideId}` : ""} />
       )}
