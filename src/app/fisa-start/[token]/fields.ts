@@ -40,7 +40,7 @@ export const INTAKE_GROUPS: IntakeGroup[] = [
   {
     title: "Antrenament",
     fields: [
-      { key: "experienta", label: "Experiența ta cu antrenamentul", type: "textarea", placeholder: "De la zero / am mai făcut / sunt constant(ă)." },
+      { key: "experienta", label: "Experiența ta cu antrenamentul", type: "textarea", placeholder: "De la zero / am mai făcut în trecut / mă antrenez constant." },
       { key: "unde_antrenez", label: "Unde te antrenezi + ce echipament ai", type: "text", placeholder: "ex: sală / acasă cu gantere" },
       { key: "zile_timp", label: "Câte zile/săptămână realist + cât timp/ședință", type: "text", placeholder: "ex: 3 zile, 40 min" },
       { key: "accidentari", label: "Accidentări / dureri / zone sensibile", type: "text", placeholder: "Scrie „nimic” dacă e cazul." },

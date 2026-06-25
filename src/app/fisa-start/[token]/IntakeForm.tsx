@@ -79,8 +79,8 @@ export default function IntakeForm({
           BUN VENIT, {firstName.toUpperCase()}
         </h1>
         <p className="text-zinc-600 mt-3 leading-relaxed">
-          Asta e harta pe care construiesc totul. Ia-ți 10 minute liniștite și răspunde sincer —
-          cu cât ești mai exact(ă), cu atât planul e mai al tău. Toate câmpurile sunt necesare.
+          Asta e harta pe care îți construiesc tot planul. Ia-ți 10 minute liniștite și răspunde sincer —
+          cu cât intri mai în detaliu, cu atât planul iese mai precis pe corpul tău. Toate câmpurile contează.
         </p>
         <div className="h-1 w-16 mt-5 mb-2" style={{ background: RED }} />
 
