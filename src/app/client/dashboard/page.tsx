@@ -3,6 +3,7 @@ import { getClientDashboard, getTodayLog, getTodayMetrics, getTodayNote, getStre
 import { NAV_ICONS } from "@/components/nav-icons";
 import DailyChecklist from "./DailyChecklist";
 import DailyMetrics from "./DailyMetrics";
+import ProgressTrend from "./ProgressTrend";
 import DailyReflection from "./DailyReflection";
 import OnboardingJourney from "./OnboardingJourney";
 import Badges from "./Badges";
@@ -77,6 +78,8 @@ export default async function ClientDashboardPage({
       {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
 
       {clientId && <DailyMetrics clientId={clientId} initial={todayMetrics} />}
+
+      {clientId && <ProgressTrend clientId={clientId} />}
 
       {clientId && <DailyReflection clientId={clientId} initial={todayNote} />}
 

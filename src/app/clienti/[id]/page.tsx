@@ -19,13 +19,14 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
   ]);
   if (!client) notFound();
 
-  const metricRows = dailyMetrics.filter((r) => r.steps != null || r.sleep_h != null || r.weight != null);
+  const metricRows = dailyMetrics.filter((r) => r.steps != null || r.sleep_h != null || r.weight != null || r.waist != null);
   const noteRows = dailyMetrics.filter((r) => r.note);
   const avg = (vals: number[]) => (vals.length ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length) : null);
   const avgSteps = avg(metricRows.map((r) => r.steps).filter((v): v is number => v != null));
   const sleepVals = metricRows.map((r) => r.sleep_h).filter((v): v is number => v != null);
   const avgSleep = sleepVals.length ? (sleepVals.reduce((a, b) => a + b, 0) / sleepVals.length).toFixed(1) : null;
   const lastWeight = metricRows.find((r) => r.weight != null)?.weight ?? null;
+  const lastWaist = metricRows.find((r) => r.waist != null)?.waist ?? null;
   return (
     <div className="p-8 max-w-4xl">
       <div className="flex items-center gap-3 mb-2">
@@ -39,7 +40,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
       <section className="mt-10 border-t border-white/10 pt-6">
         <h2 className="font-display text-2xl tracking-wide text-built-white mb-1">Numere zilnice</h2>
         <p className="font-condensed text-[10px] uppercase tracking-wider text-built-gray-text mb-4">
-          Pași · somn · greutate, completate zilnic de client
+          Pași · somn · greutate · talie, completate zilnic de client
         </p>
 
         {dailyMetrics.length === 0 ? (
@@ -48,11 +49,12 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
           <>
             {metricRows.length > 0 && (
               <>
-                <div className="grid grid-cols-3 gap-3 mb-4">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
                   {[
                     { label: "Media pași", value: avgSteps != null ? avgSteps.toLocaleString("ro-RO") : "—" },
                     { label: "Media somn", value: avgSleep != null ? `${avgSleep}h` : "—" },
                     { label: "Greutate", value: lastWeight != null ? `${lastWeight} kg` : "—" },
+                    { label: "Talie", value: lastWaist != null ? `${lastWaist} cm` : "—" },
                   ].map((s) => (
                     <div key={s.label} className="min-w-0 p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
                       <p className="font-condensed text-[10px] text-built-gray-text uppercase tracking-wide whitespace-nowrap">{s.label}</p>
@@ -68,7 +70,8 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
                         <th className="text-left px-4 py-2.5 font-normal">Zi</th>
                         <th className="text-right px-3 py-2.5 font-normal">Pași</th>
                         <th className="text-right px-3 py-2.5 font-normal">Somn</th>
-                        <th className="text-right px-4 py-2.5 font-normal">Greutate</th>
+                        <th className="text-right px-3 py-2.5 font-normal">Greutate</th>
+                        <th className="text-right px-4 py-2.5 font-normal">Talie</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-white/[0.06]">
@@ -79,7 +82,8 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
                           </td>
                           <td className="px-3 py-2.5 text-right tabular-nums text-zinc-200">{r.steps != null ? r.steps.toLocaleString("ro-RO") : "—"}</td>
                           <td className="px-3 py-2.5 text-right tabular-nums text-zinc-200">{r.sleep_h != null ? `${r.sleep_h}h` : "—"}</td>
-                          <td className="px-4 py-2.5 text-right tabular-nums text-zinc-200">{r.weight != null ? `${r.weight} kg` : "—"}</td>
+                          <td className="px-3 py-2.5 text-right tabular-nums text-zinc-200">{r.weight != null ? `${r.weight} kg` : "—"}</td>
+                          <td className="px-4 py-2.5 text-right tabular-nums text-zinc-200">{r.waist != null ? `${r.waist} cm` : "—"}</td>
                         </tr>
                       ))}
                     </tbody>

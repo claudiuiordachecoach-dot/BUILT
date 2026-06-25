@@ -7,6 +7,7 @@ const METRICS: { key: string; label: string; unit: string; step: number; decimal
   { key: "steps", label: "Pași", unit: "azi", step: 100, decimal: false, placeholder: "8000" },
   { key: "sleep_h", label: "Somn", unit: "ore", step: 0.5, decimal: true, placeholder: "7.5" },
   { key: "weight", label: "Greutate", unit: "kg", step: 0.1, decimal: true, placeholder: "85.0" },
+  { key: "waist", label: "Talie", unit: "cm", step: 0.5, decimal: true, placeholder: "90" },
 ];
 
 export default function DailyMetrics({
@@ -20,6 +21,7 @@ export default function DailyMetrics({
     steps: initial.steps != null ? String(initial.steps) : "",
     sleep_h: initial.sleep_h != null ? String(initial.sleep_h) : "",
     weight: initial.weight != null ? String(initial.weight) : "",
+    waist: initial.waist != null ? String(initial.waist) : "",
   }));
   const [saved, setSaved] = useState<string | null>(null);
 
@@ -39,7 +41,7 @@ export default function DailyMetrics({
   return (
     <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
       <p className="text-sm font-semibold text-zinc-200 mb-4">Azi · numerele tale</p>
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {METRICS.map((m) => (
           <div key={m.key}>
             <label className="text-[10px] font-condensed uppercase tracking-wider text-zinc-500 mb-1.5 block">

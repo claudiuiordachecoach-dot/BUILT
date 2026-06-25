@@ -575,9 +575,32 @@ export async function getTodayMetrics(clientId: number): Promise<Record<string, 
       .single();
     const items = (data?.items as Record<string, unknown>) ?? {};
     const num = (v: unknown) => (typeof v === "number" ? v : undefined);
-    return { steps: num(items.steps), sleep_h: num(items.sleep_h), weight: num(items.weight) };
+    return { steps: num(items.steps), sleep_h: num(items.sleep_h), weight: num(items.weight), waist: num(items.waist) };
   } catch {
     return {};
+  }
+}
+
+export interface MetricPoint { date: string; weight?: number; waist?: number }
+
+/** Istoricul greutății + taliei din daily_logs — pentru graficul „Evoluția ta". */
+export async function getMetricHistory(clientId: number): Promise<{ points: MetricPoint[]; targetWeight: number | null }> {
+  try {
+    const db = getSupabaseServer();
+    const [logsRes, clientRes] = await Promise.all([
+      db.from("daily_logs").select("log_date, items").eq("client_id", clientId).order("log_date", { ascending: true }),
+      db.from("clients").select("target_weight_kg").eq("id", clientId).single(),
+    ]);
+    const points: MetricPoint[] = [];
+    for (const row of logsRes.data ?? []) {
+      const items = (row.items as Record<string, unknown>) ?? {};
+      const w = typeof items.weight === "number" ? items.weight : undefined;
+      const wa = typeof items.waist === "number" ? items.waist : undefined;
+      if (w != null || wa != null) points.push({ date: row.log_date as string, weight: w, waist: wa });
+    }
+    return { points, targetWeight: (clientRes.data?.target_weight_kg as number | null) ?? null };
+  } catch {
+    return { points: [], targetWeight: null };
   }
 }
 

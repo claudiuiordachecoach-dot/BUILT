@@ -570,7 +570,7 @@ export async function sendCheckinReminderNow(): Promise<
 
 // ─── Numere zilnice (pași/somn/greutate) introduse de client ──────────────────
 
-export type DailyMetricRow = { date: string; steps?: number; sleep_h?: number; weight?: number; note?: string };
+export type DailyMetricRow = { date: string; steps?: number; sleep_h?: number; weight?: number; waist?: number; note?: string };
 
 /** Istoricul numerelor + reflecțiilor zilnice ale unui client (ultimele `days` zile cu conținut). */
 export async function getClientDailyMetrics(clientId: number, days = 21): Promise<DailyMetricRow[]> {
@@ -592,8 +592,9 @@ export async function getClientDailyMetrics(clientId: number, days = 21): Promis
         steps: num(it.steps),
         sleep_h: num(it.sleep_h),
         weight: num(it.weight),
+        waist: num(it.waist),
         note: typeof it.note === "string" ? it.note : undefined,
       };
     })
-    .filter((r) => r.steps != null || r.sleep_h != null || r.weight != null || r.note);
+    .filter((r) => r.steps != null || r.sleep_h != null || r.weight != null || r.waist != null || r.note);
 }
