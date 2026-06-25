@@ -50,6 +50,7 @@ export default function AntrenamantePage() {
     <div className="p-5 md:p-8 max-w-3xl">
       <h1 className="font-display text-4xl tracking-wider text-built-white mb-4">Plan Antrenament</h1>
       <WeeklyTraining />
+      <TodayTrainingLog />
       <EmptyState icon="⚡" title="Planul tău se construiește" subtitle="Claudiu îți pregătește antrenamentele. Apar aici în curând." />
     </div>
   );
