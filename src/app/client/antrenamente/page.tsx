@@ -60,7 +60,7 @@ export default function AntrenamantePage() {
       <div className="flex flex-col w-full h-[calc(100dvh-8rem)] md:h-[calc(100vh-1rem)]">
         <div className="px-4 pt-4 shrink-0">
           <WeeklyTraining />
-          <TodayTrainingLog daySummary={todayHash ? "Antrenamentul de azi e deschis mai jos ↓" : "Planul tău, mai jos ↓"} />
+          <TodayTrainingLog daySummary={todayHash ? "Antrenamentul de azi e deschis mai jos ↓" : "Azi e zi de recuperare 🧘 — planul complet mai jos"} />
         </div>
         <div className="flex gap-2 px-4 py-2 bg-[#111111] border-b border-white/10 shrink-0">
           <span className="text-xs font-semibold text-built-red border-b-2 border-built-red pb-1 px-1">Sală</span>

@@ -87,25 +87,20 @@ export default async function ClientDashboardPage({
         </Link>
       </div>
 
+      {unreadCount > 0 && (
+        <Link href={`/client/mesaje${overrideId ? `?clientId=${overrideId}` : ""}`}
+          className="flex items-center gap-3 bg-built-red/[0.06] border border-built-red/30 rounded-xl p-4 mb-5 press transition-colors">
+          <span className="text-[20px] leading-none text-built-red">{NAV_ICONS.mesaje}</span>
+          <span className="flex-1 text-sm text-zinc-100"><span className="font-semibold">{unreadCount} {unreadCount === 1 ? "mesaj nou" : "mesaje noi"}</span> de la Claudiu</span>
+          <span className="text-built-red text-lg">→</span>
+        </Link>
+      )}
+
       {clientId && daysInProgram >= 1 && daysInProgram <= 7 && (
         <OnboardingJourney day={daysInProgram} qs={overrideId ? `?clientId=${overrideId}` : ""} />
       )}
 
-      {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
-
-      {clientId && <DailyMetrics clientId={clientId} initial={todayMetrics} />}
-
-      {clientId && <ProgressTrend clientId={clientId} />}
-
-      {clientId && <DailyReflection clientId={clientId} initial={todayNote} />}
-
-      {badges.length > 0 && <Badges badges={badges} />}
-
-      {(() => {
-        const scores = pillarScores(latestCheckin);
-        return scores ? <PillarRadar scores={scores} /> : null;
-      })()}
-
+      {/* ── Esențialul: privirea de ansamblu ── */}
       <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-semibold text-zinc-200">Progres program 90 zile</span>
@@ -118,6 +113,22 @@ export default async function ClientDashboardPage({
           />
         </div>
       </div>
+
+      {(() => {
+        const scores = pillarScores(latestCheckin);
+        return scores ? <PillarRadar scores={scores} /> : null;
+      })()}
+
+      {badges.length > 0 && <Badges badges={badges} />}
+
+      {clientId && <ProgressTrend clientId={clientId} />}
+
+      {clientId && <DailyReflection clientId={clientId} initial={todayNote} />}
+
+      {/* ── Operațional zilnic ── */}
+      {clientId && <DailyChecklist clientId={clientId} initial={todayLog} />}
+
+      {clientId && <DailyMetrics clientId={clientId} initial={todayMetrics} />}
 
       <div className="stagger grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
         {[
@@ -134,39 +145,6 @@ export default async function ClientDashboardPage({
             {s.sub && <p className="text-xs text-zinc-600 mt-0.5">{s.sub}</p>}
           </div>
         ))}
-      </div>
-
-      <div className="stagger grid grid-cols-2 gap-3">
-        {[
-          { href: `/client/antrenamente${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "antrenamente", title: "Antrenamentul de azi", sub: "Vezi planul săptămânii" },
-          { href: `/client/checkin${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "checkin", title: "Check-in săptămânal", sub: "Trimite raportul săptămânii" },
-          { href: `/client/nutritie${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "nutritie", title: "Plan nutrițional", sub: "Macros + mese zilnice" },
-          { href: `/client/module${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "module", title: "Academia BUILT", sub: "Module educaționale" },
-          { href: `/client/bonusuri${overrideId ? `?clientId=${overrideId}` : ""}`, icon: "bonusuri", title: "Bonusuri", sub: "Materiale exclusive" },
-        ].map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all active:scale-[0.97] hover:-translate-y-0.5 group"
-          >
-            <span className="text-[22px] leading-none mb-2.5 block text-built-red transition-transform group-hover:scale-110">{NAV_ICONS[item.icon]}</span>
-            <p className="text-sm font-semibold text-zinc-200 group-hover:text-white">{item.title}</p>
-            <p className="text-xs text-zinc-500 mt-0.5">{item.sub}</p>
-          </Link>
-        ))}
-        <Link
-          href={`/client/mesaje${overrideId ? `?clientId=${overrideId}` : ""}`}
-          className="bg-[#111111] border border-white/10 hover:border-built-red/30 rounded-xl p-4 transition-all active:scale-[0.97] hover:-translate-y-0.5 group relative"
-        >
-          <span className="text-[22px] leading-none mb-2.5 block text-built-red transition-transform group-hover:scale-110">{NAV_ICONS.mesaje}</span>
-          <p className="text-sm font-semibold text-zinc-200 group-hover:text-white">Mesaje</p>
-          <p className="text-xs text-zinc-500 mt-0.5">Chat cu Claudiu</p>
-          {unreadCount > 0 && (
-            <span className="absolute top-3 right-3 w-5 h-5 bg-built-red rounded-full text-[10px] text-white font-bold flex items-center justify-center">
-              {unreadCount}
-            </span>
-          )}
-        </Link>
       </div>
     </div>
   );
