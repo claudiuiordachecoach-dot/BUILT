@@ -4,7 +4,8 @@ import { useState, useTransition, useRef, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { submitCheckin, updateClientStatus, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, saveTargetWeight, type Client, type CheckIn, type ClientStatus, type ClientModule, type IntakeRecord, getClientModules, saveClientModule, deleteClientModule } from "../actions";
+import { submitCheckin, updateClientStatus, deleteCheckin, generateCheckinFeedbackDraft, saveCheckinFeedback, saveTargetWeight, type Client, type CheckIn, type ClientStatus, type ClientModule, type IntakeRecord, getClientModules, saveClientModule, deleteClientModule, getClientStrengthProgress } from "../actions";
+import type { StrengthExercise } from "@/lib/strength";
 import { CopyIntakeLink } from "./CopyIntakeLink";
 import { ALL_INTAKE_FIELDS } from "@/app/fisa-start/[token]/fields";
 import { saveWorkoutPlan, saveNutritionPlan, sendAdminMessage, getClientMessages, setAdminViewClient } from "@/app/client/actions";
@@ -37,6 +38,9 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
   const [draftState, setDraftState] = useState<Record<number, { loading: boolean; text: string; sent: boolean }>>({});
   const [targetWeight, setTargetWeight] = useState<string>(client.target_weight_kg != null ? String(client.target_weight_kg) : "");
   const [targetSaved, setTargetSaved] = useState(false);
+  const [strength, setStrength] = useState<StrengthExercise[] | null>(null);
+
+  useEffect(() => { getClientStrengthProgress(client.id).then(setStrength).catch(() => setStrength([])); }, [client.id]);
 
   function handleSaveTarget() {
     const val = targetWeight.trim() === "" ? null : parseFloat(targetWeight);
@@ -235,6 +239,33 @@ export function ClientDetail({ client, initialCheckins, intake, intakeToken }: {
                 </button>
               </div>
             </div>
+          </div>
+
+          <div>
+            <h3 className="font-display text-xl tracking-wider mb-3">Progresie la Forță</h3>
+            {strength === null ? (
+              <p className="text-[11px] text-built-gray-text">Se încarcă…</p>
+            ) : strength.length === 0 ? (
+              <p className="text-[11px] text-built-gray-text">
+                Clientul nu a logat încă niciun set în Jurnalul de Forță. Dovada progresiei apare aici pe măsură ce notează.
+              </p>
+            ) : (
+              <div className="bg-[#111111] border border-white/10 rounded-lg divide-y divide-white/5">
+                {strength.map((ex) => (
+                  <div key={ex.name} className="flex items-center justify-between gap-3 px-4 py-3">
+                    <div className="min-w-0">
+                      <p className="text-sm text-white font-medium truncate">{ex.name}</p>
+                      <p className="text-[11px] text-built-gray-text">
+                        start {ex.start} kg → record {ex.best} kg · {ex.sessions} {ex.sessions === 1 ? "sesiune" : "sesiuni"} · ultima {new Date(ex.last.date).toLocaleDateString("ro-RO", { day: "2-digit", month: "short" })}
+                      </p>
+                    </div>
+                    <span className={`font-display text-lg shrink-0 ${ex.deltaFromStart > 0 ? "text-green-400" : "text-built-gray-text"}`}>
+                      {ex.deltaFromStart > 0 ? `+${ex.deltaFromStart.toFixed(1)}` : "0"} kg
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div>

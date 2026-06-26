@@ -7,6 +7,7 @@ import { getUserRole } from "@/lib/supabase/auth-server";
 import { sendCheckinReminderToAll, sendPushToClient } from "@/lib/push";
 import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
+import { shapeExercises, type StrengthExercise } from "@/lib/strength";
 
 export type ClientStatus = "active" | "at_risk" | "completed" | "paused";
 
@@ -829,4 +830,17 @@ export async function getFinanceOverview(): Promise<FinanceOverview> {
 
   const clientsWithRest = rows.filter((r) => r.total > 0 && r.rest > 0.001).length;
   return { rows, byCurrency, clientsWithRest, collectedThisMonth, tableReady };
+}
+
+/* ─── Jurnal de Forță (coach) ───────────────────────────────────────────────
+   Vezi cine crește la forță (dovada Base Strength) și cine stă pe loc. */
+export async function getClientStrengthProgress(clientId: number): Promise<StrengthExercise[]> {
+  const s = getSupabaseServer({ useServiceRole: true });
+  const { data } = await s
+    .from("strength_logs")
+    .select("*")
+    .eq("client_id", clientId)
+    .order("logged_on", { ascending: true })
+    .order("created_at", { ascending: true });
+  return shapeExercises(data ?? []);
 }

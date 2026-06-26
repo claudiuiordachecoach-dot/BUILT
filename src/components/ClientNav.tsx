@@ -12,6 +12,7 @@ import { NAV_ICONS as ICONS } from "./nav-icons";
 const NAV = [
   { label: "Acasă", short: "Acasă", href: "/client/dashboard", key: "dashboard" },
   { label: "Antrenamente", short: "Antren.", href: "/client/antrenamente", key: "antrenamente" },
+  { label: "Jurnal de Forță", short: "Forță", href: "/client/forta", key: "forta" },
   { label: "Nutriție", short: "Nutriție", href: "/client/nutritie", key: "nutritie" },
   { label: "Check-in", short: "Check-in", href: "/client/checkin", key: "checkin" },
   { label: "Mesaje", short: "Mesaje", href: "/client/mesaje", key: "mesaje" },

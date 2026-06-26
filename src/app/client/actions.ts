@@ -6,6 +6,7 @@ import { getSupabaseServer } from "@/lib/supabase/server";
 import { sendMessageNotification } from "@/lib/email";
 import { sendPushToClient } from "@/lib/push";
 import { getSettings, getSetting } from "@/lib/settings";
+import { shapeExercises, shapeRecent, type StrengthExercise, type StrengthLogEntry } from "@/lib/strength";
 
 // Seteaza cookie-ul cand admin apasa "View as Client"
 export async function setAdminViewClient(clientId: number) {
@@ -758,4 +759,72 @@ export async function getStreak(clientId: number): Promise<number> {
   } catch {
     return 0;
   }
+}
+
+/* ─── Jurnal de Forță (client) ──────────────────────────────────────────────
+   Pilonul Base Strength. Clientul notează ce ridică; vede progresia per exercițiu. */
+
+export interface StrengthJournal {
+  exercises: StrengthExercise[];
+  recent: StrengthLogEntry[];
+}
+
+export async function getStrengthJournal(): Promise<StrengthJournal> {
+  const clientId = await getClientId();
+  if (!clientId) return { exercises: [], recent: [] };
+  const db = getSupabaseServer();
+  const { data } = await db
+    .from("strength_logs")
+    .select("*")
+    .eq("client_id", clientId)
+    .order("logged_on", { ascending: true })
+    .order("created_at", { ascending: true });
+  const rows = data ?? [];
+  return { exercises: shapeExercises(rows), recent: shapeRecent(rows) };
+}
+
+export async function logStrengthSet(input: {
+  exercise: string;
+  weight: number;
+  reps?: number;
+  sets?: number;
+  note?: string;
+  date?: string;
+}): Promise<{ ok: true; isPR: boolean; best: number } | { ok: false; error: string }> {
+  const clientId = await getClientId();
+  if (!clientId) return { ok: false, error: "Nu te-am putut identifica." };
+  const exercise = (input.exercise || "").trim();
+  if (!exercise) return { ok: false, error: "Alege un exercițiu." };
+  const weight = Number(input.weight);
+  if (!(weight > 0)) return { ok: false, error: "Pune greutatea în kg." };
+
+  const db = getSupabaseServer();
+  const { data: prev } = await db
+    .from("strength_logs")
+    .select("weight")
+    .eq("client_id", clientId)
+    .eq("exercise", exercise);
+  const prevBest = (prev ?? []).reduce((m: number, r: { weight: number | string }) => Math.max(m, Number(r.weight) || 0), 0);
+
+  const { error } = await db.from("strength_logs").insert({
+    client_id: clientId,
+    exercise,
+    weight,
+    reps: input.reps != null && input.reps > 0 ? Math.round(input.reps) : null,
+    sets: input.sets != null && input.sets > 0 ? Math.round(input.sets) : null,
+    logged_on: input.date || new Date().toISOString().slice(0, 10),
+    note: input.note?.trim() || null,
+  });
+  if (error) return { ok: false, error: error.message };
+  // PR doar dacă bate un maxim ANTERIOR (nu la primul set logat pe exercițiu)
+  const isPR = prevBest > 0 && weight > prevBest;
+  return { ok: true, isPR, best: Math.max(prevBest, weight) };
+}
+
+export async function deleteStrengthSet(id: string): Promise<{ ok: boolean }> {
+  const clientId = await getClientId();
+  if (!clientId) return { ok: false };
+  const db = getSupabaseServer();
+  const { error } = await db.from("strength_logs").delete().eq("id", id).eq("client_id", clientId);
+  return { ok: !error };
 }
