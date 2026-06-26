@@ -609,3 +609,221 @@ export async function getClientDailyMetrics(clientId: number, days = 21): Promis
     })
     .filter((r) => r.steps != null || r.sleep_h != null || r.weight != null || r.waist != null || r.note || r.training_status);
 }
+
+/* ─── Registru Încasări (doar coach, invizibil pentru clienți) ──────────────
+   O singură tabelă client_finance: deal-ul agreat (total + monedă) + plățile
+   ca jsonb. Rest = total − suma plăților. */
+
+export interface PaymentEntry {
+  id: string;
+  amount: number;
+  date: string;        // YYYY-MM-DD
+  method?: string;     // revolut / cash / transfer
+  note?: string;
+}
+
+export interface ClientFinance {
+  clientId: number;
+  total: number;
+  currency: string;
+  payments: PaymentEntry[];
+  note: string | null;
+  paid: number;
+  rest: number;
+}
+
+export interface FinanceRow {
+  clientId: number;
+  name: string;
+  status: ClientStatus;
+  total: number;
+  currency: string;
+  paid: number;
+  rest: number;
+  lastPaymentDate: string | null;
+  paymentsCount: number;
+  note: string | null;
+}
+
+export interface FinanceOverview {
+  rows: FinanceRow[];
+  byCurrency: { currency: string; total: number; paid: number; rest: number }[];
+  clientsWithRest: number;
+  collectedThisMonth: number;
+}
+
+function parsePayments(v: unknown): PaymentEntry[] {
+  if (!Array.isArray(v)) return [];
+  return v.map((x) => {
+    const o = (x ?? {}) as Record<string, unknown>;
+    return {
+      id: typeof o.id === "string" ? o.id : Math.random().toString(36).slice(2),
+      amount: Number(o.amount) || 0,
+      date: typeof o.date === "string" ? o.date : "",
+      method: typeof o.method === "string" && o.method ? o.method : undefined,
+      note: typeof o.note === "string" && o.note ? o.note : undefined,
+    };
+  });
+}
+
+function newPaymentId(): string {
+  try {
+    return globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2);
+  } catch {
+    return Math.random().toString(36).slice(2);
+  }
+}
+
+function revalidateFinance(clientId?: number) {
+  revalidatePath("/dashboard/incasari");
+  if (clientId != null) {
+    revalidatePath(`/dashboard/clients/${clientId}`);
+    revalidatePath(`/clienti/${clientId}`);
+  }
+}
+
+export async function getClientFinance(clientId: number): Promise<ClientFinance> {
+  const s = getSupabaseServer({ useServiceRole: true });
+  const { data } = await s.from("client_finance").select("*").eq("client_id", clientId).maybeSingle();
+  const row = (data ?? {}) as Record<string, unknown>;
+  const payments = parsePayments(row.payments).sort((a, b) => (a.date < b.date ? 1 : -1));
+  const total = Number(row.total) || 0;
+  const paid = payments.reduce((sum, p) => sum + p.amount, 0);
+  return {
+    clientId,
+    total,
+    currency: typeof row.currency === "string" && row.currency ? row.currency : "EUR",
+    payments,
+    note: typeof row.note === "string" ? row.note : null,
+    paid,
+    rest: total - paid,
+  };
+}
+
+export async function setClientDeal(
+  clientId: number,
+  total: number,
+  currency: string,
+  note: string | null
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const s = getSupabaseServer({ useServiceRole: true });
+  const { data: existing } = await s.from("client_finance").select("payments").eq("client_id", clientId).maybeSingle();
+  const payments = parsePayments((existing as Record<string, unknown> | null)?.payments);
+  const { error } = await s.from("client_finance").upsert(
+    {
+      client_id: clientId,
+      total: Number(total) || 0,
+      currency: (currency || "EUR").trim(),
+      note: note?.trim() || null,
+      payments,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "client_id" }
+  );
+  if (error) return { ok: false, error: error.message };
+  revalidateFinance(clientId);
+  return { ok: true };
+}
+
+export async function addPayment(
+  clientId: number,
+  p: { amount: number; date?: string; method?: string; note?: string }
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  if (!(Number(p.amount) > 0)) return { ok: false, error: "Suma trebuie să fie mai mare ca 0." };
+  const s = getSupabaseServer({ useServiceRole: true });
+  const { data: row } = await s.from("client_finance").select("*").eq("client_id", clientId).maybeSingle();
+  const r = (row ?? {}) as Record<string, unknown>;
+  const payments = parsePayments(r.payments);
+  const entry: PaymentEntry = {
+    id: newPaymentId(),
+    amount: Number(p.amount) || 0,
+    date: p.date || new Date().toISOString().slice(0, 10),
+    method: p.method?.trim() || undefined,
+    note: p.note?.trim() || undefined,
+  };
+  const { error } = await s.from("client_finance").upsert(
+    {
+      client_id: clientId,
+      total: Number(r.total) || 0,
+      currency: typeof r.currency === "string" && r.currency ? r.currency : "EUR",
+      note: typeof r.note === "string" ? r.note : null,
+      payments: [...payments, entry],
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "client_id" }
+  );
+  if (error) return { ok: false, error: error.message };
+  revalidateFinance(clientId);
+  return { ok: true };
+}
+
+export async function deletePayment(
+  clientId: number,
+  paymentId: string
+): Promise<{ ok: true } | { ok: false; error: string }> {
+  const s = getSupabaseServer({ useServiceRole: true });
+  const { data: row } = await s.from("client_finance").select("payments").eq("client_id", clientId).maybeSingle();
+  if (!row) return { ok: true };
+  const payments = parsePayments((row as Record<string, unknown>).payments).filter((p) => p.id !== paymentId);
+  const { error } = await s
+    .from("client_finance")
+    .update({ payments, updated_at: new Date().toISOString() })
+    .eq("client_id", clientId);
+  if (error) return { ok: false, error: error.message };
+  revalidateFinance(clientId);
+  return { ok: true };
+}
+
+export async function getFinanceOverview(): Promise<FinanceOverview> {
+  const s = getSupabaseServer({ useServiceRole: true });
+  const [{ data: clients }, { data: finances }] = await Promise.all([
+    s.from("clients").select("id, name, status").order("created_at", { ascending: false }),
+    s.from("client_finance").select("*"),
+  ]);
+  const fmap = new Map<number, Record<string, unknown>>();
+  (finances ?? []).forEach((f) => fmap.set(Number((f as Record<string, unknown>).client_id), f as Record<string, unknown>));
+
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  const monthStartStr = monthStart.toISOString().slice(0, 10);
+  let collectedThisMonth = 0;
+
+  const rows: FinanceRow[] = (clients ?? []).map((c) => {
+    const cr = c as Record<string, unknown>;
+    const f = fmap.get(Number(cr.id));
+    const payments = parsePayments(f?.payments);
+    const total = Number(f?.total) || 0;
+    const paid = payments.reduce((sum, p) => sum + p.amount, 0);
+    payments.forEach((p) => {
+      if (p.date >= monthStartStr) collectedThisMonth += p.amount;
+    });
+    const dates = payments.map((p) => p.date).filter(Boolean).sort();
+    return {
+      clientId: Number(cr.id),
+      name: String(cr.name ?? ""),
+      status: (cr.status as ClientStatus) ?? "active",
+      total,
+      currency: typeof f?.currency === "string" && f.currency ? (f.currency as string) : "EUR",
+      paid,
+      rest: total - paid,
+      lastPaymentDate: dates.length ? dates[dates.length - 1] : null,
+      paymentsCount: payments.length,
+      note: typeof f?.note === "string" ? (f.note as string) : null,
+    };
+  });
+
+  const cur = new Map<string, { total: number; paid: number; rest: number }>();
+  rows.forEach((r) => {
+    const g = cur.get(r.currency) ?? { total: 0, paid: 0, rest: 0 };
+    g.total += r.total;
+    g.paid += r.paid;
+    g.rest += r.total - r.paid;
+    cur.set(r.currency, g);
+  });
+  const byCurrency = [...cur.entries()]
+    .filter(([, v]) => v.total > 0 || v.paid > 0)
+    .map(([currency, v]) => ({ currency, ...v }));
+
+  const clientsWithRest = rows.filter((r) => r.total > 0 && r.rest > 0.001).length;
+  return { rows, byCurrency, clientsWithRest, collectedThisMonth };
+}
