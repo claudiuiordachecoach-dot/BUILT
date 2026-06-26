@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import {
   getClientFinance,
   setClientDeal,
@@ -112,6 +113,8 @@ function RowDetail({ row }: { row: FinanceRow }) {
   const [method, setMethod] = useState<string>("");
   const [payNote, setPayNote] = useState<string>("");
 
+  const router = useRouter();
+
   async function reload() {
     setLoading(true);
     const f = await getClientFinance(row.clientId);
@@ -120,6 +123,8 @@ function RowDetail({ row }: { row: FinanceRow }) {
     setCurrency(f.currency);
     setDealNote(f.note || "");
     setLoading(false);
+    // reîmprospătează sumarul de sus + rândul colapsat (date din server)
+    router.refresh();
   }
 
   // load on first render
