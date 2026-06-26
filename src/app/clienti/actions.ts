@@ -650,6 +650,7 @@ export interface FinanceOverview {
   byCurrency: { currency: string; total: number; paid: number; rest: number }[];
   clientsWithRest: number;
   collectedThisMonth: number;
+  tableReady: boolean;
 }
 
 function parsePayments(v: unknown): PaymentEntry[] {
@@ -776,10 +777,12 @@ export async function deletePayment(
 
 export async function getFinanceOverview(): Promise<FinanceOverview> {
   const s = getSupabaseServer({ useServiceRole: true });
-  const [{ data: clients }, { data: finances }] = await Promise.all([
+  const [{ data: clients }, { data: finances, error: finErr }] = await Promise.all([
     s.from("clients").select("id, name, status").order("created_at", { ascending: false }),
     s.from("client_finance").select("*"),
   ]);
+  // tabela lipsește (migrația nerulată) → semnal clar în UI, nu pagină goală
+  const tableReady = !(finErr && /client_finance|does not exist|relation|42P01/i.test(finErr.message + (finErr.code ?? "")));
   const fmap = new Map<number, Record<string, unknown>>();
   (finances ?? []).forEach((f) => fmap.set(Number((f as Record<string, unknown>).client_id), f as Record<string, unknown>));
 
@@ -825,5 +828,5 @@ export async function getFinanceOverview(): Promise<FinanceOverview> {
     .map(([currency, v]) => ({ currency, ...v }));
 
   const clientsWithRest = rows.filter((r) => r.total > 0 && r.rest > 0.001).length;
-  return { rows, byCurrency, clientsWithRest, collectedThisMonth };
+  return { rows, byCurrency, clientsWithRest, collectedThisMonth, tableReady };
 }

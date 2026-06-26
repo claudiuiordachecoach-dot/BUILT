@@ -32,6 +32,14 @@ export default async function IncasariPage() {
         Cine a plătit, cine cât mai are de plătit. Invizibil pentru clienți.
       </p>
 
+      {!ov.tableReady && (
+        <div className="mb-8 p-4 bg-amber-400/10 border border-amber-400/40 rounded-sm text-sm text-amber-200">
+          Un singur pas: rulează migrația{" "}
+          <code className="text-amber-100">supabase/migrations/20260626_client_finance.sql</code> în Supabase
+          (SQL Editor → Run), apoi reîncarcă. Până atunci salvarea tranșelor nu funcționează.
+        </div>
+      )}
+
       {/* Sumar */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-4">
         <div className="p-4 bg-built-gray-1 border border-built-gray-2 rounded-sm">
