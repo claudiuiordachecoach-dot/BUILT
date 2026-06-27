@@ -135,11 +135,17 @@ Citește DOAR ce a scris el. Nu inventa cifre, kilograme, diagnostice medicale s
 ## INTERZIS
 Clișee („crede în tine", „totul e posibil", „hai că poți"), promisiuni de rezultat, ton de vânzător, complimente goale, majuscule de accentuare, semne de exclamare entuziaste. Ton: matur, structural, calm, direct. Arhitect, nu motivator.
 
-## FORMAT (exact, fiecare câmp pe linia lui, nimic altceva)
-PILON: <numele pilonului fracturat, ex: „Capacitate (U)">
+## FORMAT — răspunde DOAR cu cele 4 linii de mai jos, FIX așa. FĂRĂ markdown, FĂRĂ asteriscuri (*), FĂRĂ titluri, fără text înainte sau după. Fiecare linie începe EXACT cu eticheta ei, cu două puncte:
+PILON: <numele pilonului fracturat, ex: Capacitate (U)>
 FRACTURA: <2-3 fraze: ce e rupt în arhitectura LUI, citindu-i răspunsurile. Specific la el, nu general.>
 BUCLA: <2-3 fraze: bucla care îl ține blocat, aplicată pe situația lui concretă.>
-PASUL: <1-2 fraze: singurul lucru pe care sistemul lui îl ratează acum. O observație structurală, nu „vino la mine".>`;
+PASUL: <1-2 fraze: singurul lucru pe care sistemul lui îl ratează acum. O observație structurală, nu „vino la mine".>
+
+Exemplu de FORMĂ (nu copia conținutul, doar structura celor 4 linii):
+PILON: Tough Mindset (T)
+FRACTURA: Ai construit disciplină în carieră, dar pe corp îl tratezi ca pe un sprint. De fiecare dată ataci totul deodată și nu lași sistemul să se așeze.
+BUCLA: Pornești în forță, ceri perfecțiune, iar la prima săptămână grea cedezi și citești asta ca pe un eșec de caracter — când e doar lipsa unui sistem.
+PASUL: Nu-ți lipsește voința. Îți lipsește o arhitectură care nu depinde de ea.`;
 
   try {
     const creier = await readCreierFromSupabase();
@@ -148,18 +154,29 @@ PASUL: <1-2 fraze: singurul lucru pe care sistemul lui îl ratează acum. O obse
     const msg = await ai.messages.create({
       model: MODELS.deep,
       max_tokens: 600,
+      temperature: 0.5,
       system: systemBlocks,
       messages: [{ role: "user", content: "Scrie diagnosticul." }],
     });
     const tb = msg.content.find((b) => b.type === "text");
     if (!tb || tb.type !== "text") return { ok: false, error: "Răspuns gol." };
-    const text = tb.text.trim();
-    const pick = (label: string) => {
-      const m = text.match(new RegExp(`${label}:\\s*([\\s\\S]*?)(?=\\n+(?:PILON|FRACTURA|BUCLA|PASUL)\\s*:|$)`, "i"));
-      return m ? m[1].trim().replace(/^["„]|["”]$/g, "").trim() : "";
-    };
-    const data: Diagnostic = { pilon: pick("PILON"), fractura: pick("FRACTURA"), bucla: pick("BUCLA"), pas: pick("PASUL") };
-    if (!data.fractura && !data.bucla && !data.pas) data.fractura = text; // fallback dacă parsarea ratează
+
+    // Parsare tolerantă: Llama scapă markdown („**Pasul:**") și ignoră formatul strict.
+    // Curățăm markdown, apoi tăiem pe pozițiile etichetelor, oricum ar fi scrise.
+    const clean = tb.text.replace(/[*#`]+/g, "").trim();
+    const matches = [...clean.matchAll(/(PILON|FRACTUR[AĂ]|BUCLA|PAS(?:UL)?)\s*:/gi)];
+    const data: Diagnostic = { pilon: "", fractura: "", bucla: "", pas: "" };
+    for (let i = 0; i < matches.length; i++) {
+      const start = (matches[i].index ?? 0) + matches[i][0].length;
+      const end = i + 1 < matches.length ? (matches[i + 1].index ?? clean.length) : clean.length;
+      const val = clean.slice(start, end).trim().replace(/^["„]+|["”]+$/g, "").trim();
+      const key = matches[i][1].toUpperCase();
+      if (key.startsWith("PILON")) data.pilon = val;
+      else if (key.startsWith("FRACTUR")) data.fractura = val;
+      else if (key.startsWith("BUCLA")) data.bucla = val;
+      else if (key.startsWith("PAS")) data.pas = val;
+    }
+    if (!data.fractura && !data.bucla && !data.pas) data.fractura = clean; // fallback total
     return { ok: true, data };
   } catch (e) {
     return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
