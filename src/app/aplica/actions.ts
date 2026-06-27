@@ -1,8 +1,6 @@
 "use server";
 
 import { getSupabaseServer } from "@/lib/supabase/server";
-import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
-import { readCreierFromSupabase } from "@/lib/creier";
 
 export type Budget = "gata" | "depinde" | "nu";
 
@@ -94,8 +92,11 @@ ${(input.a3 || "—").trim()}`;
 }
 
 // ─── Diagnosticul de Arhitectură — valoarea instant care diagnostichează, nu vinde ──
-// Prospectul primește, în vocea lui Claudiu, ce pilon e fracturat + bucla care îl ține
-// blocat + pasul ratat. „Nu vindem, diagnosticăm" devine produs. AI pe Groq (gratis).
+// Prospectul primește, la primul contact, ce pilon e fracturat + bucla care îl ține
+// blocat + pasul ratat. „Nu vindem, diagnosticăm" devine produs.
+// DETERMINIST, în vocea reală a lui Claudiu — NU AI. Motiv: diagnosticul ajunge brut
+// la prospect, fără filtrul lui Claudiu, la cel mai important moment de conversie.
+// Llama (gratis) nu ține standardul de voce anti-clișeu acolo. Aici, fiecare cuvânt e scris.
 
 export interface Diagnostic {
   pilon: string;
@@ -104,82 +105,61 @@ export interface Diagnostic {
   pas: string;
 }
 
+type DiagProfile = "cortizol" | "ciclist" | "atlet" | "competenta";
+
+// Clasificare pe pattern din răspunsuri. Ordinea = prioritatea (cel mai specific întâi).
+function classifyDiag(i: ApplicationInput): DiagProfile {
+  const t = `${i.a1} ${i.a2} ${i.a3}`.toLowerCase();
+  if (/stres|cortizol|haotic|program|antreprenor|obosit|oboseal|epuiz|energie sc[ăa]zut|f[ăa]r[ăa] timp|nu am timp|burnout|cop[ií]i|familie|\bjob\b|servici|corporat|deadline|sedentar|birou/.test(t)) return "cortizol";
+  if (/diet|sl[ăa]b|pus (la|tot) loc|yo-?yo|restric|[țt]inut|înfomet|deficit|cedat|cump[ăa]nit|num[ăa]r calorii/.test(t)) return "ciclist";
+  if (/platou|fac tot|sal[ăa]\b|antren|sportiv|\batlet|nu (mai )?scade|în form[ăa]|stagn|ridic|\bkg\b|for[țt][ăa]|mas[ăa] muscular/.test(t)) return "atlet";
+  return "competenta";
+}
+
+const DIAG_MAP: Record<DiagProfile, Diagnostic> = {
+  cortizol: {
+    pilon: "Lifestyle Integration (L)",
+    fractura:
+      "Funcționezi pe rezervă. Energia care cade după prânz și burta care nu pleacă nu sunt despre cât de mult mănânci — sunt semnele unui corp condus de un program care nu lasă loc de recuperare. Ai construit totul în jurul jobului. Nimic în jurul tău.",
+    bucla:
+      "Stres → cortizol ridicat → grăsime depozitată pe abdomen + oboseală → mai puțin control seara → mai mult stres a doua zi. E o buclă biologică, nu un defect de caracter. De-aia „mai multă voință” n-a rezolvat-o niciodată — voința nu coboară cortizolul.",
+    pas:
+      "Nu-ți trebuie un program mai dur, care oricum nu încape în viața ta reală. Îți trebuie unul construit în jurul ei — cu job, familie și haos cu tot.",
+  },
+  ciclist: {
+    pilon: "Intelligent Fueling (I)",
+    fractura:
+      "Ai tratat mâncarea ca pe o pedeapsă temporară, nu ca pe un sistem. De-aia fiecare „dietă” a avut din start o dată de expirare — și corpul a știut-o. Ai slăbit cu restricție, ai recâștigat cu viața normală. Problema n-a fost niciodată tu. A fost metoda.",
+    bucla:
+      "Restricție agresivă → cedare inevitabilă → vinovăție → restricție și mai dură data viitoare. Cu fiecare ciclu, încrederea scade și metabolismul se apără. Nu e lipsă de disciplină — e un sistem proiectat să eșueze, repetat.",
+    pas:
+      "Nu-ți trebuie încă o dietă. Îți trebuie o structură 80/20 care funcționează tocmai pentru că nu cere să fii perfect.",
+  },
+  atlet: {
+    pilon: "Unbreakable Capacity (U)",
+    fractura:
+      "Faci destul — poate prea mult. Corpul tău nu mai răspunde nu fiindcă nu te străduiești, ci fiindcă te antrenezi fără un sistem de progresie și recuperare. Efortul e acolo. Arhitectura din spatele lui, nu.",
+    bucla:
+      "Platou → împingi mai tare → mai mult stres și volum → cortizol și oboseală → corpul se agață și mai abitir. Mai mult efort în direcția greșită nu sparge platoul — îl betonează.",
+    pas:
+      "Nu mai adăuga volum. Îți lipsește structura care îți spune CÂND să împingi și când să recuperezi — acolo se ascunde rezultatul.",
+  },
+  competenta: {
+    pilon: "Tough Mindset (T)",
+    fractura:
+      "Reușești la lucruri grele peste tot — mai puțin cu propriul corp. Tocmai de-aia doare: nu e lipsă de capacitate, e lipsa unui sistem pe care, aici, nu l-ai avut niciodată. Ai aplicat efort, nu arhitectură.",
+    bucla:
+      "Pornești în forță, ceri perfecțiune, iar la prima săptămână grea citești cedarea ca pe un eșec personal — și te oprești. Bucla se repetă fiindcă ataci voința, nu structura. Iar voința nu e o resursă infinită.",
+    pas:
+      "Nu-ți lipsește voința. Îți lipsește o arhitectură care nu depinde de ea.",
+  },
+};
+
 export async function generateDiagnostic(
   input: ApplicationInput,
 ): Promise<{ ok: true; data: Diagnostic } | { ok: false; error: string }> {
   if (!input.a1?.trim()) return { ok: false, error: "Răspunsuri insuficiente." };
-
-  const task = `# TASK: Diagnostic de Arhitectură BUILT (instant, pentru un prospect care tocmai a aplicat)
-Citește-i răspunsurile și dă-i un diagnostic SCURT, tăios, personalizat — în vocea lui Claudiu. NU vinzi. Diagnostichezi. Asta e exact filozofia BUILT: „nu vindem, diagnosticăm."
-
-## Răspunsurile lui
-1. Unde e acum (corp, energie, greutate): ${input.a1.trim()}
-2. Ce a încercat și de ce crede că n-a ținut: ${(input.a2 || "—").trim()}
-3. Cum vrea să fie în 90 de zile: ${(input.a3 || "—").trim()}
-
-## Cei 5 piloni BUILT (alege-l pe cel FRACTURAT la el)
-- B — Base Strength: forță compusă, progresie logaritmică.
-- U — Unbreakable Capacity: rezistență, Zone 2, capacitate cardiovasculară.
-- I — Intelligent Fueling: nutriție ca sistem, 80/20, anti-binge.
-- L — Lifestyle Integration: integrare cu job, familie, viața reală.
-- T — Tough Mindset: psihologie, identitate de om echilibrat (nu de om la dietă).
-
-## Buclele psihologice (folosește-o pe cea care i se potrivește, dacă i se potrivește)
-- Capcana Cortizolului: stres → cortizol → grăsime abdominală → mai mult stres. Buclă biologică, nu de caracter.
-- Paradoxul Competenței: reușește la orice în afară de corp — tocmai de aceea eșecul fizic doare atât.
-- Prețul Invizibilității: nu calculează costul inacțiunii — energie, relație, sănătate erodate zi după zi.
-
-## REGULA DE ADEVĂR (obligatorie)
-Citește DOAR ce a scris el. Nu inventa cifre, kilograme, diagnostice medicale sau detalii pe care nu le-a dat. Dacă a scris puțin, lucrează cu puținul — fii precis, nu generic.
-
-## INTERZIS
-Clișee („crede în tine", „totul e posibil", „hai că poți"), promisiuni de rezultat, ton de vânzător, complimente goale, majuscule de accentuare, semne de exclamare entuziaste. Ton: matur, structural, calm, direct. Arhitect, nu motivator.
-
-## FORMAT — răspunde DOAR cu cele 4 linii de mai jos, FIX așa. FĂRĂ markdown, FĂRĂ asteriscuri (*), FĂRĂ titluri, fără text înainte sau după. Fiecare linie începe EXACT cu eticheta ei, cu două puncte:
-PILON: <numele pilonului fracturat, ex: Capacitate (U)>
-FRACTURA: <2-3 fraze: ce e rupt în arhitectura LUI, citindu-i răspunsurile. Specific la el, nu general.>
-BUCLA: <2-3 fraze: bucla care îl ține blocat, aplicată pe situația lui concretă.>
-PASUL: <1-2 fraze: singurul lucru pe care sistemul lui îl ratează acum. O observație structurală, nu „vino la mine".>
-
-Exemplu de FORMĂ (nu copia conținutul, doar structura celor 4 linii):
-PILON: Tough Mindset (T)
-FRACTURA: Ai construit disciplină în carieră, dar pe corp îl tratezi ca pe un sprint. De fiecare dată ataci totul deodată și nu lași sistemul să se așeze.
-BUCLA: Pornești în forță, ceri perfecțiune, iar la prima săptămână grea cedezi și citești asta ca pe un eșec de caracter — când e doar lipsa unui sistem.
-PASUL: Nu-ți lipsește voința. Îți lipsește o arhitectură care nu depinde de ea.`;
-
-  try {
-    const creier = await readCreierFromSupabase();
-    const ai = getAnthropicClient();
-    const systemBlocks = buildSystemBlocks({ creierJson: JSON.stringify(creier, null, 2), taskContext: task });
-    const msg = await ai.messages.create({
-      model: MODELS.deep,
-      max_tokens: 600,
-      system: systemBlocks,
-      messages: [{ role: "user", content: "Scrie diagnosticul." }],
-    });
-    const tb = msg.content.find((b) => b.type === "text");
-    if (!tb || tb.type !== "text") return { ok: false, error: "Răspuns gol." };
-
-    // Parsare tolerantă: Llama scapă markdown („**Pasul:**") și ignoră formatul strict.
-    // Curățăm markdown, apoi tăiem pe pozițiile etichetelor, oricum ar fi scrise.
-    const clean = tb.text.replace(/[*#`]+/g, "").trim();
-    const matches = [...clean.matchAll(/(PILON|FRACTUR[AĂ]|BUCLA|PAS(?:UL)?)\s*:/gi)];
-    const data: Diagnostic = { pilon: "", fractura: "", bucla: "", pas: "" };
-    for (let i = 0; i < matches.length; i++) {
-      const start = (matches[i].index ?? 0) + matches[i][0].length;
-      const end = i + 1 < matches.length ? (matches[i + 1].index ?? clean.length) : clean.length;
-      const val = clean.slice(start, end).trim().replace(/^["„]+|["”]+$/g, "").trim();
-      const key = matches[i][1].toUpperCase();
-      if (key.startsWith("PILON")) data.pilon = val;
-      else if (key.startsWith("FRACTUR")) data.fractura = val;
-      else if (key.startsWith("BUCLA")) data.bucla = val;
-      else if (key.startsWith("PAS")) data.pas = val;
-    }
-    if (!data.fractura && !data.bucla && !data.pas) data.fractura = clean; // fallback total
-    return { ok: true, data };
-  } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
-  }
+  return { ok: true, data: DIAG_MAP[classifyDiag(input)] };
 }
 
 // ─── Slot de diagnostic — aplicantul își alege singur ora ─────────────────────

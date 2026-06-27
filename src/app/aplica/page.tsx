@@ -198,7 +198,7 @@ export default function AplicaPage() {
                 {diag.pas && <DiagBlock label="Ce ratează sistemul tău" body={diag.pas} />}
               </div>
               <p className="text-zinc-400 text-[14px] leading-relaxed mt-6">
-                Asta e ce reparăm. Arhitectura pe 90 de zile pornește exact de la fractura asta — nu de la „mai multă voință". Dacă ești un fit, îți scriu personal în <span className="text-white">maxim 24 de ore</span>.
+                Asta e ce reparăm. Arhitectura pe 90 de zile pornește exact de la fractura asta — nu de la „mai multă voință”. Dacă ești un fit, îți scriu personal în <span className="text-white">maxim 24 de ore</span>.
               </p>
             </div>
           ) : (
