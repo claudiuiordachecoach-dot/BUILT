@@ -41,7 +41,7 @@ export function AgentChat({ messages, onSend, onSelectAngle, isLoading, inputVal
         {messages.length === 0 && (
           <div className="text-built-gray-text text-sm">
             <p className="mb-2">Descrie ideea ta pentru carusel.</p>
-            <p className="font-condensed text-[10px]">Exemplu: "vreau ceva despre cortizol și grăsime abdominală"</p>
+            <p className="font-condensed text-[10px]">Exemplu: „vreau ceva despre cortizol și grăsime abdominală”</p>
           </div>
         )}
 

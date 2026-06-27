@@ -100,7 +100,7 @@ export function CreierAuditClient({
                     </div>
                     <p className="text-[14px] text-foreground font-semibold leading-snug">{f.fact}</p>
                     <p className="text-[13px] text-muted-foreground mt-1">
-                      <span className="text-foreground/80">Acum în Creier:</span> „{f.current_value}"
+                      <span className="text-foreground/80">Acum în Creier:</span> „{f.current_value}”
                     </p>
                     <p className="text-[12px] text-muted-foreground mt-0.5 italic">{f.why}</p>
                   </div>

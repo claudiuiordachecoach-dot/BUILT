@@ -322,7 +322,7 @@ export async function getClientModules(clientId: number): Promise<ClientModule[]
   return (data ?? []) as ClientModule[];
 }
 
-export async function saveClientModule(clientId: number, moduleData: any) {
+export async function saveClientModule(clientId: number, moduleData: Partial<ClientModule>) {
   try {
     // Folosim clientul standard (anon) deoarece am dezactivat RLS pe tabelă
     const s = getSupabaseServer();

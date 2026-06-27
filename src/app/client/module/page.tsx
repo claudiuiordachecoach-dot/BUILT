@@ -5,7 +5,7 @@ import { getClientModules } from "../actions";
 import { EmptyState } from "../components/EmptyState";
 
 export default function ClientModulesPage() {
-  const [modules, setModules] = useState<any[]>([]);
+  const [modules, setModules] = useState<{ id: number; module_number: number; title: string }[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

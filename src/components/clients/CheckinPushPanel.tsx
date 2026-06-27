@@ -42,7 +42,7 @@ export function CheckinPushPanel({ status }: { status: PushStatus }) {
       {missing.length > 0 && (
         <p className="text-[12px] text-orange-400/90 mb-4 leading-relaxed">
           Fără notificări: <span className="text-zinc-300 font-medium">{missing.map((c) => c.name).join(", ")}</span>
-          {" "}— pune-i să apese „Activează Notificările" în Profilul lor.
+          {" "}— pune-i să apese „Activează Notificările” în Profilul lor.
         </p>
       )}
 

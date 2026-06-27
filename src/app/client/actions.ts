@@ -443,7 +443,7 @@ export async function deleteProgressEntry(clientId: number, entryId: string) {
   const { data: client } = await db.from("clients").select("progress_gallery").eq("id", clientId).single();
   const currentGallery = client?.progress_gallery || [];
 
-  const newGallery = currentGallery.filter((entry: any) => entry.id !== entryId);
+  const newGallery = currentGallery.filter((entry: { id: string }) => entry.id !== entryId);
 
   await db.from("clients").update({ progress_gallery: newGallery }).eq("id", clientId);
 }

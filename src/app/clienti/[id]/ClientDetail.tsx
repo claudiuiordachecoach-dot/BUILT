@@ -649,7 +649,7 @@ function ClientModuleManager({ clientId }: { clientId: number }) {
     if (!editing?.title || !editing?.content_html) return;
     setSaving(true);
     try {
-      const res = (await saveClientModule(clientId, editing)) as any;
+      const res = (await saveClientModule(clientId, editing)) as { ok?: boolean; error?: string };
       if (res && res.ok === false) {
         toast.error("Eroare la salvare: " + res.error);
       } else {

@@ -3,7 +3,6 @@ import path from 'path';
 import process from 'process';
 
 try {
-  // @ts-ignore
   process.loadEnvFile(path.resolve(process.cwd(), '.env.local'));
 } catch (err) {}
 

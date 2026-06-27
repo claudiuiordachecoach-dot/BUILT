@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getConversation, getMessages } from "../actions";
 import { STAGE_LABELS } from "@/lib/dm-constants";
 import { ConversationClient } from "./ConversationClient";
@@ -20,7 +21,7 @@ export default async function ConversationPage({ params }: { params: Promise<{ i
   return (
     <div className="p-8 max-w-4xl">
       <div className="flex items-center gap-3 mb-2">
-        <a href="/dm" className="font-condensed text-[10px] text-built-gray-text hover:text-built-red transition-colors">← DM</a>
+        <Link href="/dm" className="font-condensed text-[10px] text-built-gray-text hover:text-built-red transition-colors">← DM</Link>
         <span className="text-built-gray-text">/</span>
         <p className="font-condensed text-[10px] text-built-red uppercase tracking-wider">@{conversation.prospect_handle}</p>
       </div>

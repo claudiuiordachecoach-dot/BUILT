@@ -7,7 +7,7 @@ import Link from "next/link";
 export default function ModuleViewerPage() {
   const { id } = useParams();
   const router = useRouter();
-  const [module, setModule] = useState<any>(null);
+  const [module, setModule] = useState<{ module_number: number; title: string; content_html: string } | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

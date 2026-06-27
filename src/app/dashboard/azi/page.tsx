@@ -678,7 +678,7 @@ function CallsBanner({ appointments, signalCalls, notifPerm, onEnableReminders, 
   onToggle: (id: string) => void;
   onResolved: () => void;
 }) {
-  const [nowMs, setNowMs] = useState(Date.now());
+  const [nowMs, setNowMs] = useState(() => Date.now());
   const [editId, setEditId] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   useEffect(() => {

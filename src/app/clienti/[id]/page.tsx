@@ -1,4 +1,5 @@
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { getClient, getClientCheckins, getIntake, getIntakeToken, getClientDailyMetrics } from "../actions";
 import { ClientDetail } from "./ClientDetail";
 import { CopyIntakeLink } from "./CopyIntakeLink";
@@ -31,7 +32,7 @@ export default async function ClientPage({ params }: { params: Promise<{ id: str
   return (
     <div className="p-8 max-w-4xl">
       <div className="flex items-center gap-3 mb-2">
-        <a href="/clienti" className="font-condensed text-[10px] text-built-gray-text hover:text-built-red">← Clienți</a>
+        <Link href="/clienti" className="font-condensed text-[10px] text-built-gray-text hover:text-built-red">← Clienți</Link>
         <span className="text-built-gray-text">/</span>
         <p className="font-condensed text-[10px] text-built-red uppercase">{client.name}</p>
       </div>
