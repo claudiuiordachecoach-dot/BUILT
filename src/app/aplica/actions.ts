@@ -154,7 +154,6 @@ PASUL: Nu-ți lipsește voința. Îți lipsește o arhitectură care nu depinde 
     const msg = await ai.messages.create({
       model: MODELS.deep,
       max_tokens: 600,
-      temperature: 0.5,
       system: systemBlocks,
       messages: [{ role: "user", content: "Scrie diagnosticul." }],
     });
