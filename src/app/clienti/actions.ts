@@ -832,6 +832,77 @@ export async function getFinanceOverview(): Promise<FinanceOverview> {
   return { rows, byCurrency, clientsWithRest, collectedThisMonth, tableReady };
 }
 
+/* ─── Pulsul Retenției (coach) ───────────────────────────────────────────────
+   Detecție pe ACTIVITATE reală (loguri + check-in + mesaje), nu doar check-in.
+   Un client care loghează zilnic dar n-a trimis check-in NU e „dispărut". */
+
+export interface RetentionPulseRow {
+  id: number;
+  name: string;
+  daysSilent: number;        // zile de la ultima urmă (sau de la start dacă n-a mișcat nimic)
+  everActive: boolean;       // a lăsat vreodată o urmă în app?
+  neverCheckedIn: boolean;
+  loggedThisWeek: number;
+  level: "ok" | "atentie" | "tacut";
+}
+
+export async function getRetentionPulse(): Promise<RetentionPulseRow[]> {
+  const db = getSupabaseServer({ useServiceRole: true });
+  const since = new Date();
+  since.setDate(since.getDate() - 6);
+  const sinceStr = since.toISOString().slice(0, 10);
+
+  const [clientsRes, logsRes, checkinsRes, msgsRes] = await Promise.all([
+    db.from("clients").select("id, name, start_date, status").eq("status", "active"),
+    db.from("daily_logs").select("client_id, log_date, items"),
+    db.from("client_checkins").select("client_id, created_at"),
+    db.from("client_messages").select("client_id, sender, created_at"),
+  ]);
+
+  const dayMs = 86400000;
+  const dayIndex = (ms: number) => {
+    const d = new Date(ms);
+    return Math.floor(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate()) / dayMs);
+  };
+  const today = dayIndex(Date.now());
+
+  const lastMs = new Map<number, number>();
+  const checkedIn = new Set<number>();
+  const weekLogs = new Map<number, Set<string>>();
+  const bump = (id: number, ms: number) => { if (!Number.isNaN(ms) && ms > (lastMs.get(id) ?? 0)) lastMs.set(id, ms); };
+
+  for (const l of (logsRes.data ?? []) as { client_id: number; log_date: string; items: unknown }[]) {
+    const it = (l.items as Record<string, unknown>) ?? {};
+    if (it && Object.values(it).some(Boolean)) {
+      bump(l.client_id, Date.parse(l.log_date + "T12:00:00Z"));
+      if (l.log_date >= sinceStr) { const s = weekLogs.get(l.client_id) ?? new Set<string>(); s.add(l.log_date); weekLogs.set(l.client_id, s); }
+    }
+  }
+  for (const c of (checkinsRes.data ?? []) as { client_id: number; created_at: string }[]) { bump(c.client_id, Date.parse(c.created_at)); checkedIn.add(c.client_id); }
+  for (const m of (msgsRes.data ?? []) as { client_id: number; sender: string; created_at: string }[]) if (m.sender === "client") bump(m.client_id, Date.parse(m.created_at));
+
+  const rows: RetentionPulseRow[] = [];
+  for (const c of (clientsRes.data ?? []) as { id: number; name: string; start_date: string | null }[]) {
+    const last = lastMs.get(c.id);
+    const startMs = c.start_date ? Date.parse(c.start_date + "T12:00:00Z") : Date.now();
+    const daysSilent = today - dayIndex(last ?? startMs);
+    let level: "ok" | "atentie" | "tacut" = "ok";
+    if (daysSilent >= 7) level = "tacut";
+    else if (daysSilent >= 4) level = "atentie";
+    rows.push({
+      id: c.id,
+      name: c.name,
+      daysSilent,
+      everActive: last != null,
+      neverCheckedIn: !checkedIn.has(c.id),
+      loggedThisWeek: weekLogs.get(c.id)?.size ?? 0,
+      level,
+    });
+  }
+  rows.sort((a, b) => b.daysSilent - a.daysSilent);
+  return rows;
+}
+
 /* ─── Jurnal de Forță (coach) ───────────────────────────────────────────────
    Vezi cine crește la forță (dovada Base Strength) și cine stă pe loc. */
 export async function getClientStrengthProgress(clientId: number): Promise<StrengthExercise[]> {

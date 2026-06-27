@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { listClients } from "./actions";
+import { listClients, getRetentionPulse } from "./actions";
 import { NewClientForm } from "./NewClientForm";
 import { CoachProfileCard } from "./CoachProfileCard";
+import { ClientPulse } from "./ClientPulse";
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,10 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function ClientiPage() {
-  const clients = await listClients().catch(() => []);
+  const [clients, pulse] = await Promise.all([
+    listClients().catch(() => []),
+    getRetentionPulse().catch(() => []),
+  ]);
   const active = clients.filter((c) => c.status === "active");
   const atRisk = clients.filter((c) => c.status === "at_risk");
 
@@ -34,19 +38,7 @@ export default async function ClientiPage() {
         ))}
       </div>
 
-      {atRisk.length > 0 && (
-        <div className="mb-6 p-4 bg-orange-400/10 border border-orange-400/40 rounded-sm">
-          <p className="font-condensed text-[10px] text-orange-400 uppercase mb-2">⚠ Intervenție necesară</p>
-          <div className="space-y-1">
-            {atRisk.map((c) => (
-              <Link key={c.id} href={`/clienti/${c.id}`} className="flex items-center gap-3 hover:text-built-red transition-colors">
-                <span className="font-display text-base text-built-white">{c.name}</span>
-                <span className="text-xs text-orange-400">Aplică MVR →</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      )}
+      <ClientPulse rows={pulse} />
 
       <div className="flex items-center justify-between mb-4">
         <h3 className="font-condensed text-[11px] text-built-gray-text uppercase tracking-wider">Clienți ({clients.length})</h3>
