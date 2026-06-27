@@ -15,6 +15,7 @@ const NAV = [
   { label: "Jurnal de Forță", short: "Forță", href: "/client/forta", key: "forta" },
   { label: "Nutriție", short: "Nutriție", href: "/client/nutritie", key: "nutritie" },
   { label: "Check-in", short: "Check-in", href: "/client/checkin", key: "checkin" },
+  { label: "Raportul Tău", short: "Raport", href: "/client/raport", key: "raport" },
   { label: "Mesaje", short: "Mesaje", href: "/client/mesaje", key: "mesaje" },
   { label: "Academia", short: "Academia", href: "/client/module", key: "module" },
   { label: "Bonusuri", short: "Bonus", href: "/client/bonusuri", key: "bonusuri" },

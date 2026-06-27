@@ -46,9 +46,9 @@ export async function sendCheckinReminderToAll(): Promise<{
   if (!subs || subs.length === 0) return { attempted: 0, sent: 0, reachedClientIds: [], cleaned: 0 };
 
   const payload = JSON.stringify({
-    title: "Check-in BUILT",
-    body: "Cum a mers săptămâna? 2 minute de check-in țin sistemul pe drum.",
-    url: "/client/checkin",
+    title: "Raportul tău BUILT e gata",
+    body: "Vezi cum a arătat săptămâna ta — și singurul pas pentru următoarea.",
+    url: "/client/raport",
   });
 
   let sent = 0;

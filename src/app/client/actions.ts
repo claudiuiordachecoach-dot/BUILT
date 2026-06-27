@@ -638,6 +638,130 @@ export async function getMetricHistory(clientId: number): Promise<{ points: Metr
   }
 }
 
+/* ─── Raportul săptămânal (client) ──────────────────────────────────────────
+   Recompensa care aduce clientul înapoi în app: recap pe 7 zile din datele pe
+   care le-a produs deja + UN singur micro-obiectiv pe cel mai slab semnal. */
+
+export interface WeeklyRecapData {
+  firstName: string;
+  weekNumber: number;
+  daysInProgram: number;
+  daysLogged: number;
+  trainingsDone: number;
+  trainingsSkipped: number;
+  avgSteps: number | null;
+  avgSleep: number | null;
+  weightNow: number | null;
+  weightDelta: number | null;
+  waistNow: number | null;
+  waistDelta: number | null;
+  targetWeight: number | null;
+  streak: number;
+  checkinThisWeek: boolean;
+  pillars: { B: number; U: number; I: number; L: number; T: number } | null;
+  strengthPRs: { exercise: string; weight: number; reps: number; isPR: boolean }[];
+  microTarget: { title: string; why: string };
+  hasData: boolean;
+}
+
+export async function getWeeklyRecap(overrideClientId?: number): Promise<WeeklyRecapData | null> {
+  const clientId = overrideClientId ?? (await getClientId());
+  if (!clientId) return null;
+  const db = getSupabaseServer();
+
+  const since = new Date();
+  since.setDate(since.getDate() - 6);
+  const sinceStr = since.toISOString().slice(0, 10);
+
+  const [clientRes, weekLogsRes, allLogsRes, checkinRes, strengthRes, streak] = await Promise.all([
+    db.from("clients").select("name, start_date, target_weight_kg").eq("id", clientId).single(),
+    db.from("daily_logs").select("log_date, items").eq("client_id", clientId).gte("log_date", sinceStr).order("log_date", { ascending: true }),
+    db.from("daily_logs").select("log_date, items").eq("client_id", clientId).order("log_date", { ascending: true }),
+    db.from("client_checkins").select("created_at, training_adherence, nutrition_adherence, energy_level, sleep_hours, hydration_l, stress_level").eq("client_id", clientId).order("created_at", { ascending: false }).limit(1),
+    db.from("strength_logs").select("exercise, weight, reps, logged_on").eq("client_id", clientId).order("logged_on", { ascending: true }),
+    getStreak(clientId),
+  ]);
+
+  const client = clientRes.data;
+  const num = (v: unknown) => (typeof v === "number" ? v : undefined);
+
+  let daysLogged = 0, trainingsDone = 0, trainingsSkipped = 0;
+  const steps: number[] = [], sleeps: number[] = [];
+  for (const row of weekLogsRes.data ?? []) {
+    const it = (row.items as Record<string, unknown>) ?? {};
+    if (Object.values(it).some(Boolean)) daysLogged++;
+    if (it.training_status === "done" || it.antrenament === true) trainingsDone++;
+    else if (it.training_status === "skipped") trainingsSkipped++;
+    const s = num(it.steps); if (s != null) steps.push(s);
+    const sl = num(it.sleep_h); if (sl != null) sleeps.push(sl);
+  }
+  const avg = (a: number[]) => (a.length ? a.reduce((x, y) => x + y, 0) / a.length : null);
+  const avgSteps = steps.length ? Math.round(avg(steps)!) : null;
+  const avgSleepRaw = avg(sleeps);
+  const avgSleep = avgSleepRaw != null ? Math.round(avgSleepRaw * 10) / 10 : null;
+
+  const weights: number[] = [], waists: number[] = [];
+  for (const row of allLogsRes.data ?? []) {
+    const it = (row.items as Record<string, unknown>) ?? {};
+    const w = num(it.weight), wa = num(it.waist);
+    if (w != null) weights.push(w);
+    if (wa != null) waists.push(wa);
+  }
+  const round1 = (n: number) => Math.round(n * 10) / 10;
+  const weightNow = weights.length ? weights[weights.length - 1] : null;
+  const weightDelta = weights.length >= 2 ? round1(weights[weights.length - 1] - weights[0]) : null;
+  const waistNow = waists.length ? waists[waists.length - 1] : null;
+  const waistDelta = waists.length >= 2 ? round1(waists[waists.length - 1] - waists[0]) : null;
+
+  const lastCheckin = checkinRes.data?.[0];
+  const checkinThisWeek = !!lastCheckin && Date.parse(lastCheckin.created_at as string) >= since.getTime();
+
+  const clamp = (n: number) => Math.max(0, Math.min(100, n));
+  const pillars = lastCheckin ? {
+    B: clamp((lastCheckin.training_adherence as number) ?? 0),
+    U: clamp(((lastCheckin.energy_level as number) ?? 0) * 10),
+    I: clamp((lastCheckin.nutrition_adherence as number) ?? 0),
+    L: clamp(((((lastCheckin.sleep_hours as number) ?? 0) / 8) * 100 + (((lastCheckin.hydration_l as number) ?? 0) / 3) * 100) / 2),
+    T: clamp(100 - ((lastCheckin.stress_level as number) ?? 5) * 10),
+  } : null;
+
+  const priorMax = new Map<string, number>();
+  const weekBest = new Map<string, { weight: number; reps: number }>();
+  for (const r of strengthRes.data ?? []) {
+    const ex = String(r.exercise), w = Number(r.weight) || 0, reps = Number(r.reps) || 0;
+    if (String(r.logged_on) >= sinceStr) {
+      const cur = weekBest.get(ex);
+      if (!cur || w > cur.weight) weekBest.set(ex, { weight: w, reps });
+    } else {
+      priorMax.set(ex, Math.max(priorMax.get(ex) ?? 0, w));
+    }
+  }
+  const strengthPRs = [...weekBest.entries()]
+    .map(([exercise, b]) => ({ exercise, weight: b.weight, reps: b.reps, isPR: b.weight > (priorMax.get(exercise) ?? 0) }))
+    .sort((a, b) => Number(b.isPR) - Number(a.isPR))
+    .slice(0, 3);
+
+  const startMs = client?.start_date ? Date.parse((client.start_date as string) + "T12:00:00") : Date.now();
+  const daysInProgram = Math.max(1, Math.floor((Date.now() - startMs) / 86400000) + 1);
+  const weekNumber = Math.max(1, Math.ceil(daysInProgram / 7));
+  const hasData = daysLogged > 0 || !!lastCheckin || weights.length > 0 || strengthPRs.length > 0;
+
+  let microTarget = { title: "Ține ritmul. Un singur lucru, repetat.", why: "Sistemul lucrează când apari constant — nu spectaculos." };
+  if (daysLogged < 3) microTarget = { title: "Logează măcar 3 zile săptămâna viitoare.", why: "Nu cer perfecțiune. Cer prezență. De la 3 zile, sistemul începe să vadă." };
+  else if (trainingsDone < 3) microTarget = { title: "Adaugă un antrenament. Unul.", why: "Nu recuperăm tot dintr-o dată. Adăugăm unul peste ce ai. Forța se face în straturi." };
+  else if (avgSteps != null && avgSteps < 7000) microTarget = { title: "7.000 de pași pe zi. O plimbare după cină.", why: "Capacitatea (pilonul U) se câștigă în Zona 1 — mers, nu epuizare." };
+  else if (avgSleep != null && avgSleep < 7) microTarget = { title: "Culcă-te cu 30 de minute mai devreme.", why: "Sub 7h de somn, stresul urcă și recuperarea se sabotează. E pârghia ascunsă." };
+  else if (!checkinThisWeek) microTarget = { title: "Trimite check-in-ul. 2 minute.", why: "Check-in-ul nu e raport pentru mine — e cum recalibrez sistemul pentru tine." };
+
+  return {
+    firstName: (client?.name as string | null)?.split(" ")[0] ?? "",
+    weekNumber, daysInProgram, daysLogged, trainingsDone, trainingsSkipped,
+    avgSteps, avgSleep, weightNow, weightDelta, waistNow, waistDelta,
+    targetWeight: (client?.target_weight_kg as number | null) ?? null,
+    streak, checkinThisWeek, pillars, strengthPRs, microTarget, hasData,
+  };
+}
+
 /** Salvează reflecția zilnică (text liber) în items.note. Gol → șterge. */
 export async function saveTodayNote(clientId: number, text: string) {
   const db = getSupabaseServer();

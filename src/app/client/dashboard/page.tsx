@@ -98,6 +98,13 @@ export default async function ClientDashboardPage({
         </div>
       </div>
 
+      <Link href={`/client/raport${overrideId ? `?clientId=${overrideId}` : ""}`}
+        className="flex items-center gap-3 bg-[#111111] border border-white/10 rounded-xl p-4 mb-5 press transition-colors hover:border-built-red/40">
+        <span className="text-[20px] leading-none text-built-red">{NAV_ICONS.raport}</span>
+        <span className="flex-1 text-sm text-zinc-100"><span className="font-semibold">Raportul tău săptămânal</span> — săptămâna ta + pasul următor</span>
+        <span className="text-built-red text-lg">→</span>
+      </Link>
+
       {(() => {
         const scores = pillarScores(latestCheckin);
         return scores ? <PillarRadar scores={scores} /> : null;
