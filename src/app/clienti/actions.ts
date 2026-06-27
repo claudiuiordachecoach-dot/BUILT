@@ -939,7 +939,8 @@ export interface MessagingClient {
 export async function getMessagingRoster(): Promise<MessagingClient[]> {
   const db = getSupabaseServer({ useServiceRole: true });
   const [clientsRes, subsRes] = await Promise.all([
-    db.from("clients").select("id, name").eq("status", "active").order("id"),
+    // Doar clienți cu cont real (se pot loga și citi mesajul) — exclude prospecți/neonboard­ați.
+    db.from("clients").select("id, name").eq("status", "active").not("auth_user_id", "is", null).order("id"),
     db.from("push_subscriptions").select("client_id, p256dh"),
   ]);
   // Cheie p256dh validă (~87 caractere base64url = 65 bytes) → abonament funcțional.
