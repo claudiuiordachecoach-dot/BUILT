@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useEffect, useCallback, useMemo, useRef, Fragment } from "react";
 import {
   analyzeContentLibraryReel,
   getTipOfWeek,
@@ -285,6 +285,12 @@ function AnalysisPanel({
     return () => window.removeEventListener("keydown", handler);
   }, [onClose]);
 
+  // Apare inline sub reel-ul analizat — îl aducem în vizor.
+  const panelRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    panelRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, []);
+
   const verdictClass =
     data.verdict === "Exceptional"
       ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20"
@@ -299,17 +305,9 @@ function AnalysisPanel({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
+      ref={panelRef}
+      className="col-span-full bg-[#0d0d0d] border border-built-red/30 rounded-xl p-6 space-y-5 shadow-2xl anim-fade-up scroll-mt-24"
     >
-      {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-
-      {/* Panel */}
-      <div
-        className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto bg-[#0d0d0d] border border-white/10 rounded-xl p-6 space-y-5 shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
       {/* Top row */}
       <div className="flex items-center gap-4 flex-wrap">
         <span className={`text-[11px] font-bold px-2.5 py-1 rounded border ${verdictClass}`}>
@@ -446,7 +444,6 @@ function AnalysisPanel({
           </div>
         </>
       )}
-    </div>
     </div>
   );
 }
@@ -1043,8 +1040,8 @@ export default function AnalyticsPage() {
         {/* 5-column grid — matches William Scott */}
         <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
           {sortedReels.map((reel) => (
+            <Fragment key={reel.id}>
             <div
-              key={reel.id}
               className={`built-card bg-[#111111] border rounded-xl overflow-hidden transition-colors ${
                 analysedId === reel.id ? "border-built-red/40" : "border-white/[0.08] hover:border-white/20"
               }`}
@@ -1114,6 +1111,13 @@ export default function AnalyticsPage() {
                 </button>
               </div>
             </div>
+            {analysedId === reel.id && analysisData && (
+              <AnalysisPanel
+                data={analysisData}
+                onClose={() => { setAnalysedId(null); setAnalysisData(null); }}
+              />
+            )}
+            </Fragment>
           ))}
         </div>
 
@@ -1130,13 +1134,6 @@ export default function AnalyticsPage() {
           </div>
         )}
 
-        {/* Analysis modal */}
-        {analysedId && analysisData && (
-          <AnalysisPanel
-            data={analysisData}
-            onClose={() => { setAnalysedId(null); setAnalysisData(null); }}
-          />
-        )}
       </div>
 
       </div>{/* /px-8 */}

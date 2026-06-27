@@ -17,12 +17,13 @@ const STATUS_OPTIONS: { id: ClientStatus; label: string }[] = [
 
 const weeksSince = (start: string) => Math.max(1, Math.floor((Date.now() - new Date(start).getTime()) / (7 * 24 * 3600 * 1000)));
 
+// Planurile reale ale clienților sunt QuickRef-urile HTML (premium), servite în
+// /client/nutritie și /client/antrenamente. Editoarele din DB erau fallback vestigial
+// (clienții cu QuickRef nu le vedeau) — scoase din tab-uri ca să nu deruteze.
 const TABS = [
   { id: "profile", label: "Profil & Progres" },
   { id: "intake", label: "Fișa de Start" },
   { id: "checkin", label: "Check-in" },
-  { id: "workout", label: "Plan Antrenament" },
-  { id: "nutrition", label: "Plan Nutrițional" },
   { id: "modules", label: "Module (Academia)" },
   { id: "messages", label: "Mesaje" },
 ];
