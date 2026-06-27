@@ -22,3 +22,6 @@ alter table public.workout_sessions enable row level security;
 drop policy if exists "single_user_all_workout_sessions" on public.workout_sessions;
 create policy "single_user_all_workout_sessions" on public.workout_sessions
   for all using (true) with check (true);
+
+-- Reîmprospătează cache-ul PostgREST (altfel scrierile pică cu „not in schema cache" după DDL proaspăt)
+notify pgrst, 'reload schema';
