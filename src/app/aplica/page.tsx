@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { BuiltWordmark } from "@/components/BrandLogo";
-import { submitApplication, getAvailableSlots, bookDiagnostic, type Budget, type DaySlots } from "./actions";
+import { submitApplication, generateDiagnostic, getAvailableSlots, bookDiagnostic, type Budget, type DaySlots, type Diagnostic } from "./actions";
 
 const BUDGET_OPTIONS: { value: Budget; label: string; sub: string }[] = [
   { value: "gata", label: "Sunt gata să investesc în mine acum", sub: "Programele merg de la 200 la 700€, în funcție de cât de aproape lucrăm." },
@@ -22,6 +22,15 @@ function Field({ label, children, hint }: { label: string; children: React.React
 
 const inputCls =
   "w-full bg-white/[0.03] border border-white/10 focus:border-built-red/50 rounded-xl px-4 py-3 text-sm text-white placeholder-zinc-600 focus:outline-none transition-colors";
+
+function DiagBlock({ label, body }: { label: string; body: string }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-white/[0.02] p-4">
+      <p className="font-condensed text-[10px] uppercase tracking-[0.2em] text-built-red mb-1.5">{label}</p>
+      <p className="text-zinc-200 text-[14px] leading-relaxed whitespace-pre-wrap">{body}</p>
+    </div>
+  );
+}
 
 // ─── Dovadă socială — testimonialele video reale (găzduite pe landing-ul live) ─
 
@@ -148,6 +157,8 @@ export default function AplicaPage() {
   const [error, setError] = useState("");
   const [done, setDone] = useState(false);
   const [prospectId, setProspectId] = useState<number | null>(null);
+  const [diag, setDiag] = useState<Diagnostic | null>(null);
+  const [diagLoading, setDiagLoading] = useState(false);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -156,8 +167,17 @@ export default function AplicaPage() {
     setBusy(true);
     const r = await submitApplication({ name, contact, a1, a2, a3, budget });
     setBusy(false);
-    if (r.ok) { setProspectId(r.prospectId); setDone(true); window.scrollTo({ top: 0, behavior: "smooth" }); }
-    else setError(r.error);
+    if (r.ok) {
+      setProspectId(r.prospectId);
+      setDone(true);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      // Diagnosticul instant — valoarea care diagnostichează, nu vinde
+      setDiagLoading(true);
+      generateDiagnostic({ name, contact, a1, a2, a3, budget })
+        .then((d) => { if (d.ok) setDiag(d.data); })
+        .catch(() => {})
+        .finally(() => setDiagLoading(false));
+    } else setError(r.error);
   }
 
   if (done) {
@@ -166,15 +186,42 @@ export default function AplicaPage() {
         <div className="w-full max-w-lg text-center anim-fade-up">
           <BuiltWordmark className="text-3xl text-built-white inline-block mb-8" />
           <div className="w-12 h-1 bg-built-red mx-auto mb-8" />
-          <h1 className="font-display text-4xl sm:text-5xl text-built-white leading-[0.95] mb-5">
-            Am primit <span className="text-built-red">aplicarea ta.</span>
-          </h1>
-          <p className="text-zinc-400 text-[15px] leading-relaxed mb-3">
-            O citesc personal — nu un robot. Dacă văd că te pot ajuta cu adevărat, îți scriu în DM în <span className="text-white">maxim 24 de ore</span>.
-          </p>
-          <p className="text-zinc-500 text-sm leading-relaxed mb-8">
-            Nu trimit oferte automate. Întâi diagnostichez, apoi îți spun sincer dacă e pentru tine. <span className="text-built-white font-medium">BUILT selectează, nu vinde.</span>
-          </p>
+          {diag ? (
+            <div className="anim-fade-up mb-8">
+              <p className="font-condensed text-[11px] uppercase tracking-[0.25em] text-built-red mb-3">Diagnosticul tău de arhitectură</p>
+              <h1 className="font-display text-3xl sm:text-4xl text-built-white leading-[0.95] mb-6">
+                Fractura ta: <span className="text-built-red">{diag.pilon || "arhitectura ta"}</span>
+              </h1>
+              <div className="space-y-3 text-left">
+                {diag.fractura && <DiagBlock label="Ce e rupt" body={diag.fractura} />}
+                {diag.bucla && <DiagBlock label="Bucla care te ține blocat" body={diag.bucla} />}
+                {diag.pas && <DiagBlock label="Ce ratează sistemul tău" body={diag.pas} />}
+              </div>
+              <p className="text-zinc-400 text-[14px] leading-relaxed mt-6">
+                Asta e ce reparăm. Arhitectura pe 90 de zile pornește exact de la fractura asta — nu de la „mai multă voință". Dacă ești un fit, îți scriu personal în <span className="text-white">maxim 24 de ore</span>.
+              </p>
+            </div>
+          ) : (
+            <>
+              <h1 className="font-display text-4xl sm:text-5xl text-built-white leading-[0.95] mb-5">
+                Am primit <span className="text-built-red">aplicarea ta.</span>
+              </h1>
+              {diagLoading ? (
+                <p className="text-zinc-400 text-[15px] leading-relaxed mb-8">
+                  Îți construiesc <span className="text-white">diagnosticul de arhitectură</span> din răspunsurile tale<span className="animate-pulse">…</span>
+                </p>
+              ) : (
+                <>
+                  <p className="text-zinc-400 text-[15px] leading-relaxed mb-3">
+                    O citesc personal — nu un robot. Dacă văd că te pot ajuta cu adevărat, îți scriu în DM în <span className="text-white">maxim 24 de ore</span>.
+                  </p>
+                  <p className="text-zinc-500 text-sm leading-relaxed mb-8">
+                    Nu trimit oferte automate. Întâi diagnostichez, apoi îți spun sincer dacă e pentru tine. <span className="text-built-white font-medium">BUILT selectează, nu vinde.</span>
+                  </p>
+                </>
+              )}
+            </>
+          )}
 
           {/* Slot de diagnostic — taie așteptarea, alege ora pe loc */}
           <div className="mb-6">

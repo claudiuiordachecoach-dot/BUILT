@@ -1,6 +1,8 @@
 "use server";
 
 import { getSupabaseServer } from "@/lib/supabase/server";
+import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
+import { readCreierFromSupabase } from "@/lib/creier";
 
 export type Budget = "gata" | "depinde" | "nu";
 
@@ -89,6 +91,79 @@ ${(input.a3 || "—").trim()}`;
 
   if (error) return { ok: false, error: "Ceva n-a mers la trimitere. Mai încearcă o dată." };
   return { ok: true, prospectId: data?.id ?? null };
+}
+
+// ─── Diagnosticul de Arhitectură — valoarea instant care diagnostichează, nu vinde ──
+// Prospectul primește, în vocea lui Claudiu, ce pilon e fracturat + bucla care îl ține
+// blocat + pasul ratat. „Nu vindem, diagnosticăm" devine produs. AI pe Groq (gratis).
+
+export interface Diagnostic {
+  pilon: string;
+  fractura: string;
+  bucla: string;
+  pas: string;
+}
+
+export async function generateDiagnostic(
+  input: ApplicationInput,
+): Promise<{ ok: true; data: Diagnostic } | { ok: false; error: string }> {
+  if (!input.a1?.trim()) return { ok: false, error: "Răspunsuri insuficiente." };
+
+  const task = `# TASK: Diagnostic de Arhitectură BUILT (instant, pentru un prospect care tocmai a aplicat)
+Citește-i răspunsurile și dă-i un diagnostic SCURT, tăios, personalizat — în vocea lui Claudiu. NU vinzi. Diagnostichezi. Asta e exact filozofia BUILT: „nu vindem, diagnosticăm."
+
+## Răspunsurile lui
+1. Unde e acum (corp, energie, greutate): ${input.a1.trim()}
+2. Ce a încercat și de ce crede că n-a ținut: ${(input.a2 || "—").trim()}
+3. Cum vrea să fie în 90 de zile: ${(input.a3 || "—").trim()}
+
+## Cei 5 piloni BUILT (alege-l pe cel FRACTURAT la el)
+- B — Base Strength: forță compusă, progresie logaritmică.
+- U — Unbreakable Capacity: rezistență, Zone 2, capacitate cardiovasculară.
+- I — Intelligent Fueling: nutriție ca sistem, 80/20, anti-binge.
+- L — Lifestyle Integration: integrare cu job, familie, viața reală.
+- T — Tough Mindset: psihologie, identitate de om echilibrat (nu de om la dietă).
+
+## Buclele psihologice (folosește-o pe cea care i se potrivește, dacă i se potrivește)
+- Capcana Cortizolului: stres → cortizol → grăsime abdominală → mai mult stres. Buclă biologică, nu de caracter.
+- Paradoxul Competenței: reușește la orice în afară de corp — tocmai de aceea eșecul fizic doare atât.
+- Prețul Invizibilității: nu calculează costul inacțiunii — energie, relație, sănătate erodate zi după zi.
+
+## REGULA DE ADEVĂR (obligatorie)
+Citește DOAR ce a scris el. Nu inventa cifre, kilograme, diagnostice medicale sau detalii pe care nu le-a dat. Dacă a scris puțin, lucrează cu puținul — fii precis, nu generic.
+
+## INTERZIS
+Clișee („crede în tine", „totul e posibil", „hai că poți"), promisiuni de rezultat, ton de vânzător, complimente goale, majuscule de accentuare, semne de exclamare entuziaste. Ton: matur, structural, calm, direct. Arhitect, nu motivator.
+
+## FORMAT (exact, fiecare câmp pe linia lui, nimic altceva)
+PILON: <numele pilonului fracturat, ex: „Capacitate (U)">
+FRACTURA: <2-3 fraze: ce e rupt în arhitectura LUI, citindu-i răspunsurile. Specific la el, nu general.>
+BUCLA: <2-3 fraze: bucla care îl ține blocat, aplicată pe situația lui concretă.>
+PASUL: <1-2 fraze: singurul lucru pe care sistemul lui îl ratează acum. O observație structurală, nu „vino la mine".>`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const ai = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({ creierJson: JSON.stringify(creier, null, 2), taskContext: task });
+    const msg = await ai.messages.create({
+      model: MODELS.deep,
+      max_tokens: 600,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Scrie diagnosticul." }],
+    });
+    const tb = msg.content.find((b) => b.type === "text");
+    if (!tb || tb.type !== "text") return { ok: false, error: "Răspuns gol." };
+    const text = tb.text.trim();
+    const pick = (label: string) => {
+      const m = text.match(new RegExp(`${label}:\\s*([\\s\\S]*?)(?=\\n+(?:PILON|FRACTURA|BUCLA|PASUL)\\s*:|$)`, "i"));
+      return m ? m[1].trim().replace(/^["„]|["”]$/g, "").trim() : "";
+    };
+    const data: Diagnostic = { pilon: pick("PILON"), fractura: pick("FRACTURA"), bucla: pick("BUCLA"), pas: pick("PASUL") };
+    if (!data.fractura && !data.bucla && !data.pas) data.fractura = text; // fallback dacă parsarea ratează
+    return { ok: true, data };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
 }
 
 // ─── Slot de diagnostic — aplicantul își alege singur ora ─────────────────────
