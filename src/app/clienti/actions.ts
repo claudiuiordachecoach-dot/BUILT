@@ -8,6 +8,7 @@ import { sendCheckinReminderToAll, sendPushToClient } from "@/lib/push";
 import { buildSystemBlocks, getAnthropicClient, MODELS } from "@/lib/anthropic";
 import { readCreierFromSupabase } from "@/lib/creier";
 import { shapeExercises, type StrengthExercise } from "@/lib/strength";
+import { getSetting } from "@/lib/settings";
 
 export type ClientStatus = "active" | "at_risk" | "completed" | "paused";
 
@@ -922,4 +923,89 @@ export async function getClientStrengthProgress(clientId: number): Promise<Stren
     .order("logged_on", { ascending: true })
     .order("created_at", { ascending: true });
   return shapeExercises(data ?? []);
+}
+
+/* ─── Mesajul zilei (coach → clienți) ────────────────────────────────────────
+   Claudiu trimite ce mesaj vrea, oricând, ca un coach adevărat. Vede cine are
+   notificările pornite, scrie sau generează cu AI (editabil), trimite la cine alege.
+   Mesajul ajunge ca mesaj real în inbox-ul clientului + push la cei cu notificări. */
+
+export interface MessagingClient {
+  id: number;
+  name: string;
+  notifOn: boolean;
+}
+
+export async function getMessagingRoster(): Promise<MessagingClient[]> {
+  const db = getSupabaseServer({ useServiceRole: true });
+  const [clientsRes, subsRes] = await Promise.all([
+    db.from("clients").select("id, name").eq("status", "active").order("id"),
+    db.from("push_subscriptions").select("client_id, p256dh"),
+  ]);
+  // Cheie p256dh validă (~87 caractere base64url = 65 bytes) → abonament funcțional.
+  const withNotif = new Set<number>();
+  for (const s of (subsRes.data ?? []) as { client_id: number; p256dh: string | null }[]) {
+    if ((s.p256dh ?? "").length >= 86) withNotif.add(s.client_id);
+  }
+  return ((clientsRes.data ?? []) as { id: number; name: string }[]).map((c) => ({
+    id: c.id,
+    name: c.name,
+    notifOn: withNotif.has(c.id),
+  }));
+}
+
+export async function sendCoachBroadcast(
+  clientIds: number[],
+  content: string,
+): Promise<{ ok: true; sent: number } | { ok: false; error: string }> {
+  const text = content.trim();
+  if (!text) return { ok: false, error: "Scrie un mesaj întâi." };
+  if (clientIds.length === 0) return { ok: false, error: "Alege măcar un client." };
+
+  const db = getSupabaseServer({ useServiceRole: true });
+  const title = (await getSetting("push_message_title").catch(() => null)) || "Mesaj nou de la Coach";
+
+  // Mesaj real în inbox (sender = admin), pentru toți deodată.
+  const { error } = await db.from("client_messages").insert(
+    clientIds.map((id) => ({ client_id: id, sender: "admin", content: text })),
+  );
+  if (error) return { ok: false, error: "Nu s-au putut salva mesajele." };
+
+  // Push la fiecare (silentios — cei fără notificări primesc oricum mesajul în inbox).
+  const pushBody = text.length > 120 ? text.slice(0, 117) + "..." : text;
+  await Promise.all(clientIds.map((id) => sendPushToClient(id, title, pushBody, "/client/mesaje").catch(() => {})));
+
+  return { ok: true, sent: clientIds.length };
+}
+
+export async function generateCoachMessage(
+  topic?: string,
+): Promise<{ ok: true; data: string } | { ok: false; error: string }> {
+  const seed = (topic ?? "").trim();
+  const task = `# TASK: Mesajul zilei către clienții BUILT (un singur mesaj, trimis tuturor)
+Claudiu vrea să trimită azi un mesaj scurt clienților lui din program, ca un coach adevărat care e prezent zilnic — nu un robot.
+${seed ? `Ideea / subiectul pe care vrea să-l transmită: „${seed}"` : "Alege o temă BUILT relevantă pentru azi: sistemul bate voința · corpul e inginerie, nu moralitate · cortizolul e dușmanul real · consecvența peste motivație · identitatea precede comportamentul."}
+
+## Scrie
+UN mesaj scurt (3-5 rânduri), în vocea lui Claudiu, cald cu omul dar ferm cu sistemul, care să-i miște azi spre un pas concret sau o reîncadrare utilă. Trebuie să sune ca un mesaj real de la antrenor, nu ca un citat de pe Instagram.
+
+## INTERZIS
+Clișee („crede în tine", „hai că poți", „tu poți", „o zi minunată", „succes"), majuscule de accentuare, semne de exclamare entuziaste, emoji în exces, ton de vânzător. Ton: matur, direct, de arhitect. Răspunde DOAR cu mesajul, fără explicații înainte sau după.`;
+
+  try {
+    const creier = await readCreierFromSupabase();
+    const ai = getAnthropicClient();
+    const systemBlocks = buildSystemBlocks({ creierJson: JSON.stringify(creier, null, 2), taskContext: task });
+    const msg = await ai.messages.create({
+      model: MODELS.deep,
+      max_tokens: 400,
+      system: systemBlocks,
+      messages: [{ role: "user", content: "Scrie mesajul zilei." }],
+    });
+    const tb = msg.content.find((b) => b.type === "text");
+    if (!tb || tb.type !== "text") return { ok: false, error: "Răspuns gol." };
+    return { ok: true, data: tb.text.trim().replace(/^["„]+|["”]+$/g, "").trim() };
+  } catch (e) {
+    return { ok: false, error: e instanceof Error ? e.message : "Eroare." };
+  }
 }

@@ -1,8 +1,9 @@
 import Link from "next/link";
-import { listClients, getRetentionPulse } from "./actions";
+import { listClients, getRetentionPulse, getMessagingRoster } from "./actions";
 import { NewClientForm } from "./NewClientForm";
 import { CoachProfileCard } from "./CoachProfileCard";
 import { ClientPulse } from "./ClientPulse";
+import { CoachBroadcast } from "./CoachBroadcast";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +16,10 @@ const STATUS_LABEL: Record<string, string> = {
 };
 
 export default async function ClientiPage() {
-  const [clients, pulse] = await Promise.all([
+  const [clients, pulse, roster] = await Promise.all([
     listClients().catch(() => []),
     getRetentionPulse().catch(() => []),
+    getMessagingRoster().catch(() => []),
   ]);
   const active = clients.filter((c) => c.status === "active");
   const atRisk = clients.filter((c) => c.status === "at_risk");
@@ -37,6 +39,8 @@ export default async function ClientiPage() {
           </div>
         ))}
       </div>
+
+      <CoachBroadcast roster={roster} />
 
       <ClientPulse rows={pulse} />
 
