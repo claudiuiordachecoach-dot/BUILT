@@ -59,7 +59,11 @@ export function ClientPulse({ rows }: { rows: RetentionPulseRow[] }) {
               <div className="min-w-0 flex-1">
                 <span className="font-display text-base text-built-white">{r.name}</span>
                 <span className="text-xs text-built-gray-text ml-2">
-                  {r.everActive ? `tăcut de ${r.daysSilent} ${r.daysSilent === 1 ? "zi" : "zile"}` : "niciodată activ în app"}
+                  {!r.everActive
+                    ? "niciodată activ în app"
+                    : r.daysSilent === 0
+                      ? "activ azi"
+                      : `ultima urmă acum ${r.daysSilent} ${r.daysSilent === 1 ? "zi" : "zile"}`}
                   {r.neverCheckedIn && " · 0 check-in"}
                   {r.loggedThisWeek > 0 && ` · ${r.loggedThisWeek} loguri săpt.`}
                 </span>

@@ -177,10 +177,18 @@ ${recent}
 2. DIAGNOSTIC scurt al cauzei (suprasolicitare / demotivare / dorință de renunțare / dispariție), adaptat la starea de mai sus.
 3. MVR — Minimum Viable Return: UN singur pas executabil imediat (20 min antrenament / o masă bună / două rânduri de check-in). NU doi pași — unul.
 4. Recalibrare scurtă (oferi ajustarea, nu presiunea).
-INTERZIS: compensare extremă ("faci 3 ore mâine"), comparații cu alte perioade, așteptarea motivației înainte de primul pas, clișee.
+
+## REGULA DE ADEVĂR (obligatorie)
+NU inventa NIMIC. Fără kilograme, procente, cifre sau progres care nu apar EXPLICIT în datele de mai sus. Dacă nu ai date concrete despre client, vorbește despre sistem și despre pasul următor — niciodată despre rezultate pe care nu le-ai primit. Un singur număr inventat distruge încrederea.
+
+## INTERZIS (textual)
+- Clișee motivaționale: "crede în tine", "victorii mici", "sunt aici pentru tine", "hai să o luăm de la capăt", "nu te lăsa", "tu poți".
+- Majuscule de accentuare și semne de exclamare entuziaste.
+- Compensare extremă ("faci 3 ore mâine"), comparații cu alte perioade, așteptarea motivației înainte de primul pas.
+Ton: matur, structural, calm, direct. Arhitect, nu coach motivațional de Instagram.
 
 ## Scrie
-Un singur mesaj (WhatsApp/DM), în vocea lui Claudiu, în română, scurt (max 5-6 rânduri), cald cu situația dar ferm cu sistemul, personalizat la ${client.name} și starea lui reală. Doar mesajul, fără explicații înainte/după.`;
+Un singur mesaj (WhatsApp/DM), în vocea lui Claudiu, în română, scurt (max 5-6 rânduri), cald cu situația dar ferm cu sistemul, personalizat la ${client.name} și starea lui reală (fără date inventate). Doar mesajul, fără explicații înainte/după.`;
 
   try {
     const creier = await readCreierFromSupabase();
