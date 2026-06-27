@@ -952,3 +952,74 @@ export async function deleteStrengthSet(id: string): Promise<{ ok: boolean }> {
   const { error } = await db.from("strength_logs").delete().eq("id", id).eq("client_id", clientId);
   return { ok: !error };
 }
+
+/* ─── Antrenamentul live (sesiune pe zi) ─────────────────────────────────────
+   Clientul alege ziua de antrenament, loghează seturi (kg×reps)+pauză per exercițiu,
+   salvează sesiunea. Data viitoare la aceeași zi: exercițiile + numerele trecute se
+   reportează automat, iar dacă face mai puțin → atenționare de regresie. */
+
+export interface WSet { kg: number; reps: number }
+export interface WExercise { name: string; rest?: number; sets: WSet[] }
+export interface WorkoutDay { label: string; lastDate: string | null; count: number }
+export interface LastSession { logged_on: string; exercises: WExercise[] }
+
+export async function getWorkoutDays(): Promise<WorkoutDay[]> {
+  const clientId = await getClientId();
+  if (!clientId) return [];
+  const db = getSupabaseServer();
+  const { data } = await db
+    .from("workout_sessions")
+    .select("day_label, logged_on")
+    .eq("client_id", clientId)
+    .order("logged_on", { ascending: false });
+  const map = new Map<string, { lastDate: string; count: number }>();
+  for (const r of (data ?? []) as { day_label: string; logged_on: string }[]) {
+    const cur = map.get(r.day_label);
+    if (!cur) map.set(r.day_label, { lastDate: r.logged_on, count: 1 });
+    else cur.count++;
+  }
+  return [...map.entries()].map(([label, v]) => ({ label, lastDate: v.lastDate, count: v.count }));
+}
+
+export async function getLastSession(dayLabel: string): Promise<LastSession | null> {
+  const clientId = await getClientId();
+  if (!clientId) return null;
+  const db = getSupabaseServer();
+  const { data } = await db
+    .from("workout_sessions")
+    .select("logged_on, exercises")
+    .eq("client_id", clientId)
+    .eq("day_label", dayLabel)
+    .order("logged_on", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  if (!data) return null;
+  return { logged_on: data.logged_on as string, exercises: (data.exercises as WExercise[]) ?? [] };
+}
+
+export async function saveWorkoutSession(
+  dayLabel: string,
+  exercises: WExercise[],
+  note?: string,
+): Promise<{ ok: boolean }> {
+  const clientId = await getClientId();
+  if (!clientId) return { ok: false };
+  const db = getSupabaseServer();
+  const clean = exercises
+    .map((e) => ({
+      name: (e.name || "").trim(),
+      rest: typeof e.rest === "number" && e.rest > 0 ? e.rest : undefined,
+      sets: (e.sets || [])
+        .map((s) => ({ kg: Number(s.kg) || 0, reps: Number(s.reps) || 0 }))
+        .filter((s) => s.kg > 0 || s.reps > 0),
+    }))
+    .filter((e) => e.name && e.sets.length > 0);
+  if (clean.length === 0) return { ok: false };
+  const { error } = await db.from("workout_sessions").insert({
+    client_id: clientId,
+    day_label: (dayLabel || "Antrenament").trim(),
+    exercises: clean,
+    note: note?.trim() || null,
+  });
+  return { ok: !error };
+}
