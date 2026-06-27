@@ -1,0 +1,26 @@
+name: Aplică migrații Supabase
+
+# Rulează automat la fiecare push pe main care atinge migrațiile.
+# Aplică DOAR fișierele noi (tracking în public.schema_migrations) + reîmprospătează cache-ul.
+# Claudiu nu face nimic — pun un fișier .sql nou, push, iar tabelul apare singur în Supabase.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "supabase/migrations/**"
+  workflow_dispatch: {}
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Aplică migrațiile
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          NEXT_PUBLIC_SUPABASE_URL: https://kedfvtqbdlwhqmzggbls.supabase.co
+        run: node scripts/apply-migrations.mjs
