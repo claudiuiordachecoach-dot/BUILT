@@ -69,16 +69,18 @@ export default function AntrenamantePage() {
     const apply = () => {
       const top = topRef.current;
       if (!top) return;
-      if (!topH.current) topH.current = top.scrollHeight;
       const y = win.scrollY || win.document?.documentElement?.scrollTop || 0;
-      const p = Math.min(Math.max(y / 220, 0), 1); // 0..1 pe primii ~220px de scroll
-      top.style.maxHeight = `${(1 - p) * topH.current}px`;
-      top.style.opacity = `${1 - p}`;
-      top.style.transform = `translateY(${-p * 14}px)`;
-      top.style.pointerEvents = p > 0.9 ? "none" : "auto";
+      // Măsoară înălțimea naturală o singură dată, ÎNAINTE de a-i fixa height (după ce s-a încărcat conținutul).
+      if (!topH.current) topH.current = top.offsetHeight || 0;
+      const h0 = topH.current;
+      if (!h0) return;
+      // 1:1 cu scroll-ul, dar topit complet pe ~85% din înălțimea antetului (mai rapid).
+      const h = Math.max(0, h0 - y * 1.2);
+      top.style.height = `${h}px`;
+      top.style.opacity = `${Math.max(0, Math.min(1, h / (h0 * 0.6)))}`;
+      top.style.pointerEvents = h < 20 ? "none" : "auto";
     };
     win.addEventListener("scroll", () => requestAnimationFrame(apply), { passive: true });
-    apply();
   }
 
   useEffect(() => { getWorkoutPlan().then(p => { setPlan(p as WorkoutPlan | null); setTodayHash(todayHashFor((p as WorkoutPlan | null)?.quickref_url)); }).finally(() => setLoading(false)); }, []);
