@@ -261,6 +261,8 @@ for d in DAYS:
 
 # ── RANDARE HTML (reutilizează head + mod carte din fișierul vechi) ──
 TAG_M = {"Mic dejun":"Dimineața","Gustare":"Între mese","Prânz":"Prânz","Cină":"Seara"}
+SLUG  = {"Mic dejun":"micdejun","Gustare":"gustare","Prânz":"pranz","Cină":"cina"}
+PHOTO_MANIFEST = []  # (fisier, zi, masa, fel)
 
 def esc(s): return s.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
 
@@ -272,9 +274,13 @@ def render_recipe(num, r):
     dots = "".join('<span class="on"></span>' if i < r["diff"] else '<span></span>' for i in range(3))
     ings = "".join(f'<div class="ing"><span class="ing-n">{esc(n)}</span><span class="ing-q">{esc(q)}</span></div>' for (n,q,_,_) in r["ings"])
     steps = "".join(f'<div class="step"><span class="sn">{i+1:02d}</span><div class="st">{esc(s)}</div></div>' for i,s in enumerate(r["steps"]))
+    img = f"z{num}_{SLUG[r['meal']]}.png"
+    PHOTO_MANIFEST.append((img, num, r["meal"], dish))
+    onerr = "this.style.display='none';this.parentNode.querySelector('.ph').style.display='flex';"
     return f'''<div class="page rp">
   <div class="rp-photo">
-    <div class="ph"><div class="ph-k">BUILT · Intelligent Fueling</div><div class="ph-d">{esc(dish)}</div></div>
+    <img src="./cookbook-images/claudia/{img}" alt="{esc(dish)}" onerror="{onerr}">
+    <div class="ph" style="display:none"><div class="ph-k">BUILT · Intelligent Fueling</div><div class="ph-d">{esc(dish)}</div></div>
     <div class="rp-photo-overlay"></div>
     <div class="rp-badge">{badge}</div>
     <div class="rp-diff">{dots}</div>
@@ -380,3 +386,19 @@ for o in (OUT1, OUT2):
     open(o, "w", encoding="utf-8").write(html)
     print("scris:", os.path.relpath(o))
 print(f"pagini: {html.count('class=\"page')} · rețete: {html.count('class=\"page rp\"')}")
+
+# ── BRIEF GEMINI: lista de poze de generat ──────────────────────────
+img_dir = os.path.join(os.path.dirname(__file__), "..", "public", "cookbook-images", "claudia")
+brief = ["# Poze carte de rețete Claudia — pentru Gemini\n",
+ "Generează 28 de fotografii de mâncare și pune-le în ACEST folder cu EXACT numele din coloana fișier.",
+ "Cartea le încarcă automat (acum afișează un placeholder; când apare fișierul, devine poză).\n",
+ "**Stil unitar (același pentru toate):** fotografie de mâncare reală, de sus sau ușor lateral, lumină naturală,",
+ "farfurie/bol simplu pe fundal închis (lemn închis / piatră gri-negru), apetisant dar curat, fără text, fără mâini.",
+ "Format pătrat sau peisaj, minim 1200px lățime. Mâncare românească reală, porții normale.\n",
+ "| fișier | zi | masă | felul |", "|---|---|---|---|"]
+for (img, num, meal, dish) in PHOTO_MANIFEST:
+    brief.append(f"| `{img}` | {num} | {meal} | {dish} |")
+brief.append("\nDupă ce pui pozele în folder, dă-mi de știre — verific că se încarcă și fac deploy.")
+open(os.path.join(img_dir, "_GEMINI_POZE.md"), "w", encoding="utf-8").write("\n".join(brief))
+print(f"\nmanifest poze: public/cookbook-images/claudia/_GEMINI_POZE.md ({len(PHOTO_MANIFEST)} poze)")
+print("primele:", ", ".join(x[0] for x in PHOTO_MANIFEST[:4]), "...")
