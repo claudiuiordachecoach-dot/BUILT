@@ -220,7 +220,7 @@ body.day-usoara .d-usoar { display: inline !important; }
   </div>
   <div class="budget-bar">
     <span>Target Zi</span>
-    <strong id="hdr-target-val">2.700 KCAL</strong>
+    <strong id="hdr-target-val">2.200 KCAL</strong>
     <span>240g Proteină Fixă</span>
   </div>
 </div>
@@ -238,7 +238,7 @@ body.day-usoara .d-usoar { display: inline !important; }
 
   <div class="stat-grid">
     <div class="stat-card">
-      <div class="stat-val" id="stat-kcal">2.700</div>
+      <div class="stat-val" id="stat-kcal">2.200</div>
       <div class="stat-unit">kcal / zi</div>
       <div class="stat-lbl">Target Dinamic</div>
     </div>
@@ -285,15 +285,15 @@ body.day-usoara .d-usoar { display: inline !important; }
   <div class="day-selector">
     <div class="day-btn activa" data-day="activa" onclick="selectDayType('activa')">
       Zi Activă
-      <span>2.900 kcal</span>
+      <span>2.400 kcal</span>
     </div>
     <div class="day-btn normala active" data-day="normala" onclick="selectDayType('normala')">
       Zi Normală
-      <span>2.700 kcal</span>
+      <span>2.200 kcal</span>
     </div>
     <div class="day-btn usoara" data-day="usoara" onclick="selectDayType('usoara')">
       Zi Ușoară
-      <span>2.500 kcal</span>
+      <span>2.000 kcal</span>
     </div>
   </div>
 
@@ -1032,8 +1032,8 @@ body.day-usoara .d-usoar { display: inline !important; }
 
 <script>
 let currentDayType = 'normala'; // 'activa', 'normala', 'usoara'
-let dayTargets = { activa: 2900, normala: 2700, usoara: 2500 };
-let dayLabels = { activa: 'ZI ACTIVĂ (TARGET: 2.900 KCAL)', normala: 'ZI NORMALĂ (TARGET: 2.700 KCAL)', usoara: 'ZI UȘOARĂ (TARGET: 2.500 KCAL)' };
+let dayTargets = { activa: 2400, normala: 2200, usoara: 2000 };
+let dayLabels = { activa: 'ZI ACTIVĂ (TARGET: 2.400 KCAL)', normala: 'ZI NORMALĂ (TARGET: 2.200 KCAL)', usoara: 'ZI UȘOARĂ (TARGET: 2.000 KCAL)' };
 
 function showTab(id) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));

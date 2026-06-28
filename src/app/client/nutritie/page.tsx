@@ -1,7 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
 import { getNutritionPlan } from "../actions";
-import NativeSheet from "../components/NativeSheet";
 import { EmptyState } from "../components/EmptyState";
 import { PageSkeleton } from "../components/Skeleton";
 
@@ -24,9 +23,11 @@ export default function NutritiePage() {
 
   if (plan.quickref_url) {
     return (
-      <div className="p-5 md:p-8 max-w-5xl mx-auto">
-        <NativeSheet url={plan.quickref_url} topSelector=".macro-bar" />
-      </div>
+      <iframe
+        src={plan.quickref_url}
+        className="w-full border-0 h-[calc(100dvh-8rem)] md:h-[calc(100vh-1rem)]"
+        title="Plan Nutrițional"
+      />
     );
   }
 
