@@ -24,7 +24,13 @@ function ShadowHtml({ html, css }: { html: string; css: string }) {
     const host = ref.current;
     if (!host) return;
     const root = host.shadowRoot || host.attachShadow({ mode: "open" });
-    root.innerHTML = `<style>:host{display:block;color:#F5F5F5;font-family:'DM Sans',-apple-system,sans-serif;line-height:1.6;}${css}</style>${html}`;
+    // Conținutul foii are acordeoane pe JS (toggleEx/toggleCaseta) pe care nu le avem aici.
+    // Forțăm tot să fie DESCHIS by default → totul vizibil, fără click mort.
+    const forceOpen = `
+      .ex-body,.caseta,.caseta-body,.caseta-inner,.acc-content,.acc-body,.opt-body,.opt-content,.wu-body,.cd-body,.collapse,.collapsible,.body,.content{display:block!important;max-height:none!important;height:auto!important;overflow:visible!important;opacity:1!important;visibility:visible!important;}
+      .ex-icon,.caseta-icon,.acc-icon,.opt-icon,.chevron,.toggle-icon{display:none!important;}
+      .ex-hdr,.caseta-hdr,.acc-hdr{cursor:default!important;}`;
+    root.innerHTML = `<style>:host{display:block;color:#F5F5F5;font-family:'DM Sans',-apple-system,sans-serif;line-height:1.6;}${css}${forceOpen}</style>${html}`;
   }, [html, css]);
   return <div ref={ref} />;
 }
