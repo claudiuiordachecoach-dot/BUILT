@@ -1,0 +1,1805 @@
+{
+  "alex": {
+    "upperA": [
+      {
+        "name": "1. Bench Press (bara sau gantere)",
+        "order": "",
+        "presc": "2 × 8–10",
+        "rest": "Rest 90 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Cobori la piept, coatele la 45°. Nu arcuiești spatele. Excentric 3 sec jos."
+          }
+        ]
+      },
+      {
+        "name": "2. Lat Pulldown",
+        "order": "",
+        "presc": "2 × 10–12",
+        "rest": "Rest 90 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Bara spre piept, nu ceafă. Coatele spre șolduri. Controlezi coborârea."
+          }
+        ]
+      },
+      {
+        "name": "3. Overhead Press cu gantere",
+        "order": "",
+        "presc": "2 × 10–12",
+        "rest": "Rest 75 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Core tensionat, nu arcuiești coloana. Coatele ușor în față."
+          }
+        ]
+      },
+      {
+        "name": "4. Seated Cable Row sau Bent-over Row",
+        "order": "",
+        "presc": "2 × 10",
+        "rest": "Rest 90 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Cotul spre șold, nu spre tavan. Spatele drept tot timpul."
+          }
+        ]
+      },
+      {
+        "name": "5. Face Pulls la cablu",
+        "order": "",
+        "presc": "3 × 15",
+        "rest": "Rest 60 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Coatele sus, la nivelul umerilor. Trage spre față. Esențial pentru postură."
+          }
+        ]
+      },
+      {
+        "name": "6. Curls + Triceps Pushdown",
+        "order": "",
+        "presc": "3 × 12",
+        "rest": "Rest 60 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Cotul fix la curl. Extensie completă la pushdown. Zero pauză între ele."
+          }
+        ]
+      }
+    ],
+    "lower": [
+      {
+        "name": "1. Squat (Goblet cu ganteră sau Barbell la Rack)",
+        "order": "",
+        "presc": "2 × 8–10",
+        "rest": "Rest 120 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Prioritate tehnică săpt. 1–3. Adâncime 90°+. Genunchii urmează degetele."
+          }
+        ]
+      },
+      {
+        "name": "2. Romanian Deadlift cu gantere sau bara",
+        "order": "",
+        "presc": "2 × 10",
+        "rest": "Rest 90 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Spatele drept, genunchii ușor îndoiți. Cobori de-a lungul picioarelor. Tensiune în ischiogambieri."
+          }
+        ]
+      },
+      {
+        "name": "3. Leg Press la aparat / Leg Extension",
+        "order": "",
+        "presc": "3 × 12",
+        "rest": "Rest 90 sec",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "4. Leg Curl la aparat",
+        "order": "",
+        "presc": "3 × 12",
+        "rest": "Rest 75 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Echilibru muscular pentru protecția genunchilor. Nu neglija."
+          }
+        ]
+      },
+      {
+        "name": "5. Calf Raises (aparat sau treaptă)",
+        "order": "",
+        "presc": "3 × 15–20",
+        "rest": "Rest 60 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Extensie completă sus și jos. Excentric 3 sec. Gleznele = prioritate la 109 kg."
+          }
+        ]
+      },
+      {
+        "name": "6. Core Circuit",
+        "order": "",
+        "presc": "3 runde",
+        "rest": "Rest 60 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Plank 45 sec → Dead Bug 8/parte → Pallof Press 12/parte. Fără pauze între exerciții."
+          }
+        ]
+      }
+    ],
+    "upperB": [
+      {
+        "name": "1. Dumbbell Row Unilateral",
+        "order": "",
+        "presc": "2 × 10/parte",
+        "rest": "Rest 75 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Cotul spre șold, nu spre tavan. Cel mai bun exercițiu pentru dezechilibre stânga-dreapta."
+          }
+        ]
+      },
+      {
+        "name": "2. Incline Dumbbell Press (30–45°)",
+        "order": "",
+        "presc": "2 × 12",
+        "rest": "Rest 75 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Volum piept superior. Gantere mai sigure ca bara la oboseală."
+          }
+        ]
+      },
+      {
+        "name": "3. Lateral Raises (ridicări laterale)",
+        "order": "",
+        "presc": "3 × 15",
+        "rest": "Rest 60 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Cotul ușor îndoit. Ridici până la nivelul umărului — nu mai sus (risc rotator cuff). Greutate mică e normală."
+          }
+        ]
+      },
+      {
+        "name": "4. Rear Delt Fly (fluturări inversate)",
+        "order": "",
+        "presc": "2 × 15",
+        "rest": "Rest 60 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Trunchi la 45°. Coatele spre lateral. Corectează postura de corporatist. Greutate mică e normală."
+          }
+        ]
+      },
+      {
+        "name": "5. Hammer Curls + Overhead Triceps Extension",
+        "order": "",
+        "presc": "3 × 12",
+        "rest": "Rest 60 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Priza neutră la curl. Extensie completă la triceps. Zero pauză între ele."
+          }
+        ]
+      },
+      {
+        "name": "6. Side Plank + Hollow Body Hold",
+        "order": "",
+        "presc": "3 runde",
+        "rest": "Rest 60 sec",
+        "start": "",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Side plank → Hollow body. Fără pauză între ele."
+          }
+        ]
+      }
+    ]
+  },
+  "andrei": {
+    "a": [
+      {
+        "name": "Împins cu gantere la bancă",
+        "order": "01 · EXERCIȚIUL PRINCIPAL",
+        "presc": "4 × 10–12",
+        "rest": "2 min pauză",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/1V3vpcaxRYQ",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Așază-te pe bancă și lipește bine spatele de spătar. Cu ganterele la nivelul pieptului, împinge controlat în sus până când brațele sunt complet extinse. La revenire, coboară lent, preț de 2 secunde."
+          },
+          {
+            "l": "Formă",
+            "v": "Menține coatele la un unghi de 45° față de trunchi (nu le ține perfect paralele cu umerii). Păstrează omoplații strânși și bazinul fixat pe bancă pe toată durata mișcării."
+          },
+          {
+            "l": "Respirație",
+            "v": "Inspiră profund când cobori ganterele și expiră pe faza de împingere. Evită să-ți ții respirația blocată în piept."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Deschiderea coatelor la 90°. Acest unghi pune o presiune enormă și inutilă pe articulația umărului. Strânge-le la 45°."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Coborârea prea rapidă. Dacă scapi pur și simplu greutatea în jos, pierzi tensiunea musculară. Mișcarea trebuie să fie controlată."
+          }
+        ]
+      },
+      {
+        "name": "Împins cu gantere la umeri",
+        "order": "02 · UMERI",
+        "presc": "3 × 10–12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/OLePvpxQEGk",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Stai pe bancă cu spătar. Gantere la nivelul urechilor, coatele ușor în față. Împinge sus. Coboară controlat."
+          },
+          {
+            "l": "Formă",
+            "v": "Spatele lipit de spătar tot timpul. Nu te arcui în spate pentru a ajuta împingerea."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la împingere (sus) · Inspiră la coborâre."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Arcuirea spatelui — semnul că greutatea e prea mare. Redu greutatea și lucrează corect."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Gantere prea jos (sub urechi) — pierde tensiunea. Pornește mișcarea de la nivelul urechilor."
+          }
+        ]
+      },
+      {
+        "name": "Fluturări la aparat (Pec Deck)",
+        "order": "03 · IZOLARE PIEPT",
+        "presc": "3 × 12–15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/g3T7LsEeDWQ",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Coatele ușor îndoite, aduci brațele împreună, strânge pieptul 1 secundă la final. Revino lent. Alternativă fără aparat: fluturări cu gantere pe bancă."
+          },
+          {
+            "l": "Formă",
+            "v": "Nu cobori sub nivelul umerilor. Coatele niciodată complet drepte — articulație protejată."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la strângere (când aduci brațele) · Inspiră la deschidere."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Coate complet drepte — stres articular la umăr. Ține-le ușor îndoite."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Lăsarea greutății să cadă rapid — astfel nu mai lucrează pieptul. Revino controlat 2 secunde."
+          }
+        ]
+      },
+      {
+        "name": "Ridicare laterală cu gantere",
+        "order": "04 · LĂȚIMEA UMERILOR",
+        "presc": "3 × 15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/JIhbYYA1Q90",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Greutate mică (2–5 kg la început). Ridică lateral până la nivelul umerilor. Coboară lent 2 secunde. Nu mai sus de umeri."
+          },
+          {
+            "l": "Formă",
+            "v": "Coatele ușor îndoite. Corpul drept, nu te legăni din spate. Ridică brațele în plan scapular (ușor în fața trunchiului, la ~30°). Nu roti intern încheietura (\"nu vărsa apa\") — e un mit învechit care provoacă impingement subacromial (distruge tendonul umărului)."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la ridicare · Inspiră la coborâre."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Legănatul din spate — inerție, nu mușchi. Dacă te legeni, greutatea e prea mare. Redu greutatea la jumătate."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Ridici mai sus de umeri — trapezul preia toată munca. Mișcarea se termină la nivelul umerilor."
+          }
+        ]
+      },
+      {
+        "name": "Extensii triceps deasupra capului la scripetă cu bara",
+        "order": "05 · TRICEPS — ALUNGIRE COMPLETĂ",
+        "presc": "3 × 12–15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/9Ark9S11uXw",
+        "cues": [
+          {
+            "l": "Setup",
+            "v": "Scripeta la nivelul mijlociu sau jos. Stai cu spatele la aparat sau față spre aparat — ambele variante funcționează. Ții bara deasupra capului, coatele spre tavan, antebrațele îndoite în spate."
+          },
+          {
+            "l": "Execuție",
+            "v": "Extinde brațele complet sus până tricepsul e complet contractat. Strânge 1 secundă. Revino lent — coatele stau fixe lângă cap pe toată mișcarea, nu se mișcă înainte sau înapoi."
+          },
+          {
+            "l": "De ce deasupra capului",
+            "v": "Poziția deasupra capului alungește complet capul lung al tricepsului (cel mai mare din cei trei). Acesta e stimulat mai bine decât la orice alt exercițiu de triceps. Tricepsul e 2/3 din masa brațului — merită atenție."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la extensie (când extinzi brațele) · Inspiră la revenire (când îndoi coatele)."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Coatele ies lateral sau se mișcă înainte — tricepsul nu mai lucrează izolat. Coatele rămân lipite de cap, ca un pivot fix."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Greutate prea mare — te arcuiești din spate ca să ajuți mișcarea. Redu greutatea până când execuția e complet curată."
+          }
+        ]
+      },
+      {
+        "name": "Extensii triceps în jos la scripetă cu bara",
+        "order": "06 · TRICEPS — CONTRACȚIE MAXIMĂ",
+        "presc": "3 × 12–15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/rGI88vZdArg",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Scripeta sus, bara dreaptă sau ușor curbată. Coatele lipite de corp. Împinge bara în jos până brațele complet drepte și tricepsul e strâns maxim. Strânge 1 secundă. Revino controlat."
+          },
+          {
+            "l": "Formă",
+            "v": "Coatele lipite de corp pe toată mișcarea — nu le lăsa să iasă lateral sau să se ridice în sus la revenire. Bara merge spre coapse la final, nu forțat spre podea."
+          },
+          {
+            "l": "Diferența față de ex. 5",
+            "v": "Exercițiul anterior alungea capul lung. Acesta lucrează capetele medial și lateral — contracție în partea de jos a mișcării. Împreună acoperă tricepsul complet."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la împingere (bara în jos) · Inspiră la revenire."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Coatele ies în lateral sau se ridică — astfel nu mai izolezi tricepsul. Ține coatele lipite de corp și redu greutatea."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Nu mergi până la extensie completă — contracția maximă se produce la capăt. Fără ea, jumătate din stimul e pierdut."
+          }
+        ]
+      }
+    ],
+    "b": [
+      {
+        "name": "Tracțiuni la aparat (Lat Pulldown)",
+        "order": "01 · EXERCIȚIUL PRINCIPAL",
+        "presc": "4 × 10–12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/bNmvKpJSWKM",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Bara mai lată decât umerii. Pieptul ușor arcuit înainte. Trage bara spre claviculă (nu spre burtă). Revino sus 2 secunde."
+          },
+          {
+            "l": "Formă",
+            "v": "Imaginează-ți că să bagi coatele în buzunarele pantalonilor — asta activează dorsalii, nu bicepsul."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la tragere (bara în jos) · Inspiră la revenire (bara sus)."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Tragi cu bicepsul nu cu spatele — gândește-te la coate, nu la mâini. Mâinile sunt cârlige."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Te apleci mult înapoi — devine ramat, nu lat pulldown. Rămâi relativ drept."
+          }
+        ]
+      },
+      {
+        "name": "Ramat cu cablu șezut",
+        "order": "02 · VOLUM SPATE",
+        "presc": "4 × 10–12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/qD1WZ5pSuvk",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Spatele drept. Trage mânerul spre abdomen. Strânge omoplații împreună 1 sec. Revino lent 2 secunde."
+          },
+          {
+            "l": "Formă",
+            "v": "Corpul aproape vertical tot timpul. Coatele pe lângă corp la final."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la tragere · Inspiră la revenire."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Te apleci mult înainte la revenire — corpul balansează, astfel nu mai lucrează spatele. Rămâi drept."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Nu strânge omoplații — faci ramat de biceps. Acel squeeze de 1 sec e mișcarea care contează."
+          }
+        ]
+      },
+      {
+        "name": "Face Pulls (Cablu)",
+        "order": "03 · POSTURĂ + UMERI POSTERIORI",
+        "presc": "3 × 15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/IeOqdw9WI90",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Cablul la nivelul capului sau mai sus. Trage cu coatele sus, coatele ajung la nivelul urechilor la final. Greutate mică."
+          },
+          {
+            "l": "Formă",
+            "v": "Coatele sus tot timpul — nu coboară spre corp. Execuție precisă bate greutate mare."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la tragere · Inspiră la revenire."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Coatele coboară spre corp — devine ramat, nu face pulls. Coatele trebuie să rămână sus."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Greutate prea mare — ceea ce înseamnă că nu mai poți ține coatele sus. Reduce până execuția e corectă."
+          }
+        ]
+      },
+      {
+        "name": "Flexii biceps cu gantere",
+        "order": "04 · BICEPS",
+        "presc": "3 × 12–15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/MKWBV29S6c0",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Coate lipite de corp. Ridică spre umăr. Strânge bicepsul 1 sec sus. Cobori 2 secunde controlat."
+          },
+          {
+            "l": "Formă",
+            "v": "Coatele fixe ca un pivot — nu se mișcă. Poți face alternativ sau simultan."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la ridicare · Inspiră la coborâre."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Legănatul din spate — inerție, nu biceps. Stai lipit de un perete dacă te legeni."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Coborârea prea rapidă — faza negativă (coborârea) e jumătate din creșterea musculară. Numără 2 sec."
+          }
+        ]
+      },
+      {
+        "name": "Flexii ciocan (Hammer Curl)",
+        "order": "05 · ANTEBRAȚ + FORȚĂ ÎN MÂINI",
+        "presc": "3 × 15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/n8KIHmsSU9s",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Priza neutră: palma spre corp (ca un ciocan). Ridici fără a roti încheietura. Alternează brațele."
+          },
+          {
+            "l": "Formă",
+            "v": "Coate lipite de corp. Gantera rămâne verticală pe toată mișcarea. Lucrează antebrațul și brahialul — mușchiul care dă grosimea brațului."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la ridicare · Inspiră la coborâre."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Rotirea încheieturii — devine flexie normală. Gantera rămâne în poziție de ciocan pe tot parcursul."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Execuția cu ambele brațe simultan — pierdere de control. Alternează pentru mai multă precizie."
+          }
+        ]
+      }
+    ],
+    "c": [
+      {
+        "name": "Presă picioare (Leg Press)",
+        "order": "01 · EXERCIȚIUL PRINCIPAL",
+        "presc": "4 × 10–12",
+        "rest": "2 min pauză",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/nDh_BlnLCGc",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Tălpi la lățimea umerilor. Coboară până când genunchii formează un unghi de 90°. Împinge prin călcâie. Nu bloca genunchii sus."
+          },
+          {
+            "l": "Formă",
+            "v": "Spatele mereu în contact cu spătarul. Nu ridica coloana lombară de pe spătar la coborâre."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la împingere (sus) · Inspiră la coborâre. Nu reține respirația — important pentru operația ta recentă."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Coloana se ridică de pe spătar — risc de hernie. Reduce greutatea până execuția e corectă."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Genunchii se înclină înăuntru — stres articular. Împinge ușor genunchii spre exterior."
+          }
+        ]
+      },
+      {
+        "name": "Squat cu gantera la piept (Goblet Squat)",
+        "order": "02 · ECHILIBRU + FUNCȚIONAL",
+        "presc": "3 × 12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/lRYBbchqxtI",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Ganteră la piept, picioare ușor mai departe decât umerii, vârfuri ușor spre exterior. Coboară 2 sec până coapsele paralele cu podeaua."
+          },
+          {
+            "l": "Formă",
+            "v": "Spatele drept tot timpul. Genunchii urmăresc direcția degetelor. Pieptul sus — gantera în față te ajută să stai drept."
+          },
+          {
+            "l": "Respirație",
+            "v": "Inspiră la coborâre · Expiră la ridicare."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Spatele se rotunjește — ridici pieptul și ții gantera mai aproape de corp."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Genunchii se înclină înăuntru — împinge-i activ spre exterior pe toată coborârea."
+          }
+        ]
+      },
+      {
+        "name": "Leg Curl (Aparat culcat)",
+        "order": "03 · ISCHIOGAMBIERI",
+        "presc": "3 × 12–15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/lGNeJsdqJwg",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Stai culcat, bazin fix. Trage călcâiele spre fese. Coboară 2 sec controlat."
+          },
+          {
+            "l": "Formă",
+            "v": "Bazinul nu se ridică de pe aparat — dacă se ridică, greutatea e prea mare."
+          },
+          {
+            "l": "Respirație",
+            "v": "Expiră la tragere (sus) · Inspiră la coborâre."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Bazinul se ridică — semnul că greutatea e prea mare. Reduce și ține bazinul pe aparat."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Coborârea prea rapidă — ischiogambierii lucrează și la coborâre. Numără 2 secunde."
+          }
+        ]
+      },
+      {
+        "name": "Ridicări pe vârfuri (Calf Raise)",
+        "order": "04 · GAMBE",
+        "presc": "3 × 12–15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/baEXLy09Ncc",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Ridică-te pe vârfuri cât mai sus posibil. Ține 1 secundă sus. Coboară lent sub nivelul treptei pentru alungire maximă."
+          },
+          {
+            "l": "Formă",
+            "v": "Mișcare lentă și controlată. Multe repetări (12–15). Secretul biomecanic: tendonul Ahile este un arc elastic uriaș. Dacă nu faci o pauză moartă de 1-2 secunde în partea de jos (în alungire completă), tendonul te va arunca înapoi în sus din inerție și mușchiul gambei va face zero muncă."
+          },
+          {
+            "l": "Respirație",
+            "v": "Respiră continuu. Nu bloca respirația pentru câteva secunde cât timp ții poziția sus."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Repetări prea rapide — inerție, nu gambe. Fiecare repetare lentă bate 5 rapide."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Lipsa coborârii sub nivelul treptei — pierzi jumătate din amplitudine. Alungirea completă e esențială."
+          }
+        ]
+      },
+      {
+        "name": "Plank",
+        "order": "05 · ZONA CENTRALĂ",
+        "presc": "3 × 30–45 sec",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/HaH4JvdBCfE",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Antebrațe pe sol, vârfuri. Corp o linie dreaptă cap-călcâie. Ține. Dacă apare un tremurat — mușchii lucrează, e bine."
+          },
+          {
+            "l": "Formă",
+            "v": "Bazinul la același nivel cu corpul — nu sus, nu jos. Coatele sub umeri. Gât neutru (privește podeaua)."
+          },
+          {
+            "l": "Respirație",
+            "v": "Respiră continuu și normal. Nu bloca respirația — asta crește inutil tensiunea abdominală."
+          },
+          {
+            "l": "Greșeală #1",
+            "v": "Bazinul prea sus (V inversat) — ușurezi exercițiul. Coboară până la linia dreaptă."
+          },
+          {
+            "l": "Greșeală #2",
+            "v": "Bazinul prea jos — presiune excesivă pe coloana lombară. Ridică ușor până la linia dreaptă."
+          }
+        ]
+      }
+    ],
+    "combo": [
+      {
+        "name": "Împins la aparat (Chest Press Machine)",
+        "order": "01 · PUSH — PIEPT",
+        "presc": "3 × 10–12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/Qu7-ceCvq7w",
+        "cues": [
+          {
+            "l": "Setup",
+            "v": "Reglezi scaunul astfel încât mânerele să fie la nivelul pieptului mijlociu — nu la umeri, nu la burtă. Spatele complet lipit de spătar pe toată mișcarea."
+          },
+          {
+            "l": "Cheie",
+            "v": "Coatele la 45° față de corp (nu deschise complet la 90°). Coboară 2 secunde. Expiră la împingere. Aparatul te ghidează pe traiectoria corectă — în sesiunea Combo, cu mai multe exerciții, e mai sigur decât ganterele."
+          },
+          {
+            "l": "Greșeală",
+            "v": "Coatele prea deschise lateral (la 90°) = presiune pe umăr. Adu-le ușor spre corp."
+          }
+        ]
+      },
+      {
+        "name": "Tracțiuni cu priză îngustă (Close-grip Pull-ups)",
+        "order": "02 · PULL — SPATE",
+        "presc": "3 × 6–10",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/jXRxMJhOCc0",
+        "cues": [
+          {
+            "l": "Priza",
+            "v": "Mâinile mai înguste decât lățimea umerilor, priză neutră sau pronată. Priză îngustă accentuează partea inferioară a dorsalilor și implică mai mult bicepsul față de tracțiunile late din ziua B — varietate de stimul pe aceleași grupe."
+          },
+          {
+            "l": "Execuție",
+            "v": "Trage-te până când bărbia depășește bara. Coboară complet — brațe drepte la final (amplitudine completă). Nu te balansa cu picioarele. Coborârea controlată în 2 secunde e la fel de importantă ca urcarea."
+          },
+          {
+            "l": "Dacă nu poți face 6 repetări",
+            "v": "Folosește aparatul de tracțiuni asistate (cu contragreutate) sau lat pulldown cu priză îngustă. Notează în câmpul KG greutatea de asistență sau greutatea de la aparat."
+          },
+          {
+            "l": "Greșeală",
+            "v": "Balansarea sau datul din picioare = inerție, nu mușchi. Corpul drept, coborârea controlată."
+          }
+        ]
+      },
+      {
+        "name": "Ridicări laterale cu gantere (Lateral Raises)",
+        "order": "03 · PUSH — UMERI",
+        "presc": "3 × 15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/f_OGBg2KxgY",
+        "cues": [
+          {
+            "l": "Cheie",
+            "v": "Greutate mică (2–5 kg). Ridică lateral până la nivelul umerilor — nu mai sus. Coboară lent 2 secunde. Coatele ușor îndoite, nu te legăni din spate."
+          },
+          {
+            "l": "Greșeală",
+            "v": "Legănatul din spate = inerție, nu mușchi. Dacă te legeni, greutatea e prea mare."
+          }
+        ]
+      },
+      {
+        "name": "Ridicări trapez cu gantere (Shrugs)",
+        "order": "04 · PULL — TRAPEZ",
+        "presc": "3 × 15",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/rFsSeClGnNA",
+        "cues": [
+          {
+            "l": "Cheie",
+            "v": "Ridică umerii direct în sus (nu circular, nu înainte-înapoi). Ține 1 secundă sus, strânge trapezul. Coboară controlat. Nu îndoi coatele — brațele rămân drepte ca niște cârlige."
+          },
+          {
+            "l": "Greșeală",
+            "v": "Rotații circulate ale umerilor = presiune pe articulație. Mișcarea e strict verticală: sus-jos."
+          }
+        ]
+      },
+      {
+        "name": "Bayesian curls + Triceps dips (superset)",
+        "order": "05 · SUPERSET — BRAȚE",
+        "presc": "3 × 12 + 12",
+        "rest": "",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/Q3rF30Wqp6s",
+        "cues": [
+          {
+            "l": "Bayesian curls",
+            "v": "La scripete jos, stai cu spatele la aparat, piciorul opus în față pentru echilibru. Ține cablul în mâna dreaptă, cotul ușor în spatele corpului — asta alungește complet bicepsul înainte de contracție. Ridică spre umăr, coboară lent 2 secunde. Alternează brațele."
+          },
+          {
+            "l": "Triceps dips",
+            "v": "La aparatul de dips sau la bancă (bench dips). Coboară controlat până când coatele ajung la un unghi de 90°. Împinge înapoi sus. Nu lăsa umerii să se ridice spre urechi — ei rămân jos pe toată mișcarea. Dacă e prea greu, bench dips cu picioarele îndoite."
+          },
+          {
+            "l": "Ordine",
+            "v": "Bayesian curls → imediat fără pauză → Triceps dips → 60 sec pauză → repetă. Trei runde complete."
+          },
+          {
+            "l": "Greșeală",
+            "v": "Pauză între biceps și triceps = pierzi beneficiul supersetului. Treci direct."
+          }
+        ]
+      }
+    ]
+  },
+  "ciprian": {
+    "ziuaA": [
+      {
+        "name": "Mers pe loc cu genunchii sus",
+        "order": "",
+        "presc": "2 min",
+        "rest": "",
+        "start": "",
+        "video": "https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+high+knees+marching+in+place",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "2 min ușor — ridici ritmul cardiac și încălzești articulațiile"
+          }
+        ]
+      },
+      {
+        "name": "Squat bodyweight lent (pauză jos 3 sec)",
+        "order": "",
+        "presc": "2 × 8",
+        "rest": "",
+        "start": "",
+        "video": "https://www.google.com/search?btnI=1&q=site:youtube.com+bodyweight+squat+correct+form",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Activare musculatură picioare. Nu forță — deschidere șolduri."
+          }
+        ]
+      },
+      {
+        "name": "1. Squat cu rucsac (8 kg pe spate)",
+        "order": "",
+        "presc": "5 × 12",
+        "rest": "Rest 60s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/Pnfl2V3Y0jY",
+        "cues": []
+      },
+      {
+        "name": "2. Bulgarian Split Squat",
+        "order": "",
+        "presc": "3 × 8/parte",
+        "rest": "Rest 60s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/iyLX378CY74",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Piciorul din spate sprijinit pe scaun/canapea. Cobori vertical pe piciorul din față până genunchiul din spate aproape atinge podeaua. Mâini pe șolduri pentru echilibru. Cel mai puternic exercițiu unilateral pentru picioare."
+          }
+        ]
+      },
+      {
+        "name": "3. Single-Leg Glute Bridge",
+        "order": "",
+        "presc": "3 × 12/parte",
+        "rest": "Rest 60s",
+        "start": "",
+        "video": "https://www.google.com/search?btnI=1&q=site:youtube.com+single+leg+glute+bridge+tutorial",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pe spate, un picior pe podea, celălalt întins în sus. Împingi în călcâiul de jos și ridici bazinul cu un singur picior. Strângi fesa 1 sec sus. Dublu efort față de varianta cu două picioare."
+          }
+        ]
+      },
+      {
+        "name": "4. Calf Raises pe un picior",
+        "order": "",
+        "presc": "3 × 15/parte",
+        "rest": "Rest 45s",
+        "start": "",
+        "video": "https://www.google.com/search?btnI=1&q=site:youtube.com+single+leg+calf+raise+tutorial",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pe o treaptă, pe un singur picior. Ridicare lentă sus (2 sec), coborâre lentă (3 sec) până simți întinderea în gambă. Te poți sprijini ușor cu un deget de perete pentru echilibru."
+          }
+        ]
+      }
+    ],
+    "ziuaB": [
+      {
+        "name": "1. Hollow Body Hold",
+        "order": "",
+        "presc": "3 × 25s",
+        "rest": "Rest 45s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/KgkU7yAEW90",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pe spate, lombarul lipit ferm de podea. Ridici umerii și picioarele puțin de la sol, brațele întinse pe lângă corp (NU te sprijini pe ele). Corpul formează o „bărcuță\". Abdomen de fier."
+          }
+        ]
+      },
+      {
+        "name": "2. Dead Bug",
+        "order": "",
+        "presc": "3 × 10/parte",
+        "rest": "Rest 45s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/DqLL45uk2Tk",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pe spate, brațe întinse spre tavan, genunchi la 90°. Cobori un braț și piciorul opus simultan spre podea, apoi schimbi. Lombarul rămâne lipit de podea tot timpul. Brațele se mișcă liber, fără greutate."
+          }
+        ]
+      },
+      {
+        "name": "3. Reverse Crunch",
+        "order": "",
+        "presc": "3 × 12",
+        "rest": "Rest 45s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/JonqVgFNiqE",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pe spate, mâinile relaxate pe lângă corp pe podea. Genunchii la 90°, tragi bazinul în sus rulând coloana, fără să te împingi cu mâinile. Cobori controlat. Lucrezi abdomenul inferior."
+          }
+        ]
+      },
+      {
+        "name": "4. Bird Dog (sprijin pe pumni dacă palma deranjează)",
+        "order": "",
+        "presc": "3 × 10/parte",
+        "rest": "Rest 45s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/Xj1z9NqwuM8",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pe mâini și genunchi. Extinzi un braț și piciorul opus, menții 2 secunde, schimbi. Corp paralel cu podeaua. Sprijin minim, fără împins — dacă palma încarcă umărul, sprijină-te pe pumni."
+          }
+        ]
+      },
+      {
+        "name": "5. Side-Lying Hip Raise",
+        "order": "",
+        "presc": "3 × 10/parte",
+        "rest": "Rest 45s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/2m9Qr9Ygjog",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Întins pe o parte, sprijinit pe cot/antebraț JOS (fără să apeși cu palma). Ridici șoldul de pe podea formând o linie dreaptă, cobori controlat. Lucrezi oblicii fără tensiune pe umăr. Dacă cotul deranjează, fă varianta din șezut."
+          }
+        ]
+      },
+      {
+        "name": "6. Flutter Kicks (forfecări picioare)",
+        "order": "",
+        "presc": "3 × 30s",
+        "rest": "Rest 45s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/2DL3HVW93_0",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pe spate, mâinile sub fese pentru a proteja lombarul. Picioarele întinse, ridicate puțin de la podea, le forfeci alternativ în sus-jos. Abdomenul strâns constant."
+          }
+        ]
+      }
+    ],
+    "ziuaC": [
+      {
+        "name": "Hip 90/90 pe podea",
+        "order": "",
+        "presc": "5/parte",
+        "rest": "",
+        "start": "",
+        "video": "https://www.google.com/search?btnI=1&q=site:youtube.com+90+90+stretch+how+to",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Șezi pe podea cu ambii genunchi îndoiți la 90°. Rotești șoldurile de la stânga la dreapta menținând trunchiul drept."
+          }
+        ]
+      },
+      {
+        "name": "1. Squat Sumo cu Greutate (Bidon de Apă)",
+        "order": "",
+        "presc": "4 × 12",
+        "rest": "Rest 60s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/c44X65gbyHQ",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Picioare depărtate larg, vârfurile orientate spre exterior. Ții un bidon de 5L apă în mâini (brațe întinse jos). Coborâre adâncă, genunchii în afară."
+          }
+        ]
+      },
+      {
+        "name": "2. Reverse Lunge cu rucsac (8 kg)",
+        "order": "",
+        "presc": "3 × 10/parte",
+        "rest": "Rest 60s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/BV4iQC0aKqI",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Rucsacul pe spate. Faci un pas mare ÎN SPATE, cobori genunchiul din spate spre podea, revii. Mai blând pe genunchi decât fandarea în față. Alternezi picioarele."
+          }
+        ]
+      },
+      {
+        "name": "3. Single-Leg RDL (Romanian Deadlift pe un picior)",
+        "order": "",
+        "presc": "3 × 10/parte",
+        "rest": "Rest 60s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/s32cCgmRV3I",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Stai pe un picior, ții un bidon de 5L în mâna opusă (jos, lângă corp). Te apleci din șold ducând piciorul liber în spate, spatele drept, până simți întinderea în femuralul piciorului de sprijin. Echilibru + femurali + fese."
+          }
+        ]
+      },
+      {
+        "name": "4. Frog Pumps (Pompe pentru fese)",
+        "order": "",
+        "presc": "3 × 20",
+        "rest": "Rest 45s",
+        "start": "",
+        "video": "https://www.youtube.com/shorts/NNOUE6uAV0E",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pe spate, tălpile lipite una de alta, genunchii căzuți în lateral (poziție de „broască\"). Împingi bazinul în sus strângând fesele puternic, cobori controlat. Izolează fesele perfect, zero tensiune pe brațe."
+          }
+        ]
+      },
+      {
+        "name": "5. Finisher Core: Flutter Kicks + Hollow Hold",
+        "order": "",
+        "presc": "3 runde",
+        "rest": "Rest 60s",
+        "start": "",
+        "video": "https://www.google.com/search?btnI=1&q=site:youtube.com+flutter+kicks+hollow+hold+core+circuit",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Flutter Kicks (forfecări picioare) 30 sec → treci direct în Hollow Hold 20 sec. Ambele din podea, zero sprijin pe brațe. Zero pauză între ele."
+          }
+        ]
+      }
+    ]
+  },
+  "claudia": {
+    "lowera": [
+      {
+        "name": "Leg Press · Beinpresse",
+        "order": "01 · Exercițiul principal",
+        "presc": "3 × 10",
+        "rest": "2 min pauză",
+        "start": "start 70 kg",
+        "video": "https://www.youtube.com/shorts/h0zyHHd4oUo",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Tălpile pe platformă la lățimea șoldurilor. Împingi ferm din călcâie, cobori greutatea controlat timp de 2 secunde, apoi împingi din nou. Reglaj: Rückenlehne 4 · Platte 1."
+          },
+          {
+            "l": "Formă",
+            "v": "Cobori doar până în punctul în care mișcarea e confortabilă pentru șold. Spatele lipit de spătar, fără să curbezi zona lombară la final."
+          },
+          {
+            "l": "Respirație",
+            "v": "Inspiri când greutatea coboară, expiri pe efort (când împingi)."
+          },
+          {
+            "l": "Greșeala 1",
+            "v": "Blocarea genunchilor la întindere. Păstrează mereu o ușoară flexie la finalul împingerii."
+          },
+          {
+            "l": "Greșeala 2",
+            "v": "Coborâre prea adâncă. Dacă bazinul se ridică de pe scaun, pui presiune pe lombar. Oprește exact înainte ca bazinul să se desprindă."
+          }
+        ]
+      },
+      {
+        "name": "Extensii pentru cvadriceps · Beinstrecker",
+        "order": "02 · Cvadriceps",
+        "presc": "3 × 12",
+        "rest": "90 sec",
+        "start": "calibrăm",
+        "video": "https://www.youtube.com/shorts/y30WHlIZ-sg",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Întinzi picioarele ridicând rola până aproape de extensia completă, contracți cvadricepsul o secundă sus, apoi cobori controlat în două secunde."
+          },
+          {
+            "l": "Formă",
+            "v": "Spatele lipit de spătar, mâinile pe mânere. Nu smuci. Mișcarea pornește din cvadriceps, nu din avânt."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Lași greutatea să cadă la coborâre. Coborârea lentă e cea care construiește cvadricepsul. Controlează greutatea pe tot parcursul."
+          }
+        ]
+      },
+      {
+        "name": "Fesier la aparat · Gluteus",
+        "order": "03 · Fesier",
+        "presc": "3 × 12",
+        "rest": "90 sec",
+        "start": "calibrăm",
+        "video": "https://www.youtube.com/shorts/_yxQwOeb6pg",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Împingi piciorul în spate contractând fesierul, ții contracția o secundă la final, apoi revii controlat. Lucrezi pe rând fiecare picior."
+          },
+          {
+            "l": "Formă",
+            "v": "Trunchiul stabil, abdomenul strâns. Forța vine din fesier, nu din zona lombară. Este exercițiul care dă formă și fermitate."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Arcuirea spatelui pentru a muta o greutate mai mare. Alege o greutate pe care o controlezi și pe care o simți în fesier, nu în zona lombară."
+          }
+        ]
+      },
+      {
+        "name": "Abductor · Abduktion",
+        "order": "04 · Pentru șold",
+        "presc": "2 × 15",
+        "rest": "60 sec",
+        "start": "calibrăm",
+        "video": "https://www.youtube.com/watch?v=FcKm_D6EzEc",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Exercițiul esențial pentru stabilitatea șoldului tău. Împinge suporturile în lateral controlat, menține contracția 1 secundă la deschidere maximă, apoi revino lent."
+          },
+          {
+            "l": "Formă",
+            "v": "Trunchiul drept și rezemat pe spătar. Forța vine exclusiv din fesierii laterali."
+          },
+          {
+            "l": "Importanță",
+            "v": "Musculatura abductoare stabilizează articulația șoldului — cu cât e mai puternică, cu atât preia din presiunea care dă durere."
+          }
+        ]
+      },
+      {
+        "name": "Extensii lombare · Rückenstrecker",
+        "order": "05 · Coloană",
+        "presc": "2 × 12",
+        "rest": "60 sec",
+        "start": "calibrăm",
+        "video": "",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Extensie controlată până când trunchiul formează o linie dreaptă, apoi revii lent. Întărește zona lombară care susține tot — coloana ta îți va mulțumi."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Hiperextensia (te arcuiești prea mult în sus). Te oprești la linia dreaptă, nu mai sus."
+          }
+        ]
+      },
+      {
+        "name": "Abdominal la aparat + Planșă",
+        "order": "06 · Abdomen",
+        "presc": "2 × 12",
+        "rest": "60 sec",
+        "start": "start 25–30 kg",
+        "video": "https://www.youtube.com/shorts/xe2MXatLTUw",
+        "cues": [
+          {
+            "l": "Abdominal",
+            "v": "Reglaj Fußstange 2. Flexia trunchiului din peretele abdominal, lent, expirând pe contracție. Nu trage cu mâinile de gât."
+          },
+          {
+            "l": "Planșă",
+            "v": "Pe podea, sprijinită pe coate: corp drept ca o scândură 20–30 sec. Fără să cobori șoldurile sau să ridici bazinul."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Ții respirația la planșă. Respiri normal, abdomen încordat."
+          }
+        ]
+      }
+    ],
+    "upper": [
+      {
+        "name": "Tracțiuni la helcometru · Latzug",
+        "order": "01 · Tras · principal",
+        "presc": "3 × 12",
+        "rest": "90 sec",
+        "start": "calibrăm",
+        "video": "https://www.youtube.com/shorts/Kq9XO3RtNH4",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Priză ceva mai lată decât umerii. Tragi bara controlat spre partea de sus a pieptului, conducând prin coborârea coatelor. Revii sus lent."
+          },
+          {
+            "l": "Formă",
+            "v": "Piept ridicat, umeri coborâți. Înclinare minimă pe spate (~15°). Trasul e sănătos pentru umărul tău — îl întărește din spate."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Bara la ceafă. Tragi exclusiv prin față, spre stern. Varianta la ceafă pune umărul în poziție vulnerabilă."
+          }
+        ]
+      },
+      {
+        "name": "Ramat la aparat · Rudern",
+        "order": "02 · Tras",
+        "presc": "3 × 10",
+        "rest": "90 sec",
+        "start": "start 50 kg",
+        "video": "https://www.youtube.com/shorts/26yFnN3sH5Q",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Reglaj: Sitz 4 · Brustpolster 3. Pieptul ferm pe suport, spate drept. Inițiezi trăgând din coate spre exteriorul bazinului. Strângi omoplații la final."
+          },
+          {
+            "l": "Formă",
+            "v": "Umerii coborâți. Revii lent, controlând greutatea. Pieptul nu se desprinde de suport."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Tragi din biceps și balansezi trunchiul. Conduci din coate, mâinile sunt doar cârlige. Trunchiul stă nemișcat."
+          }
+        ]
+      },
+      {
+        "name": "Fluturări inverse · Butterfly reverse",
+        "order": "03 · Postură · umăr-safe",
+        "presc": "3 × 15",
+        "rest": "60 sec",
+        "start": "ușor",
+        "video": "https://www.youtube.com/shorts/7tgx6QHB0-A",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Pieptul pe suport. Extensie prin deltoidul posterior și romboizi, apropiind omoplații. Revii fluid, fără inerție. Coatele la nivelul umerilor."
+          },
+          {
+            "l": "De ce",
+            "v": "Cel mai bun exercițiu pentru umărul tău. Întărește spatele umărului, corectează postura adusă în față și reduce durerea pe termen lung. Greutate mică, control total."
+          }
+        ]
+      },
+      {
+        "name": "Împins umeri · Schulterpresse",
+        "order": "04 · Împins · ATENȚIE UMĂR",
+        "presc": "2 × 12",
+        "rest": "90 sec",
+        "start": "MAX 25 kg · Sitz 2",
+        "video": "https://www.youtube.com/shorts/la8RbSrGPcY",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Spate ferm pe spătar (Scaun poziția 2). Împingi vertical controlat, cobori lent doar până când coatele ajung la nivelul umerilor — nu mai jos. Abdomenul strâns."
+          },
+          {
+            "l": "Pentru umăr",
+            "v": "Amplitudine scurtă, fără durere. Coborârea adâncă e exact ce irită umărul tău — o oprești la nivelul umerilor. Nu bloca coatele sus."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Arcuirea spatelui ca să împingi mai mult. Semn clar că greutatea e prea mare. Cobori greutatea, nu forțezi."
+          }
+        ]
+      },
+      {
+        "name": "Fluturări piept · Butterfly",
+        "order": "05 · Piept · ușor",
+        "presc": "2 × 12",
+        "rest": "90 sec",
+        "start": "fără durere",
+        "video": "https://www.youtube.com/shorts/NiCW_v8nJ84",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Coatele ușor flexate pe suporturi. Apropii brațele contractând pieptul, ții 1 secundă, deschizi controlat. Alegem butterfly în loc de împins orizontal greu — e mai blând cu umărul."
+          },
+          {
+            "l": "Pentru umăr",
+            "v": "Nu deschide brațele dincolo de linia umerilor. Acolo se transferă stresul de pe piept pe articulația umărului. Oprește la linia umerilor."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Trântești greutatea la deschidere. Faza lentă e cea care lucrează. Control total."
+          }
+        ]
+      },
+      {
+        "name": "Abdominal la aparat + Planșă",
+        "order": "06 · Abdomen",
+        "presc": "2 × 12",
+        "rest": "60 sec",
+        "start": "start 25–30 kg",
+        "video": "https://www.youtube.com/shorts/xe2MXatLTUw",
+        "cues": [
+          {
+            "l": "Abdominal",
+            "v": "Reglaj Fußstange 2. Flexie lentă din abdomen, expirând pe contracție. Fără să tragi de gât."
+          },
+          {
+            "l": "Planșă",
+            "v": "Corp drept 20–30 sec, abdomen strâns, respiri normal."
+          }
+        ]
+      }
+    ],
+    "lowerb": [
+      {
+        "name": "Leg Press · Beinpresse",
+        "order": "01 · Exercițiul principal",
+        "presc": "3 × 10",
+        "rest": "2 min pauză",
+        "start": "start 70 kg",
+        "video": "https://www.youtube.com/shorts/h0zyHHd4oUo",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Reglaj: Rückenlehne 4 · Platte 1. Împingi din călcâie, controlezi coborârea, amplitudine confortabilă pentru șold."
+          },
+          {
+            "l": "Variantă",
+            "v": "Astăzi poți pune tălpile puțin mai sus pe platformă — accentuezi fesierul și femuralii, mai puțin cvadricepsul."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Blocarea genunchilor sau coborâre prea adâncă ce ridică bazinul. Genunchi ușor flexați sus, oprești jos înainte de disconfort."
+          }
+        ]
+      },
+      {
+        "name": "Flexii pentru femurali · Beinbeuger",
+        "order": "02 · Femurali",
+        "presc": "3 × 12",
+        "rest": "90 sec",
+        "start": "calibrăm",
+        "video": "https://www.youtube.com/shorts/hS8ejarKtzo",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Începi prin flexia genunchilor și contracți intens femuralii aducând rolele spre bazin. Lent în ambele direcții."
+          },
+          {
+            "l": "Formă",
+            "v": "Bazinul lipit de bancă. Controlezi revenirea — mușchiul sub tensiune continuă."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Smucirea greutății și ridicarea bazinului. Mișcare lentă, bazinul sudat de suport."
+          }
+        ]
+      },
+      {
+        "name": "Adductor · Adduktion",
+        "order": "03 · Interiorul coapsei",
+        "presc": "3 × 12",
+        "rest": "60 sec",
+        "start": "calibrăm",
+        "video": "https://www.youtube.com/watch?v=pSGU9GpYcOk",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Contracți interiorul coapsei apropiind suporturile, ții 1 secundă, eliberezi lent. Spatele ferm pe spătar."
+          },
+          {
+            "l": "Greșeala",
+            "v": "Deschidere bruscă pe faza negativă. Poate da micro-leziuni inghinale. Control pe ambele sensuri."
+          }
+        ]
+      },
+      {
+        "name": "Abductor · Abduktion",
+        "order": "04 · Pentru șold",
+        "presc": "2 × 15",
+        "rest": "60 sec",
+        "start": "calibrăm",
+        "video": "https://www.youtube.com/watch?v=FcKm_D6EzEc",
+        "cues": [
+          {
+            "l": "Execuție",
+            "v": "Împinge suporturile în lateral controlat, contracție 1 secundă la deschidere, revii lent. Trunchiul drept."
+          },
+          {
+            "l": "Importanță",
+            "v": "Stabilizatorul direct al șoldului tău. Îl lucrăm de două ori pe săptămână tocmai pentru a prelua presiunea care dă durere."
+          }
+        ]
+      },
+      {
+        "name": "Abdominal la aparat + Planșă",
+        "order": "06 · Abdomen",
+        "presc": "2 × 12",
+        "rest": "60 sec",
+        "start": "start 25–30 kg",
+        "video": "https://www.youtube.com/shorts/xe2MXatLTUw",
+        "cues": [
+          {
+            "l": "Abdominal",
+            "v": "Reglaj Fußstange 2. Flexie lentă din abdomen, expirând pe contracție."
+          },
+          {
+            "l": "Planșă",
+            "v": "Corp drept 20–30 sec, respiri normal."
+          }
+        ]
+      }
+    ]
+  },
+  "george": {
+    "upper-a": [
+      {
+        "name": "1. Împins cu Gantere / Bară (Bancă)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "2. Ramat cu Gantera din Aplecat",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "3A. Fluturări Piept",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ],
+    "lower-a": [
+      {
+        "name": "1. Deadlift (Clasic / Romanian)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "2. Presă Picioare (Poziție ÎNALTĂ)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "3A. Leg Curls (Aparat)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ],
+    "upper-b": [
+      {
+        "name": "1A. Împins Deasupra Capului (OHP)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "2. Tracțiuni la Helcometru (Lat Pulldown)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "3A. Ridicări Laterale (Fluturări)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ],
+    "lower-b": [
+      {
+        "name": "1A. Fandări Bulgărești (Bulgarian Split Squats)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "2. Presă pentru Picioare (Poziție JOASĂ/ÎNGUSTĂ)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "3A. Extensii Cvadriceps",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ],
+    "ziua-5": [
+      {
+        "name": "1A. Biceps (Bayesian Curls / Cablu)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "2. TRISET Umeri 3D (Gantere Mici)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "FINISHER: CIRCUIT HIIT (15 MIN)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ],
+    "cardio": [
+      {
+        "name": "StairMaster (Scări) — Drenaj Limfatic",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "MVE Cardio (Urgență)",
+        "order": "",
+        "presc": "",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ]
+  },
+  "letitia": {
+    "a": [
+      {
+        "name": "Hip Thrust cu Bara",
+        "order": "01 · PRIORITATE ABSOLUTĂ",
+        "presc": "4 × 10–12",
+        "rest": "2 min pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Bulgarian Split Squat",
+        "order": "02",
+        "presc": "3 × 10/parte",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "RDL cu Gantere",
+        "order": "03",
+        "presc": "4 × 10–12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Leg Curl (Aparat)",
+        "order": "04",
+        "presc": "3 × 12–15",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Abductor (Aparat)",
+        "order": "05 · ZONA ȚINTĂ",
+        "presc": "3 × 15–20",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ],
+    "b": [
+      {
+        "name": "Lat Pulldown / Assisted Pull-Up",
+        "order": "01 · PRIORITATE SPATE",
+        "presc": "4 × 10–12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Chest-Supported Row",
+        "order": "02 · CRITIC SCOLIOZĂ",
+        "presc": "4 × 10–12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "DB Shoulder Press (Bilateral)",
+        "order": "03",
+        "presc": "3 × 10–12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Cable Chest Press / Push-Up",
+        "order": "04",
+        "presc": "3 × 12",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Face Pulls (Cablu)",
+        "order": "05 · POSTURĂ",
+        "presc": "3 × 15",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Bicep Curl + Tricep Pushdown",
+        "order": "06 · FINISHER",
+        "presc": "2 × 12–15",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ],
+    "c": [
+      {
+        "name": "Leg Press",
+        "order": "01 · ALTERNATIVA SQUAT",
+        "presc": "4 × 10–12",
+        "rest": "2 min pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Goblet Squat",
+        "order": "02",
+        "presc": "3 × 12",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Walking Lunges (Gantere)",
+        "order": "03",
+        "presc": "3 × 12/parte",
+        "rest": "90 sec pauză",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Leg Extension",
+        "order": "04",
+        "presc": "3 × 15",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      },
+      {
+        "name": "Adductor (Aparat)",
+        "order": "05 · ZONA ȚINTĂ",
+        "presc": "4 × 15–20",
+        "rest": "",
+        "start": "",
+        "video": "",
+        "cues": []
+      }
+    ]
+  }
+}
