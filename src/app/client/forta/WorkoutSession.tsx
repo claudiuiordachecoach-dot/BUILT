@@ -23,7 +23,7 @@ function bestOf(sets: { kg: number; reps: number }[]): { kg: number; reps: numbe
 
 const fmtDate = (d: string) => new Date(d + "T12:00:00").toLocaleDateString("ro-RO", { day: "numeric", month: "short" });
 
-export default function WorkoutSession() {
+export default function WorkoutSession({ initialDay }: { initialDay?: string }) {
   const [mode, setMode] = useState<"pick" | "active">("pick");
   const [days, setDays] = useState<WorkoutDay[]>([]);
   const [loading, setLoading] = useState(true);
@@ -52,6 +52,12 @@ export default function WorkoutSession() {
     setLoading(false);
   }
   useEffect(() => { loadDays(); }, []);
+
+  // Deschis din „Antrenamente" cu ziua de azi → sare direct în sesiunea focusată.
+  useEffect(() => {
+    if (initialDay && initialDay.trim()) openDay(initialDay.trim());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function openDay(label: string) {
     setOpening(true);
