@@ -3,11 +3,13 @@
 import { useState, useEffect, useRef } from "react";
 import { getLastSession, saveWorkoutSession, type WExercise } from "../actions";
 
-export type FullEx = { name: string; order: string; presc: string; rest: string; start: string; video: string; cues: { l: string; v: string }[] };
-export type WDay = { key: string; label: string; exercises: FullEx[] };
+type Block =
+  | { kind: "ex"; name: string; order: string; presc: string; rest: string; start: string; bodyHtml: string }
+  | { kind: "html"; html: string };
+type Day = { key: string; label: string; blocks: Block[] };
 
 type SetInput = { kg: string; reps: string };
-type ExLog = { sets: SetInput[]; lastBest: { kg: number; reps: number } | null; lastSets: number; open: boolean };
+type ExLog = { sets: SetInput[]; lastBest: { kg: number; reps: number } | null; open: boolean };
 
 function bestOf(sets: { kg: number; reps: number }[]) {
   let b: { kg: number; reps: number } | null = null;
@@ -15,10 +17,23 @@ function bestOf(sets: { kg: number; reps: number }[]) {
   return b;
 }
 
-export default function NativeWorkout({ days, todayKey }: { days: WDay[]; todayKey: string | null }) {
-  const [activeKey, setActiveKey] = useState<string>(todayKey && days.some((d) => d.key === todayKey) ? todayKey : days[0]?.key || "");
-  const active = days.find((d) => d.key === activeKey);
+// Randează HTML din foaie izolat în Shadow DOM → stilul QuickRef rămâne EXACT, fără să atingă app-ul.
+function ShadowHtml({ html, css }: { html: string; css: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const host = ref.current;
+    if (!host) return;
+    const root = host.shadowRoot || host.attachShadow({ mode: "open" });
+    root.innerHTML = `<style>:host{display:block;color:#F5F5F5;font-family:'DM Sans',-apple-system,sans-serif;line-height:1.6;}${css}</style>${html}`;
+  }, [html, css]);
+  return <div ref={ref} />;
+}
 
+export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { quickrefUrl: string; todayKey: string | null; labelFor: (k: string) => string }) {
+  const [css, setCss] = useState("");
+  const [days, setDays] = useState<Day[]>([]);
+  const [activeKey, setActiveKey] = useState("");
+  const [loadingSheet, setLoadingSheet] = useState(true);
   const [log, setLog] = useState<ExLog[]>([]);
   const [lastDate, setLastDate] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -32,6 +47,51 @@ export default function NativeWorkout({ days, todayKey }: { days: WDay[]; todayK
     return () => { if (restRef.current) { clearInterval(restRef.current); restRef.current = null; } };
   }, [rest]);
 
+  // 1) Fetch + parse foaia (same-origin) → CSS + zile cu blocuri în ORDINE (zero pierdere).
+  useEffect(() => {
+    let alive = true;
+    fetch(quickrefUrl).then((r) => r.text()).then((text) => {
+      if (!alive) return;
+      const doc = new DOMParser().parseFromString(text, "text/html");
+      const styleCss = [...doc.querySelectorAll("style")].map((s) => s.textContent || "").join("\n").replace(/:root/g, ":host");
+      setCss(styleCss);
+      const SKIP = ["program", "overview", "saptamana", "warmup", "stretch", "mve", "progresie", "reguli", "ciclu", "calendar", "macros"];
+      const ds: Day[] = [];
+      for (const p of [...doc.querySelectorAll('[id^="tab-"]')]) {
+        const key = p.id.replace("tab-", "");
+        if (SKIP.includes(key.toLowerCase())) continue;
+        const blocks: Block[] = [];
+        for (const child of [...p.children]) {
+          const isEx = child.classList.contains("ex-block") && child.querySelector(".ex-meta");
+          if (isEx) {
+            const tag = (c: string) => (child.querySelector(`.ex-meta .tag-${c}`)?.textContent || "").trim();
+            const body = child.querySelector(".ex-body") as HTMLElement | null;
+            if (body) body.querySelectorAll(".sets-wrap").forEach((e) => e.remove());
+            blocks.push({
+              kind: "ex",
+              name: (child.querySelector(".ex-ttl")?.textContent || "").trim(),
+              order: (child.querySelector(".ex-num")?.textContent || "").trim(),
+              presc: tag("red"), rest: tag("orange"), start: tag("green"),
+              bodyHtml: body?.innerHTML || "",
+            });
+          } else {
+            blocks.push({ kind: "html", html: (child as HTMLElement).outerHTML });
+          }
+        }
+        if (blocks.length) ds.push({ key, label: labelFor(key), blocks });
+      }
+      setDays(ds);
+      setActiveKey(todayKey && ds.some((d) => d.key === todayKey) ? todayKey : ds[0]?.key || "");
+      setLoadingSheet(false);
+    }).catch(() => { if (alive) setLoadingSheet(false); });
+    return () => { alive = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [quickrefUrl]);
+
+  const active = days.find((d) => d.key === activeKey);
+  const exNames = active ? active.blocks.filter((b): b is Extract<Block, { kind: "ex" }> => b.kind === "ex").map((b) => b.name) : [];
+
+  // 2) La schimbarea zilei → încarcă ultima sesiune pentru comparație.
   useEffect(() => {
     if (!active) return;
     setSaved(false);
@@ -39,13 +99,13 @@ export default function NativeWorkout({ days, todayKey }: { days: WDay[]; todayK
       const last = await getLastSession(active.key);
       setLastDate(last?.logged_on ?? null);
       const byName = new Map((last?.exercises ?? []).map((e) => [e.name, e]));
-      setLog(active.exercises.map((ex) => {
-        const le = byName.get(ex.name);
-        return { sets: [{ kg: "", reps: "" }], lastBest: le ? bestOf(le.sets) : null, lastSets: le?.sets.length ?? 0, open: false };
+      setLog(exNames.map((n) => {
+        const le = byName.get(n);
+        return { sets: [{ kg: "", reps: "" }], lastBest: le ? bestOf(le.sets) : null, open: false };
       }));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeKey]);
+  }, [activeKey, days]);
 
   const setField = (i: number, j: number, f: keyof SetInput, v: string) =>
     setLog((p) => p.map((e, k) => (k === i ? { ...e, sets: e.sets.map((s, m) => (m === j ? { ...s, [f]: v } : s)) } : e)));
@@ -53,17 +113,16 @@ export default function NativeWorkout({ days, todayKey }: { days: WDay[]; todayK
   const toggleOpen = (i: number) => setLog((p) => p.map((e, k) => (k === i ? { ...e, open: !e.open } : e)));
 
   function regressed(e: ExLog) {
-    if (!e.lastBest) return false;
+    if (!e?.lastBest) return false;
     const cur = bestOf(e.sets.map((s) => ({ kg: Number(s.kg) || 0, reps: Number(s.reps) || 0 })));
-    if (!cur) return false;
-    return cur.kg < e.lastBest.kg || (cur.kg === e.lastBest.kg && cur.reps < e.lastBest.reps);
+    return !!cur && (cur.kg < e.lastBest.kg || (cur.kg === e.lastBest.kg && cur.reps < e.lastBest.reps));
   }
 
   async function save() {
     if (!active) return;
     setSaving(true);
-    const payload: WExercise[] = active.exercises.map((ex, i) => ({
-      name: ex.name,
+    const payload: WExercise[] = exNames.map((name, i) => ({
+      name,
       sets: (log[i]?.sets ?? []).map((s) => ({ kg: Number(s.kg) || 0, reps: Number(s.reps) || 0 })).filter((s) => s.kg > 0 || s.reps > 0),
     })).filter((e) => e.sets.length > 0);
     const r = await saveWorkoutSession(active.key, payload, "");
@@ -73,18 +132,20 @@ export default function NativeWorkout({ days, todayKey }: { days: WDay[]; todayK
   }
 
   const fmtD = (d: string) => new Date(d + "T12:00:00").toLocaleDateString("ro-RO", { day: "numeric", month: "short" });
+  if (loadingSheet) return <p className="text-zinc-500 text-sm px-1 py-4">Se încarcă antrenamentul…</p>;
   if (days.length === 0) return null;
 
+  // index exerciții (pentru a mapa blocurile la starea de logging)
+  let exIdx = -1;
+
   return (
-    <div className="px-4 pb-28">
-      {/* Tab-uri zile + timer pauză */}
-      <div className="sticky top-0 z-10 bg-built-black/95 backdrop-blur-sm -mx-4 px-4 py-2.5 flex items-center gap-3 border-b border-white/5">
+    <div className="pb-28">
+      {/* Tab-uri zile + timer pauză (sticky) */}
+      <div className="sticky top-0 z-10 bg-built-black/95 backdrop-blur-sm py-2.5 flex items-center gap-3 border-b border-white/5 mb-3">
         <div className="flex gap-1.5 overflow-x-auto flex-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           {days.map((d) => (
             <button key={d.key} onClick={() => setActiveKey(d.key)}
-              className={`shrink-0 font-condensed text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors ${
-                d.key === activeKey ? "bg-built-red text-white" : "bg-white/5 text-zinc-400 hover:text-white"
-              }`}>
+              className={`shrink-0 font-condensed text-[11px] uppercase tracking-wider px-3 py-1.5 rounded-lg transition-colors ${d.key === activeKey ? "bg-built-red text-white" : "bg-white/5 text-zinc-400 hover:text-white"}`}>
               {d.label}{d.key === todayKey ? " · azi" : ""}
             </button>
           ))}
@@ -96,32 +157,30 @@ export default function NativeWorkout({ days, todayKey }: { days: WDay[]; todayK
         )}
       </div>
 
-      {lastDate && <p className="text-[11px] text-zinc-600 mt-3">Ultima dată {active?.label}: {fmtD(lastDate)}</p>}
+      {lastDate && <p className="text-[11px] text-zinc-600 mb-3">Ultima dată {active?.label}: {fmtD(lastDate)}</p>}
 
-      <div className="space-y-3 mt-3">
-        {active?.exercises.map((ex, i) => {
+      <div className="space-y-4">
+        {active?.blocks.map((b, bi) => {
+          if (b.kind === "html") return <ShadowHtml key={bi} html={b.html} css={css} />;
+          exIdx++;
+          const i = exIdx;
           const el = log[i];
           const warn = el && regressed(el);
           return (
-            <div key={i} className={`bg-[#111111] border rounded-2xl overflow-hidden ${warn ? "border-amber-500/40" : "border-white/10"}`}>
+            <div key={bi} className={`bg-[#111111] border rounded-2xl overflow-hidden ${warn ? "border-amber-500/40" : "border-white/10"}`}>
               <div className="p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    {ex.order && <p className="font-condensed text-[9px] uppercase tracking-[0.2em] text-zinc-600 mb-0.5">{ex.order}</p>}
-                    <p className="font-display text-lg text-built-white leading-tight">{ex.name}</p>
-                  </div>
-                </div>
-                {(ex.presc || ex.rest || ex.start) && (
+                {b.order && <p className="font-condensed text-[9px] uppercase tracking-[0.2em] text-zinc-600 mb-0.5">{b.order}</p>}
+                <p className="font-display text-lg text-built-white leading-tight">{b.name}</p>
+                {(b.presc || b.rest || b.start) && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
-                    {ex.presc && <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-built-red/15 text-built-red border border-built-red/30">{ex.presc}</span>}
-                    {ex.rest && <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-white/5 text-zinc-300 border border-white/10">{ex.rest}</span>}
-                    {ex.start && <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{ex.start}</span>}
+                    {b.presc && <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-built-red/15 text-built-red border border-built-red/30">{b.presc}</span>}
+                    {b.rest && <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-white/5 text-zinc-300 border border-white/10">{b.rest}</span>}
+                    {b.start && <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{b.start}</span>}
                   </div>
                 )}
                 {el?.lastBest && <p className="text-[12px] text-zinc-500 mt-2">Data trecută: <span className="text-zinc-300">{el.lastBest.kg}kg × {el.lastBest.reps}</span></p>}
                 {warn && <p className="text-[12px] text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-1.5 mt-2">↓ Sub data trecută ({el!.lastBest!.kg}kg × {el!.lastBest!.reps}).</p>}
 
-                {/* Logging seturi */}
                 <div className="space-y-1.5 mt-3">
                   {el?.sets.map((s, j) => (
                     <div key={j} className="flex items-center gap-2">
@@ -134,36 +193,19 @@ export default function NativeWorkout({ days, todayKey }: { days: WDay[]; todayK
                 </div>
                 <div className="flex items-center gap-3 mt-2.5">
                   <button onClick={() => addSet(i)} className="font-condensed text-[10px] uppercase tracking-wider text-built-red hover:text-built-red-dark">+ set</button>
-                  {(ex.video || ex.cues.length > 0) && (
-                    <button onClick={() => toggleOpen(i)} className="font-condensed text-[10px] uppercase tracking-wider text-zinc-500 hover:text-white">{el?.open ? "ascunde execuția" : "▼ execuție + video"}</button>
-                  )}
+                  {b.bodyHtml.trim() && <button onClick={() => toggleOpen(i)} className="font-condensed text-[10px] uppercase tracking-wider text-zinc-500 hover:text-white">{el?.open ? "ascunde execuția" : "▼ execuție + video"}</button>}
                 </div>
               </div>
-
-              {/* Execuție + video (colapsabil) */}
-              {el?.open && (ex.video || ex.cues.length > 0) && (
-                <div className="border-t border-white/10 bg-black/30 p-4 space-y-2.5">
-                  {ex.video && (
-                    <a href={ex.video} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-[12px] font-semibold text-white bg-built-red/90 hover:bg-built-red px-3 py-2 rounded-lg transition-colors">
-                      ▶ Video execuție (RO)
-                    </a>
-                  )}
-                  {ex.cues.map((c, k) => (
-                    <div key={k}>
-                      <p className="font-condensed text-[10px] uppercase tracking-wider text-built-red">{c.l}</p>
-                      <p className="text-[13px] text-zinc-300 leading-relaxed">{c.v}</p>
-                    </div>
-                  ))}
-                </div>
+              {el?.open && b.bodyHtml.trim() && (
+                <div className="border-t border-white/10 bg-black/30 p-3"><ShadowHtml html={b.bodyHtml} css={css} /></div>
               )}
             </div>
           );
         })}
       </div>
 
-      {/* Salvare (sticky jos) */}
       <div className="fixed bottom-[64px] md:bottom-4 left-0 md:left-56 right-0 px-4 z-20">
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           {saved && <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 mb-2 text-center">Antrenament salvat ✓</p>}
           <button onClick={save} disabled={saving} className="w-full font-condensed text-sm uppercase tracking-wider bg-built-red text-white py-3 rounded-xl hover:bg-built-red-dark transition-colors disabled:opacity-50 shadow-lg shadow-black/40">
             {saving ? "Salvez…" : `Salvează ${active?.label ?? "antrenamentul"}`}
