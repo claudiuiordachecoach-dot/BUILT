@@ -67,17 +67,30 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
         const key = p.id.replace("tab-", "");
         const blocks: Block[] = [];
         for (const child of [...p.children]) {
-          // Template A: .ex-block cu .ex-meta (claudia/george/letitia/andrei)
-          if (child.classList.contains("ex-block") && child.querySelector(".ex-meta")) {
+          // Template A: .ex-block cu structură de logare (.ex-meta SAU .sets-container) — exclude warmup
+          if (child.classList.contains("ex-block") && (child.querySelector(".ex-meta") || child.querySelector(".sets-container"))) {
             const tag = (c: string) => (child.querySelector(`.ex-meta .tag-${c}`)?.textContent || "").trim();
+            let presc = tag("red");
+            const sc = child.querySelector(".sets-container");
+            if (!presc && sc) {
+              const rows = sc.querySelectorAll(".set-row").length;
+              const tgt = (sc.querySelector(".set-target, .set-tgt")?.textContent || "").trim();
+              if (rows) presc = `${rows} × ${tgt}`.trim();
+            }
             const body = child.querySelector(".ex-body") as HTMLElement | null;
-            if (body) body.querySelectorAll(".sets-wrap").forEach((e) => e.remove());
+            let bodyHtml = "";
+            if (body) { body.querySelectorAll(".sets-wrap").forEach((e) => e.remove()); bodyHtml = body.innerHTML; }
+            else {
+              const desc = child.querySelector(".ex-desc") as HTMLElement | null;
+              const vid = child.querySelector('a[href*="youtu"], a.btn-vid, a.btn-yt') as HTMLElement | null;
+              bodyHtml = (desc?.outerHTML || "") + (vid?.outerHTML || "");
+            }
             blocks.push({
               kind: "ex",
               name: (child.querySelector(".ex-ttl")?.textContent || "").trim(),
               order: (child.querySelector(".ex-num")?.textContent || "").trim(),
-              presc: tag("red"), rest: tag("orange"), start: tag("green"),
-              bodyHtml: body?.innerHTML || "",
+              presc, rest: tag("orange"), start: tag("green"),
+              bodyHtml,
             });
           }
           // Template B: .phase-block cu „Exerciții" → fiecare .ex-item devine card logabil (alex)
