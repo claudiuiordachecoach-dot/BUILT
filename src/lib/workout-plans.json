@@ -1,0 +1,176 @@
+{
+  "alex": {
+    "upperA": [
+      "1. Bench Press (bara sau gantere)",
+      "2. Lat Pulldown",
+      "3. Overhead Press cu gantere",
+      "4. Seated Cable Row sau Bent-over Row",
+      "5. Face Pulls la cablu",
+      "6. Curls + Triceps Pushdown"
+    ],
+    "lower": [
+      "1. Squat (Goblet cu ganteră sau Barbell la Rack)",
+      "2. Romanian Deadlift cu gantere sau bara",
+      "3. Leg Press la aparat / Leg Extension",
+      "4. Leg Curl la aparat",
+      "5. Calf Raises (aparat sau treaptă)",
+      "6. Core Circuit"
+    ],
+    "upperB": [
+      "1. Dumbbell Row Unilateral",
+      "2. Incline Dumbbell Press (30–45°)",
+      "3. Lateral Raises (ridicări laterale)",
+      "4. Rear Delt Fly (fluturări inversate)",
+      "5. Hammer Curls + Overhead Triceps Extension",
+      "6. Side Plank + Hollow Body Hold"
+    ]
+  },
+  "andrei": {
+    "a": [
+      "Împins cu gantere la bancă",
+      "Împins cu gantere la umeri",
+      "Fluturări la aparat (Pec Deck)",
+      "Ridicare laterală cu gantere",
+      "Extensii triceps deasupra capului la scripetă cu bara",
+      "Extensii triceps în jos la scripetă cu bara"
+    ],
+    "b": [
+      "Tracțiuni la aparat (Lat Pulldown)",
+      "Ramat cu cablu șezut",
+      "Face Pulls (Cablu)",
+      "Flexii biceps cu gantere",
+      "Flexii ciocan (Hammer Curl)"
+    ],
+    "c": [
+      "Presă picioare (Leg Press)",
+      "Squat cu gantera la piept (Goblet Squat)",
+      "Leg Curl (Aparat culcat)",
+      "Ridicări pe vârfuri (Calf Raise)",
+      "Plank"
+    ],
+    "combo": [
+      "Împins la aparat (Chest Press Machine)",
+      "Tracțiuni cu priză îngustă (Close-grip Pull-ups)",
+      "Ridicări laterale cu gantere (Lateral Raises)",
+      "Ridicări trapez cu gantere (Shrugs)",
+      "Bayesian curls + Triceps dips (superset)"
+    ]
+  },
+  "ciprian": {
+    "ziuaA": [
+      "Mers pe loc cu genunchii sus",
+      "Squat bodyweight lent (pauză jos 3 sec)",
+      "1. Squat cu rucsac (8 kg pe spate)",
+      "2. Bulgarian Split Squat",
+      "3. Single-Leg Glute Bridge",
+      "4. Calf Raises pe un picior"
+    ],
+    "ziuaB": [
+      "1. Hollow Body Hold",
+      "2. Dead Bug",
+      "3. Reverse Crunch",
+      "4. Bird Dog (sprijin pe pumni dacă palma deranjează)",
+      "5. Side-Lying Hip Raise",
+      "6. Flutter Kicks (forfecări picioare)"
+    ],
+    "ziuaC": [
+      "Hip 90/90 pe podea",
+      "1. Squat Sumo cu Greutate (Bidon de Apă)",
+      "2. Reverse Lunge cu rucsac (8 kg)",
+      "3. Single-Leg RDL (Romanian Deadlift pe un picior)",
+      "4. Frog Pumps (Pompe pentru fese)",
+      "5. Finisher Core: Flutter Kicks + Hollow Hold"
+    ]
+  },
+  "claudia": {
+    "lowera": [
+      "Leg Press · Beinpresse",
+      "Extensii pentru cvadriceps · Beinstrecker",
+      "Fesier la aparat · Gluteus",
+      "Abductor · Abduktion",
+      "Extensii lombare · Rückenstrecker",
+      "Abdominal la aparat + Planșă"
+    ],
+    "upper": [
+      "Tracțiuni la helcometru · Latzug",
+      "Ramat la aparat · Rudern",
+      "Fluturări inverse · Butterfly reverse",
+      "Împins umeri · Schulterpresse",
+      "Fluturări piept · Butterfly",
+      "Abdominal la aparat + Planșă"
+    ],
+    "lowerb": [
+      "Leg Press · Beinpresse",
+      "Flexii pentru femurali · Beinbeuger",
+      "Adductor · Adduktion",
+      "Abductor · Abduktion",
+      "Abdominal la aparat + Planșă"
+    ]
+  },
+  "george": {
+    "upper-a": [
+      "1. Împins cu Gantere / Bară (Bancă)",
+      "1B. SkiErg — EPOC",
+      "2. Ramat cu Gantera din Aplecat",
+      "3A. Fluturări Piept",
+      "3B. Extensii Triceps Cablu"
+    ],
+    "lower-a": [
+      "1. Deadlift (Clasic / Romanian)",
+      "1B. Rowing Machine — EPOC",
+      "2. Presă Picioare (Poziție ÎNALTĂ)",
+      "3A. Leg Curls (Aparat)",
+      "3B. Plank (Până la Epuizare)"
+    ],
+    "upper-b": [
+      "1A. Împins Deasupra Capului (OHP)",
+      "1B. AirBike — EPOC",
+      "2. Tracțiuni la Helcometru (Lat Pulldown)",
+      "3A. Ridicări Laterale (Fluturări)",
+      "3B. Flexii Biceps (Gantere/Cablu)"
+    ],
+    "lower-b": [
+      "1A. Fandări Bulgărești (Bulgarian Split Squats)",
+      "1B. SkiErg / Rowing — EPOC",
+      "2. Presă pentru Picioare (Poziție JOASĂ/ÎNGUSTĂ)",
+      "3A. Extensii Cvadriceps",
+      "3B. Crunches (Abdomene Scurte)"
+    ],
+    "ziua-5": [
+      "1A. Biceps (Bayesian Curls / Cablu)",
+      "1B. Triceps (Extensii cu Funia deasupra capului)",
+      "2. TRISET Umeri 3D (Gantere Mici)",
+      "A. Ridicări Frontale (15 reps)",
+      "B. Ridicări Laterale (15 reps)",
+      "C. Fluturări din Aplecat / Face Pulls (15 reps)",
+      "FINISHER: CIRCUIT HIIT (15 MIN)"
+    ],
+    "cardio": [
+      "StairMaster (Scări) — Drenaj Limfatic"
+    ]
+  },
+  "letitia": {
+    "a": [
+      "Hip Thrust cu Bara",
+      "Bulgarian Split Squat",
+      "RDL cu Gantere",
+      "Leg Curl (Aparat)",
+      "Abductor (Aparat)"
+    ],
+    "b": [
+      "Lat Pulldown / Assisted Pull-Up",
+      "Chest-Supported Row",
+      "DB Shoulder Press (Bilateral)",
+      "Cable Chest Press / Push-Up",
+      "Face Pulls (Cablu)",
+      "Bicep Curl + Tricep Pushdown"
+    ],
+    "c": [
+      "Leg Press",
+      "Goblet Squat",
+      "Walking Lunges (Gantere)",
+      "Leg Extension",
+      "Adductor (Aparat)"
+    ]
+  }
+}
