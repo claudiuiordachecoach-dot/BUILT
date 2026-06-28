@@ -67,8 +67,8 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
         const key = p.id.replace("tab-", "");
         const blocks: Block[] = [];
         for (const child of [...p.children]) {
-          const isEx = child.classList.contains("ex-block") && child.querySelector(".ex-meta");
-          if (isEx) {
+          // Template A: .ex-block cu .ex-meta (claudia/george/letitia/andrei)
+          if (child.classList.contains("ex-block") && child.querySelector(".ex-meta")) {
             const tag = (c: string) => (child.querySelector(`.ex-meta .tag-${c}`)?.textContent || "").trim();
             const body = child.querySelector(".ex-body") as HTMLElement | null;
             if (body) body.querySelectorAll(".sets-wrap").forEach((e) => e.remove());
@@ -79,6 +79,22 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
               presc: tag("red"), rest: tag("orange"), start: tag("green"),
               bodyHtml: body?.innerHTML || "",
             });
+          }
+          // Template B: .phase-block cu „Exerciții" → fiecare .ex-item devine card logabil (alex/ciprian)
+          else if (child.classList.contains("phase-block") && /exerci|for[țt]|principal/i.test(child.querySelector(".phase-label")?.textContent || "")) {
+            for (const it of [...child.querySelectorAll(".ex-item")]) {
+              const name = (it.querySelector(".ex-name")?.textContent || "").trim();
+              if (!name) continue;
+              const vid = it.querySelector('a[href*="youtu"], a.btn-vid') as HTMLElement | null;
+              const cue = it.querySelector(".ex-cue") as HTMLElement | null;
+              blocks.push({
+                kind: "ex", name, order: "",
+                presc: (it.querySelector(".ex-sets")?.textContent || "").trim(),
+                rest: (it.querySelector(".ex-rest")?.textContent || "").trim(),
+                start: "",
+                bodyHtml: (cue?.outerHTML || "") + (vid?.outerHTML || ""),
+              });
+            }
           } else {
             blocks.push({ kind: "html", html: (child as HTMLElement).outerHTML });
           }
