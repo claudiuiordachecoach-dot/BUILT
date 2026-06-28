@@ -125,6 +125,19 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .day-card .macro-row:nth-of-type(1) span:last-child{color:#F5F5F5;font-weight:700}
 .day-card .macro-row:nth-of-type(2) span:last-child{color:#5B9BD5;font-weight:700}
 .day-card .macro-row:nth-of-type(3) span:last-child{color:#5FB87A;font-weight:700}
+
+/* BUILT app-skin (injectat) — aliniază foaia la designul dashboard-ului */
+:root{ --brd:rgba(255,255,255,.10) !important; }
+.ex-block,.alert,.card,.proto,.guide-box,.urg-card,.opt-block,.day-card,.day-grid>div,.scenario,.phase-block,.stat,.box,.info,.ok{ border-radius:14px !important; border-color:rgba(255,255,255,.10) !important; }
+.ex-block{ margin-bottom:12px !important; background:#111111 !important; }
+.ex-hdr{ padding:14px 15px !important; }
+.hdr{ background:#0A0A0A !important; border-bottom:1px solid rgba(255,255,255,.08) !important; }
+.tabs{ background:#0A0A0A !important; border-bottom:1px solid rgba(255,255,255,.08) !important; padding:0 6px; }
+.tab{ font-size:11px !important; letter-spacing:1px !important; padding:13px 14px !important; }
+.tab.active{ border-bottom:2px solid var(--red) !important; }
+.panel{ padding:16px 14px !important; }
+.btn-yt{ border-radius:10px !important; }
+.macro-bar,.macro-item{ border-radius:14px !important; }
 </style>
 </head>
 <body>
