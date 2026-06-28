@@ -61,22 +61,24 @@ export default function AntrenamantePage() {
 
   if (loading) return <PageSkeleton cards={4} />;
 
-  // Ziua de antrenament de azi → exercițiile structurate (pentru loggerul inline focusat).
+  // Planul clientului → toate zilele de antrenament (pentru loggerul inline).
   const slug = plan?.quickref_url?.match(/\/quickref\/([a-z]+)-antrenament/)?.[1] ?? "";
   const todayTab = slug ? TODAY_TAB[slug]?.[new Date().getDay()] : undefined;
   const isTrainingDay = !!todayTab && !["program", "overview", "calendar"].includes(todayTab);
-  const planEx: string[] = (todayTab && PLANS[slug]?.[todayTab]) || [];
-  const dayTitle = isTrainingDay ? (DAY_LABELS[todayTab!.toLowerCase()] ?? "Antrenamentul de azi") : "Antrenamentul de azi";
-  const dayKey = isTrainingDay ? todayTab! : "Antrenament";
+  const SKIP_DAY = ["cardio", "ciclu", "reguli", "mve", "progresie", "program", "overview", "calendar", "saptamana", "warmup", "stretch"];
+  const planDays = Object.entries(PLANS[slug] || {})
+    .filter(([k]) => !SKIP_DAY.includes(k.toLowerCase()))
+    .map(([k, ex]) => ({ key: k, label: DAY_LABELS[k.toLowerCase()] ?? k, exercises: ex }));
+  const todayKey = isTrainingDay ? todayTab! : null;
+  const todayLabel = todayKey ? (DAY_LABELS[todayKey.toLowerCase()] ?? "") : "";
 
-  // Prim-plan: doar antrenamentul de azi (logging inline). Salvează → revine la plan.
+  // Prim-plan: alegi antrenamentul (plan / liber / repetă trecut) → logging focusat. Salvează → revine.
   if (logMode) {
     return (
       <div className="w-full h-[calc(100dvh-8rem)] md:h-[calc(100vh-1rem)] overflow-y-auto">
         <TodayWorkoutLogger
-          dayKey={dayKey}
-          dayTitle={dayTitle}
-          planExercises={planEx}
+          planDays={planDays}
+          todayKey={todayKey}
           onClose={() => setLogMode(false)}
           onSaved={() => { setLogMode(false); setSavedToast(true); setTimeout(() => setSavedToast(false), 4000); }}
         />
@@ -105,7 +107,7 @@ export default function AntrenamantePage() {
             className="w-full flex items-center justify-between gap-3 bg-built-red/[0.08] border border-built-red/40 rounded-xl px-4 py-3 mb-3 press transition-colors hover:bg-built-red/[0.12]"
           >
             <span className="text-sm text-built-white font-semibold text-left">
-              ⚡ Loghează antrenamentul de azi{isTrainingDay ? ` · ${dayTitle}` : ""}{" "}
+              ⚡ Loghează antrenamentul de azi{todayLabel ? ` · ${todayLabel}` : ""}{" "}
               <span className="text-zinc-400 font-normal">— kg × reps, cu progresia</span>
             </span>
             <span className="text-built-red text-lg shrink-0">→</span>
@@ -154,7 +156,7 @@ export default function AntrenamantePage() {
         onClick={() => setLogMode(true)}
         className="w-full flex items-center justify-between gap-3 bg-built-red/[0.08] border border-built-red/40 rounded-xl px-4 py-3 mb-6 press transition-colors hover:bg-built-red/[0.12]"
       >
-        <span className="text-sm text-built-white font-semibold text-left">⚡ Loghează antrenamentul de azi{isTrainingDay ? ` · ${dayTitle}` : ""} <span className="text-zinc-400 font-normal">— kg × reps, cu progresia</span></span>
+        <span className="text-sm text-built-white font-semibold text-left">⚡ Loghează antrenamentul de azi{todayLabel ? ` · ${todayLabel}` : ""} <span className="text-zinc-400 font-normal">— kg × reps, cu progresia</span></span>
         <span className="text-built-red text-lg shrink-0">→</span>
       </button>
       <div className="flex gap-2 mb-6 flex-wrap">
