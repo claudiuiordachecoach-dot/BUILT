@@ -80,20 +80,32 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
               bodyHtml: body?.innerHTML || "",
             });
           }
-          // Template B: .phase-block cu „Exerciții" → fiecare .ex-item devine card logabil (alex/ciprian)
+          // Template B: .phase-block cu „Exerciții" → fiecare .ex-item devine card logabil (alex)
           else if (child.classList.contains("phase-block") && /exerci|for[țt]|principal/i.test(child.querySelector(".phase-label")?.textContent || "")) {
             for (const it of [...child.querySelectorAll(".ex-item")]) {
               const name = (it.querySelector(".ex-name")?.textContent || "").trim();
               if (!name) continue;
               const vid = it.querySelector('a[href*="youtu"], a.btn-vid') as HTMLElement | null;
               const cue = it.querySelector(".ex-cue") as HTMLElement | null;
-              blocks.push({
-                kind: "ex", name, order: "",
-                presc: (it.querySelector(".ex-sets")?.textContent || "").trim(),
-                rest: (it.querySelector(".ex-rest")?.textContent || "").trim(),
-                start: "",
-                bodyHtml: (cue?.outerHTML || "") + (vid?.outerHTML || ""),
-              });
+              blocks.push({ kind: "ex", name, order: "", presc: (it.querySelector(".ex-sets")?.textContent || "").trim(), rest: (it.querySelector(".ex-rest")?.textContent || "").trim(), start: "", bodyHtml: (cue?.outerHTML || "") + (vid?.outerHTML || "") });
+            }
+          }
+          // Template C: .acc-card (acordeon). Warmup/mobilitate → fidel; restul → exerciții logabile (ciprian)
+          else if (child.classList.contains("acc-card")) {
+            const label = (child.querySelector(".acc-label")?.textContent || "") + " " + (child.querySelector(".acc-name")?.textContent || "");
+            const items = [...child.querySelectorAll(".ex-item")];
+            if (items.length && !/mobilitate|încălzire|incalzire|activare|warm|stretch|recuperare|revenire|cardio/i.test(label)) {
+              const hdr = child.querySelector(".acc-hdr") as HTMLElement | null;
+              if (hdr) blocks.push({ kind: "html", html: hdr.outerHTML });
+              for (const it of items) {
+                const name = (it.querySelector(".ex-name")?.textContent || "").trim();
+                if (!name) continue;
+                const vid = it.querySelector('a[href*="youtu"], a.btn-vid') as HTMLElement | null;
+                const cue = it.querySelector(".ex-cue") as HTMLElement | null;
+                blocks.push({ kind: "ex", name, order: "", presc: (it.querySelector(".ex-sets")?.textContent || "").trim(), rest: (it.querySelector(".ex-rest")?.textContent || "").trim(), start: "", bodyHtml: (cue?.outerHTML || "") + (vid?.outerHTML || "") });
+              }
+            } else {
+              blocks.push({ kind: "html", html: (child as HTMLElement).outerHTML });
             }
           } else {
             blocks.push({ kind: "html", html: (child as HTMLElement).outerHTML });
