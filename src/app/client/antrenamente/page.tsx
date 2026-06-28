@@ -24,6 +24,8 @@ const DAY_LABELS: Record<string, string> = {
   uppera: "Upper A", lower: "Lower", upperb: "Upper B",
   "upper-a": "Upper A", "lower-a": "Lower A", "upper-b": "Upper B", "lower-b": "Lower B",
   a: "Ziua A", b: "Ziua B", c: "Ziua C", ziuaa: "Ziua A", ziuab: "Ziua B", ziuac: "Ziua C", combo: "Combo",
+  program: "Program", reguli: "Reguli", ciclu: "Ciclu", saptamana: "Săptămâna", mve: "MVE",
+  progresie: "Progresie", cardio: "Cardio", info: "Info", macros: "Macro", "ziua-5": "Brațe", calendar: "Calendar",
 };
 const labelFor = (k: string) => DAY_LABELS[k.toLowerCase()] ?? k.toUpperCase();
 

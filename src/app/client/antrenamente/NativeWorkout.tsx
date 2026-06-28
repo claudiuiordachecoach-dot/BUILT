@@ -55,11 +55,10 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
       const doc = new DOMParser().parseFromString(text, "text/html");
       const styleCss = [...doc.querySelectorAll("style")].map((s) => s.textContent || "").join("\n").replace(/:root/g, ":host");
       setCss(styleCss);
-      const SKIP = ["program", "overview", "saptamana", "warmup", "stretch", "mve", "progresie", "reguli", "ciclu", "calendar", "macros"];
+      // Includem TOATE tab-urile foii (program/ghid/cardio/reguli + zilele de exerciții) → zero pierdere.
       const ds: Day[] = [];
       for (const p of [...doc.querySelectorAll('[id^="tab-"]')]) {
         const key = p.id.replace("tab-", "");
-        if (SKIP.includes(key.toLowerCase())) continue;
         const blocks: Block[] = [];
         for (const child of [...p.children]) {
           const isEx = child.classList.contains("ex-block") && child.querySelector(".ex-meta");
