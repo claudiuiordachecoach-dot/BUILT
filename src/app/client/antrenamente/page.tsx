@@ -56,21 +56,29 @@ export default function AntrenamantePage() {
   const [todayHash, setTodayHash] = useState("");
   const [logMode, setLogMode] = useState(false);
   const [savedToast, setSavedToast] = useState(false);
-  const [collapsed, setCollapsed] = useState(false);
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const topRef = useRef<HTMLDivElement>(null);
+  const topH = useRef(0);
 
-  // Colapsează antetul (săptămâna + azi) când clientul derulează în antrenament,
-  // ca să aibă fereastră mare. Reapare când derulează înapoi sus. (iframe same-origin)
+  // Antetul (săptămâna + azi) se topește PROPORȚIONAL cu scroll-ul din antrenament:
+  // pe măsură ce derulezi în jos dispare treptat, iar la scroll înapoi reapare lin.
+  // Stil aplicat direct pe DOM (fără re-render) = 1:1 cu degetul, fluid. iframe same-origin.
   function attachScrollCollapse() {
     const win = iframeRef.current?.contentWindow;
     if (!win) return;
-    let last = 0;
-    win.addEventListener("scroll", () => {
+    const apply = () => {
+      const top = topRef.current;
+      if (!top) return;
+      if (!topH.current) topH.current = top.scrollHeight;
       const y = win.scrollY || win.document?.documentElement?.scrollTop || 0;
-      if (y > last + 6 && y > 60) setCollapsed(true);
-      else if (y < last - 6) setCollapsed(false);
-      last = y;
-    }, { passive: true });
+      const p = Math.min(Math.max(y / 220, 0), 1); // 0..1 pe primii ~220px de scroll
+      top.style.maxHeight = `${(1 - p) * topH.current}px`;
+      top.style.opacity = `${1 - p}`;
+      top.style.transform = `translateY(${-p * 14}px)`;
+      top.style.pointerEvents = p > 0.9 ? "none" : "auto";
+    };
+    win.addEventListener("scroll", () => requestAnimationFrame(apply), { passive: true });
+    apply();
   }
 
   useEffect(() => { getWorkoutPlan().then(p => { setPlan(p as WorkoutPlan | null); setTodayHash(todayHashFor((p as WorkoutPlan | null)?.quickref_url)); }).finally(() => setLoading(false)); }, []);
@@ -114,7 +122,7 @@ export default function AntrenamantePage() {
   if (plan.quickref_url) {
     return (
       <div className="flex flex-col w-full h-[calc(100dvh-8rem)] md:h-[calc(100vh-1rem)]">
-        <div className={`px-4 shrink-0 overflow-hidden transition-all duration-300 ease-out ${collapsed ? "max-h-0 opacity-0 pt-0" : "max-h-[640px] opacity-100 pt-4"}`}>
+        <div ref={topRef} className="px-4 pt-4 shrink-0 overflow-hidden">
           <WeeklyTraining />
           <TodayTrainingLog daySummary={todayHash ? "Antrenamentul de azi e deschis mai jos ↓" : "Azi e zi de recuperare 🧘 — planul complet mai jos"} />
           {savedToast && <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2.5 mb-3">Antrenament salvat ✓ Data viitoare îți arăt cât ai ridicat azi.</p>}
