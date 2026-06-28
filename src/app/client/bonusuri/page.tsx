@@ -1,14 +1,6 @@
 import { getClientId } from "@/app/client/actions";
-import BonusuriClient, { type PersonalCookbook, type PersonalBonus } from "./BonusuriClient";
-
-// Cartea de rețete personalizată e legată de clientul logat — nu o vede nimeni altcineva.
-const PERSONAL_COOKBOOKS: Record<number, PersonalCookbook> = {
-  1: { file: "/Cartea_Retete_Alex.html", name: "Alex", emoji: "👨‍🍳" },
-  2: { file: "/Cartea_Retete_Letitia.html", name: "Letitia", emoji: "👩‍🍳" },
-  4: { file: "/Cartea_Retete_Ciprian.html", name: "Ciprian", emoji: "👨‍🍳" },
-  5: { file: "/Cartea_Retete_Andrei.html", name: "Andrei", emoji: "👨‍🍳" },
-  6: { file: "/Cartea_Retete_Claudia.html", name: "Claudia", emoji: "👩‍🍳" },
-};
+import { PERSONAL_COOKBOOKS } from "@/data/cookbooks";
+import BonusuriClient, { type PersonalBonus } from "./BonusuriClient";
 
 // Ghiduri bonus personalizate pe contextul clientului logat.
 const PERSONAL_BONUSES: Record<number, PersonalBonus[]> = {
