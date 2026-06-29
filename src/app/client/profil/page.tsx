@@ -73,15 +73,8 @@ export default async function ClientProfilePage({
           </div>
         </section>
 
-        {/* Obiective */}
-        <section>
-          <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Foaia de Parcurs (Obiective)</h2>
-          <div className="bg-[#111111] border border-white/10 rounded-lg p-6">
-            <p className="text-sm text-zinc-300 leading-relaxed whitespace-pre-wrap">
-              {client?.objectives || "Niciun obiectiv setat încă de către antrenor."}
-            </p>
-          </div>
-        </section>
+        {/* Obiective — secțiune internă a coach-ului (preț, note tactice, contact);
+            NU se afișează clientului. Coach-ul o vede în /clienti/[id]. */}
 
         {/* Galeria Foto */}
         <section>
