@@ -17,6 +17,7 @@ const TODAY_TAB: Record<string, Record<number, string>> = {
   letitia: { 1: "a", 3: "b", 5: "c" },
   ciprian: { 1: "ziuaA", 3: "ziuaB", 5: "ziuaC", 6: "ziuaC" },
   george: { 1: "upper-a", 2: "lower-a", 4: "upper-b", 5: "lower-b" },
+  andy: { 1: "a", 3: "b", 5: "c" },
 };
 
 const DAY_LABELS: Record<string, string> = {
@@ -26,6 +27,7 @@ const DAY_LABELS: Record<string, string> = {
   a: "Ziua A", b: "Ziua B", c: "Ziua C", ziuaa: "Ziua A", ziuab: "Ziua B", ziuac: "Ziua C", combo: "Combo",
   program: "Program", reguli: "Reguli", ciclu: "Ciclu", saptamana: "Săptămâna", mve: "MVE",
   progresie: "Progresie", cardio: "Cardio", info: "Info", macros: "Macro", "ziua-5": "Brațe", calendar: "Calendar",
+  zone2: "Zone 2",
 };
 const labelFor = (k: string) => DAY_LABELS[k.toLowerCase()] ?? k.toUpperCase();
 

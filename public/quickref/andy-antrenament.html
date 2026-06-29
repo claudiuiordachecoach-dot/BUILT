@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Quick Ref Antrenament · Andy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--rdim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;padding-bottom:130px;}
+
+/* HEADER */
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:12px 16px 10px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;}
+.logo span{color:var(--red);}
+.hdr-right{text-align:right;}
+.hdr-name{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.hdr-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-top:2px;}
+.prog-wrap{margin-bottom:2px;}
+.prog-bar{height:3px;background:var(--brd);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--red);border-radius:2px;transition:width 1.2s ease;width:0%;}
+.prog-meta{display:flex;justify-content:space-between;margin-top:3px;}
+.prog-meta span{font-size:9px;color:var(--muted);letter-spacing:1px;}
+
+/* TABS */
+.tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:11px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-weight:700;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+/* PANELS */
+.panel{display:none;padding:16px;}
+.panel.active{display:block;}
+
+/* ALERT BOX */
+.alert{border-left:3px solid var(--red);background:var(--rdim);padding:11px 13px;margin-bottom:14px;font-size:12px;color:#ccc;line-height:1.6;border-radius:0 4px 4px 0;}
+.alert.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
+.alert.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
+.alert.blue{border-color:var(--blue);background:rgba(41,128,185,0.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--red);margin-bottom:3px;}
+.alert.green .alert-ttl{color:var(--green);}
+.alert.orange .alert-ttl{color:var(--orange);}
+.alert.blue .alert-ttl{color:var(--blue);}
+
+/* PILLS */
+.pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
+.pill{font-size:9px;padding:4px 10px;border-radius:3px;background:var(--card);border:1px solid var(--brd);color:#aaa;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+.pill.red{background:var(--rdim);border-color:rgba(192,57,43,.3);color:var(--red);}
+.pill.blue{background:rgba(41,128,185,.1);border-color:rgba(41,128,185,.3);color:var(--blue);}
+
+/* EXERCISE BLOCK */
+.ex-block{background:var(--card);border:1px solid var(--brd);border-radius:6px;margin-bottom:10px;overflow:hidden;}
+.ex-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 13px;cursor:pointer;user-select:none;}
+.ex-hdr:hover{background:rgba(255,255,255,.02);}
+.ex-left{flex:1;padding-right:8px;}
+.ex-num{font-size:9px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:2px;}
+.ex-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:.5px;color:var(--wht);line-height:1.2;}
+.ex-meta{display:flex;gap:6px;margin-top:4px;flex-wrap:wrap;}
+.tag{font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:2px 7px;border-radius:2px;}
+.tag-red{background:var(--rdim);color:var(--red);border:1px solid rgba(192,57,43,.3);}
+.tag-orange{background:rgba(230,126,34,.1);color:var(--orange);border:1px solid rgba(230,126,34,.3);}
+.tag-green{background:rgba(39,174,96,.08);color:var(--green);border:1px solid rgba(39,174,96,.25);}
+.tag-blue{background:rgba(41,128,185,.1);color:var(--blue);border:1px solid rgba(41,128,185,.3);}
+.ex-icon{font-size:11px;color:var(--muted);transition:transform .25s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--drk2);border:1px solid var(--brd);border-radius:3px;flex-shrink:0;}
+.ex-block.open .ex-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.ex-body{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1);}
+.ex-block.open .ex-body{max-height:800px;}
+.ex-cue{padding:0 13px 10px;font-size:12px;color:#aaa;line-height:1.6;border-bottom:1px solid var(--brd);}
+.ex-cue.warn{color:var(--orange);}
+.ex-cue.good{color:var(--green);}
+
+/* SET TRACKER */
+.sets-wrap{padding:8px 10px 10px;}
+.set-labels{display:flex;padding:0 36px 4px 44px;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.set-labels div{flex:1;text-align:center;}
+.set-row{display:flex;align-items:center;gap:5px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.03);}
+.set-row:last-child{border-bottom:none;}
+.set-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);width:38px;flex-shrink:0;}
+.set-tgt{font-family:'Bebas Neue',sans-serif;font-size:13px;color:var(--muted);width:48px;text-align:center;flex-shrink:0;}
+.set-inp{background:var(--blk);border:1px solid var(--brd);color:var(--wht);font-family:'DM Mono',monospace;font-size:14px;text-align:center;flex:1;padding:5px 2px;border-radius:3px;min-width:0;}
+.set-inp:focus{outline:none;border-color:var(--red);}
+.set-chk{width:30px;height:30px;flex-shrink:0;border-radius:3px;border:1px solid var(--brd);background:var(--drk);display:flex;justify-content:center;align-items:center;cursor:pointer;transition:all .15s;}
+.set-chk.done{background:var(--green);border-color:var(--green);}
+.set-chk.done::after{content:'✓';color:#fff;font-weight:700;font-size:14px;}
+.rest-btn{width:100%;background:var(--drk2);border:1px solid var(--brd);color:var(--muted);padding:8px;font-size:10px;letter-spacing:1px;font-weight:700;text-transform:uppercase;cursor:pointer;border-radius:3px;margin-top:8px;transition:all .15s;}
+.rest-btn:hover{border-color:var(--red);color:var(--red);}
+
+/* CONDITIONING BLOCK */
+.cond-block{border:1px solid var(--orange);border-radius:6px;background:rgba(230,126,34,.04);padding:14px;margin-top:14px;}
+.cond-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
+.cond-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--orange);margin-bottom:3px;}
+.cond-equip{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--wht);}
+.cond-setup{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:right;line-height:1.5;}
+.cond-rounds{display:flex;gap:7px;justify-content:center;margin-bottom:10px;}
+.rdot{height:8px;flex:1;border-radius:4px;background:var(--brd);transition:all .3s;}
+.rdot.done{background:var(--green);}
+.rdot.active.work{background:var(--orange);}
+.rdot.active.rest{background:var(--blue);}
+.cond-state{text-align:center;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;min-height:16px;transition:color .3s;}
+.cond-cd{font-family:'Bebas Neue',sans-serif;font-size:58px;text-align:center;letter-spacing:2px;color:var(--wht);line-height:1;margin-bottom:14px;transition:color .3s;}
+.cond-ctrls{display:flex;gap:8px;}
+.cond-btn{flex:1;padding:11px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .15s;border:1px solid;}
+.cond-start{background:rgba(230,126,34,.15);border-color:var(--orange);color:var(--orange);}
+.cond-start:hover{background:rgba(230,126,34,.25);}
+.cond-reset{background:var(--drk2);border-color:var(--brd);color:var(--muted);}
+.cond-reset:hover{border-color:var(--red);color:var(--red);}
+
+/* McGILL */
+.mcg-card{background:var(--drk);border:1px solid rgba(39,174,96,.35);border-radius:6px;padding:14px;margin-bottom:12px;}
+.mcg-ttl{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--wht);letter-spacing:1px;margin-bottom:2px;}
+.mcg-sets{font-family:'DM Mono',monospace;font-size:12px;color:var(--orange);margin-bottom:10px;}
+.mcg-steps{list-style:none;}
+.mcg-steps li{font-size:12px;color:#ccc;padding:5px 0 5px 16px;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.5;position:relative;}
+.mcg-steps li::before{content:'→';position:absolute;left:0;color:var(--green);font-size:11px;}
+.mcg-steps li:last-child{border-bottom:none;}
+.mcg-timer-btn{width:100%;background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.3);color:var(--green);padding:10px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;margin-top:10px;}
+
+/* REGULI */
+.rule-card{background:var(--drk);border:1px solid var(--brd);border-radius:6px;padding:14px;margin-bottom:12px;}
+.rule-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--wht);letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
+.rule-body{font-size:12px;color:#ccc;line-height:1.7;}
+.rule-body strong{color:var(--orange);}
+.rule-body .ok{color:var(--green);}
+
+/* SUMMARY MODAL */
+.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
+.modal-ov.open{opacity:1;pointer-events:auto;}
+.modal-box{background:var(--card);border:1px solid var(--red);border-radius:8px;padding:24px;width:90%;max-width:400px;text-align:center;transform:translateY(20px);transition:transform .3s;}
+.modal-ov.open .modal-box{transform:translateY(0);}
+.modal-ttl{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--wht);letter-spacing:2px;margin-bottom:20px;}
+.modal-ttl span{color:var(--red);}
+.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.sum-box{background:var(--blk);border:1px solid var(--brd);border-radius:4px;padding:16px 10px;}
+.sum-val{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--red);line-height:1;margin-bottom:4px;}
+.sum-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.modal-desc{font-size:13px;color:#aaa;margin-bottom:18px;line-height:1.6;}
+.modal-btn{width:100%;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);padding:12px;font-weight:700;letter-spacing:1px;font-size:12px;border-radius:4px;cursor:pointer;text-transform:uppercase;margin-bottom:8px;transition:all .2s;}
+.modal-btn.green-btn{background:rgba(39,174,96,.15);border-color:rgba(39,174,96,.4);color:var(--green);margin-bottom:12px;}
+.modal-btn.cancel{background:transparent;border-color:var(--brd);color:var(--muted);margin-bottom:0;}
+
+/* TIMER BAR */
+.timer-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,13,.97);backdrop-filter:blur(12px);border-top:1px solid var(--brd);padding:11px 16px;display:flex;justify-content:space-between;align-items:center;z-index:1000;max-width:480px;margin:0 auto;}
+.t-info{display:flex;flex-direction:column;gap:2px;}
+.t-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.t-val{font-family:'DM Mono',monospace;font-size:26px;color:var(--wht);line-height:1;font-weight:600;}
+.t-val.active{color:var(--blue);}
+.t-val.done{color:var(--green);}
+.t-ctrls{display:flex;gap:8px;align-items:center;}
+.t-btn{background:var(--card);border:1px solid var(--brd);color:var(--wht);font-size:10px;font-weight:700;padding:9px 14px;border-radius:3px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
+.t-btn.red{color:var(--red);}
+.fin-btn{font-size:10px;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);padding:9px 12px;border-radius:3px;cursor:pointer;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
+</style>
+</head>
+<body>
+<div class="rest-bar" id="t-val" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);z-index:99;background:var(--red);color:#fff;font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:2px;padding:8px 28px;border-radius:10px 10px 0 0;display:none;"></div>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT</div>
+    <div class="hdr-name">Quick Ref Antrenament · Andy<div id="hdr-day" style="color:var(--red);font-family:'DM Mono',monospace;margin-top:2px;font-size:11px;">Pădure · greutatea corpului</div></div>
+  </div>
+  <div class="budget-bar"><span>3–4 sesiuni forță / săpt</span><strong>+ Zone 2</strong><span>Dimineața · 40–60 min</span></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('a')">ZIUA A</div>
+  <div class="tab" onclick="showTab('b')">ZIUA B</div>
+  <div class="tab" onclick="showTab('c')">ZIUA C</div>
+  <div class="tab" onclick="showTab('zone2')">ZONE 2</div>
+  <div class="tab" onclick="showTab('reguli')">REGULI</div>
+</div>
+
+<!-- ==================== ZIUA A ==================== -->
+<div class="panel active" id="tab-a">
+  <div class="alert-box orange"><div class="alert-ttl">Ziua A — Tren Inferior (Picioare + Fesieri)</div>Încălzire 5 min: mobilitate șold, genunchi, câteva genuflexiuni ușoare. Apoi 4–5 exerciții. Ultimele 2 repetări grele, dar forma curată. Tempo controlat (coboară în 2–3 sec).</div>
+
+  <div class="ex-block open" id="ex-a1"><div class="ex-hdr" onclick="toggleEx('ex-a1')"><div class="ex-left"><div class="ex-num">01</div><div class="ex-ttl">Genuflexiuni (cu buturugă)</div><div class="ex-meta"><span class="tag tag-red">4 × 15</span><span class="tag tag-orange">90 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Greutatea corpului, sau ține o buturugă la piept pentru sarcină. Coboară controlat până coapsa e paralelă cu solul. Genunchii urmează direcția degetelor. Pe măsură ce devine ușor, iei o buturugă mai grea.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">15</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">15</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">15</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S4</div><div class="set-tgt">15</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button></div></div></div>
+
+  <div class="ex-block" id="ex-a2"><div class="ex-hdr" onclick="toggleEx('ex-a2')"><div class="ex-left"><div class="ex-num">02</div><div class="ex-ttl">Fandări (Lunges)</div><div class="ex-meta"><span class="tag tag-red">3 × 12/parte</span><span class="tag tag-orange">75 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Pas mare înainte, coboară genunchiul din spate spre sol. Trunchiul vertical. Alternezi picioarele. Cu buturugi în mâini pentru sarcină extra.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">12/pt</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">12/pt</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">12/pt</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(75)">Start Pauză 1:15</button></div></div></div>
+
+  <div class="ex-block" id="ex-a3"><div class="ex-hdr" onclick="toggleEx('ex-a3')"><div class="ex-left"><div class="ex-num">03</div><div class="ex-ttl">Step-up pe bancă / buștean</div><div class="ex-meta"><span class="tag tag-red">3 × 12/parte</span><span class="tag tag-orange">75 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Un picior pe banca sau bușteanul din parcurs, urci controlat și cobori lent. Împingi prin călcâi (activează fesierul). Alternezi.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">12/pt</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">12/pt</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">12/pt</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(75)">Start Pauză 1:15</button></div></div></div>
+
+  <div class="ex-block" id="ex-a4"><div class="ex-hdr" onclick="toggleEx('ex-a4')"><div class="ex-left"><div class="ex-num">04</div><div class="ex-ttl">Ridicări de buturugă (Hip Hinge)</div><div class="ex-meta"><span class="tag tag-red">3 × 12</span><span class="tag tag-orange">75 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Buturugă în mâini, șolduri înapoi (hinge), genunchi ușor flexați. Simți întinderea în spatele coapsei. Spatele drept tot timpul. Lucrează lanțul posterior (fesieri + ischiogambieri).</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(75)">Start Pauză 1:15</button></div></div></div>
+
+  <div class="ex-block" id="ex-a5"><div class="ex-hdr" onclick="toggleEx('ex-a5')"><div class="ex-left"><div class="ex-num">05</div><div class="ex-ttl">Plank (core)</div><div class="ex-meta"><span class="tag tag-red">3 × 45 sec</span><span class="tag tag-orange">45 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Sprijin pe antebrațe, corpul în linie dreaptă, fesele contractate. Nu lăsa bazinul să cadă. Crești cu 5 sec/săptămână.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>SEC</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">45s</div><input class="set-inp rep" type="number" placeholder="s"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">45s</div><input class="set-inp rep" type="number" placeholder="s"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">45s</div><input class="set-inp rep" type="number" placeholder="s"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+      </div></div></div>
+</div>
+
+<!-- ==================== ZIUA B ==================== -->
+<div class="panel" id="tab-b">
+  <div class="alert-box orange"><div class="alert-ttl">Ziua B — Împins (Piept + Umeri + Triceps)</div>Încălzire 5 min: rotații umeri, câteva flotări ușoare. Spatele drept de la calculator se corectează aici.</div>
+  <div class="ex-block open" id="ex-b1"><div class="ex-hdr" onclick="toggleEx('ex-b1')"><div class="ex-left"><div class="ex-num">01</div><div class="ex-ttl">Flotări (variante progresive)</div><div class="ex-meta"><span class="tag tag-red">4 × max</span><span class="tag tag-orange">90 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Progresie: pe o bancă înclinată (ușor) → pe sol → cu picioarele pe bancă (greu). Coboară controlat, coloana neutră (nu lăsa șoldurile să cadă). „Max" = până mai ai 1–2 în rezervă.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S4</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button></div></div></div>
+  <div class="ex-block" id="ex-b2"><div class="ex-hdr" onclick="toggleEx('ex-b2')"><div class="ex-left"><div class="ex-num">02</div><div class="ex-ttl">Împins deasupra capului cu buturugă</div><div class="ex-meta"><span class="tag tag-red">3 × 10</span><span class="tag tag-orange">75 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Buturugă/piatră la nivelul pieptului, împingi deasupra capului. Coloana neutră — nu arcui spatele ca să împingi mai mult. Coboară controlat.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">10</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">10</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">10</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(75)">Start Pauză 1:15</button></div></div></div>
+  <div class="ex-block" id="ex-b3"><div class="ex-hdr" onclick="toggleEx('ex-b3')"><div class="ex-left"><div class="ex-num">03</div><div class="ex-ttl">Dips la barele din parcurs</div><div class="ex-meta"><span class="tag tag-red">3 × max</span><span class="tag tag-orange">75 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">La barele paralele din parcurs. Coboară controlat până simți întinderea în piept/umăr, împingi în sus. Dacă e prea greu: dips pe o bancă, cu picioarele pe sol.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(75)">Start Pauză 1:15</button></div></div></div>
+  <div class="ex-block" id="ex-b4"><div class="ex-hdr" onclick="toggleEx('ex-b4')"><div class="ex-left"><div class="ex-num">04</div><div class="ex-ttl">Flotări diamant (triceps)</div><div class="ex-meta"><span class="tag tag-red">3 × 12</span><span class="tag tag-orange">60 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Palmele apropiate (formă de diamant) sub piept. Coatele aproape de corp. Mai greu pe triceps. Pe bancă dacă e prea greu pe sol.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+      </div></div></div>
+</div>
+
+<!-- ==================== ZIUA C ==================== -->
+<div class="panel" id="tab-c">
+  <div class="alert-box orange"><div class="alert-ttl">Ziua C — Tras (Spate + Biceps)</div>Cel mai important pentru postura ta de la calculator. Tracțiunile sunt regina exercițiilor de tras.</div>
+  <div class="ex-block open" id="ex-c1"><div class="ex-hdr" onclick="toggleEx('ex-c1')"><div class="ex-left"><div class="ex-num">01</div><div class="ex-ttl">Tracțiuni la bara din parcurs</div><div class="ex-meta"><span class="tag tag-red">4 × max</span><span class="tag tag-orange">90 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Priză peste umeri. Tragi pieptul spre bară, omoplații coboară. Dacă nu poți complet: sari și coboară lent (negativă), sau ajută-te cu picioarele pe o buturugă. Fiecare repetare contează.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S4</div><div class="set-tgt">max</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button></div></div></div>
+  <div class="ex-block" id="ex-c2"><div class="ex-hdr" onclick="toggleEx('ex-c2')"><div class="ex-left"><div class="ex-num">02</div><div class="ex-ttl">Ramat la creangă joasă / masă</div><div class="ex-meta"><span class="tag tag-red">4 × 12</span><span class="tag tag-orange">75 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Sub o creangă joasă sau marginea unei mese, corpul drept, tragi pieptul spre bară. Cu cât corpul e mai orizontal, cu atât mai greu. Omoplații se strâng la contracție.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S4</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(75)">Start Pauză 1:15</button></div></div></div>
+  <div class="ex-block" id="ex-c3"><div class="ex-hdr" onclick="toggleEx('ex-c3')"><div class="ex-left"><div class="ex-num">03</div><div class="ex-ttl">Ridicări de buturugă grea (Deadlift)</div><div class="ex-meta"><span class="tag tag-red">3 × 10</span><span class="tag tag-orange">90 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">O buturugă/piatră grea de pe sol. Hinge din șold, spatele drept (NU rotunjit), ridici prin fesieri și picioare. Exact mișcarea de care vorbeai — buturugi mari. Controlat, fără smucituri.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">10</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">10</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">10</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button></div></div></div>
+  <div class="ex-block" id="ex-c4"><div class="ex-hdr" onclick="toggleEx('ex-c4')"><div class="ex-left"><div class="ex-num">04</div><div class="ex-ttl">Curl cu buturugă (biceps)</div><div class="ex-meta"><span class="tag tag-red">3 × 12</span><span class="tag tag-orange">60 sec</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Buturugă în mâini, coatele lipite de corp, ridici controlat. Fără să te legeni. Pentru un finisher curat pe brațe.</div>
+      <div class="sets-wrap"><div class="set-labels"><div>SET</div><div>REPS</div></div>
+        <div class="set-row"><div class="set-num">S1</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S2</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row"><div class="set-num">S3</div><div class="set-tgt">12</div><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+      </div></div></div>
+</div>
+
+<!-- ==================== ZONE 2 ==================== -->
+<div class="panel" id="tab-zone2">
+  <div class="alert-box blue"><div class="alert-ttl">Cardio inteligent — sesiunea de după-amiază</div>Aici intră a doua ta fereastră de sport. NU intensitate mare (ți-ar urca cortizolul) — efort controlat care arde grăsime și calmează sistemul nervos.</div>
+  <div class="ex-block open" id="ex-z1"><div class="ex-hdr" onclick="toggleEx('ex-z1')"><div class="ex-left"><div class="ex-num">01</div><div class="ex-ttl">Mers alert în pădure — Zone 2</div><div class="ex-meta"><span class="tag tag-red">25–30 min</span><span class="tag tag-orange">2–3×/săpt</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Puls ~115–130 BPM. <strong>Testul conversației:</strong> trebuie să poți vorbi, puțin întretăiat — dar nu să cânți. Dacă gâfâi, încetinești. Teren variat (dealuri) e perfect. Aici arzi grăsime și scazi cortizolul.</div></div></div>
+  <div class="ex-block" id="ex-z2"><div class="ex-hdr" onclick="toggleEx('ex-z2')"><div class="ex-left"><div class="ex-num">02</div><div class="ex-ttl">Coarda — dozată</div><div class="ex-meta"><span class="tag tag-red">5–10 min</span><span class="tag tag-orange">finisher</span></div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Îți place coarda — o păstrăm, dar ca finisher scurt când ai energie, NU 1000 de sărituri zilnic la maxim (e anaerob, adaugă cortizol). 5–10 min, în reprize.</div></div></div>
+  <div class="alert-box orange"><div class="alert-ttl">⚠ Fără alergare pe asfalt — încă</div>La 110 kg, alergarea transmite 3–4× greutatea prin genunchi. O deblocăm în faze, pe măsură ce scazi: sub 102 kg power walking, sub 97 intervale, sub 93 alergare continuă. Vezi Modulul 4.</div>
+</div>
+
+<!-- ==================== REGULI ==================== -->
+<div class="panel" id="tab-reguli">
+  <div class="alert-box green"><div class="alert-ttl">Cum crești fără greutăți de sală</div>Progressive overload merge și cu greutatea corpului. La fiecare 2–3 săptămâni, crește ceva (notezi în aplicația ta):</div>
+  <div class="ex-block open" id="ex-r1"><div class="ex-hdr" onclick="toggleEx('ex-r1')"><div class="ex-left"><div class="ex-num">01</div><div class="ex-ttl">Ordinea progresiei</div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">1) Mai multe repetări → 2) Variantă mai grea (flotări pe sol → picioare sus) → 3) Tempo mai lent pe coborâre → 4) Buturugă mai grea → 5) Pauze mai scurte.</div></div></div>
+  <div class="ex-block" id="ex-r2"><div class="ex-hdr" onclick="toggleEx('ex-r2')"><div class="ex-left"><div class="ex-num">02</div><div class="ex-ttl">Frecvența — cele două ferestre</div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Forța (A/B/C) — 3–4×/săpt, dimineața. Zone 2 — 2–3×/săpt, după-amiaza. Plimbările cu Joy = bonus (NEAT). NU forță în fiecare zi pe aceeași grupă — mușchiul crește în recuperare (48–72h).</div></div></div>
+  <div class="ex-block" id="ex-r3"><div class="ex-hdr" onclick="toggleEx('ex-r3')"><div class="ex-left"><div class="ex-num">03</div><div class="ex-ttl">Regula de execuție</div></div><div class="ex-icon">▼</div></div>
+    <div class="ex-body"><div class="ex-cue">Ultimele 2 repetări grele, dar forma curată. Dacă forma se strică — e prea greu. Arsura musculară = ok. Durerea ascuțită articulară = STOP, îmi scrii.</div></div></div>
+</div>
+
+<script>
+function showTab(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');event.target.classList.add('active');window.scrollTo(0,0);}
+function toggleEx(id){document.getElementById(id).classList.toggle('open');}
+function toggleSet(el){el.classList.toggle('done');}
+let restTimer=null;
+function startRest(sec){if(restTimer)clearInterval(restTimer);const el=document.getElementById('t-val');let end=Date.now()+sec*1000;el.style.display='block';function tick(){let r=Math.max(0,Math.round((end-Date.now())/1000));el.textContent='PAUZĂ '+Math.floor(r/60)+':'+(r%60<10?'0':'')+(r%60);if(r<=0){clearInterval(restTimer);el.textContent='✓ GATA';if(navigator.vibrate)navigator.vibrate([200,100,200]);setTimeout(()=>el.style.display='none',2000);}}tick();restTimer=setInterval(tick,1000);}
+(function(){const d1=new Date(2026,5,29);const t=new Date();const e=Math.max(0,Math.floor((t-d1)/86400000));const hd=document.getElementById('hdr-day');})();
+</script>
+</body>
+</html>

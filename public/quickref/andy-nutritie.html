@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Quick Ref Nutriție · Andy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blk: #0A0A0A; --drk: #141414; --drk2: #1A1A1A;
+  --red: #C0392B; --red-dim: rgba(192,57,43,0.12);
+  --wht: #F5F5F5; --muted: #777; --brd: #252525; --card: #111111;
+  --orange: #E67E22; --green: #27AE60; --blue: #2980B9; --purple: #8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:100px;}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);}
+
+.tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;-ms-overflow-style:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:10px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s,border-color 0.15s;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+.panel{display:none;padding:18px;}
+.panel.active{display:block;}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px;}
+.stat-card{background:var(--card);border:1px solid var(--brd);padding:12px 8px;text-align:center;border-radius:4px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);line-height:1;}
+.stat-unit{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.stat-lbl{font-size:10px;color:#aaa;margin-top:4px;}
+
+.day-selector{display:flex;gap:6px;margin-bottom:16px;background:var(--drk2);padding:6px;border-radius:6px;border:1px solid var(--brd);}
+.day-btn{flex:1;padding:10px 4px;text-align:center;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:var(--drk);border:1px solid var(--brd);border-radius:4px;cursor:pointer;transition:all 0.2s;display:flex;flex-direction:column;align-items:center;gap:2px;}
+.day-btn span{font-family:'DM Mono',monospace;font-size:11px;font-weight:600;}
+.day-btn.active.sala{background:var(--red-dim);color:var(--red);border-color:var(--red);}
+.day-btn.active.sala span{color:var(--wht);}
+.day-btn.active.odihna{background:rgba(230,126,34,0.15);color:var(--orange);border-color:var(--orange);}
+.day-btn.active.odihna span{color:var(--wht);}
+.day-btn.active.refeed{background:rgba(41,128,185,0.15);color:var(--blue);border-color:var(--blue);}
+.day-btn.active.refeed span{color:var(--wht);}
+
+body.day-sala .d-odihna { display: none !important; }
+body.day-sala .d-sala { display: inline !important; }
+body.day-sala .d-refeed { display: none !important; }
+
+body.day-odihna .d-sala { display: none !important; }
+body.day-odihna .d-odihna { display: inline !important; }
+body.day-odihna .d-refeed { display: none !important; }
+
+body.day-refeed .d-sala { display: none !important; }
+body.day-refeed .d-odihna { display: none !important; }
+body.day-refeed .d-refeed { display: inline !important; }
+
+.dyn-val{color:var(--orange);font-weight:600;background:rgba(230,126,34,0.1);padding:0 4px;border-radius:2px;border:1px dashed rgba(230,126,34,0.4);transition:all 0.3s;}
+strong.w,.w{color:var(--wht);font-weight:700;}
+
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--orange);padding:16px;margin-bottom:18px;border-radius:0 6px 6px 0;}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--orange);margin-bottom:8px;}
+.guide-p{font-size:12px;color:#ccc;line-height:1.55;margin-bottom:14px;}
+.guide-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.g-item{background:var(--card);border:1px solid var(--brd);padding:12px;border-radius:4px;display:flex;flex-direction:column;gap:4px;}
+.g-icon{font-size:24px;line-height:1;margin-bottom:2px;}
+.g-ttl{font-size:11px;font-weight:700;color:var(--wht);text-transform:uppercase;letter-spacing:1px;}
+.g-desc{font-size:11px;color:var(--muted);line-height:1.4;}
+.g-desc strong{color:var(--orange);font-family:'DM Mono',monospace;font-size:12px;}
+
+.acc-card{background:var(--drk);border:1px solid var(--brd);margin-bottom:14px;border-radius:6px;overflow:hidden;transition:border-color 0.2s;}
+.acc-card.open{border-color:var(--red);}
+.acc-card.open.orange{border-color:var(--orange);}
+.acc-card.open.blue{border-color:var(--blue);}
+.acc-card.open.green{border-color:var(--green);}
+.acc-card.open.purple{border-color:var(--purple);}
+
+.acc-hdr{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;background:rgba(255,255,255,0.02);transition:background 0.15s;}
+.acc-hdr:hover{background:rgba(255,255,255,0.04);}
+.acc-title-area{flex:1;padding-right:10px;}
+.acc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--wht);}
+.acc-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);font-weight:500;margin-top:2px;}
+.acc-icon{font-size:12px;color:var(--muted);transition:transform 0.3s ease,color 0.3s ease;display:flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--card);border:1px solid var(--brd);border-radius:4px;}
+.acc-card.open .acc-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.acc-card.open.orange .acc-icon{color:var(--orange);border-color:var(--orange);}
+.acc-card.open.green .acc-icon{color:var(--green);border-color:var(--green);}
+.acc-card.open.purple .acc-icon{color:var(--purple);border-color:var(--purple);}
+
+.acc-content{max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);}
+.acc-card.open .acc-content{max-height:2800px;}
+.acc-sub{padding:10px 16px;background:rgba(255,255,255,0.01);font-size:11px;color:#aaa;border-bottom:1px solid var(--brd);border-top:1px solid var(--brd);line-height:1.5;}
+.acc-body{padding:14px 16px;}
+
+.opt-block{background:var(--card);border:1px solid var(--brd);border-radius:4px;padding:14px;margin-bottom:12px;transition:all 0.2s;cursor:pointer;position:relative;}
+.opt-block:last-child{margin-bottom:0;}
+.opt-block:hover{border-color:var(--red);}
+.opt-block.selected{border-color:var(--green);background:rgba(39,174,96,0.06);box-shadow:0 0 15px rgba(39,174,96,0.15);}
+.opt-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.opt-num{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:700;background:rgba(230,126,34,0.12);padding:2px 6px;border-radius:2px;border:1px solid rgba(230,126,34,0.3);}
+.opt-block.selected .opt-num{color:var(--green);background:rgba(39,174,96,0.2);border-color:rgba(39,174,96,0.4);}
+.opt-p{font-family:'DM Mono',monospace;font-size:12px;color:var(--red);font-weight:600;}
+.opt-block.selected .opt-p{color:var(--green);}
+.opt-ttl{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:6px;}
+.opt-desc{font-size:12px;color:#ccc;line-height:1.55;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.opt-btm{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:4px;}
+.opt-cue{font-size:11px;color:var(--muted);font-style:italic;}
+.opt-check{font-size:11px;font-weight:700;color:var(--muted);background:var(--drk);padding:4px 10px;border-radius:4px;border:1px solid var(--brd);transition:all 0.2s;}
+.opt-block.selected .opt-check{color:#fff;background:var(--green);border-color:var(--green);}
+
+.tag{display:inline-block;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:10px;}
+.tag-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(192,57,43,0.3);}
+.tag-orange{background:rgba(230,126,34,0.1);color:var(--orange);border:1px solid rgba(230,126,34,0.3);}
+.tag-green{background:rgba(39,174,96,0.08);color:var(--green);border:1px solid rgba(39,174,96,0.25);}
+.tag-blue{background:rgba(41,128,185,0.1);color:var(--blue);border:1px solid rgba(41,128,185,0.3);}
+
+.alert-box{border-left:3px solid var(--red);background:var(--red-dim);padding:12px 14px;margin-bottom:14px;font-size:12px;color:#ccc;line-height:1.65;border-radius:0 4px 4px 0;}
+.alert-box.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
+.alert-box.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
+.alert-box.blue{border-color:var(--blue);background:rgba(41,128,185,0.07);}
+.alert-box.purple{border-color:var(--purple);background:rgba(142,68,173,0.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--red);margin-bottom:4px;}
+.alert-box.orange .alert-ttl{color:var(--orange);}
+.alert-box.green .alert-ttl{color:var(--green);}
+.alert-box.blue .alert-ttl{color:var(--blue);}
+.alert-box.purple .alert-ttl{color:var(--purple);}
+
+.blood-item{background:var(--card);border:1px solid var(--brd);border-radius:4px;padding:12px;margin-bottom:8px;}
+.blood-item.warn{border-left:3px solid var(--orange);}
+.blood-item.great{border-left:3px solid var(--blue);}
+.blood-item.good{border-left:3px solid var(--green);}
+.blood-val{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.blood-name{font-size:12px;font-weight:700;color:var(--wht);}
+.blood-num{font-family:'DM Mono',monospace;font-size:13px;}
+.blood-num.ok{color:var(--green);}
+.blood-num.alert{color:var(--orange);}
+.blood-num.great{color:var(--blue);}
+.blood-explain{font-size:11px;color:#aaa;line-height:1.5;}
+.blood-explain strong{color:var(--wht);}
+
+.hydro-bar{background:rgba(41,128,185,0.1);border:1px solid rgba(41,128,185,0.3);border-radius:4px;padding:10px 14px;font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--blue);margin-bottom:14px;}
+
+.rule-list{list-style:none;padding:0;}
+.rule-list li{padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;color:#ccc;line-height:1.6;}
+.rule-list li:last-child{border-bottom:none;}
+.rule-list li strong{color:var(--wht);}
+
+.sticky-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(12,12,12,0.95);backdrop-filter:blur(10px);border-top:1px solid var(--brd);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;z-index:1000;transform:translateY(100%);transition:transform 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:0 -5px 25px rgba(0,0,0,0.7);}
+.sticky-bar.visible{transform:translateY(0);}
+.st-info{display:flex;flex-direction:column;}
+.st-ttl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.st-vals{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);line-height:1;}
+.st-btn{background:var(--green);color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 16px;border-radius:4px;border:none;cursor:pointer;}
+
+.modal-backdrop{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1001;display:none;justify-content:center;align-items:flex-end;}
+.modal-backdrop.open{display:flex;}
+.modal-box{background:var(--drk);border:1px solid var(--brd);border-radius:14px 14px 0 0;width:100%;max-width:480px;padding:24px 20px;max-height:85vh;overflow-y:auto;animation:slideUp 0.3s cubic-bezier(0.4,0,0.2,1);}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;border-bottom:1px solid var(--brd);padding-bottom:14px;}
+.modal-ttl{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--wht);}
+.modal-close{font-size:20px;color:var(--muted);cursor:pointer;border:none;background:none;padding:4px;}
+.modal-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;}
+.modal-row.highlight{background:rgba(39,174,96,0.1);padding:14px 12px;border-radius:6px;border:1px solid rgba(39,174,96,0.3);margin:14px 0;font-weight:700;}
+.modal-meal-name{color:var(--wht);font-weight:600;flex:1;padding-right:10px;}
+.modal-meal-val{font-family:'DM Mono',monospace;color:var(--green);font-weight:600;white-space:nowrap;}
+.modal-btn-reset{width:100%;background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);color:var(--red);padding:12px;border-radius:6px;font-weight:700;cursor:pointer;margin-top:18px;text-transform:uppercase;letter-spacing:1px;font-size:11px;}
+.prog-container{background:var(--card);border:1px solid var(--brd);padding:14px;border-radius:6px;margin:14px 0;}
+.prog-bar-bg{background:var(--drk2);height:8px;border-radius:4px;overflow:hidden;margin:8px 0;}
+.prog-bar-fill{background:var(--green);height:100%;width:0%;transition:width 0.5s cubic-bezier(0.4,0,0.2,1);}
+.prog-lbls{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+
+/* PROGRESS BAR */
+.prog-wrap{margin-bottom:8px;}
+.prog-bar{height:3px;background:var(--brd);border-radius:2px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--red);border-radius:2px;transition:width 1.2s ease;width:0%;}
+.prog-meta{display:flex;justify-content:space-between;margin-top:3px;}
+.prog-meta span{font-size:9px;color:var(--muted);letter-spacing:1px;}
+
+/* NSDR TIMER */
+.nsdr-block{background:rgba(142,68,173,.06);border:1px solid rgba(142,68,173,.3);border-radius:8px;padding:18px;text-align:center;}
+.nsdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--wht);margin-bottom:4px;}
+.nsdr-sub{font-size:11px;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
+.nsdr-cd{font-family:'Bebas Neue',sans-serif;font-size:72px;color:var(--wht);line-height:1;letter-spacing:3px;transition:color .3s;margin-bottom:12px;}
+.nsdr-cd.active{color:var(--purple);}
+.nsdr-cd.done{color:var(--green);}
+.nsdr-state{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;min-height:14px;transition:color .3s;}
+.nsdr-progress{height:4px;background:var(--brd);border-radius:2px;overflow:hidden;margin-bottom:16px;}
+.nsdr-prog-fill{height:100%;background:var(--purple);border-radius:2px;transition:width .9s ease;width:0%;}
+.nsdr-ctrls{display:flex;gap:8px;justify-content:center;}
+.nsdr-btn{padding:12px 24px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;border:1px solid;transition:all .15s;}
+.nsdr-start{background:rgba(142,68,173,.15);border-color:var(--purple);color:var(--purple);}
+.nsdr-start:hover{background:rgba(142,68,173,.25);}
+.nsdr-stop{background:var(--drk2);border-color:var(--brd);color:var(--muted);}
+.nsdr-stop:hover{border-color:var(--red);color:var(--red);}
+
+/* TIMELINE */
+.tl-item{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
+.tl-time{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--red);width:50px;flex-shrink:0;padding-top:2px;}
+.tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
+.tl-dot.red{background:var(--red);}
+.tl-dot.orange{background:var(--orange);}
+.tl-dot.green{background:var(--green);}
+.tl-dot.purple{background:var(--purple);}
+.tl-dot.muted{background:var(--muted);}
+.tl-content{flex:1;}
+.tl-action{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:2px;}
+.tl-note{font-size:11px;color:#aaa;line-height:1.5;}
+.tl-note strong{color:var(--orange);}
+
+/* PRE-DECIDE BLOCK */
+.predecide{background:var(--card);border:1px solid rgba(230,126,34,.3);border-radius:6px;padding:14px;margin-bottom:18px;}
+.predecide-ttl{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--orange);margin-bottom:8px;}
+.predecide-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--brd);}
+.predecide-item:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.pd-num{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--red);width:24px;flex-shrink:0;line-height:1.1;}
+.pd-text{font-size:12px;color:#ccc;line-height:1.6;}
+.pd-text strong{color:var(--wht);}
+
+/* MVE BOX */
+.mve-box{background:rgba(192,57,43,.05);border:2px solid var(--red);margin-bottom:18px;border-radius:6px;overflow:hidden;}
+.mve-h{background:var(--red);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;}
+.mve-ttl{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#fff;margin:0;}
+.mve-body{padding:18px;}
+.mve-row{display:flex;align-items:flex-start;gap:12px;padding:10px 0;border-bottom:1px solid rgba(192,57,43,.18);}
+.mve-row:last-child{border-bottom:none;}
+.mve-num{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);min-width:24px;line-height:1;}
+.mve-ex{font-weight:700;font-size:12px;color:var(--wht);}
+.mve-note{font-size:11px;color:var(--muted);margin-top:2px;}
+@media(max-width:767px){body,.sticky-bar{max-width:480px;margin:0 auto;}}
+</style>
+
+</head>
+<body class="day-sala">
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT</div>
+    <div class="hdr-name">Quick Ref Nutriție · Andy<div id="hdr-day" style="color:var(--red);font-family:'DM Mono',monospace;margin-top:2px;font-size:11px;">Zi — din 90</div></div>
+  </div>
+  <div class="prog-wrap">
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+    <div class="prog-meta"><span id="prog-phase">FAZA 1: Reset Metabolic</span><span id="prog-pct">0%</span></div>
+  </div>
+  <div class="budget-bar">
+    <span>Target Zi</span><strong id="hdr-target-val">2.800 KCAL</strong><span>220g Proteină Fixă</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('mese')">Mesele Tale</div>
+  <div class="tab" onclick="showTab('timeline')">Ziua Ta</div>
+  <div class="tab" onclick="showTab('alimente')">Alimente &amp; Hidratare</div>
+  <div class="tab" onclick="showTab('analize')">Analizele Tale</div>
+  <div class="tab" onclick="showTab('reguli')">Reguli</div>
+  <div class="tab" onclick="showTab('urgenta')">Scutul de Seară</div>
+</div>
+
+<!-- ==================== TAB 1: MESE ==================== -->
+<div class="panel active" id="tab-mese">
+  <div class="alert-box orange">
+    <div class="alert-ttl">Săptămâna 1 — Tranziție Gradată</div>
+    Acum ai 2–3 mese pe zi și post intermitent. <strong class="w">Nu trecem la 4 mese dintr-odată.</strong> În prima săptămână păstrăm ritmul tău (prima masă pe la 14:00) și adăugăm doar <strong class="w">scutul de seară</strong>. Restul vine treptat. Schimbările bruște nu țin — exact lecția de la Paște.
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-val" id="stat-kcal">2.800</div>
+      <div class="stat-unit">kcal / zi</div>
+      <div class="stat-lbl" id="stat-lbl-day">Zi cu Antrenament</div>
+    </div>
+    <div class="stat-card" style="border-color:var(--green);background:rgba(39,174,96,0.05);">
+      <div class="stat-val" style="color:var(--green);">220g</div>
+      <div class="stat-unit" style="color:var(--green);">proteină fixă</div>
+      <div class="stat-lbl" style="color:var(--green);">2g/kg · ancora ✓</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--blue);">90g</div>
+      <div class="stat-unit">grăsimi</div>
+      <div class="stat-lbl">Bază hormonală</div>
+    </div>
+  </div>
+  <div class="stat-grid" style="grid-template-columns:repeat(2,1fr);">
+    <div class="stat-card">
+      <div class="stat-val" style="color:var(--orange);">~277g</div>
+      <div class="stat-unit">carbohidrați</div>
+      <div class="stat-lbl">Restul bugetului · energie</div>
+    </div>
+    <div class="stat-card" style="border-color:var(--blue);background:rgba(41,128,185,0.05);">
+      <div class="stat-val" style="color:var(--blue);">≥40g</div>
+      <div class="stat-unit" style="color:var(--blue);">fibre / zi</div>
+      <div class="stat-lbl" style="color:var(--blue);">Sațietate + digestie</div>
+    </div>
+  </div>
+  <div class="alert-box green" style="margin-bottom:16px;">
+    <div class="alert-ttl">De ce 220g proteină (2g/kg) — arma ta anti-frigider</div>
+    Ești fost atlet: vrem să <strong class="w">topim grăsimea, nu mușchiul</strong>. Proteina mare e și protecție musculară, și cel mai puternic semnal de sațietate — exact ce taie valul de seară. O atingi prima, în fiecare zi. Restul (grăsimi, carbo) e mai flexibil.
+  </div>
+
+  <div class="guide-box">
+    <div class="guide-hdr">📐 Ghidul Vizual — Fără Cântar</div>
+    <p class="guide-p">Tu ai cântar și aplicație — dar pentru zilele pe fugă, folosești mâna. Gramajele = stare <strong>CRUDĂ</strong>.</p>
+    <div class="guide-grid">
+      <div class="g-item"><div class="g-icon">✋</div><div class="g-ttl">1 Palmă</div><div class="g-desc"><strong>~180–200g carne/pește crud</strong> = ~40g P</div></div>
+      <div class="g-item"><div class="g-icon">✊</div><div class="g-ttl">1 Pumn</div><div class="g-desc"><strong>~200g cartofi/orez fierți</strong></div></div>
+      <div class="g-item"><div class="g-icon">🤌</div><div class="g-ttl">1 Deget Mare</div><div class="g-desc"><strong>~10g ulei de măsline</strong></div></div>
+      <div class="g-item"><div class="g-icon">🫴</div><div class="g-ttl">1 Căuș</div><div class="g-desc"><strong>~30g nuci / brânză</strong></div></div>
+    </div>
+  </div>
+
+  <div class="tag tag-orange">1. Selectează Tipul de Zi</div>
+  <div class="day-selector">
+    <div class="day-btn sala active" data-day="sala" onclick="selectDayType('sala')">Zi cu Antrenament<span>2.800 kcal</span></div>
+    <div class="day-btn odihna" data-day="odihna" onclick="selectDayType('odihna')">Zi Ușoară<span>2.600 kcal</span></div>
+    <div class="day-btn refeed" data-day="refeed" onclick="selectDayType('refeed')">Zi de Refeed<span>3.000 kcal</span></div>
+  </div>
+
+  <div class="alert-box green" style="margin-top:18px;">
+    <div class="alert-ttl">Regula carbohidratului unic</div>
+    Nutriționista ta a zis corect: <strong class="w">un singur tip de carbohidrat la masă</strong> — ori pâine, ori cartofi, ori orez, ori mămăligă. Și-l pui în jurul antrenamentului de dimineață, nu seara.
+  </div>
+
+  <!-- MIC DEJUN -->
+  <div class="tag">🍳 Mic Dejun (post-sport dimineața) · ~50g P</div>
+  <div class="opt"><div class="opt-ttl">Omleta ta clasică</div><div class="opt-macros">~40g P · ~620 kcal</div><div class="opt-note">4 ouă + 60g telemea + 1/2 avocado + roșii + 1 lingură ulei de măsline. Exact ce mănânci deja. <strong>Zi ușoară:</strong> 3 ouă, fără avocado.</div></div>
+  <div class="opt"><div class="opt-ttl">Ouă + kefir</div><div class="opt-macros">~38g P · ~500 kcal</div><div class="opt-note">3 ouă fierte/ochiuri + 300ml kefir cu sare + castraveți/roșii. Rapid, sățios, fermentat (bun pentru inflamație).</div></div>
+  <div class="opt"><div class="opt-ttl">Cu un carb (zi de antrenament greu)</div><div class="opt-macros">~42g P · ~720 kcal</div><div class="opt-note">3 ouă + 60g telemea + avocado + <strong>2 felii pâine integrală sau mămăligă</strong>. Doar în zilele cu sesiune intensă în pădure.</div></div>
+
+  <!-- PRANZ -->
+  <div class="tag">🍗 Prânz / Masa Principală (~14:00) · ~65g P</div>
+  <div class="opt"><div class="opt-ttl">Proteină + un carb + legume</div><div class="opt-macros">~55g P · ~700 kcal</div><div class="opt-note">200g pui/curcan/vită slabă (o palmă jumate) + <strong>UN</strong> carb (1 pumn orez/cartofi/mămăligă) + salată mare cu ulei de măsline.</div></div>
+  <div class="opt"><div class="opt-ttl">Pește (2× pe săptămână — pentru ficat + omega-3)</div><div class="opt-macros">~50g P · ~650 kcal</div><div class="opt-note">200g somon/pește la cuptor/airfryer cu lămâie + cartofi la cuptor + legume. Omega-3 = anti-inflamator (CRP-ul tău).</div></div>
+  <div class="opt"><div class="opt-ttl">Pe fugă (zi cu mitinguri)</div><div class="opt-macros">~50g P · ~620 kcal</div><div class="opt-note">Pui la grătar + salată mare + 1 felie pâine. Restaurant: proteină + legume, fără cartofi prăjiți / sosuri dulci.</div></div>
+
+  <!-- GUSTARE / SCUT -->
+  <div class="tag">🥛 Gustare-tampon (înainte de sportul de amiază) · ~35g P</div>
+  <div class="opt"><div class="opt-ttl">Kefir + ouă</div><div class="opt-macros">~25g P · ~250 kcal</div><div class="opt-note">300ml kefir + 2 ouă fierte. Combustibil pentru sesiunea de după-amiază, fără să te îngreuneze.</div></div>
+  <div class="opt"><div class="opt-ttl">Telemea + roșii</div><div class="opt-macros">~20g P · ~220 kcal</div><div class="opt-note">80g telemea + roșii + castravete + ulei. Proteină lentă, volum mare.</div></div>
+
+  <!-- CINA / SCUTUL -->
+  <div class="tag tag-red">🛡 Cina = SCUTUL DE SEARĂ · ~55g P</div>
+  <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">Telemea cu roșii (ce faci deja)</div><div class="opt-macros">~35g P · ~450 kcal</div><div class="opt-note">120g telemea moldovenească + roșii + castravete + ulei de măsline + sare. <strong>Cazeina te ține sătul până dimineața.</strong> Asta e arma ta anti-frigider.</div></div>
+  <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">Kefir cu sare</div><div class="opt-macros">~20g P · ~250 kcal</div><div class="opt-note">400ml kefir cu sare grunjoasă. Ușor, fermentat, perfect când nu ți-e foame dar „mental îți cere".</div></div>
+  <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">Proteină + legume (zi grea)</div><div class="opt-macros">~45g P · ~500 kcal</div><div class="opt-note">Pește/pui + multe legume la abur, fără carbohidrați. Mai puțini carbohidrați seara = somn mai bun.</div></div>
+</div>
+
+<!-- ==================== TAB 2: TIMELINE ==================== -->
+<div class="panel" id="tab-timeline">
+  <div class="alert-box">
+    <div class="alert-ttl">Ziua ta reală — cu cele două ferestre de sport</div>
+    Ai zis în fișă: <em>„sport dimineața, work, prânz, odihnă, work, sport amiază".</em> Construim în jurul ei, nu o dăm peste cap.
+  </div>
+  <div class="tl-item"><div class="tl-time">~05:00</div><div class="tl-content"><div class="tl-action">Trezire + ieșire cu Joy</div><div class="tl-note">Apă cu lămâie (deja obicei). 10 min de lumină în pădure = resetează cortizolul matinal. Hidratare: prima sticlă de apă.</div></div></div>
+  <div class="tl-item"><div class="tl-time">~07:00–08:00</div><div class="tl-content"><div class="tl-action">Sesiunea de dimineață (pădure)</div><div class="tl-note">Forță sau Zone 2, conform QuickRef Antrenament. Pe stomacul gol e ok (postul tău), sau cu un ou + apă dacă ai nevoie.</div></div></div>
+  <div class="tl-item"><div class="tl-time">~09:00</div><div class="tl-content"><div class="tl-action">Mic dejun (rupi postul)</div><div class="tl-note">Omleta ta — proteină + grăsimi bune. Aici pui carbohidratul dacă a fost sesiune intensă.</div></div></div>
+  <div class="tl-item"><div class="tl-time">~14:00</div><div class="tl-content"><div class="tl-action">Prânz — masa principală</div><div class="tl-note">Proteină + UN carb + legume. Construiește scutul pentru seară.</div></div></div>
+  <div class="tl-item"><div class="tl-time">~16:30</div><div class="tl-content"><div class="tl-action">Gustare-tampon + sesiunea de amiază</div><div class="tl-note">Kefir + ouă înainte de sportul de după-amiază. Apoi sesiunea ușoară (Zone 2 / mers în pădure).</div></div></div>
+  <div class="tl-item"><div class="tl-time">~19:30</div><div class="tl-content"><div class="tl-action">🛡 Cina = SCUTUL</div><div class="tl-note">Telemea cu roșii / kefir. Sătul, nu secătuit. <strong>Aici câștigi sau pierzi ziua.</strong></div></div></div>
+  <div class="tl-item"><div class="tl-time">~21:30–23:00</div><div class="tl-content"><div class="tl-action">Downtime + somn</div><div class="tl-note">Ecrane jos, magneziu, lumină redusă. Te trezești la 5 — culcarea devreme nu e opțională.</div></div></div>
+</div>
+
+<!-- ==================== TAB 3: ALIMENTE ==================== -->
+<div class="panel" id="tab-alimente">
+  <div class="tag tag-green">✓ Baza ta — alimente pe care le iubești deja</div>
+  <div class="opt"><div class="opt-ttl">Proteine</div><div class="opt-note">Ouă (din belșug), telemea moldovenească, kefir, pui/curcan, vită slabă, pește gras (somon — 2×/săpt), brânză de vaci.</div></div>
+  <div class="opt"><div class="opt-ttl">Grăsimi bune</div><div class="opt-note">Avocado, ulei de măsline, ouă, pește gras, nuci. Tu deja le mănânci — le păstrăm.</div></div>
+  <div class="opt"><div class="opt-ttl">Carbohidrați (UNUL pe masă, în jurul antrenamentului)</div><div class="opt-note">Cartofi, orez, mămăligă, pâine integrală. Nu toate odată.</div></div>
+  <div class="opt"><div class="opt-ttl">Legume & fermentate</div><div class="opt-note">Roșii, castraveți, salată, legume la abur. Kefir + telemea = fermentate (bune pentru inflamație/CRP).</div></div>
+
+  <div class="alert-box blue" style="margin-top:18px;">
+    <div class="alert-ttl">💧 HIDRATAREA — în rampă, nu dintr-odată</div>
+    Analizele arată hematocrit ușor crescut → <strong class="w">hidratare inconstantă</strong> (ai zis „zile fără niciun litru"). Urcăm gradat: <strong class="w">3 L/zi acum → 4 / 4,5 L</strong> pe parcurs. O sticlă lângă tine la birou tot timpul, una în pădure. Apa scade pulsul de efort, taie foamea falsă de seara și stabilizează cântarul. E cel mai ușor upgrade pe care-l poți face.
+  </div>
+  <div class="alert-box orange">
+    <div class="alert-ttl">Regula supermarket</div>
+    Nu cumperi flămând. „Prostioarele" nu intră în casă — nu poți ceda la ce nu există. Telemea + kefir + ouă mereu în frigider = scutul la îndemână.
+  </div>
+</div>
+
+<!-- ==================== TAB 4: ANALIZE ==================== -->
+<div class="panel" id="tab-analize">
+  <div class="alert-box green">
+    <div class="alert-ttl">✓ Baza ta e SOLIDĂ — „analize de Aviator", confirmat</div>
+    <strong class="w">Testosteron 619 ng/dL</strong> (ref 240–870) — bun · <strong class="w">Glicemie 0,97 g/L</strong> — normală, fără prediabet · <strong class="w">Cortizol</strong> matin + urinar normale · <strong class="w">Tiroidă</strong> OK. Nu reparăm o boală — optimizăm un sistem sănătos.
+  </div>
+  <div class="tag tag-red">Țintele de sănătate (semnale timpurii)</div>
+  <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">🎯 Ficat — ALT 58 (ref &lt;55)</div><div class="opt-note">Ușor crescut = <strong>început de ficat gras</strong>, exact ce bănuiai. Cea mai reversibilă țintă: slăbire + mai puțin zahăr/alcool → ALT coboară. Ținta #1.</div></div>
+  <div class="opt" style="border-left:3px solid var(--orange);"><div class="opt-ttl">Inflamație — CRP 2,7 (ideal &lt;1)</div><div class="opt-note">Inflamație de fond ușoară (grăsime viscerală). Scade cu omega-3 + slăbire.</div></div>
+  <div class="opt" style="border-left:3px solid var(--orange);"><div class="opt-ttl">Colesterol — HDL 0,43 (la limita de jos)</div><div class="opt-note">Se îmbunătățește direct cu antrenamentul + slăbirea + omega-3.</div></div>
+  <div class="opt" style="border-left:3px solid var(--blue);"><div class="opt-ttl">Hidratare — hematocrit 50%</div><div class="opt-note">Ușor crescut → hidratare inconstantă. Vezi tab-ul Alimente.</div></div>
+  <div class="alert-box">
+    <div class="alert-ttl">De testat — fier / feritină / zinc / B12</div>
+    Oboseala ta poate fi fier scăzut, dar <strong class="w">nu apare în analizele de până acum</strong>. Nu-l suplimentăm orbește. Ai zis că mai ai analize de pus pe WhatsApp — trimite-mi-le și completez tabloul. Până atunci, oboseala o atacăm prin somn + hidratare.
+  </div>
+</div>
+
+<!-- ==================== TAB 5: REGULI ==================== -->
+<div class="panel" id="tab-reguli">
+  <div class="opt"><div class="opt-ttl">R1 · Regula celor 2 zile</div><div class="opt-note">Nu lăsa 2 zile consecutive de deviere. O zi proastă e inclusă. Două la rând = revii la masa următoare. (Exact aici s-a rupt la Paște.)</div></div>
+  <div class="opt"><div class="opt-ttl">R2 · Proteina prima</div><div class="opt-note">La fiecare masă, începi cu proteina. Apoi legumele. Apoi carbohidratul. Sațietate maximă, glicemie stabilă.</div></div>
+  <div class="opt"><div class="opt-ttl">R3 · Un carbohidrat pe masă</div><div class="opt-note">Ori pâine, ori cartofi, ori orez, ori mămăligă. În jurul antrenamentului de dimineață.</div></div>
+  <div class="opt"><div class="opt-ttl">R4 · Scutul de seară, non-negociabil</div><div class="opt-note">Telemea/kefir seara. Sătul, nu secătuit. Decizia se ia dimineața, nu la 19:00.</div></div>
+  <div class="opt"><div class="opt-ttl">R5 · 80/20</div><div class="opt-note">80% corect = 100% din rezultate. O poftă? Proteină/salată întâi, apoi jumătate din ce vrei. Niciun aliment interzis. Fără „ziua liberă" care te umflă.</div></div>
+  <div class="alert-box blue"><div class="alert-ttl">Cântarul</div>1×/săptămână, aceeași zi, dimineața. Tu ai aplicația — dar nu te urci zilnic. Talia (1×/2 săpt) spune mai mult decât cântarul.</div>
+</div>
+
+<!-- ==================== TAB 6: URGENTA / SCUT ==================== -->
+<div class="panel" id="tab-urgenta">
+  <div class="alert-box red"><div class="alert-ttl">Valul de seară — „la ora asta începe burta să mă roadă"</div>Nu e foame, e descărcare de stres. Ai 4 niveluri, în ordine:</div>
+  <div class="urg-card"><div class="urg-trigger">NIVEL 1</div><div class="urg-situation">PREVENȚIE — scutul de peste zi</div><div class="urg-response">Proteină + volum de legume + fibre toată ziua. Ajungi seara sătul. 80% din val dispare aici, înainte să apară.</div></div>
+  <div class="urg-card"><div class="urg-trigger">NIVEL 2</div><div class="urg-situation">STOP-WAIT-ACT — când te lovește</div><div class="urg-response">STOP (niciun pas spre frigider) → 500ml apă rece → timer 10 min, ieși cu Joy în pădure. Valul durează 5–10 min și trece.</div></div>
+  <div class="urg-card"><div class="urg-trigger">NIVEL 3</div><div class="urg-situation">DAMAGE CONTROL — dacă tot vrei ceva</div><div class="urg-response">Telemea cu roșii sau kefir cu sare. Proteină + volum = te oprește mecanic la o gură, nu la o masă întreagă.</div></div>
+  <div class="urg-card"><div class="urg-trigger">NIVEL 4</div><div class="urg-situation">TIPP — criză după o zi oribilă</div><div class="urg-response">Apă rece pe față 30 sec → 20 genuflexiuni → respiri 4 sec / expiri 6 sec × 5. Oprești cascada de stres direct.</div></div>
+  <div class="alert-box orange"><div class="alert-ttl">Când pici (și se va întâmpla)</div>Un mesaj pe WhatsApp: „Am picat." Apoi masa următoare = standard, nu compensare. Nu sări mese, nu faci 2 ore de sport. Revii la plan identic.</div>
+</div>
+
+<script>
+function showTab(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');event.target.classList.add('active');window.scrollTo(0,0);}
+let dayTargets={sala:2800,odihna:2600,refeed:3000};
+let shortDayLabels={sala:'Zi cu Antrenament',odihna:'Zi Ușoară',refeed:'Zi de Refeed'};
+function selectDayType(type){document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.day-btn.'+type).classList.add('active');document.getElementById('hdr-target-val').innerText=dayTargets[type].toLocaleString('ro-RO')+' KCAL';document.getElementById('stat-kcal').innerText=dayTargets[type].toLocaleString('ro-RO');document.getElementById('stat-lbl-day').innerText=shortDayLabels[type];document.body.className='day-'+type;}
+(function(){const day1=new Date(2026,5,29);const today=new Date();const elapsed=Math.max(0,Math.floor((today-day1)/(86400000)));const dayNum=Math.min(elapsed+1,90);const pct=Math.min(100,Math.round((elapsed/89)*100));const hd=document.getElementById('hdr-day');if(hd)hd.textContent='Zi '+dayNum+' din 90';const pp=document.getElementById('prog-pct');if(pp)pp.textContent=pct+'%';setTimeout(()=>{const pf=document.getElementById('prog-fill');if(pf)pf.style.width=pct+'%';},300);const phase=elapsed<14?'FAZA 1: Reset Metabolic':elapsed<30?'FAZA 1: Fundație':elapsed<60?'FAZA 2: Progresie':'FAZA 3: Vârf';const ph=document.getElementById('prog-phase');if(ph)ph.textContent=phase;})();
+</script>
+</body>
+</html>
