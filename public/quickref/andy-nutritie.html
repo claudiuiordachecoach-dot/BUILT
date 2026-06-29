@@ -184,7 +184,7 @@ strong.w,.w{color:var(--wht);font-weight:700;}
 .prog-meta{display:flex;justify-content:space-between;margin-top:3px;}
 .prog-meta span{font-size:9px;color:var(--muted);letter-spacing:1px;}
 
-/* Recuperare Activă (NSDR) */
+/* NSDR TIMER */
 .nsdr-block{background:rgba(142,68,173,.06);border:1px solid rgba(142,68,173,.3);border-radius:8px;padding:18px;text-align:center;}
 .nsdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--wht);margin-bottom:4px;}
 .nsdr-sub{font-size:11px;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
@@ -201,7 +201,7 @@ strong.w,.w{color:var(--wht);font-weight:700;}
 .nsdr-stop{background:var(--drk2);border-color:var(--brd);color:var(--muted);}
 .nsdr-stop:hover{border-color:var(--red);color:var(--red);}
 
-/* Structura Zilei */
+/* TIMELINE */
 .tl-item{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
 .tl-time{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--red);width:50px;flex-shrink:0;padding-top:2px;}
 .tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
@@ -215,7 +215,7 @@ strong.w,.w{color:var(--wht);font-weight:700;}
 .tl-note{font-size:11px;color:#aaa;line-height:1.5;}
 .tl-note strong{color:var(--orange);}
 
-/* DECIZII Luate în Avans */
+/* PRE-DECIDE BLOCK */
 .predecide{background:var(--card);border:1px solid rgba(230,126,34,.3);border-radius:6px;padding:14px;margin-bottom:18px;}
 .predecide-ttl{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--orange);margin-bottom:8px;}
 .predecide-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--brd);}
@@ -224,7 +224,7 @@ strong.w,.w{color:var(--wht);font-weight:700;}
 .pd-text{font-size:12px;color:#ccc;line-height:1.6;}
 .pd-text strong{color:var(--wht);}
 
-/* Esențialul */
+/* MVE BOX */
 .mve-box{background:rgba(192,57,43,.05);border:2px solid var(--red);margin-bottom:18px;border-radius:6px;overflow:hidden;}
 .mve-h{background:var(--red);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;}
 .mve-ttl{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#fff;margin:0;}
@@ -243,7 +243,7 @@ strong.w,.w{color:var(--wht);font-weight:700;}
 <div class="hdr">
   <div class="hdr-top">
     <div class="logo">BUILT</div>
-    <div class="hdr-name">Quick Ref Nutriție · Andy<div id="hdr-day" style="color:var(--red);font-family:'DM Mono',monospace;margin-top:2px;font-size:11px;">Sistem de bază</div></div>
+    <div class="hdr-name">Quick Ref Nutriție · Andy<div id="hdr-day" style="color:var(--red);font-family:'DM Mono',monospace;margin-top:2px;font-size:11px;">Zi — din 90</div></div>
   </div>
   <div class="prog-wrap">
     <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
@@ -267,7 +267,7 @@ strong.w,.w{color:var(--wht);font-weight:700;}
 <div class="panel active" id="tab-mese">
   <div class="alert-box orange">
     <div class="alert-ttl">Săptămâna 1 — Tranziție Gradată</div>
-    Acum ai 2–3 mese pe zi și post intermitent. <strong class="w">Nu forța 4 mese dintr-odată.</strong> În prima săptămână păstrăm ritmul tău (prima masă pe la 14:00) și adăugăm doar <strong class="w">scutul de seară</strong>. Restul vine treptat. Schimbările bruște nu țin — exact lecția de la Paște.
+    Acum ai 2–3 mese pe zi și post intermitent. <strong class="w">Nu trecem la 4 mese dintr-odată.</strong> În prima săptămână păstrăm ritmul tău (prima masă pe la 14:00) și adăugăm doar <strong class="w">scutul de seară</strong>. Restul vine treptat. Schimbările bruște nu țin — exact lecția de la Paște.
   </div>
 
   <div class="stat-grid">
@@ -300,18 +300,18 @@ strong.w,.w{color:var(--wht);font-weight:700;}
     </div>
   </div>
   <div class="alert-box green" style="margin-bottom:16px;">
-    <div class="alert-ttl">De ce 220g proteină (2g/kg) – blocajul foamei nocturne</div>
-    Baza ta atletică: vrem să <strong class="w">topim grăsimea, nu mușchiul</strong>. Proteina mare e și protecție musculară, și cel mai puternic semnal de sațietate — exact ce taie valul de seară. O atingi prima, în fiecare zi. Restul (grăsimi, carbohidrați) e mai flexibil.
+    <div class="alert-ttl">De ce 220g proteină (2g/kg) — scutul tău de seară</div>
+    Ești fost atlet: vrem să <strong class="w">topim grăsimea, nu mușchiul</strong>. Proteina mare e și protecție musculară, și cel mai puternic semnal de sațietate — exact ce taie valul de seară. O atingi prima, în fiecare zi. Restul (grăsimi, carbohidrați) e mai flexibil.
   </div>
 
   <div class="guide-box">
-    <div class="guide-hdr">📐 Ghid Vizual (Când nu ai cântar)</div>
-    <p class="guide-p">Tu ai cântar și aplicație — dar pentru zilele pe fugă, folosești mâna. Gramajele = stare <strong>CRUDĂ</strong>.</p>
+    <div class="guide-hdr">📐 Ghidul Vizual — Fără Cântar</div>
+    <p class="guide-p">Tu ai cântar și aplicație — dar pentru zilele pe fugă, folosești mâna. Gramajele sunt pentru alimentul <strong>crud</strong>, nu gătit.</p>
     <div class="guide-grid">
-      <div class="g-item"><div class="g-icon">✋</div><div class="g-ttl">1 Palmă (Proteină)</div><div class="g-desc"><strong>~180–200g carne/pește crud</strong> = ~40g P</div></div>
-      <div class="g-item"><div class="g-icon">✊</div><div class="g-ttl">1 Pumn (Carbohidrați)</div><div class="g-desc"><strong>~200g cartofi/orez fierți</strong></div></div>
-      <div class="g-item"><div class="g-icon">🤌</div><div class="g-ttl">1 Deget Mare (Grăsimi)</div><div class="g-desc"><strong>~10g ulei de măsline</strong></div></div>
-      <div class="g-item"><div class="g-icon">🫴</div><div class="g-ttl">1 Căuș (Nuci/Brânzeturi)</div><div class="g-desc"><strong>~30g nuci / brânză</strong></div></div>
+      <div class="g-item"><div class="g-icon">✋</div><div class="g-ttl">1 Palmă</div><div class="g-desc"><strong>~180–200g carne/pește crud</strong> = ~40g P</div></div>
+      <div class="g-item"><div class="g-icon">✊</div><div class="g-ttl">1 Pumn</div><div class="g-desc"><strong>~200g cartofi/orez fierți</strong></div></div>
+      <div class="g-item"><div class="g-icon">🤌</div><div class="g-ttl">1 Deget Mare</div><div class="g-desc"><strong>~10g ulei de măsline</strong></div></div>
+      <div class="g-item"><div class="g-icon">🫴</div><div class="g-ttl">1 Căuș</div><div class="g-desc"><strong>~30g nuci / brânză</strong></div></div>
     </div>
   </div>
 
@@ -319,45 +319,45 @@ strong.w,.w{color:var(--wht);font-weight:700;}
   <div class="day-selector">
     <div class="day-btn sala active" data-day="sala" onclick="selectDayType('sala')">Zi cu Antrenament<span>2.800 kcal</span></div>
     <div class="day-btn odihna" data-day="odihna" onclick="selectDayType('odihna')">Zi Ușoară<span>2.600 kcal</span></div>
-    <div class="day-btn refeed" data-day="refeed" onclick="selectDayType('refeed')">Zi cu Volum Mare<span>3.000 kcal</span></div>
+    <div class="day-btn refeed" data-day="refeed" onclick="selectDayType('refeed')">Zi de Încărcare<span>3.000 kcal</span></div>
   </div>
 
   <div class="alert-box green" style="margin-top:18px;">
-    <div class="alert-ttl">Regula unui singur carbohidrat</div>
+    <div class="alert-ttl">Regula carbohidratului unic</div>
     Nutriționista ta a zis corect: <strong class="w">un singur tip de carbohidrat la masă</strong> — ori pâine, ori cartofi, ori orez, ori mămăligă. Și-l pui în jurul antrenamentului de dimineață, nu seara.
   </div>
 
   <!-- MIC DEJUN -->
   <div class="tag">🍳 Mic Dejun (post-sport dimineața) · ~50g P</div>
   <div class="opt"><div class="opt-ttl">Omleta ta clasică</div><div class="opt-macros">~40g P · ~620 kcal</div><div class="opt-note">4 ouă + 60g telemea + 1/2 avocado + roșii + 1 lingură ulei de măsline. Exact ce mănânci deja. <strong>Zi ușoară:</strong> 3 ouă, fără avocado.</div></div>
-  <div class="opt"><div class="opt-ttl">Ouă + kefir</div><div class="opt-macros">~38g P · ~500 kcal</div><div class="opt-note">3 ouă fierte/ochiuri + 300ml kefir cu sare + castraveți/roșii. Rapid, sățios, fermentat (bun pentru inflamație).</div></div>
-  <div class="opt"><div class="opt-ttl">Mic dejun cu carbohidrați</div><div class="opt-macros">~42g P · ~720 kcal</div><div class="opt-note">3 ouă + 60g telemea + avocado + <strong>2 felii pâine integrală sau mămăligă</strong>. Doar în zilele cu sesiune intensă în pădure.</div></div>
+  <div class="opt"><div class="opt-ttl">Ouă + kefir</div><div class="opt-macros">~38g P · ~500 kcal</div><div class="opt-note">3 ouă fierte/ochiuri + 300ml kefir cu sare + castraveți/roșii. Rapid, sățios, fermentat (antiinflamator).</div></div>
+  <div class="opt"><div class="opt-ttl">Cu un carbohidrat (zi de antrenament greu)</div><div class="opt-macros">~42g P · ~720 kcal</div><div class="opt-note">3 ouă + 60g telemea + avocado + <strong>2 felii pâine integrală sau mămăligă</strong>. Doar în zilele cu sesiune intensă în pădure.</div></div>
 
   <!-- PRANZ -->
   <div class="tag">🍗 Prânz / Masa Principală (~14:00) · ~65g P</div>
-  <div class="opt"><div class="opt-ttl">Masă completă de prânz</div><div class="opt-macros">~55g P · ~700 kcal</div><div class="opt-note">200g pui/curcan/vită slabă (o palmă jumate) + <strong>UN</strong> carbohidrat (1 pumn orez/cartofi/mămăligă) + salată mare cu ulei de măsline.</div></div>
-  <div class="opt"><div class="opt-ttl">Pește (Omega-3 și refacere)</div><div class="opt-macros">~50g P · ~650 kcal</div><div class="opt-note">200g somon/pește la cuptor/airfryer cu lămâie + cartofi la cuptor + legume. Omega-3 = anti-inflamator (CRP-ul tău).</div></div>
-  <div class="opt"><div class="opt-ttl">Soluții rapide</div><div class="opt-macros">~50g P · ~620 kcal</div><div class="opt-note">Pui la grătar + salată mare + 1 felie pâine. Restaurant: proteină + legume, fără cartofi prăjiți / sosuri dulci.</div></div>
+  <div class="opt"><div class="opt-ttl">Proteină + un carbohidrat + legume</div><div class="opt-macros">~55g P · ~700 kcal</div><div class="opt-note">200g pui/curcan/vită slabă (o palmă jumate) + <strong>UN</strong> carbohidrat (1 pumn orez/cartofi/mămăligă) + salată mare cu ulei de măsline.</div></div>
+  <div class="opt"><div class="opt-ttl">Pește (2× pe săptămână — pentru ficat + omega-3)</div><div class="opt-macros">~50g P · ~650 kcal</div><div class="opt-note">200g somon/pește la cuptor/airfryer cu lămâie + cartofi la cuptor + legume. Omega-3 = anti-inflamator (CRP-ul tău).</div></div>
+  <div class="opt"><div class="opt-ttl">Pe fugă (zi cu ședințe)</div><div class="opt-macros">~50g P · ~620 kcal</div><div class="opt-note">Pui la grătar + salată mare + 1 felie pâine. Restaurant: proteină + legume, fără cartofi prăjiți / sosuri dulci.</div></div>
 
   <!-- GUSTARE / SCUT -->
-  <div class="tag">🥛 Gustare de tranzit · ~35g P</div>
+  <div class="tag">🥛 Gustare-tampon (înainte de sportul de amiază) · ~35g P</div>
   <div class="opt"><div class="opt-ttl">Kefir + ouă</div><div class="opt-macros">~25g P · ~250 kcal</div><div class="opt-note">300ml kefir + 2 ouă fierte. Combustibil pentru sesiunea de după-amiază, fără să te îngreuneze.</div></div>
   <div class="opt"><div class="opt-ttl">Telemea + roșii</div><div class="opt-macros">~20g P · ~220 kcal</div><div class="opt-note">80g telemea + roșii + castravete + ulei. Proteină lentă, volum mare.</div></div>
 
   <!-- CINA / SCUTUL -->
   <div class="tag tag-red">🛡 Cina = SCUTUL DE SEARĂ · ~55g P</div>
-  <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">Telemea cu roșii (ce faci deja)</div><div class="opt-macros">~35g P · ~450 kcal</div><div class="opt-note">120g telemea moldovenească + roșii + castravete + ulei de măsline + sare. <strong>Proteina te ține sătul toată noaptea.</strong> Asta e arma ta anti-frigider.</div></div>
-  <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">Kefir cu sare</div><div class="opt-macros">~20g P · ~250 kcal</div><div class="opt-note">400ml kefir cu sare grunjoasă. Ușor, fermentat, perfect când nu ți-e foame dar „ai senzația de foame falsă".</div></div>
+  <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">Telemea cu roșii (ce faci deja)</div><div class="opt-macros">~35g P · ~450 kcal</div><div class="opt-note">120g telemea moldovenească + roșii + castravete + ulei de măsline + sare. <strong>Cazeina te ține sătul până dimineața.</strong> Asta e scutul tău de seară.</div></div>
+  <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">Kefir cu sare</div><div class="opt-macros">~20g P · ~250 kcal</div><div class="opt-note">400ml kefir cu sare grunjoasă. Ușor, fermentat, perfect când nu ți-e foame dar „mental îți cere".</div></div>
   <div class="opt" style="border-left:3px solid var(--red);"><div class="opt-ttl">Proteină + legume (zi grea)</div><div class="opt-macros">~45g P · ~500 kcal</div><div class="opt-note">Pește/pui + multe legume la abur, fără carbohidrați. Mai puțini carbohidrați seara = somn mai bun.</div></div>
 </div>
 
-<!-- ==================== TAB 2: Structura Zilei ==================== -->
+<!-- ==================== TAB 2: TIMELINE ==================== -->
 <div class="panel" id="tab-timeline">
   <div class="alert-box">
     <div class="alert-ttl">Ziua ta reală — cu cele două ferestre de sport</div>
     Ai zis în fișă: <em>„sport dimineața, muncă, prânz, odihnă, muncă, sport amiază".</em> Construim în jurul ei, nu o dăm peste cap.
   </div>
-  <div class="tl-item"><div class="tl-time">~05:00</div><div class="tl-content"><div class="tl-action">Trezire + ieșire cu Joy</div><div class="tl-note">Apă cu lămâie (deja obicei). 10 min de lumină în pădure = resetează cortizolul matinal. Hidratare: prima sticlă de apă.</div></div></div>
+  <div class="tl-item"><div class="tl-time">~05:00</div><div class="tl-content"><div class="tl-action">Trezire + ieșire cu Joy</div><div class="tl-note">Apă cu lămâie (deja obicei). 10 min de lumină în pădure resetează cortizolul matinal. Hidratare: prima sticlă de apă.</div></div></div>
   <div class="tl-item"><div class="tl-time">~07:00–08:00</div><div class="tl-content"><div class="tl-action">Sesiunea de dimineață (pădure)</div><div class="tl-note">Forță sau Zona 2, conform QuickRef Antrenament. Pe stomacul gol e în regulă (postul tău), sau cu un ou + apă dacă ai nevoie.</div></div></div>
   <div class="tl-item"><div class="tl-time">~09:00</div><div class="tl-content"><div class="tl-action">Mic dejun (rupi postul)</div><div class="tl-note">Omleta ta — proteină + grăsimi bune. Aici pui carbohidratul dacă a fost sesiune intensă.</div></div></div>
   <div class="tl-item"><div class="tl-time">~14:00</div><div class="tl-content"><div class="tl-action">Prânz — masa principală</div><div class="tl-note">Proteină + UN carbohidrat + legume. Construiește scutul pentru seară.</div></div></div>
@@ -372,11 +372,11 @@ strong.w,.w{color:var(--wht);font-weight:700;}
   <div class="opt"><div class="opt-ttl">Proteine</div><div class="opt-note">Ouă (din belșug), telemea moldovenească, kefir, pui/curcan, vită slabă, pește gras (somon — 2×/săpt), brânză de vaci.</div></div>
   <div class="opt"><div class="opt-ttl">Grăsimi bune</div><div class="opt-note">Avocado, ulei de măsline, ouă, pește gras, nuci. Tu deja le mănânci — le păstrăm.</div></div>
   <div class="opt"><div class="opt-ttl">Carbohidrați (UNUL pe masă, în jurul antrenamentului)</div><div class="opt-note">Cartofi, orez, mămăligă, pâine integrală. Nu toate odată.</div></div>
-  <div class="opt"><div class="opt-ttl">Legume & fermentate</div><div class="opt-note">Roșii, castraveți, salată, legume la abur. Kefir + telemea = fermentate (bune pentru inflamație/CRP).</div></div>
+  <div class="opt"><div class="opt-ttl">Legume & fermentate</div><div class="opt-note">Roșii, castraveți, salată, legume la abur. Kefir + telemea = fermentate (reduc inflamația/CRP).</div></div>
 
   <div class="alert-box blue" style="margin-top:18px;">
     <div class="alert-ttl">💧 HIDRATAREA — în rampă, nu dintr-odată</div>
-    Analizele arată hematocrit ușor crescut → <strong class="w">hidratare inconstantă</strong> (ai zis „zile fără niciun litru"). Urcăm gradat: <strong class="w">3 L/zi acum → 4 / 4,5 L</strong> pe parcurs. O sticlă lângă tine la birou tot timpul, una în pădure. Apa scade pulsul de efort, taie foamea falsă de seara și stabilizează cântarul. E cea mai ușoară îmbunătățire pe care o poți face.
+    Analizele arată hematocrit ușor crescut → <strong class="w">hidratare inconstantă</strong> (ai zis „zile fără niciun litru"). Urcăm gradat: <strong class="w">3 L/zi acum → 4 / 4,5 L</strong> pe parcurs. O sticlă lângă tine la birou tot timpul, una în pădure. Apa scade pulsul la efort, taie foamea falsă de seară și stabilizează cântarul. E cea mai ușoară îmbunătățire pe care o poți face.
   </div>
   <div class="alert-box orange">
     <div class="alert-ttl">Regula supermarket</div>
@@ -424,7 +424,7 @@ strong.w,.w{color:var(--wht);font-weight:700;}
 <script>
 function showTab(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.getElementById('tab-'+id).classList.add('active');event.target.classList.add('active');window.scrollTo(0,0);}
 let dayTargets={sala:2800,odihna:2600,refeed:3000};
-let shortDayLabels={sala:'Zi cu Antrenament',odihna:'Zi Ușoară',refeed:'Zi cu Volum Mare'};
+let shortDayLabels={sala:'Zi cu Antrenament',odihna:'Zi Ușoară',refeed:'Zi de Încărcare'};
 function selectDayType(type){document.querySelectorAll('.day-btn').forEach(b=>b.classList.remove('active'));document.querySelector('.day-btn.'+type).classList.add('active');document.getElementById('hdr-target-val').innerText=dayTargets[type].toLocaleString('ro-RO')+' KCAL';document.getElementById('stat-kcal').innerText=dayTargets[type].toLocaleString('ro-RO');document.getElementById('stat-lbl-day').innerText=shortDayLabels[type];document.body.className='day-'+type;}
 (function(){const day1=new Date(2026,5,29);const today=new Date();const elapsed=Math.max(0,Math.floor((today-day1)/(86400000)));const dayNum=Math.min(elapsed+1,90);const pct=Math.min(100,Math.round((elapsed/89)*100));const hd=document.getElementById('hdr-day');if(hd)hd.textContent='Zi '+dayNum+' din 90';const pp=document.getElementById('prog-pct');if(pp)pp.textContent=pct+'%';setTimeout(()=>{const pf=document.getElementById('prog-fill');if(pf)pf.style.width=pct+'%';},300);const phase=elapsed<14?'FAZA 1: Resetare Metabolică':elapsed<30?'FAZA 1: Fundație':elapsed<60?'FAZA 2: Progresie':'FAZA 3: Vârf';const ph=document.getElementById('prog-phase');if(ph)ph.textContent=phase;})();
 </script>
