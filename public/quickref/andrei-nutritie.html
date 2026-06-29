@@ -183,7 +183,7 @@ body.day-refeed .d-refeed { display: inline !important; }
 .prog-meta{display:flex;justify-content:space-between;margin-top:3px;}
 .prog-meta span{font-size:9px;color:var(--muted);letter-spacing:1px;}
 
-/* NSDR TIMER */
+/* Recuperare Activă (NSDR) */
 .nsdr-block{background:rgba(142,68,173,.06);border:1px solid rgba(142,68,173,.3);border-radius:8px;padding:18px;text-align:center;}
 .nsdr-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:2px;color:var(--wht);margin-bottom:4px;}
 .nsdr-sub{font-size:11px;color:var(--purple);letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;}
@@ -200,7 +200,7 @@ body.day-refeed .d-refeed { display: inline !important; }
 .nsdr-stop{background:var(--drk2);border-color:var(--brd);color:var(--muted);}
 .nsdr-stop:hover{border-color:var(--red);color:var(--red);}
 
-/* TIMELINE */
+/* Structura Zilei */
 .tl-item{display:flex;gap:12px;margin-bottom:14px;align-items:flex-start;}
 .tl-time{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--red);width:50px;flex-shrink:0;padding-top:2px;}
 .tl-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:6px;}
@@ -214,7 +214,7 @@ body.day-refeed .d-refeed { display: inline !important; }
 .tl-note{font-size:11px;color:#aaa;line-height:1.5;}
 .tl-note strong{color:var(--orange);}
 
-/* PRE-DECIDE BLOCK */
+/* Decizii Luate în Avans */
 .predecide{background:var(--card);border:1px solid rgba(230,126,34,.3);border-radius:6px;padding:14px;margin-bottom:18px;}
 .predecide-ttl{font-family:'Bebas Neue',sans-serif;font-size:18px;color:var(--orange);margin-bottom:8px;}
 .predecide-item{display:flex;gap:8px;align-items:flex-start;margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid var(--brd);}
@@ -223,7 +223,7 @@ body.day-refeed .d-refeed { display: inline !important; }
 .pd-text{font-size:12px;color:#ccc;line-height:1.6;}
 .pd-text strong{color:var(--wht);}
 
-/* MVE BOX */
+/* Esențialul */
 .mve-box{background:rgba(192,57,43,.05);border:2px solid var(--red);margin-bottom:18px;border-radius:6px;overflow:hidden;}
 .mve-h{background:var(--red);padding:14px 18px;display:flex;justify-content:space-between;align-items:center;}
 .mve-ttl{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1px;color:#fff;margin:0;}
@@ -318,27 +318,27 @@ body.day-refeed .d-refeed { display: inline !important; }
   </div>
 
   <div class="guide-box">
-    <div class="guide-hdr">📐 Ghidul Vizual — Fără Cântar</div>
+    <div class="guide-hdr">📐 Ghid Vizual (Când nu ai cântar)</div>
     <p class="guide-p">Toate gramajele se referă la starea <strong>CRUDĂ (înainte de gătire)</strong>. Dacă nu ai cântar, folosești mâna ta:</p>
     <div class="guide-grid">
       <div class="g-item">
         <div class="g-icon">✋</div>
-        <div class="g-ttl">1 Palmă</div>
+        <div class="g-ttl">1 Palmă (Proteină)</div>
         <div class="g-desc"><strong>~180–200g Carne crudă</strong></div>
       </div>
       <div class="g-item">
         <div class="g-icon">✊</div>
-        <div class="g-ttl">1 Pumn</div>
+        <div class="g-ttl">1 Pumn (Carbohidrați)</div>
         <div class="g-desc"><strong>~200g Cartofi/Orez/Paste</strong></div>
       </div>
       <div class="g-item">
         <div class="g-icon">🤌</div>
-        <div class="g-ttl">1 Deget Mare</div>
+        <div class="g-ttl">1 Deget Mare (Grăsimi)</div>
         <div class="g-desc"><strong>~10g Grăsimi / Ulei</strong></div>
       </div>
       <div class="g-item">
         <div class="g-icon">🫴</div>
-        <div class="g-ttl">1 Căuș</div>
+        <div class="g-ttl">1 Căuș (Nuci/Brânzeturi)</div>
         <div class="g-desc"><strong>~30g Nuci / Brânză rasă</strong></div>
       </div>
     </div>
@@ -696,7 +696,7 @@ body.day-refeed .d-refeed { display: inline !important; }
 </div>
 
 
-<!-- ==================== TAB: TIMELINE ==================== -->
+<!-- ==================== TAB: Structura Zilei ==================== -->
 <div class="panel" id="tab-timeline">
 
   <div class="alert-box blue">
@@ -815,7 +815,7 @@ body.day-refeed .d-refeed { display: inline !important; }
       <div class="tl-time">08:30</div>
       <div class="tl-dot red"></div>
       <div class="tl-content">
-        <div class="tl-action">Sală (Push/Pull/Legs)</div>
+        <div class="tl-action">Sală (Împins/Tras/Picioare)</div>
         <div class="tl-note">Ești focusat 100%.</div>
       </div>
     </div>
@@ -860,7 +860,7 @@ body.day-refeed .d-refeed { display: inline !important; }
   </div>
 
   <div class="nsdr-block">
-    <div class="nsdr-title">NSDR TIMER</div>
+    <div class="nsdr-title">Recuperare Activă (NSDR)</div>
     <div class="nsdr-sub">Întinde-te, închide ochii și respiră normal</div>
     <div class="nsdr-cd" id="nsdr-cd">10:00</div>
     <div class="nsdr-state" id="nsdr-state">Apasă START când ești gata</div>
@@ -1019,13 +1019,13 @@ body.day-refeed .d-refeed { display: inline !important; }
 
   <div class="acc-card open" style="border-color:var(--purple);">
     <div class="acc-hdr" onclick="toggleAcc(this)">
-      <div class="acc-title-area"><div class="acc-name" style="color:var(--purple);">PROTOCOL MVE (Zile de Epuizare)</div></div>
+      <div class="acc-title-area"><div class="acc-name" style="color:var(--purple);">PROTOCOL Esențialul (Zile de Epuizare)</div></div>
       <div class="acc-icon">▼</div>
     </div>
     <div class="acc-content">
       <div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.6;">
         Turele de 13 ore adunate cu simulările pentru Bac și meditațiile duc la o epuizare cognitivă masivă. Din acest motiv, e normal să nu mai ai deloc voință la ora 20:00.<br><br>
-        <strong>Când simți că nu mai ai energie absolut deloc, aplici MVE (Efortul Minim Viabil):</strong><br>
+        <strong>Când simți că nu mai ai energie absolut deloc, aplici Esențialul (Efortul Minim Viabil):</strong><br>
         1. <strong>Gustarea de la 15:00 nu se sare.</strong> Menține glicemia și previne colapsul.<br>
         2. <strong>Cina: Opțiunea 5 (Pui rece) sau Opțiunea 4 (Ouă + Iaurt).</strong> Fără decizii, fără gătit, durează 3 minute.<br>
         3. <strong>Somnul la 22:20.</strong>
@@ -1408,7 +1408,7 @@ function resetTracker() {
   document.getElementById('tracker-modal').classList.remove('open');
 }
 
-/* ─── NSDR TIMER ─── */
+/* ─── Recuperare Activă (NSDR) ─── */
 let nsdrTimer = null, nsdrRunning = false;
 const NSDR_TOTAL = 600;
 let nsdrRemaining = NSDR_TOTAL;
