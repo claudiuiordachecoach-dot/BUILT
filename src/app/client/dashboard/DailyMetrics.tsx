@@ -39,8 +39,8 @@ export default function DailyMetrics({
   }
 
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
-      <p className="text-sm font-semibold text-zinc-200 mb-4">Azi · numerele tale</p>
+    <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-5">
+      <p className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-4">Azi · numerele tale</p>
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
         {METRICS.map((m) => (
           <div key={m.key}>

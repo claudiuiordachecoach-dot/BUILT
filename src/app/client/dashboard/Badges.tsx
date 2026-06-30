@@ -4,10 +4,10 @@ export default function Badges({ badges }: { badges: Badge[] }) {
   const earned = badges.filter((b) => b.earned).length;
 
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
+    <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-5">
       <div className="flex items-center justify-between mb-4">
-        <span className="text-sm font-semibold text-zinc-200">Jaloane</span>
-        <span className="text-sm font-bold text-built-red">{earned}/{badges.length}</span>
+        <span className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em]">Jaloane</span>
+        <span className="font-display text-xl text-built-red leading-none">{earned}/{badges.length}</span>
       </div>
       <div className="grid grid-cols-3 sm:grid-cols-5 gap-3">
         {badges.map((b) => (

@@ -27,9 +27,9 @@ export default function DailyReflection({
   }
 
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
+    <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-5">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-semibold text-zinc-200">Azi · reflecția ta</p>
+        <p className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em]">Azi · reflecția ta</p>
         {saved && <span className="text-[11px] text-green-400">salvat ✓</span>}
       </div>
       <textarea

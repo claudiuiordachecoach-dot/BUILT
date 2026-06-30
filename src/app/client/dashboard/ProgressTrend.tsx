@@ -29,9 +29,9 @@ export default function ProgressTrend({ clientId }: { clientId: number }) {
   const data = points.map((p) => ({ date: fmtDate(p.date), weight: p.weight ?? null, waist: p.waist ?? null }));
 
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
+    <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-5">
       <div className="flex items-center justify-between mb-3">
-        <p className="text-sm font-semibold text-zinc-200">Evoluția ta</p>
+        <p className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em]">Evoluția ta</p>
         {target != null && weightPts.length > 0 && <span className="text-[11px] text-zinc-500">țintă {target} kg</span>}
       </div>
 

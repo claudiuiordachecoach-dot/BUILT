@@ -99,10 +99,7 @@ export default async function ClientDashboardPage({
         <span className="text-built-red text-lg">→</span>
       </Link>
 
-      {(() => {
-        const scores = pillarScores(latestCheckin);
-        return scores ? <PillarBars scores={scores} /> : null;
-      })()}
+      <PillarBars scores={pillarScores(latestCheckin) ?? { B: 0, U: 0, I: 0, L: 0, T: 0 }} qs={qs} />
 
       {badges.length > 0 && <Badges badges={badges} />}
 

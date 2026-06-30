@@ -60,7 +60,7 @@ export default function OnboardingJourney({ day, qs }: { day: number; qs: string
   if (!m) return null;
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-br from-built-red/15 via-[#141414] to-[#111111] border border-built-red/30 rounded-xl p-5 mb-5">
+    <div className="relative overflow-hidden bg-gradient-to-br from-built-red/15 via-[#141414] to-[#111111] border border-built-red/30 rounded-2xl p-5 mb-5">
       {/* progres 7 zile */}
       <div className="flex items-center gap-1.5 mb-4">
         {Array.from({ length: 7 }).map((_, i) => (

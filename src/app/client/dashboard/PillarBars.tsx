@@ -1,4 +1,6 @@
 // Cei 5 piloni ca bare orizontale (stil curat) — înlocuiește radarul.
+// Mereu vizibil: dacă nu există check-in, afișează empty-state invitant.
+import Link from "next/link";
 import { type PillarScores } from "./PillarRadar";
 
 const clamp = (n: number) => Math.max(0, Math.min(100, n));
@@ -11,11 +13,12 @@ const ROWS: [keyof PillarScores, string][] = [
   ["T", "Tough Mindset"],
 ];
 
-export default function PillarBars({ scores }: { scores: PillarScores }) {
+export default function PillarBars({ scores, qs = "" }: { scores: PillarScores; qs?: string }) {
   const active = ROWS.filter(([k]) => clamp(scores[k]) > 0).length;
+  const empty = active === 0;
 
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
+    <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-5">
       <div className="flex items-baseline justify-between mb-4">
         <span className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em]">Cei 5 piloni</span>
         <span className="text-[11px] text-zinc-500 font-light">{active} din 5 activi</span>
@@ -40,6 +43,11 @@ export default function PillarBars({ scores }: { scores: PillarScores }) {
           );
         })}
       </div>
+      {empty && (
+        <Link href={`/client/checkin${qs}`} className="block mt-4 pt-3 border-t border-white/5 text-xs text-zinc-500 hover:text-zinc-300 press transition-colors">
+          Pilonii se aprind din check-in-ul tău săptămânal. <span className="text-built-red">Trimite primul →</span>
+        </Link>
+      )}
     </div>
   );
 }
