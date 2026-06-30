@@ -8,4 +8,5 @@ export const PERSONAL_COOKBOOKS: Record<number, CookbookEntry> = {
   4: { file: "/Cartea_Retete_Ciprian.html", name: "Ciprian", emoji: "👨‍🍳" },
   5: { file: "/Cartea_Retete_Andrei.html", name: "Andrei", emoji: "👨‍🍳" },
   6: { file: "/Cartea_Retete_Claudia.html", name: "Claudia", emoji: "👩‍🍳" },
+  9: { file: "/Cartea_Retete_Andy.html", name: "Andy", emoji: "👨‍🍳" },
 };
