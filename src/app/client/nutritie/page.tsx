@@ -41,18 +41,18 @@ export default function NutritiePage() {
           { label: "Carbohidrați", value: plan.carbs_g, unit: "g", color: "text-built-white" },
           { label: "Grăsimi", value: plan.fat_g, unit: "g", color: "text-built-white" },
         ].map(m => (
-          <div key={m.label} className="hover-lift bg-[#111111] border border-white/10 rounded-xl p-4 text-center">
-            <p className={`text-2xl font-bold ${m.color}`}>{m.value}</p>
-            <p className="text-xs text-zinc-500 mt-0.5">{m.unit}</p>
-            <p className="text-[11px] text-zinc-600 mt-1">{m.label}</p>
+          <div key={m.label} className="hover-lift bg-[#111111] border border-white/10 rounded-2xl p-4 text-center">
+            <p className={`font-display text-2xl leading-none ${m.color}`}>{m.value}</p>
+            <p className="text-xs text-zinc-500 mt-1">{m.unit}</p>
+            <p className="font-condensed text-[10px] text-zinc-500 uppercase tracking-[0.15em] mt-1">{m.label}</p>
           </div>
         ))}
       </div>
       <div className="stagger space-y-3">
         {plan.meals?.map((meal, i) => (
-          <div key={i} className="hover-lift bg-[#111111] border border-white/10 rounded-xl p-4">
+          <div key={i} className="hover-lift bg-[#111111] border border-white/10 rounded-2xl p-4">
             <div className="flex items-center justify-between mb-2">
-              <p className="text-sm font-semibold text-zinc-200">{meal.name}</p>
+              <p className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em]">{meal.name}</p>
               {meal.calories && <span className="text-xs text-zinc-500">{meal.calories} kcal · {meal.protein_g}g prot</span>}
             </div>
             <ul className="space-y-0.5">
@@ -64,8 +64,8 @@ export default function NutritiePage() {
         ))}
       </div>
       {plan.notes && (
-        <div className="mt-5 bg-[#111111] border border-white/5 rounded-xl p-4">
-          <p className="text-xs text-zinc-500 mb-1">Note de la Claudiu</p>
+        <div className="mt-5 bg-[#111111] border border-white/5 rounded-2xl p-4">
+          <p className="font-condensed text-[10px] text-zinc-500 uppercase tracking-[0.15em] mb-1">Note de la Claudiu</p>
           <p className="text-sm text-zinc-300">{plan.notes}</p>
         </div>
       )}

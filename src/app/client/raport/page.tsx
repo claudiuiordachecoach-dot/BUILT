@@ -13,7 +13,7 @@ const PILLAR_LABELS: Record<string, string> = {
 
 function Stat({ label, value, sub, accent }: { label: string; value: string; sub?: string; accent?: boolean }) {
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-xl p-4">
+    <div className="bg-[#111111] border border-white/10 rounded-2xl p-4">
       <p className="font-condensed text-[10px] text-zinc-500 uppercase tracking-wide">{label}</p>
       <p className={`font-display text-3xl mt-1 leading-none tabular-nums ${accent ? "text-built-red" : "text-white"}`}>{value}</p>
       {sub && <p className="text-[11px] text-zinc-600 mt-1">{sub}</p>}
@@ -65,7 +65,7 @@ export default async function RaportPage({
 
       {/* Stare goală — motivantă, nu un zid de „--" */}
       {!r.hasData && (
-        <div className="bg-built-red/[0.06] border border-built-red/30 rounded-xl p-6 mb-6">
+        <div className="bg-built-red/[0.06] border border-built-red/30 rounded-2xl p-6 mb-6">
           <p className="text-zinc-200 leading-relaxed">
             Săptămâna asta încă n-ai lăsat nicio urmă în sistem. Nu e o problemă — e doar un raport gol care
             așteaptă date. <span className="text-white font-semibold">Un singur lucru</span> îl pornește:
@@ -74,7 +74,7 @@ export default async function RaportPage({
       )}
 
       {/* Micro-obiectivul — UN singur lucru */}
-      <div className="bg-gradient-to-br from-built-red/15 to-transparent border border-built-red/40 rounded-xl p-6 mb-6">
+      <div className="bg-gradient-to-br from-built-red/15 to-transparent border border-built-red/40 rounded-2xl p-6 mb-6">
         <p className="font-condensed text-[10px] text-built-red uppercase tracking-[0.25em] mb-2">
           Pasul tău pentru săptămâna viitoare
         </p>
@@ -99,7 +99,7 @@ export default async function RaportPage({
 
           {/* Evoluția corpului */}
           {(r.weightNow != null || r.waistNow != null) && (
-            <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-6">
+            <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-6">
               <p className="font-condensed text-[10px] text-zinc-500 uppercase tracking-wide mb-3">Evoluția ta</p>
               <div className="grid grid-cols-2 gap-4">
                 {r.weightNow != null && (
@@ -121,7 +121,7 @@ export default async function RaportPage({
 
           {/* Cei 5 piloni */}
           {r.pillars && (
-            <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-6">
+            <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-6">
               <p className="font-condensed text-[10px] text-zinc-500 uppercase tracking-wide mb-3">
                 Cei 5 piloni · din ultimul check-in
               </p>
@@ -144,7 +144,7 @@ export default async function RaportPage({
 
           {/* Recorduri de forță */}
           {r.strengthPRs.length > 0 && (
-            <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-6">
+            <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-6">
               <p className="font-condensed text-[10px] text-zinc-500 uppercase tracking-wide mb-3">Forță · cele mai bune seturi</p>
               <div className="space-y-2">
                 {r.strengthPRs.map((p) => (
@@ -170,7 +170,7 @@ export default async function RaportPage({
       {!r.checkinThisWeek && (
         <Link
           href={`/client/checkin${qs}`}
-          className="flex items-center gap-3 bg-built-red/[0.06] border border-built-red/30 rounded-xl p-4 mb-6 press transition-colors"
+          className="flex items-center gap-3 bg-built-red/[0.06] border border-built-red/30 rounded-2xl p-4 mb-6 press transition-colors"
         >
           <span className="flex-1 text-sm text-zinc-100">
             <span className="font-semibold">N-ai trimis check-in-ul săptămâna asta.</span> 2 minute — și sistemul se recalibrează.

@@ -31,14 +31,13 @@ export default async function ClientProfilePage({
 
   return (
     <div className="p-5 md:p-8 max-w-4xl pb-24">
-      <h1 className="text-3xl font-display tracking-wider text-white mb-8">
-        Profilul Meu
-      </h1>
+      <h1 className="font-display text-4xl tracking-wider text-white mb-2">Profilul Meu</h1>
+      <p className="font-condensed text-[11px] text-zinc-500 uppercase tracking-[0.2em] mb-8">Datele tale · Evoluție · Galerie</p>
 
       <div className="stagger space-y-8">
         {/* Avatar */}
         <section>
-          <div className="bg-[#111111] border border-white/10 rounded-lg p-6">
+          <div className="bg-[#111111] border border-white/10 rounded-2xl p-6">
             <ProfileAvatar
               clientId={clientId!}
               name={client?.name || "Membru BUILT"}
@@ -49,7 +48,7 @@ export default async function ClientProfilePage({
 
         {/* Greutate actuală + evoluție */}
         <section>
-          <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Greutate &amp; Evoluție</h2>
+          <h2 className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-4">Greutate &amp; Evoluție</h2>
           <div className="space-y-4">
             <WeightSummary gallery={client?.progress_gallery || []} />
             <WeightGoal gallery={client?.progress_gallery || []} target={client?.target_weight_kg} />
@@ -58,14 +57,14 @@ export default async function ClientProfilePage({
 
         {/* Înainte / Acum */}
         <section>
-          <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Înainte / Acum</h2>
+          <h2 className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-4">Înainte / Acum</h2>
           <BeforeAfter gallery={client?.progress_gallery || []} />
         </section>
 
         {/* Notificări Push */}
         <section>
-          <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Notificări</h2>
-          <div className="bg-[#111111] border border-white/10 rounded-lg p-6 flex items-center justify-between">
+          <h2 className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-4">Notificări</h2>
+          <div className="bg-[#111111] border border-white/10 rounded-2xl p-6 flex items-center justify-between">
             <div>
               <p className="text-sm text-zinc-300">Remindere de check-in și mesaje de la antrenor, direct pe telefon.</p>
             </div>
@@ -78,7 +77,7 @@ export default async function ClientProfilePage({
 
         {/* Galeria Foto */}
         <section>
-          <h2 className="text-xl font-display tracking-wider text-built-white mb-4">Galeria de Progres (Foto)</h2>
+          <h2 className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-4">Galeria de Progres (Foto)</h2>
           
           <ProgressGallery 
             clientId={clientId} 

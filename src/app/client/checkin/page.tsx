@@ -7,10 +7,10 @@ function RangeInput({ label, value, onChange, min, max, step = 1, unit }: {
   label: string; value: number; onChange: (v: number) => void; min: number; max: number; step?: number; unit: string;
 }) {
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-xl p-4">
+    <div className="bg-[#111111] border border-white/10 rounded-2xl p-4">
       <div className="flex items-center justify-between mb-3">
-        <label className="text-sm font-semibold text-zinc-200">{label}</label>
-        <span className="text-lg font-bold text-built-red">{value}<span className="text-xs text-zinc-500 ml-0.5">{unit}</span></span>
+        <label className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em]">{label}</label>
+        <span className="font-display text-xl text-built-red leading-none">{value}<span className="text-xs text-zinc-500 ml-0.5">{unit}</span></span>
       </div>
       <input type="range" min={min} max={max} step={step} value={value}
         onChange={e => onChange(Number(e.target.value))}
@@ -63,14 +63,14 @@ export default function CheckinPage() {
           <RangeInput label="Somn" value={form.sleep_hours} onChange={v => setForm(f => ({...f, sleep_hours: v}))} min={0} max={12} step={0.5} unit="h" />
           <RangeInput label="Hidratare" value={form.hydration_l} onChange={v => setForm(f => ({...f, hydration_l: v}))} min={0} max={6} step={0.5} unit="L" />
           <RangeInput label="Stres" value={form.stress_level} onChange={v => setForm(f => ({...f, stress_level: v}))} min={1} max={10} unit="/10" />
-          <div className="bg-[#111111] border border-white/10 rounded-xl p-4">
-            <label className="block text-sm font-semibold text-zinc-200 mb-2">Note (opțional)</label>
+          <div className="bg-[#111111] border border-white/10 rounded-2xl p-4">
+            <label className="block font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-2">Note (opțional)</label>
             <textarea value={form.notes} onChange={e => setForm(f => ({...f, notes: e.target.value}))}
               rows={4} placeholder="Ce a mers bine? Unde ai întâmpinat dificultăți?"
               className="w-full bg-[#1a1a1a] border border-white/5 rounded-lg px-3 py-2.5 text-sm text-zinc-300 placeholder-zinc-700 resize-none focus:outline-none" />
           </div>
           <button type="submit" disabled={loading}
-            className="press w-full bg-built-red hover:bg-built-red/90 disabled:opacity-50 text-white font-semibold py-3 rounded-xl text-sm transition-all">
+            className="press w-full bg-built-red hover:bg-built-red/90 disabled:opacity-50 text-white font-semibold py-3 rounded-2xl text-sm transition-all">
             {loading ? "Se trimite..." : "Trimite Check-in"}
           </button>
         </form>
@@ -78,10 +78,10 @@ export default function CheckinPage() {
 
       {history.length > 0 && (
         <div className="border-t border-white/5 pt-8">
-          <h2 className="text-sm font-bold text-white mb-6">Progresul Meu</h2>
+          <h2 className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-6">Progresul Meu</h2>
 
-          <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider mb-2">Performanță</p>
-          <div className="bg-[#111111] border border-white/10 rounded-xl p-4 mb-2" style={{ height: 180 }}>
+          <p className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-2">Performanță</p>
+          <div className="bg-[#111111] border border-white/10 rounded-2xl p-4 mb-2" style={{ height: 180 }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={history} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -109,8 +109,8 @@ export default function CheckinPage() {
             ))}
           </div>
 
-          <p className="text-[10px] font-semibold text-zinc-500 uppercase tracking-wider mb-2">Lifestyle</p>
-          <div className="bg-[#111111] border border-white/10 rounded-xl p-4 mb-2" style={{ height: 180 }}>
+          <p className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em] mb-2">Lifestyle</p>
+          <div className="bg-[#111111] border border-white/10 rounded-2xl p-4 mb-2" style={{ height: 180 }}>
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={history} margin={{ top: 5, right: 10, left: -20, bottom: 5 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
@@ -146,7 +146,7 @@ export default function CheckinPage() {
 
           <div className="stagger space-y-3">
             {[...history].reverse().map(c => (
-              <div key={c.id} className="hover-lift bg-[#111111] border border-white/10 rounded-xl p-4">
+              <div key={c.id} className="hover-lift bg-[#111111] border border-white/10 rounded-2xl p-4">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-xs font-bold text-built-red">Săptămâna {c.week_number}</span>
                   <span className="text-[10px] text-zinc-600">{new Date(c.created_at).toLocaleDateString("ro-RO")}</span>

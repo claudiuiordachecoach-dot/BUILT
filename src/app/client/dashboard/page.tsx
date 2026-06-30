@@ -73,7 +73,7 @@ export default async function ClientDashboardPage({
 
       {unreadCount > 0 && (
         <Link href={`/client/mesaje${overrideId ? `?clientId=${overrideId}` : ""}`}
-          className="flex items-center gap-3 bg-built-red/[0.06] border border-built-red/30 rounded-xl p-4 mb-5 press transition-colors">
+          className="flex items-center gap-3 bg-built-red/[0.06] border border-built-red/30 rounded-2xl p-4 mb-5 press transition-colors">
           <span className="text-[20px] leading-none text-built-red">{NAV_ICONS.mesaje}</span>
           <span className="flex-1 text-sm text-zinc-100"><span className="font-semibold">{unreadCount} {unreadCount === 1 ? "mesaj nou" : "mesaje noi"}</span> de la Claudiu</span>
           <span className="text-built-red text-lg">→</span>
@@ -86,14 +86,14 @@ export default async function ClientDashboardPage({
 
       {/* Directiva de azi — intră direct în execuție */}
       <Link href={`/client/antrenamente${qs}`}
-        className="flex items-center gap-3 bg-gradient-to-r from-built-red to-built-red-dark rounded-xl p-4 mb-5 press transition-transform hover:scale-[0.99]">
+        className="flex items-center gap-3 bg-gradient-to-r from-built-red to-built-red-dark rounded-2xl p-4 mb-5 press transition-transform hover:scale-[0.99]">
         <span className="text-[20px] leading-none text-white">{NAV_ICONS.antrenamente}</span>
         <span className="flex-1 text-sm text-white"><span className="font-semibold">Antrenamentul de azi</span> — intră în execuție</span>
         <span className="text-white text-lg">→</span>
       </Link>
 
       <Link href={`/client/raport${overrideId ? `?clientId=${overrideId}` : ""}`}
-        className="flex items-center gap-3 bg-[#111111] border border-white/10 rounded-xl p-4 mb-5 press transition-colors hover:border-built-red/40">
+        className="flex items-center gap-3 bg-[#111111] border border-white/10 rounded-2xl p-4 mb-5 press transition-colors hover:border-built-red/40">
         <span className="text-[20px] leading-none text-built-red">{NAV_ICONS.raport}</span>
         <span className="flex-1 text-sm text-zinc-100"><span className="font-semibold">Raportul tău săptămânal</span> — săptămâna ta + pasul următor</span>
         <span className="text-built-red text-lg">→</span>
@@ -122,7 +122,7 @@ export default async function ClientDashboardPage({
             { label: "Hidratare", value: latestCheckin.hydration_l, suffix: "L", sub: "Litri pe zi" },
             { label: "Stres", value: latestCheckin.stress_level, suffix: "/10", sub: "Nivel general" },
           ].map((s) => (
-            <div key={s.label} className="bg-[#111111] border border-white/10 rounded-xl p-4">
+            <div key={s.label} className="bg-[#111111] border border-white/10 rounded-2xl p-4">
               <p className="text-xs text-zinc-500 mb-1">{s.label}</p>
               {s.value == null ? (
                 <p className="font-display text-2xl text-zinc-700 leading-none">—</p>
@@ -135,7 +135,7 @@ export default async function ClientDashboardPage({
         </div>
       ) : (
         <Link href={`/client/checkin${qs}`}
-          className="block bg-built-red/[0.06] border border-dashed border-built-red/40 rounded-xl p-5 mb-5 press transition-colors hover:bg-built-red/[0.1]">
+          className="block bg-built-red/[0.06] border border-dashed border-built-red/40 rounded-2xl p-5 mb-5 press transition-colors hover:bg-built-red/[0.1]">
           <p className="font-condensed text-[11px] text-built-red uppercase tracking-[0.2em] mb-1">Numerele tale</p>
           <p className="text-sm text-zinc-200 font-semibold">Încă niciun check-in trimis.</p>
           <p className="text-xs text-zinc-500 mt-1">Trimite primul check-in → aici îți apar antrenament, energie, somn și restul. <span className="text-built-red">Începe →</span></p>

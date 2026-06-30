@@ -35,7 +35,7 @@ export default function ClientModulesPage() {
         <div className="stagger grid grid-cols-1 md:grid-cols-2 gap-4">
           {modules.map((m) => (
             <Link key={m.id} href={`/client/module/${m.id}`}
-              className="hover-lift bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-xl p-5 transition-all group relative overflow-hidden">
+              className="hover-lift bg-[#111111] border border-white/10 hover:border-built-red/40 rounded-2xl p-5 transition-all group relative overflow-hidden">
               <div className="relative z-10">
                 <span className="text-[10px] font-bold text-built-red uppercase tracking-widest mb-2 block">Modulul {m.module_number}</span>
                 <h3 className="text-lg font-bold text-white group-hover:text-built-red transition-colors">{m.title}</h3>
@@ -49,8 +49,8 @@ export default function ClientModulesPage() {
         </div>
       )}
 
-      <div className="mt-12 p-6 bg-built-red/5 border border-built-red/20 rounded-xl">
-        <h4 className="text-sm font-bold text-built-red mb-2 uppercase tracking-wider">De ce Academia BUILT?</h4>
+      <div className="mt-12 p-6 bg-built-red/5 border border-built-red/20 rounded-2xl">
+        <h4 className="font-condensed text-[11px] text-built-red uppercase tracking-[0.2em] mb-2">De ce Academia BUILT?</h4>
         <p className="text-xs text-zinc-400 leading-relaxed">
           Fiecare modul este conceput să schimbe o piesă din arhitectura ta mentală sau biologică. Nu te grăbi — implementează fiecare protocol înainte de a trece la următorul.
         </p>

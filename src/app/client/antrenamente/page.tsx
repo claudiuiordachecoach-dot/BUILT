@@ -57,7 +57,7 @@ export default function AntrenamantePage() {
         <WeeklyTraining />
         <TodayTrainingLog daySummary={`Azi · ${RO_DAYS[new Date().getDay()]} — loghează-ți antrenamentul mai jos`} />
         {plan.quickref_acasa_url && (
-          <Link href="/client/antrenamente/acasa" className="flex items-center justify-between bg-[#111111] border border-white/10 rounded-xl px-4 py-3 mb-5 press hover:border-built-red/40 transition-colors">
+          <Link href="/client/antrenamente/acasa" className="flex items-center justify-between bg-[#111111] border border-white/10 rounded-2xl px-4 py-3 mb-5 press hover:border-built-red/40 transition-colors">
             <span className="text-sm text-zinc-200">🏠 Antrenament de acasă (fără sală)</span>
             <span className="text-built-red">→</span>
           </Link>

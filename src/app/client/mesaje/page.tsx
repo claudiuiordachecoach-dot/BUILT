@@ -38,7 +38,7 @@ export default function MesajePage() {
             <div className="w-9 h-9 rounded-full bg-built-red flex items-center justify-center text-sm font-bold text-white">IC</div>
           )}
           <div>
-            <p className="text-sm font-semibold text-zinc-200">{coach.name || "Iordache Claudiu"}</p>
+            <p className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em]">{coach.name || "Iordache Claudiu"}</p>
             <p className="text-xs text-zinc-500">{coach.bio || "Coach BUILT"}</p>
           </div>
         </div>
