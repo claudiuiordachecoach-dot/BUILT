@@ -44,10 +44,10 @@ export default function DailyChecklist({
             <button
               key={item.key}
               onClick={() => toggle(item.key)}
-              className={`flex items-center gap-3 p-3 rounded-lg border transition-all active:scale-[0.97] text-left ${
+              className={`flex items-center gap-3 p-4 rounded-xl border transition-all active:scale-[0.97] text-left ${
                 active
-                  ? "bg-built-red/15 border-built-red/50"
-                  : "bg-black/30 border-white/10 hover:border-white/20"
+                  ? "bg-built-red/15 border-built-red/40 shadow-[0_0_15px_rgba(192,57,43,0.15)]"
+                  : "bg-[#1a1a1a] border-white/10 hover:border-white/20"
               }`}
             >
               <span

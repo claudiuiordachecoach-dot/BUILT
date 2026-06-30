@@ -39,7 +39,7 @@ export default function DailyReflection({
         rows={3}
         maxLength={2000}
         placeholder="Ce a mers azi? Ce nu a mers? Un gând scurt — îl vede doar Claudiu."
-        className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2.5 text-sm text-zinc-200 placeholder-zinc-600 resize-none focus:outline-none focus:border-built-red/50 transition-colors leading-relaxed"
+        className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-4 py-3 text-sm text-zinc-200 placeholder-zinc-600 resize-none focus:outline-none focus:border-built-red/50 focus:bg-built-red/[0.02] transition-all leading-relaxed"
       />
     </div>
   );

@@ -57,7 +57,7 @@ export default function DailyMetrics({
               onChange={(e) => setVals((v) => ({ ...v, [m.key]: e.target.value }))}
               onBlur={() => commit(m.key)}
               onKeyDown={(e) => { if (e.key === "Enter") (e.target as HTMLInputElement).blur(); }}
-              className="w-full bg-black/40 border border-white/10 rounded-lg px-2 py-2 text-base text-white text-center tabular-nums placeholder-zinc-700 focus:outline-none focus:border-built-red/50 transition-colors"
+              className="w-full bg-[#1a1a1a] border border-white/10 rounded-xl px-2 py-2.5 font-display text-2xl text-white text-center placeholder-zinc-700 focus:outline-none focus:border-built-red/50 focus:bg-built-red/[0.02] transition-all"
             />
             <p className="text-[10px] text-center mt-1 h-3.5">
               {saved === m.key ? <span className="text-green-400">salvat ✓</span> : <span className="text-zinc-600">{m.unit}</span>}
