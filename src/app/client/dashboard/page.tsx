@@ -7,7 +7,9 @@ import ProgressTrend from "./ProgressTrend";
 import DailyReflection from "./DailyReflection";
 import OnboardingJourney from "./OnboardingJourney";
 import Badges from "./Badges";
-import PillarRadar, { type PillarScores } from "./PillarRadar";
+import { type PillarScores } from "./PillarRadar";
+import WeekProgress from "./WeekProgress";
+import PillarBars from "./PillarBars";
 
 const clamp = (n: number) => Math.max(0, Math.min(100, n));
 
@@ -48,27 +50,25 @@ export default async function ClientDashboardPage({
 
   const { client, weekNumber, daysInProgram, latestCheckin, unreadCount } = data;
   const clientId = client?.id;
+  const qs = overrideId ? `?clientId=${overrideId}` : "";
   const [todayLog, todayMetrics, todayNote, streak, badges] = clientId
     ? await Promise.all([getTodayLog(clientId), getTodayMetrics(clientId), getTodayNote(clientId), getStreak(clientId), getClientBadges(clientId)])
     : [{}, {}, "", 0, []];
 
   return (
     <div className="p-5 md:p-8 max-w-4xl">
-      <div className="mb-8 flex items-end justify-between gap-4">
-        <div className="min-w-0">
-          <p className="font-condensed text-[11px] text-built-red uppercase tracking-[0.25em] mb-1">
-            Ziua {daysInProgram} / 90 · Săptămâna {weekNumber}
-          </p>
+      <div className="bg-gradient-to-br from-built-red/[0.15] via-[#141414] to-[#111111] border border-built-red/20 rounded-2xl p-5 md:p-6 mb-5 anim-fade-up">
+        <div className="flex items-start justify-between gap-4">
           <h1 className="font-display text-4xl md:text-5xl tracking-wide text-built-white leading-none">
             SALUT, {(client?.name?.split(" ")[0] ?? "").toUpperCase()}
           </h1>
+          {streak > 0 && (
+            <span className="shrink-0 flex items-center gap-1.5 bg-built-red/15 border border-built-red/30 text-built-red rounded-full px-3 py-1.5 text-sm font-bold">
+              🔥 {streak} {streak === 1 ? "zi" : "zile"}
+            </span>
+          )}
         </div>
-        {streak > 0 && (
-          <div className="text-right shrink-0">
-            <p className="font-display text-4xl text-built-red leading-none">🔥{streak}</p>
-            <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-600 mt-1">zile la rând</p>
-          </div>
-        )}
+        <WeekProgress day={daysInProgram} week={weekNumber} />
       </div>
 
       {unreadCount > 0 && (
@@ -84,19 +84,13 @@ export default async function ClientDashboardPage({
         <OnboardingJourney day={daysInProgram} qs={overrideId ? `?clientId=${overrideId}` : ""} />
       )}
 
-      {/* ── Esențialul: privirea de ansamblu ── */}
-      <div className="bg-[#111111] border border-white/10 rounded-xl p-5 mb-5">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-semibold text-zinc-200">Progres program 90 zile</span>
-          <span className="text-sm font-bold text-built-red">{Math.min(daysInProgram, 90)}/90 zile</span>
-        </div>
-        <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-built-red-dark to-built-red rounded-full transition-[width] duration-700 ease-out"
-            style={{ width: `${Math.min((daysInProgram / 90) * 100, 100)}%` }}
-          />
-        </div>
-      </div>
+      {/* Directiva de azi — intră direct în execuție */}
+      <Link href={`/client/antrenamente${qs}`}
+        className="flex items-center gap-3 bg-gradient-to-r from-built-red to-built-red-dark rounded-xl p-4 mb-5 press transition-transform hover:scale-[0.99]">
+        <span className="text-[20px] leading-none text-white">{NAV_ICONS.antrenamente}</span>
+        <span className="flex-1 text-sm text-white"><span className="font-semibold">Antrenamentul de azi</span> — intră în execuție</span>
+        <span className="text-white text-lg">→</span>
+      </Link>
 
       <Link href={`/client/raport${overrideId ? `?clientId=${overrideId}` : ""}`}
         className="flex items-center gap-3 bg-[#111111] border border-white/10 rounded-xl p-4 mb-5 press transition-colors hover:border-built-red/40">
@@ -107,7 +101,7 @@ export default async function ClientDashboardPage({
 
       {(() => {
         const scores = pillarScores(latestCheckin);
-        return scores ? <PillarRadar scores={scores} /> : null;
+        return scores ? <PillarBars scores={scores} /> : null;
       })()}
 
       {badges.length > 0 && <Badges badges={badges} />}
@@ -121,22 +115,35 @@ export default async function ClientDashboardPage({
 
       {clientId && <DailyMetrics clientId={clientId} initial={todayMetrics} />}
 
-      <div className="stagger grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
-        {[
-          { label: "Antrenament", value: `${latestCheckin?.training_adherence ?? "--"}%`, sub: "Săptămâna trecută" },
-          { label: "Nutriție", value: `${latestCheckin?.nutrition_adherence ?? "--"}%`, sub: "Săptămâna trecută" },
-          { label: "Energie", value: `${latestCheckin?.energy_level ?? "--"}/10`, sub: "Nivel zilnic" },
-          { label: "Somn", value: `${latestCheckin?.sleep_hours ?? "--"}h`, sub: "Ore pe noapte" },
-          { label: "Hidratare", value: `${latestCheckin?.hydration_l ?? "--"}L`, sub: "Litri pe zi" },
-          { label: "Stres", value: `${latestCheckin?.stress_level ?? "--"}/10`, sub: "Nivel general" },
-        ].map((s) => (
-          <div key={s.label} className="bg-[#111111] border border-white/10 rounded-xl p-4">
-            <p className="text-xs text-zinc-500 mb-1">{s.label}</p>
-            <p className="text-2xl font-bold text-white">{s.value}</p>
-            {s.sub && <p className="text-xs text-zinc-600 mt-0.5">{s.sub}</p>}
-          </div>
-        ))}
-      </div>
+      {latestCheckin ? (
+        <div className="stagger grid grid-cols-2 md:grid-cols-3 gap-4 mb-5">
+          {[
+            { label: "Antrenament", value: latestCheckin.training_adherence, suffix: "%", sub: "Săptămâna trecută" },
+            { label: "Nutriție", value: latestCheckin.nutrition_adherence, suffix: "%", sub: "Săptămâna trecută" },
+            { label: "Energie", value: latestCheckin.energy_level, suffix: "/10", sub: "Nivel zilnic" },
+            { label: "Somn", value: latestCheckin.sleep_hours, suffix: "h", sub: "Ore pe noapte" },
+            { label: "Hidratare", value: latestCheckin.hydration_l, suffix: "L", sub: "Litri pe zi" },
+            { label: "Stres", value: latestCheckin.stress_level, suffix: "/10", sub: "Nivel general" },
+          ].map((s) => (
+            <div key={s.label} className="bg-[#111111] border border-white/10 rounded-xl p-4">
+              <p className="text-xs text-zinc-500 mb-1">{s.label}</p>
+              {s.value == null ? (
+                <p className="font-display text-2xl text-zinc-700 leading-none">—</p>
+              ) : (
+                <p className="font-mono-stats text-2xl font-bold text-white leading-none">{s.value}<span className="text-base text-zinc-500">{s.suffix}</span></p>
+              )}
+              {s.sub && <p className="text-xs text-zinc-600 mt-1">{s.sub}</p>}
+            </div>
+          ))}
+        </div>
+      ) : (
+        <Link href={`/client/checkin${qs}`}
+          className="block bg-built-red/[0.06] border border-dashed border-built-red/40 rounded-xl p-5 mb-5 press transition-colors hover:bg-built-red/[0.1]">
+          <p className="font-condensed text-[11px] text-built-red uppercase tracking-[0.2em] mb-1">Numerele tale</p>
+          <p className="text-sm text-zinc-200 font-semibold">Încă niciun check-in trimis.</p>
+          <p className="text-xs text-zinc-500 mt-1">Trimite primul check-in → aici îți apar antrenament, energie, somn și restul. <span className="text-built-red">Începe →</span></p>
+        </Link>
+      )}
     </div>
   );
 }
