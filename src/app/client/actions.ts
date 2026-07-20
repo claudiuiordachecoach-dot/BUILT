@@ -137,7 +137,7 @@ const QUICKREF_ANTRENAMENT: Record<number, string> = {
   1: "/quickref/alex-antrenament.html",
   2: "/quickref/letitia-antrenament.html",
   3: "/quickref/george-antrenament.html",
-  4: "/quickref/ciprian-antrenament.html",
+  4: "/quickref/ciprian-antrenament-v2.html",
   5: "/quickref/andrei-antrenament.html",
   6: "/quickref/claudia-antrenament.html",
   9: "/quickref/andy-antrenament.html",
@@ -750,7 +750,7 @@ export async function getWeeklyRecap(overrideClientId?: number): Promise<WeeklyR
   const hasData = daysLogged > 0 || !!lastCheckin || weights.length > 0 || strengthPRs.length > 0;
 
   let microTarget = { title: "Ține ritmul. Un singur lucru, repetat.", why: "Sistemul lucrează când apari constant — nu spectaculos." };
-  if (daysLogged < 3) microTarget = { title: "Logează măcar 3 zile săptămâna viitoare.", why: "Nu cer perfecțiune. Cer prezență. De la 3 zile, sistemul începe să vadă." };
+  if (daysLogged < 3) microTarget = { title: "Bifează măcar 3 zile săptămâna viitoare.", why: "Nu cer perfecțiune. Cer prezență. De la 3 zile, sistemul începe să vadă." };
   else if (trainingsDone < 3) microTarget = { title: "Adaugă un antrenament. Unul.", why: "Nu recuperăm tot dintr-o dată. Adăugăm unul peste ce ai. Forța se face în straturi." };
   else if (avgSteps != null && avgSteps < 7000) microTarget = { title: "7.000 de pași pe zi. O plimbare după cină.", why: "Capacitatea (pilonul U) se câștigă în Zona 1 — mers, nu epuizare." };
   else if (avgSleep != null && avgSleep < 7) microTarget = { title: "Culcă-te cu 30 de minute mai devreme.", why: "Sub 7h de somn, stresul urcă și recuperarea se sabotează. E pârghia ascunsă." };
