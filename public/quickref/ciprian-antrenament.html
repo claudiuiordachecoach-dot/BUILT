@@ -161,7 +161,7 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 
 @media(max-width:767px){body{max-width:480px;margin:0 auto;}}
 
-/* BUILT app-skin (injectat) — aliniază foaia la designul dashboard-ului */
+/* BUILT app-skin (injectat) */
 :root{ --brd:rgba(255,255,255,.10) !important; }
 .ex-block,.alert,.card,.proto,.guide-box,.urg-card,.opt-block,.day-card,.day-grid>div,.scenario,.phase-block,.stat,.box,.info,.ok{ border-radius:14px !important; border-color:rgba(255,255,255,.10) !important; }
 .ex-block{ margin-bottom:12px !important; background:#111111 !important; }
@@ -184,76 +184,55 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
   </div>
   <div class="budget-bar">
     <span>Sesiune</span>
-    <strong>35–45 MIN TOTAL</strong>
+    <strong>45–50 MIN TOTAL</strong>
     <span>Ambele Brațe Protejate (Safe)</span>
   </div>
 </div>
 
 <div class="tabs">
   <div class="tab active" onclick="showTab('saptamana')">Săptămâna &amp; NEAT</div>
-  <div class="tab" onclick="showTab('ziuaA')">Ziua A (Lower)</div>
-  <div class="tab" onclick="showTab('ziuaB')">Ziua B (Core)</div>
-  <div class="tab" onclick="showTab('ziuaC')">Ziua C (Lower+)</div>
+  <div class="tab" onclick="showTab('ziuaA')">Ziua A (Upper 1)</div>
+  <div class="tab" onclick="showTab('ziuaB')">Ziua B (Lower 1)</div>
+  <div class="tab" onclick="showTab('ziuaC')">Ziua C (Upper 2)</div>
+  <div class="tab" onclick="showTab('ziuaD')">Ziua D (Lower 2)</div>
   <div class="tab" onclick="showTab('mve')">MVE &amp; Platou</div>
-  <div class="tab" onclick="showTab('progresie')">Mobilitate &amp; Progresie</div>
+  <div class="tab" onclick="showTab('progresie')">Mobilitate</div>
 </div>
 
 <!-- ==================== TAB 1: SĂPTĂMÂNA & NEAT ==================== -->
 <div class="panel active" id="tab-saptamana">
 
   <div class="injury-bar">
-    ⚠ AMBELE CLAVICULE RECUPERARE — Zero greutate prin brațe sau umeri (fără flotări, fără împins, fără plank pe antebrațe). Core-ul se lucrează din podea, fără sprijin pe brațe. Re-evaluare medicală în noiembrie.
+    ⚠ AMBELE CLAVICULE RECUPERARE — Zero greutate deasupra capului sau presiune directă. Toate exercițiile de "Upper" sunt modificate pentru a izola brațele și spatele/trapezul în mod sigur. Core-ul se lucrează din podea, fără sprijin pe brațe.
   </div>
 
   <div class="wgrid">
-    <div class="wd on"><div class="wd-n">Lun</div><div class="wd-t">ZIUA A</div><div class="wd-s">Lower Vol</div></div>
-    <div class="wd"><div class="wd-n">Mar</div><div class="wd-t">Rest</div><div class="wd-s">10k pași</div></div>
-    <div class="wd on"><div class="wd-n">Mie</div><div class="wd-t">ZIUA B</div><div class="wd-s">Core / Unilat</div></div>
-    <div class="wd"><div class="wd-n">Joi</div><div class="wd-t">Rest</div><div class="wd-s">10k pași</div></div>
-    <div class="wd on"><div class="wd-n">Vin</div><div class="wd-t">ZIUA C</div><div class="wd-s">Lower Intens</div></div>
-    <div class="wd"><div class="wd-n">Sâm</div><div class="wd-t">Cardio</div><div class="wd-s">Proiecte/Curte</div></div>
+    <div class="wd on"><div class="wd-n">Lun</div><div class="wd-t">ZIUA A</div><div class="wd-s">Upper 1</div></div>
+    <div class="wd on"><div class="wd-n">Mar</div><div class="wd-t">ZIUA B</div><div class="wd-s">Lower 1</div></div>
+    <div class="wd"><div class="wd-n">Mie</div><div class="wd-t">Rest</div><div class="wd-s">15k pași</div></div>
+    <div class="wd on"><div class="wd-n">Joi</div><div class="wd-t">ZIUA C</div><div class="wd-s">Upper 2</div></div>
+    <div class="wd on"><div class="wd-n">Vin</div><div class="wd-t">ZIUA D</div><div class="wd-s">Lower 2</div></div>
+    <div class="wd"><div class="wd-n">Sâm</div><div class="wd-t">Cardio</div><div class="wd-s">Proiecte</div></div>
     <div class="wd"><div class="wd-n">Dum</div><div class="wd-t">Liber</div><div class="wd-s">Plimbare</div></div>
   </div>
 
   <div class="alert-box green">
-    <div class="alert-ttl">Navigare Interactivă (Apasă pe secțiune)</div>
-    Apasă pe titlul fiecărei secțiuni de mai jos sau din celelalte tab-uri pentru a deschide sau ascunde detaliile. Experiență de tip aplicație mobilă, fără scroll excesiv.
+    <div class="alert-ttl">TEMPO 3-1-1 (Regula de Aur)</div>
+    Pentru că ganterele de 10 kg sunt ușoare, aplici tempo strict la fiecare exercițiu: <strong>3 secunde pe coborâre, 1 secundă pauză jos, 1 secundă urcare.</strong> Așa dublăm tensiunea pe mușchi.
   </div>
 
   <div class="acc-card open">
     <div class="acc-hdr" onclick="toggleAcc(this)">
       <div class="acc-title-area">
-        <div class="acc-name">Structura Sesiunii (Acasă sau în Curte)</div>
-        <div class="acc-time">40–45 min total · Zero echipament</div>
+        <div class="acc-name">Structura Sesiunii</div>
+        <div class="acc-time">45–50 min total · Gantere 10 kg</div>
       </div>
       <div class="acc-icon">▼</div>
     </div>
     <div class="acc-content">
       <div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.6;">
-        Mobilitate înainte: <strong>5 min</strong> → Exerciții de bază: <strong>30–35 min</strong> → Stretching după: <strong>5 min</strong><br><br>
-        Nu forțezi ritmul. Execuția curată, protejând clavicula, este singurul obiectiv.
-      </div>
-    </div>
-  </div>
-
-  <div class="acc-card open">
-    <div class="acc-hdr" onclick="toggleAcc(this)">
-      <div class="acc-title-area">
-        <div class="acc-name">Reguli de Sistem · Antrenament</div>
-        <div class="acc-time">Pilonii de consistență</div>
-      </div>
-      <div class="acc-icon">▼</div>
-    </div>
-    <div class="acc-content">
-      <div class="acc-body">
-        <ul class="rule-list">
-          <li><strong>Minim 1 zi de odihnă</strong> între sesiuni — întotdeauna.</li>
-          <li>Ratezi o zi? <strong>Nu compensa.</strong> Treci la ziua următoare din structură.</li>
-          <li>Durere ascuțită în oricare umăr/claviculă? <strong>Oprești imediat și trimiți mesaj.</strong></li>
-          <li><strong>Auto-progresie:</strong> ridici o greutate curat pe toate seriile, 2 antrenamente la rând → adaugi 2 kg în rucsac.</li>
-          <li>Muncă fizică grea (peste 6h) în zi de antrenament = <strong>sari antrenamentul, munca fizică ESTE antrenamentul zilei.</strong></li>
-          <li>O sesiune incompletă (15 min) este infinit mai bună decât nicio sesiune.</li>
-        </ul>
+        Mobilitate: <strong>5 min</strong> → Forță: <strong>35 min</strong> → Circuit Metabolic: <strong>5 min</strong><br><br>
+        Treci rapid prin circuitul de la finalul antrenamentului pentru a pompa sângele, a crește inima și a arde calorii masiv.
       </div>
     </div>
   </div>
@@ -261,45 +240,28 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
   <div class="sec-ttl">NEAT &amp; Zone 2 — Avantajul tău Major</div>
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
     <div class="prog-box">
-      <div class="prog-label">Target Zilnic</div>
-      <div class="prog-val">10.000</div>
-      <div class="prog-note">Pași/zi · Munca fizică și activitatea din curte contorizează 100%</div>
+      <div class="prog-label">Target Zilnic Optim</div>
+      <div class="prog-val">15.000</div>
+      <div class="prog-note">Pași/zi · Munca fizică contorizează</div>
     </div>
     <div class="prog-box" style="border-color:var(--orange);">
-      <div class="prog-label">Zi Sedentară (Ploaie)</div>
-      <div class="prog-val" style="color:var(--orange);">8.000</div>
-      <div class="prog-note">Minimul absolut · Adaugă o plimbare de 45 min seara</div>
-    </div>
-  </div>
-
-  <div class="acc-card green open">
-    <div class="acc-hdr" onclick="toggleAcc(this)">
-      <div class="acc-title-area">
-        <div class="acc-label">Cardio Gratuit</div>
-        <div class="acc-name" style="color:var(--green);">Zone 2 din Ecosistemul de Muncă</div>
-      </div>
-      <div class="acc-icon">▼</div>
-    </div>
-    <div class="acc-content">
-      <div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.6;">
-        Munca fizică intensă, activitățile din curte sau diversele proiecte reprezintă <strong>cea mai bună formă de cardio Zone 2 și ardere de grăsimi</strong>. Cât timp poți vorbi în propoziții fără să gâfâi extrem, ești exact în zona de ardere a lipidelor. Nu duplica efortul în sala de sport.
-      </div>
+      <div class="prog-label">Minim Absolut</div>
+      <div class="prog-val" style="color:var(--orange);">12.000</div>
+      <div class="prog-note">Dacă plouă, adaugi o plimbare lungă seara</div>
     </div>
   </div>
 
 </div>
 
-<!-- ==================== TAB 2: ZIUA A (LOWER) ==================== -->
+<!-- ==================== TAB 2: ZIUA A (UPPER 1) ==================== -->
 <div class="panel" id="tab-ziuaA">
+  <div class="tag tag-red">Ziua A — Luni · Upper Body 1 (Brațe, Spate, Trapez)</div>
 
-  <div class="tag tag-red">Ziua A — Luni · Lower Body Volum · Picioare + Fese</div>
-
-  <!-- MOBILITATE PRE -->
   <div class="acc-card open">
     <div class="acc-hdr" onclick="toggleAcc(this)">
       <div class="acc-title-area">
-        <div class="acc-label">🔥 Mobilitate Înainte (5 min)</div>
-        <div class="acc-name">Activare Șolduri + Genunchi</div>
+        <div class="acc-label">💪 Exerciții Principale</div>
+        <div class="acc-name">Hipertrofie &amp; Control</div>
       </div>
       <div class="acc-icon">▼</div>
     </div>
@@ -308,39 +270,64 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
         <div class="ex-list">
           <div class="ex-item">
             <div>
-              <div class="ex-name">Mers pe loc cu genunchii sus</div>
-              <div class="ex-cue">2 min ușor — ridici ritmul cardiac și încălzești articulațiile</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+high+knees+marching+in+place" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">1. Floor Press alternativ cu gantere (10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Pe spate pe podea. Împingi ganterele, cobori lent în 3 secunde până când coatele ating ferm podeaua. Protejează umerii la maxim.</div>
             </div>
-            <div class="ex-sets">2 min</div>
+            <div>
+              <div class="ex-sets">4 × 12-15 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">Rotații șolduri (cercuri mari)</div>
-              <div class="ex-cue">Mâini pe șolduri, cercuri lente și ample. Lubrifiere articulară.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+standing+hip+circles+mobility" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">2. Biceps Curls din șezut (2x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Pe scaun, brațele atârnând. Flexie controlată, coborâre lentă 3 secunde. Fără balans de trunchi!</div>
             </div>
-            <div class="ex-sets">10/parte</div>
+            <div>
+              <div class="ex-sets">4 × 10-12 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">Squat bodyweight lent (pauză jos 3 sec)</div>
-              <div class="ex-cue">Activare musculatură picioare. Nu forță — deschidere șolduri.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+bodyweight+squat+correct+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">3. Skullcrushers pe podea (2x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Din culcat pe spate, ganterele sus, îndoi doar cotul coborând ganterele spre frunte, extinzi. Izolează perfect tricepsul, zero stres pe claviculă.</div>
             </div>
-            <div class="ex-sets">2 × 8</div>
+            <div>
+              <div class="ex-sets">4 × 12-15 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">4. Chest-Supported Dumbbell Row (2x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Aplecat, sprijină pieptul sau fruntea pe spătarul unui scaun ca să nu tragi din lombar. Tragi coatele spre șolduri, cobori în 3 secunde.</div>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 12-15 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">5. Dumbbell Shrugs (Trapez - 2x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Din picioare, ridici umerii spre urechi, ții 1 secundă sus, cobori lent în 3 secunde. Execuție curată, fără impuls.</div>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 15-20 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- EXERCITII PRINCIPALE -->
-  <div class="acc-card open">
+  <div class="acc-card orange open">
     <div class="acc-hdr" onclick="toggleAcc(this)">
       <div class="acc-title-area">
-        <div class="acc-label">💪 Exerciții Principale (35 min)</div>
-        <div class="acc-name">Lower Body Complet (Zero Încărcare Umăr)</div>
+        <div class="acc-label">⚡ 3 Runde (Zero Pauză între exerciții)</div>
+        <div class="acc-name" style="color:var(--orange);">Circuit Finisher (Metabolic)</div>
       </div>
       <div class="acc-icon">▼</div>
     </div>
@@ -349,71 +336,48 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
         <div class="ex-list">
           <div class="ex-item">
             <div>
-              <div class="ex-name">1. Squat cu rucsac (8 kg pe spate)</div>
-              <div class="ex-cue ok">FAZA 2 — încărcat. Rucsacul stă pe spate, curelele pe umeri, zero presiune pe braț. Picioare lățimea umerilor. Coborâre lentă (3 sec), urcare explozivă (1 sec).</div>
-              <a href="https://www.youtube.com/shorts/Pnfl2V3Y0jY" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">1. Hollow Body Hold</div>
+              <div class="ex-cue">Din podea. Lombarul lipit ferm, picioarele ridicate.</div>
             </div>
-            <div>
-              <div class="ex-sets">5 × 12</div>
-              <div class="ex-rest">Rest 60s</div>
-            </div>
+            <div class="ex-sets">45 secunde</div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">2. Bulgarian Split Squat <span class="superset">NOU</span></div>
-              <div class="ex-cue">Piciorul din spate sprijinit pe scaun/canapea. Cobori vertical pe piciorul din față până genunchiul din spate aproape atinge podeaua. Mâini pe șolduri pentru echilibru. Cel mai puternic exercițiu unilateral pentru picioare.</div>
-              <a href="https://www.youtube.com/shorts/iyLX378CY74" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">2. Biceps Curls rapide (10 kg)</div>
+              <div class="ex-cue">Pompare, viteză, fără tempo, până la arsură.</div>
             </div>
-            <div>
-              <div class="ex-sets">3 × 8/parte</div>
-              <div class="ex-rest">Rest 60s</div>
-            </div>
+            <div class="ex-sets">15 repetări</div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">3. Single-Leg Glute Bridge <span class="superset">NOU</span></div>
-              <div class="ex-cue">Pe spate, un picior pe podea, celălalt întins în sus. Împingi în călcâiul de jos și ridici bazinul cu un singur picior. Strângi fesa 1 sec sus. Dublu efort față de varianta cu două picioare.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+single+leg+glute+bridge+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">3. Heel Touches (Atingeri călcâie)</div>
+              <div class="ex-cue">Pentru oblici.</div>
             </div>
-            <div>
-              <div class="ex-sets">3 × 12/parte</div>
-              <div class="ex-rest">Rest 60s</div>
-            </div>
+            <div class="ex-sets">45 secunde</div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">4. Calf Raises pe un picior</div>
-              <div class="ex-cue">Pe o treaptă, pe un singur picior. Ridicare lentă sus (2 sec), coborâre lentă (3 sec) până simți întinderea în gambă. Te poți sprijini ușor cu un deget de perete pentru echilibru.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+single+leg+calf+raise+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">4. Triceps Floor Press (priză îngustă)</div>
+              <div class="ex-cue">Ganterele lipite, coatele pe lângă corp, viteză.</div>
             </div>
-            <div>
-              <div class="ex-sets">3 × 15/parte</div>
-              <div class="ex-rest">Rest 45s</div>
-            </div>
+            <div class="ex-sets">15 repetări</div>
           </div>
         </div>
+        <div style="text-align:center;font-size:11px;color:var(--orange);margin-top:10px;">(Pauză 30 secunde, repeti de 3 ori tot circuitul)</div>
       </div>
     </div>
   </div>
-
-  <div class="alert-box green">
-    <div class="alert-ttl">De ce picioarele sunt prioritatea #1</div>
-    La 114 kg, picioarele și fesierii reprezintă peste 60% din masa ta musculară totală. Antrenarea lor generează cel mai mare consum caloric și efect EPOC (ardere de calorii după antrenament) din întreg corpul, protejând în același timp complet ambele clavicule.
-  </div>
-
 </div>
 
-<!-- ==================== TAB 3: ZIUA B (CORE) ==================== -->
+<!-- ==================== TAB 3: ZIUA B (LOWER 1) ==================== -->
 <div class="panel" id="tab-ziuaB">
+  <div class="tag tag-red">Ziua B — Marți · Lower Body 1 (Forță &amp; Volum)</div>
 
-  <div class="tag tag-orange">Ziua B — Miercuri · Core Profund din Podea (Zero Brațe)</div>
-
-  <!-- MOBILITATE PRE -->
-  <div class="acc-card orange open">
+  <div class="acc-card open">
     <div class="acc-hdr" onclick="toggleAcc(this)">
       <div class="acc-title-area">
-        <div class="acc-label">🔥 Mobilitate Înainte (5 min)</div>
-        <div class="acc-name" style="color:var(--orange);">Activare Core + Coloană</div>
+        <div class="acc-label">💪 Exerciții Principale</div>
+        <div class="acc-name">Lanț Anterior &amp; Posterior</div>
       </div>
       <div class="acc-icon">▼</div>
     </div>
@@ -422,31 +386,54 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
         <div class="ex-list">
           <div class="ex-item">
             <div>
-              <div class="ex-name">Cat-Cow pe mâini și genunchi</div>
-              <div class="ex-cue">Pisică (arcuire spate în sus) → Vacă (arcuire spate în jos). Lent, controlat. Decomprimă coloana vertebrală.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+cat+cow+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">1. Goblet Squat (1x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. O ganteră ținută la piept. Coborâre de 3 secunde, susții ferm trunchiul, genunchii în afară.</div>
             </div>
-            <div class="ex-sets">2 × 10</div>
+            <div>
+              <div class="ex-sets">4 × 15 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">Rotații umeri blânde (ambele brațe, fără greutate)</div>
-              <div class="ex-cue warn">⚠ Cercuri mici, lente, doar din greutatea brațului. Fără forțare. Oprești imediat dacă simți durere ascuțită în oricare claviculă.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+gentle+shoulder+circles+mobility" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">2. RDL Unilateral (1x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Pe un picior, ții gantera în mâna opusă. Cobori lent 3 secunde trimițând bazinul în spate. (Protejează umerii neoferind 20kg de tracțiune).</div>
             </div>
-            <div class="ex-sets">10+10</div>
+            <div>
+              <div class="ex-sets">4 × 10 repetări / picior</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">3. Glute Bridge pe podea (2x10 kg)</div>
+              <div class="ex-cue">Tempo 1-2-1. Pe spate, ambele gantere pe bazin. Ridici și strângi fesele 2 secunde sus!</div>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 20 repetări</div>
+              <div class="ex-rest">Rest 45s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">4. Calf Raises unilateral (1x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Pe o treaptă, coborâre foarte lentă până la întindere maximă.</div>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 20 repetări / picior</div>
+              <div class="ex-rest">Rest 45s</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- EXERCITII PRINCIPALE -->
   <div class="acc-card orange open">
     <div class="acc-hdr" onclick="toggleAcc(this)">
       <div class="acc-title-area">
-        <div class="acc-label">💪 Exerciții Principale (30 min)</div>
-        <div class="acc-name" style="color:var(--orange);">Core din Podea · Zero Sprijin pe Brațe</div>
+        <div class="acc-label">⚡ 3 Runde (Zero Pauză între exerciții)</div>
+        <div class="acc-name" style="color:var(--orange);">Circuit Finisher (Lower Pump)</div>
       </div>
       <div class="acc-icon">▼</div>
     </div>
@@ -455,88 +442,41 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
         <div class="ex-list">
           <div class="ex-item">
             <div>
-              <div class="ex-name">1. Hollow Body Hold <span class="superset">NOU</span></div>
-              <div class="ex-cue">Pe spate, lombarul lipit ferm de podea. Ridici umerii și picioarele puțin de la sol, brațele întinse pe lângă corp (NU te sprijini pe ele). Corpul formează o „bărcuță". Abdomen de fier.</div>
-              <a href="https://www.youtube.com/shorts/KgkU7yAEW90" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">1. Squat Hold (Izometrie)</div>
+              <div class="ex-cue">Stai jos în poziție de genuflexiune, spatele drept.</div>
             </div>
-            <div>
-              <div class="ex-sets">3 × 25s</div>
-              <div class="ex-rest">Rest 45s</div>
-            </div>
+            <div class="ex-sets">30 secunde</div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">2. Dead Bug</div>
-              <div class="ex-cue">Pe spate, brațe întinse spre tavan, genunchi la 90°. Cobori un braț și piciorul opus simultan spre podea, apoi schimbi. Lombarul rămâne lipit de podea tot timpul. Brațele se mișcă liber, fără greutate.</div>
-              <a href="https://www.youtube.com/shorts/DqLL45uk2Tk" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">2. Reverse Lunges rapide (Bodyweight)</div>
+              <div class="ex-cue">Fără greutate, cobori exploziv spate, revii rapid.</div>
             </div>
-            <div>
-              <div class="ex-sets">3 × 10/parte</div>
-              <div class="ex-rest">Rest 45s</div>
-            </div>
+            <div class="ex-sets">20 repetări total</div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">3. Reverse Crunch <span class="superset">NOU</span></div>
-              <div class="ex-cue">Pe spate, mâinile relaxate pe lângă corp pe podea. Genunchii la 90°, tragi bazinul în sus rulând coloana, fără să te împingi cu mâinile. Cobori controlat. Lucrezi abdomenul inferior.</div>
-              <a href="https://www.youtube.com/shorts/JonqVgFNiqE" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">3. Frog Pumps</div>
+              <div class="ex-cue">Din podea, tălpile lipite. Pompezi bazinul sus rapid.</div>
             </div>
-            <div>
-              <div class="ex-sets">3 × 12</div>
-              <div class="ex-rest">Rest 45s</div>
-            </div>
-          </div>
-          <div class="ex-item">
-            <div>
-              <div class="ex-name">4. Bird Dog (sprijin pe pumni dacă palma deranjează)</div>
-              <div class="ex-cue">Pe mâini și genunchi. Extinzi un braț și piciorul opus, menții 2 secunde, schimbi. Corp paralel cu podeaua. Sprijin minim, fără împins — dacă palma încarcă umărul, sprijină-te pe pumni.</div>
-              <a href="https://www.youtube.com/shorts/Xj1z9NqwuM8" target="_blank" class="btn-vid"><span>▶</span> Video</a>
-            </div>
-            <div>
-              <div class="ex-sets">3 × 10/parte</div>
-              <div class="ex-rest">Rest 45s</div>
-            </div>
-          </div>
-          <div class="ex-item">
-            <div>
-              <div class="ex-name">5. Atingeri de Călcâie (Heel Touches) <span class="superset">NOU</span></div>
-              <div class="ex-cue">Întins pe SPATE, genunchii îndoiți, tălpile pe podea. Ridici ușor umerii și atingi alternativ călcâiul cu mâna de aceeași parte, aplecându-te lateral. Lucrezi oblicii la fel de bine — dar zero presiune pe umăr sau claviculă, totul vine din abdomen.</div>
-              <a href="https://www.youtube.com/results?search_query=heel+touches+oblique+abdomen+executie" target="_blank" class="btn-vid"><span>▶</span> Video</a>
-            </div>
-            <div>
-              <div class="ex-sets">3 × 10/parte</div>
-              <div class="ex-rest">Rest 45s</div>
-            </div>
-          </div>
-          <div class="ex-item">
-            <div>
-              <div class="ex-name">6. Flutter Kicks (forfecări picioare) <span class="superset">NOU</span></div>
-              <div class="ex-cue">Pe spate, mâinile sub fese pentru a proteja lombarul. Picioarele întinse, ridicate puțin de la podea, le forfeci alternativ în sus-jos. Abdomenul strâns constant.</div>
-              <a href="https://www.youtube.com/shorts/2DL3HVW93_0" target="_blank" class="btn-vid"><span>▶</span> Video</a>
-            </div>
-            <div>
-              <div class="ex-sets">3 × 30s</div>
-              <div class="ex-rest">Rest 45s</div>
-            </div>
+            <div class="ex-sets">30 secunde</div>
           </div>
         </div>
+        <div style="text-align:center;font-size:11px;color:var(--orange);margin-top:10px;">(Pauză 30 secunde, repeti de 3 ori)</div>
       </div>
     </div>
   </div>
-
 </div>
 
-<!-- ==================== TAB 4: ZIUA C (LOWER+) ==================== -->
+<!-- ==================== TAB 4: ZIUA C (UPPER 2) ==================== -->
 <div class="panel" id="tab-ziuaC">
+  <div class="tag tag-red">Ziua C — Joi · Upper Body 2 (Izolare Multi-unghiulară)</div>
 
-  <div class="tag tag-red">Ziua C — Vineri / Sâmbătă · Lower Body Intensiv</div>
-
-  <!-- MOBILITATE PRE -->
   <div class="acc-card open">
     <div class="acc-hdr" onclick="toggleAcc(this)">
       <div class="acc-title-area">
-        <div class="acc-label">🔥 Mobilitate Înainte (5 min)</div>
-        <div class="acc-name">Activare Șolduri Profund</div>
+        <div class="acc-label">💪 Exerciții Principale</div>
+        <div class="acc-name">Brațe, Spate, Core Controlat</div>
       </div>
       <div class="acc-icon">▼</div>
     </div>
@@ -545,31 +485,64 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
         <div class="ex-list">
           <div class="ex-item">
             <div>
-              <div class="ex-name">World's Greatest Stretch</div>
-              <div class="ex-cue">Fandare amplă în față + rotație toracică spre genunchiul din față. Cel mai complet exercițiu de încălzire pentru șolduri.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+worlds+greatest+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">1. Zottman Curls (2x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Urcă normal (pronație palme sus), rotește palmele în jos și coboară în 3 secunde (lucrează antebrațul masiv).</div>
             </div>
-            <div class="ex-sets">5/parte</div>
+            <div>
+              <div class="ex-sets">4 × 10-12 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">Hip 90/90 pe podea</div>
-              <div class="ex-cue">Șezi pe podea cu ambii genunchi îndoiți la 90°. Rotești șoldurile de la stânga la dreapta menținând trunchiul drept.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+90+90+stretch+how+to" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">2. Dumbbell Row unilateral din aplecat (1x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Sprijin pe un scaun, spatele paralel cu podeaua. Tragi cotul spre șold. Excelent pentru spate.</div>
             </div>
-            <div class="ex-sets">5/parte</div>
+            <div>
+              <div class="ex-sets">4 × 12-15 repetări / braț</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">3. Tate Press pe podea (2x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Pe spate, ganterele sus lipite; cobori ganterele spre piept îndoind coatele în lateral, împingi înapoi sus. Izolare extremă triceps.</div>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 12 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">4. Floor Pullover cu 1 ganteră (1x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Pe spate, ții gantera cu ambele mâini deasupra pieptului, cobori cu brațele ușor flexate spre înapoi peste cap până atingi podeaua. Revii. Lucrează lats/piept fară forfecare umeri.</div>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 12 repetări</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">5. Reverse Crunch (Abdomen Inferior)</div>
+              <div class="ex-cue">Podea. Tragi genunchii spre piept controlat, ridicând bazinul, cobori lent.</div>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 15-20 repetări</div>
+              <div class="ex-rest">Rest 45s</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- EXERCITII PRINCIPALE -->
-  <div class="acc-card open">
+  <div class="acc-card orange open">
     <div class="acc-hdr" onclick="toggleAcc(this)">
       <div class="acc-title-area">
-        <div class="acc-label">💪 Exerciții Principale (40 min)</div>
-        <div class="acc-name">Lower Body Intensiv + Core Lateral</div>
+        <div class="acc-label">⚡ 3 Runde (Zero Pauză între exerciții)</div>
+        <div class="acc-name" style="color:var(--orange);">Circuit Finisher (Abdomen &amp; Pump)</div>
       </div>
       <div class="acc-icon">▼</div>
     </div>
@@ -578,57 +551,92 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
         <div class="ex-list">
           <div class="ex-item">
             <div>
-              <div class="ex-name">1. Squat Sumo cu Greutate (Bidon de Apă)</div>
-              <div class="ex-cue">Picioare depărtate larg, vârfurile orientate spre exterior. Ții un bidon de 5L apă în mâini (brațe întinse jos). Coborâre adâncă, genunchii în afară.</div>
-              <a href="https://www.youtube.com/shorts/c44X65gbyHQ" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">1. Dead Bug (sau Flutter Kicks)</div>
+              <div class="ex-cue">Viteză medie, izolare lombar.</div>
+            </div>
+            <div class="ex-sets">40 secunde</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">2. Hammer Curls rapide (2x10 kg)</div>
+              <div class="ex-cue">Pompare brațe.</div>
+            </div>
+            <div class="ex-sets">15 repetări</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">3. Heel Touches</div>
+              <div class="ex-cue">Viteză, atingeri glezne, oblici.</div>
+            </div>
+            <div class="ex-sets">40 secunde</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">4. Floor Press (2x10 kg)</div>
+              <div class="ex-cue">Împins rapid din podea, eșec.</div>
+            </div>
+            <div class="ex-sets">15 repetări</div>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:11px;color:var(--orange);margin-top:10px;">(Pauză 30 secunde, repeti de 3 ori)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== TAB 5: ZIUA D (LOWER 2) ==================== -->
+<div class="panel" id="tab-ziuaD">
+  <div class="tag tag-red">Ziua D — Vineri · Lower Body 2 (Unilateral &amp; Anduranță)</div>
+
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">💪 Exerciții Principale</div>
+        <div class="acc-name">Intensitate Mare, Focus Unilateral</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">1. Bulgarian Split Squat (1x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Ții o ganteră în mâna piciorului de lucru (sau la piept Goblet). Coborâre criminală de 3 secunde, pauză jos.</div>
             </div>
             <div>
-              <div class="ex-sets">4 × 12</div>
+              <div class="ex-sets">4 × 8-10 repetări / picior</div>
               <div class="ex-rest">Rest 60s</div>
             </div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">2. Reverse Lunge cu rucsac (8 kg) <span class="superset">NOU</span></div>
-              <div class="ex-cue">Rucsacul pe spate. Faci un pas mare ÎN SPATE, cobori genunchiul din spate spre podea, revii. Mai blând pe genunchi decât fandarea în față. Alternezi picioarele.</div>
-              <a href="https://www.youtube.com/shorts/BV4iQC0aKqI" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">2. Reverse Lunges / Fandări spate (2x10 kg)</div>
+              <div class="ex-cue">Tempo 3-1-1. Câte 12 repetări per picior, coborând lent în 3 secunde genunchiul din spate.</div>
             </div>
             <div>
-              <div class="ex-sets">3 × 10/parte</div>
+              <div class="ex-sets">4 × 12 repetări / picior</div>
               <div class="ex-rest">Rest 60s</div>
             </div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">3. Single-Leg RDL (Romanian Deadlift pe un picior) <span class="superset">NOU</span></div>
-              <div class="ex-cue">Stai pe un picior, ții un bidon de 5L în mâna opusă (jos, lângă corp). Te apleci din șold ducând piciorul liber în spate, spatele drept, până simți întinderea în femuralul piciorului de sprijin. Echilibru + femurali + fese.</div>
-              <a href="https://www.youtube.com/shorts/s32cCgmRV3I" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">3. Single Leg Glute Bridge (1x10 kg pe bazin)</div>
+              <div class="ex-cue">Tempo 1-1-1. Pe podea, un picior întins sus. Ridici bazinul exploziv, ții 1 secundă, cobori 1 secundă.</div>
             </div>
             <div>
-              <div class="ex-sets">3 × 10/parte</div>
-              <div class="ex-rest">Rest 60s</div>
-            </div>
-          </div>
-          <div class="ex-item">
-            <div>
-              <div class="ex-name">4. Frog Pumps (Pompe pentru fese) <span class="superset">NOU</span></div>
-              <div class="ex-cue">Pe spate, tălpile lipite una de alta, genunchii căzuți în lateral (poziție de „broască"). Împingi bazinul în sus strângând fesele puternic, cobori controlat. Izolează fesele perfect, zero tensiune pe brațe.</div>
-              <a href="https://www.youtube.com/shorts/NNOUE6uAV0E" target="_blank" class="btn-vid"><span>▶</span> Video</a>
-            </div>
-            <div>
-              <div class="ex-sets">3 × 20</div>
+              <div class="ex-sets">4 × 15 repetări / picior</div>
               <div class="ex-rest">Rest 45s</div>
             </div>
           </div>
           <div class="ex-item">
             <div>
-              <div class="ex-name">5. Finisher Core: Flutter Kicks + Hollow Hold <span class="superset">Superset</span></div>
-              <div class="ex-cue">Flutter Kicks (forfecări picioare) 30 sec → treci direct în Hollow Hold 20 sec. Ambele din podea, zero sprijin pe brațe. Zero pauză între ele.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+flutter+kicks+hollow+hold+core+circuit" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+              <div class="ex-name">4. Cossack Squats (Bodyweight)</div>
+              <div class="ex-cue">Fandare laterală adâncă alternată. Lucrează aductorii și mobilitatea șoldului. Cobori adânc, piciorul celălalt întins perfect drept.</div>
             </div>
             <div>
-              <div class="ex-sets">3 runde</div>
-              <div class="ex-rest">Rest 60s</div>
+              <div class="ex-sets">3 × 10 repetări / picior</div>
+              <div class="ex-rest">Rest 45s</div>
             </div>
           </div>
         </div>
@@ -636,11 +644,47 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
     </div>
   </div>
 
+  <div class="acc-card orange open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">⚡ 3 Runde (Zero Pauză între exerciții)</div>
+        <div class="acc-name" style="color:var(--orange);">Circuit Finisher (Burnout)</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">1. Wall Sit (Scaun la perete)</div>
+              <div class="ex-cue">Spatele plat pe perete, coapsele la 90 de grade, arzi cvadricepsul.</div>
+            </div>
+            <div class="ex-sets">45 secunde</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">2. Bodyweight Squats rapide</div>
+              <div class="ex-cue">Pompezi fără tempo.</div>
+            </div>
+            <div class="ex-sets">20 repetări</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">3. Hollow Body Hold</div>
+              <div class="ex-cue">Ultimul efort de abdomen, rezistă!</div>
+            </div>
+            <div class="ex-sets">45 secunde</div>
+          </div>
+        </div>
+        <div style="text-align:center;font-size:11px;color:var(--orange);margin-top:10px;">(Pauză 30 secunde, repeti de 3 ori)</div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- ==================== TAB 5: MVE & PLATOU ==================== -->
+<!-- ==================== TAB 6: MVE & PLATOU ==================== -->
 <div class="panel" id="tab-mve">
-
   <div class="tag tag-red">Protocolul MVE (Minimum Viable Effort) · 20 Min</div>
 
   <div class="intro" style="font-size:13px;color:#ccc;margin-bottom:16px;line-height:1.6;">
@@ -666,7 +710,6 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
             <div>
               <div class="ex-name">1. Bodyweight Squats (Genuflexiuni)</div>
               <div class="ex-cue">Ritm constant, coborâre completă. Spatele drept.</div>
-              <a href="https://www.youtube.com/shorts/-5LhNSMBrEs" target="_blank" class="btn-vid"><span>▶</span> Video</a>
             </div>
             <div class="ex-sets">45s / 15s</div>
           </div>
@@ -674,7 +717,6 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
             <div>
               <div class="ex-name">2. Glute Bridge pe podea</div>
               <div class="ex-cue">Pe spate, împingi în călcâie, ridici bazinul și strângi fesele sus. Ritm constant. Zero tensiune pe brațe.</div>
-              <a href="https://www.youtube.com/shorts/Rq3EXYus03E" target="_blank" class="btn-vid"><span>▶</span> Video</a>
             </div>
             <div class="ex-sets">45s / 15s</div>
           </div>
@@ -682,7 +724,6 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
             <div>
               <div class="ex-name">3. Reverse Crunch</div>
               <div class="ex-cue">Pe spate, mâinile relaxate lângă corp. Tragi genunchii și bazinul spre piept rulând coloana, fără să te împingi cu mâinile. Abdomen inferior.</div>
-              <a href="https://www.youtube.com/shorts/JonqVgFNiqE" target="_blank" class="btn-vid"><span>▶</span> Video</a>
             </div>
             <div class="ex-sets">45s / 15s</div>
           </div>
@@ -690,7 +731,6 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
             <div>
               <div class="ex-name">4. Hollow Body Hold (din podea, zero brațe)</div>
               <div class="ex-cue">Lombarul lipit de podea, umeri și picioare ușor ridicate, brațele întinse pe lângă corp fără sprijin. Abdomen de fier. Dacă cedezi, îndoi genunchii și continui.</div>
-              <a href="https://www.youtube.com/shorts/KgkU7yAEW90" target="_blank" class="btn-vid"><span>▶</span> Video</a>
             </div>
             <div class="ex-sets">45s / 15s</div>
           </div>
@@ -703,49 +743,27 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
     </div>
   </div>
 
-  <div class="tag tag-orange" style="margin-top:10px;">Protocolul de Gestionare a Platoului (Săptămânile 4–6)</div>
+  <div class="tag tag-orange" style="margin-top:10px;">Protocolul de Gestionare a Platoului</div>
   
   <div class="prog-box" style="border-color:var(--orange);">
     <div class="prog-label">Regula de Aur a Platoului</div>
     <div class="prog-val" style="color:var(--orange);font-size:18px;">2 Săptămâni de Blocaj Real</div>
     <div class="prog-note">
-      Un platou real înseamnă că greutatea ȘI circumferința taliei rămân complet nemodificate timp de 14 zile consecutive. Nu schimbi nimic după doar 4-5 zile de stagnare (fluctuații normale de apă).
-    </div>
-  </div>
-
-  <div class="acc-card orange open">
-    <div class="acc-hdr" onclick="toggleAcc(this)">
-      <div class="acc-title-area">
-        <div class="acc-label">Intervenție Strategică</div>
-        <div class="acc-name" style="color:var(--orange);">Cei 4 Pași de Deblocare a Platoului</div>
-      </div>
-      <div class="acc-icon">▼</div>
-    </div>
-    <div class="acc-content">
-      <div class="acc-body">
-        <ul class="rule-list">
-          <li><strong>Pasul 1 (Audit strict de 7 zile):</strong> Verificăm dacă s-au strecurat calorii invizibile (ulei turnat cu ochiul liber, ronțăieli necontorizate, sucuri).</li>
-          <li><strong>Pasul 2 (Ajustare calorică fină):</strong> Dacă tracking-ul a fost perfect, reducem plafonul caloric cu <strong>100–150 kcal</strong> (tăiem 30g carbohidrați din cina de seară).</li>
-          <li><strong>Pasul 3 (Creștere NEAT):</strong> Adăugăm o plimbare dedicată de 45 de minute în fiecare seară (în afara muncii fizice din zi) pentru a forța arderea lipidelor.</li>
-          <li><strong>Pasul 4 (Diet Break strategic):</strong> Dacă platoul persistă la săptămâna 8, introducem o săptămână de „Diet Break” la mentenanță (3.500 kcal) pentru a reseta hormonii tiroidieni și leptina.</li>
-        </ul>
-      </div>
+      Un platou real înseamnă că greutatea ȘI circumferința taliei rămân complet nemodificate timp de 14 zile consecutive.
     </div>
   </div>
 
 </div>
 
-<!-- ==================== TAB 6: MOBILITATE & PROGRESIE ==================== -->
+<!-- ==================== TAB 7: MOBILITATE & STRETCHING ==================== -->
 <div class="panel" id="tab-progresie">
-
   <div class="tag tag-green">Stretching După Antrenament · 5 Min · Obligatoriu</div>
 
   <div class="alert-box green">
     <div class="alert-ttl">De ce nu se sare stretchingul</div>
-    La 114 kg, tensiunea pe articulații și tendoane este încă semnificativă. 5 minute de stretching la finalul antrenamentului redau elasticitatea mușchiului, previn durerile lombare și accelerează recuperarea musculară pentru a doua zi.
+    La 114 kg, tensiunea pe articulații și tendoane este încă semnificativă. 5 minute de stretching la finalul antrenamentului redau elasticitatea mușchiului, previn durerile lombare și accelerează recuperarea musculară.
   </div>
 
-  <!-- STRETCHING -->
   <div class="acc-card green open">
     <div class="acc-hdr" onclick="toggleAcc(this)">
       <div class="acc-title-area">
@@ -761,7 +779,6 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
             <div>
               <div class="stretch-name">Quad Stretch (Întindere coapsă anterioară)</div>
               <div class="stretch-note">În picioare, sprijin pe un perete. Tragi piciorul stâng/drept la spate spre fesă. Genunchii apropiați.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+standing+quad+stretch+correct+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
             </div>
             <div class="stretch-dur">30s/parte</div>
           </div>
@@ -769,7 +786,6 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
             <div>
               <div class="stretch-name">Hip Flexor Stretch (Fandare statică pe genunchi)</div>
               <div class="stretch-note">Un genunchi pe podea, celălalt în față la 90°. Împingi bazinul ușor înainte până simți întinderea în șold.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+kneeling+hip+flexor+stretch+correct+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
             </div>
             <div class="stretch-dur">30s/parte</div>
           </div>
@@ -777,7 +793,6 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
             <div>
               <div class="stretch-name">Hamstring Stretch (Întindere femurali)</div>
               <div class="stretch-note">Pe spate, tragi un picior extins spre piept ținându-l de spatele coapsei. Genunchiul drept.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+lying+hamstring+stretch+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
             </div>
             <div class="stretch-dur">30s/parte</div>
           </div>
@@ -785,68 +800,13 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
             <div>
               <div class="stretch-name">Pigeon Pose (Întindere fesieri și șold)</div>
               <div class="stretch-note">Pe podea, un picior îndoit în față, celălalt extins în spate. Cobori pieptul peste genunchiul din față.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+pigeon+pose+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
             </div>
             <div class="stretch-dur">30s/parte</div>
           </div>
-          <div class="stretch-item">
-            <div>
-              <div class="stretch-name">Child's Pose (Întindere lombar și dorsal)</div>
-              <div class="stretch-note">Pe genunchi, te așezi pe călcâie și întinzi brațele blând în față pe podea. Fără să forțezi umerii — întinzi doar cât e confortabil pentru ambele clavicule.</div>
-              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+childs+pose+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
-            </div>
-            <div class="stretch-dur">45s</div>
-          </div>
         </div>
       </div>
     </div>
   </div>
-
-  <!-- PROGRESIA PE FAZE -->
-  <div class="acc-card open">
-    <div class="acc-hdr" onclick="toggleAcc(this)">
-      <div class="acc-title-area">
-        <div class="acc-label">Planificare Strategică</div>
-        <div class="acc-name">Progresia pe 3 Faze (Mai → Noiembrie)</div>
-      </div>
-      <div class="acc-icon">▼</div>
-    </div>
-    <div class="acc-content">
-      <div class="acc-body">
-        <div class="ex-list">
-          <div class="ex-item">
-            <div>
-              <div class="ex-name">Faza 1: Fundația (Săptămânile 1–4)</div>
-              <div class="ex-cue">Focus exclusiv pe execuție tehnică perfectă, tempo lent și conexiune minte-mușchi. 3 antrenamente + 2 sesiuni Zone 2 (activitate/proiecte).</div>
-            </div>
-            <div class="ex-sets">Mai – Iun</div>
-          </div>
-          <div class="ex-item">
-            <div>
-              <div class="ex-name" style="color:var(--red);">⬤ Faza 2: Progresia — ACTIV ACUM (Săptămânile 5–8)</div>
-              <div class="ex-cue">Greutate externă introdusă: rucsac 8 kg la squat/lunge, bidon 5L la single-leg RDL. Exerciții unilaterale (Bulgarian split squat, single-leg glute bridge) și core nou din podea. Auto-progresie +2 kg la rucsac când ridici curat 2 antrenamente la rând.</div>
-            </div>
-            <div class="ex-sets" style="color:var(--red);">Iun – Iul</div>
-          </div>
-          <div class="ex-item">
-            <div>
-              <div class="ex-name">Faza 3: Intensificare (Săptămânile 9–12)</div>
-              <div class="ex-cue">Introducem a 4-a zi de antrenament (circuit finisher 15 min) și creștem densitatea (pauze reduse la 45 sec).</div>
-            </div>
-            <div class="ex-sets">Sep – Oct</div>
-          </div>
-          <div class="ex-item" style="border-top:1px solid rgba(230,126,34,0.3);padding-top:12px;margin-top:4px;">
-            <div>
-              <div class="ex-name" style="color:var(--orange);">Viziunea Noiembrie (Deblocarea Upper Body)</div>
-              <div class="ex-cue">După re-evaluarea medicală și confirmarea vindecării complete a AMBELOR clavicule, reintroducem treptat antrenamentul pentru trenul superior — întâi izometric, apoi flotări la perete, abia apoi împins și ramat.</div>
-            </div>
-            <div class="ex-sets" style="color:var(--orange);">Noiembrie</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
 </div>
 
 <script>
@@ -862,7 +822,7 @@ function toggleAcc(el) {
 }
 </script>
 <script>
-/* BUILT: deschide tabul zilei din hash (#lowera, #upper etc.) — folosit de "Antrenamentul de azi" */
+/* BUILT: deschide tabul zilei din hash */
 (function(){
   function act(){
     var h=(location.hash||'').replace(/^#/,'');
@@ -882,6 +842,5 @@ function toggleAcc(el) {
   window.addEventListener('hashchange',act);
 })();
 </script>
-<script>/* BUILT: deschide tab-ul zilei din #hash */(function(){function a(){var h=(location.hash||'').replace('#','');if(h&&document.getElementById('tab-'+h)&&typeof showTab==='function'){try{showTab(h);}catch(e){}}}if(document.readyState!=='loading')a();else document.addEventListener('DOMContentLoaded',a);window.addEventListener('hashchange',a);})();</script>
 </body>
 </html>
