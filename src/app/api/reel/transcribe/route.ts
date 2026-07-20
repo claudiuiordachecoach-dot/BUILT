@@ -11,8 +11,8 @@ export async function POST(req: NextRequest) {
   const projectRoot = process.cwd();
   // Use indirect concatenation to prevent Turbopack from statically tracing the .venv symlink
   const venvDir = [".venv", "bin", "python"].join(path.sep);
-  const pythonBin = path.join(projectRoot, venvDir);
-  const script = path.join(projectRoot, "scripts", "transcribe_reel.py");
+  const pythonBin = path.join(/*turbopackIgnore: true*/ projectRoot, venvDir);
+  const script = path.join(/*turbopackIgnore: true*/ projectRoot, "scripts", "transcribe_reel.py");
 
   const transcript = await new Promise<string>((resolve, reject) => {
     const proc = spawn(pythonBin, [script, url], { timeout: 120_000 });
