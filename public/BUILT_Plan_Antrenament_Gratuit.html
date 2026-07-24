@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocol Antrenament 3 Zile — BUILT</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red:   #C0392B;
+    --red2:  #8B1A1A;
+    --black: #0A0A0A;
+    --card:  #111111;
+    --card2: #161616;
+    --b1:    rgba(255,255,255,0.07);
+    --b2:    rgba(192,57,43,0.22);
+    --b3:    rgba(192,57,43,0.45);
+    --g3:    #888;
+    --g4:    #555;
+    --g5:    #333;
+    --white: #F5F5F5;
+  }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 794px;
+    margin: 0 auto;
+    background: var(--black);
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── BACKGROUND GLOWS ──────────────────────────────────────── */
+  .page::before {
+    content: '';
+    position: absolute; top: -120px; left: -80px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(192,57,43,0.18) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
+  }
+  .page::after {
+    content: '';
+    position: absolute; top: 60px; right: -100px;
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(192,57,43,0.10) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ── HEADER ────────────────────────────────────────────────── */
+  .header {
+    position: relative; z-index: 1;
+    padding: 52px 56px 44px;
+    border-bottom: 1px solid var(--b1);
+    display: flex; align-items: flex-end; justify-content: space-between;
+  }
+
+  .brand-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 10px;
+  }
+  .brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; line-height: 0.86;
+    letter-spacing: 0.06em; color: var(--white);
+  }
+  .brand-name span { color: var(--red); }
+  .doc-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--g3); margin-top: 14px;
+  }
+
+  .header-author {
+    text-align: right;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
+  }
+  .author-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px; font-weight: 800;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--white); line-height: 1;
+  }
+  .author-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--red);
+  }
+  .author-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--g4); margin-top: 2px;
+  }
+
+  .red-line { height: 3px; background: var(--red); position: relative; z-index: 1; }
+
+  /* ── HERO ──────────────────────────────────────────────────── */
+  .hero {
+    position: relative; z-index: 1;
+    padding: 44px 56px 40px;
+    border-bottom: 1px solid var(--b1);
+    display: flex; gap: 36px; align-items: flex-start;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -60px; right: 0;
+    width: 300px; height: 240px;
+    background: radial-gradient(circle, rgba(192,57,43,0.09) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 100px; color: var(--red);
+    line-height: 0.78; flex-shrink: 0; width: 62px;
+    text-shadow: 0 0 40px rgba(192,57,43,0.45);
+  }
+  .hero-text h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 30px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--white); margin-bottom: 12px; line-height: 1.1;
+  }
+  .hero-text p { font-size: 14px; color: var(--g3); line-height: 1.7; max-width: 500px; }
+  .hero-text strong { color: var(--white); }
+
+  /* ── STAT ROW ──────────────────────────────────────────────── */
+  .stat-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    position: relative; z-index: 1;
+    border-bottom: 1px solid var(--b1);
+  }
+  .stat {
+    padding: 22px 28px;
+    border-right: 1px solid var(--b1);
+    display: flex; flex-direction: column; gap: 5px;
+    background: rgba(192,57,43,0.04);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 38px; color: var(--red); line-height: 1;
+    text-shadow: 0 0 24px rgba(192,57,43,0.35);
+  }
+  .stat-num small { font-size: 18px; color: var(--g4); }
+  .stat-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--g4);
+  }
+
+  /* ── SECTION LABEL ─────────────────────────────────────────── */
+  .body { padding: 40px 56px 0; position: relative; z-index: 1; }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 20px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .section-label::before {
+    content: ''; display: block;
+    width: 24px; height: 2px; background: var(--red);
+  }
+
+  /* ── DAYS GRID ─────────────────────────────────────────────── */
+  .days-wrap { padding: 0 56px; position: relative; z-index: 1; }
+  .days-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+  }
+
+  .day-col {
+    background: var(--card);
+    border: 1px solid var(--b1);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: border-color 0.2s;
+  }
+  .day-col.primary { border-color: var(--b2); }
+  .day-col.primary:hover { border-color: var(--b3); }
+
+  .day-header {
+    padding: 18px 20px 16px;
+    border-bottom: 1px solid var(--b1);
+    position: relative; overflow: hidden;
+  }
+  .day-col.primary .day-header::after {
+    content: '';
+    position: absolute; top: -30px; right: -20px;
+    width: 120px; height: 120px;
+    background: radial-gradient(circle, rgba(192,57,43,0.2) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .day-top-bar { height: 3px; margin-bottom: 16px; border-radius: 2px; }
+  .day-col.primary .day-top-bar { background: var(--red); box-shadow: 0 0 10px rgba(192,57,43,0.5); }
+  .day-col:not(.primary) .day-top-bar { background: var(--g5); }
+
+  .day-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 700;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .day-col.primary .day-tag { color: var(--red); }
+  .day-col:not(.primary) .day-tag { color: var(--g4); }
+
+  .day-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 46px; line-height: 0.85;
+    color: var(--white); margin-bottom: 4px;
+  }
+  .day-col.primary .day-num { text-shadow: 0 0 20px rgba(192,57,43,0.3); }
+
+  .day-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--white); line-height: 1.15;
+  }
+  .day-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--g4); margin-top: 7px;
+  }
+
+  .day-body { padding: 14px 18px 16px; flex: 1; }
+
+  .ex {
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+  }
+  .ex:last-child { border-bottom: none; }
+  .ex-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .ex-name { font-size: 12.5px; font-weight: 600; color: var(--white); line-height: 1.3; flex: 1; }
+  .ex-sets {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 800;
+    color: var(--red); white-space: nowrap; flex-shrink: 0;
+    letter-spacing: 0.03em;
+  }
+  .ex-note { font-size: 11px; color: var(--g4); margin-top: 3px; line-height: 1.4; }
+
+  /* ── PROGRESSION ───────────────────────────────────────────── */
+  .progression {
+    padding: 40px 56px 0;
+    position: relative; z-index: 1;
+  }
+  .prog-grid {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px; margin-top: 20px;
+  }
+  .prog-card {
+    background: var(--card);
+    border: 1px solid var(--b1);
+    border-radius: 12px;
+    padding: 22px 20px;
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative; overflow: hidden;
+  }
+  .prog-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--red) 0%, transparent 100%);
+  }
+  .prog-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 50px; line-height: 0.85;
+    color: var(--white);
+    text-shadow: 0 0 30px rgba(192,57,43,0.25);
+  }
+  .prog-num span { color: var(--red); }
+  .prog-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 12px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--white); line-height: 1.1;
+  }
+  .prog-text { font-size: 11.5px; color: var(--g3); line-height: 1.55; }
+
+  /* ── RULE BOX ──────────────────────────────────────────────── */
+  .rule-box {
+    position: relative; z-index: 1;
+    margin: 40px 56px 0;
+    background: var(--card2);
+    border: 1px solid var(--b2);
+    border-radius: 12px;
+    padding: 36px 40px;
+    display: flex; align-items: center; gap: 36px;
+    overflow: hidden;
+  }
+  .rule-box::before {
+    content: '';
+    position: absolute; left: -40px; top: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(192,57,43,0.15) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .rule-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--red);
+    white-space: nowrap; writing-mode: vertical-rl;
+    text-orientation: mixed; transform: rotate(180deg);
+    position: relative; z-index: 1;
+  }
+  .rule-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px; font-weight: 600; color: var(--white);
+    letter-spacing: 0.02em; line-height: 1.5;
+    position: relative; z-index: 1;
+  }
+  .rule-text strong { color: var(--red); }
+
+  /* ── FOOTER ────────────────────────────────────────────────── */
+  .footer {
+    position: relative; z-index: 1;
+    padding: 28px 56px;
+    margin-top: 40px;
+    border-top: 1px solid var(--b1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-left { display: flex; flex-direction: column; gap: 3px; }
+  .footer-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 800;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--white);
+  }
+  .footer-role {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--red);
+  }
+  .footer-handle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--g4); margin-top: 1px;
+  }
+  .footer-brand {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+  }
+  .footer-brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px; letter-spacing: 0.06em;
+    color: var(--white); line-height: 1;
+  }
+  .footer-brand-name span { color: var(--red); }
+  .footer-tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--g4);
+  }
+
+  /* ── PRINT ─────────────────────────────────────────────────── */
+  @media print {
+    html, body { background: #0A0A0A !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4 portrait; margin: 0; }
+    .page { border: none; }
+    .day-col, .prog-card { page-break-inside: avoid; break-inside: avoid; }
+    .ex { page-break-inside: avoid; break-inside: avoid; }
+    .rule-box, .footer { page-break-inside: avoid; break-inside: avoid; }
+    .days-grid, .prog-grid { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="brand-tag">Base Strength · Pilonul 1 — Structura de Forță</div>
+      <div class="brand-name">BU<span>I</span>LT</div>
+      <div class="doc-title">Protocol Antrenament Săptămânal</div>
+    </div>
+    <div class="header-author">
+      <div class="author-name">Iordache Claudiu</div>
+      <div class="author-title">Fondator BUILT</div>
+      <div class="author-sub">Hybrid Athlete · +10 ani<br>@iordacheclaudiu_</div>
+    </div>
+  </div>
+  <div class="red-line"></div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-num">3</div>
+    <div class="hero-text">
+      <h2>Zile. Sistem complet.<br>Zero timp pierdut.</h2>
+      <p>Nu ai nevoie de 5 zile de sală ca să construiești un corp solid. Ai nevoie de <strong>3 sesiuni bine construite</strong>, progresie sistematică și recuperare reală. Ăsta e protocolul pe care îl aplic personal — și pe care îl dau fiecărui client BUILT în prima săptămână.</p>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stat-row">
+    <div class="stat">
+      <div class="stat-num">45<small> min</small></div>
+      <div class="stat-label">Durată per sesiune</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">72<small> h</small></div>
+      <div class="stat-label">Repaus între sesiuni</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5<small> ex</small></div>
+      <div class="stat-label">Exerciții per zi</div>
+    </div>
+  </div>
+
+  <!-- DAYS -->
+  <div class="body">
+    <div class="section-label">Structura Celor 3 Zile</div>
+  </div>
+
+  <div class="days-wrap">
+    <div class="days-grid">
+
+      <!-- ZI A -->
+      <div class="day-col primary">
+        <div class="day-header">
+          <div class="day-top-bar"></div>
+          <div class="day-tag">Luni · Împingere + Core</div>
+          <div class="day-num">A</div>
+          <div class="day-name">Push<br>Superior</div>
+          <div class="day-sub">Piept · Umeri · Triceps</div>
+        </div>
+        <div class="day-body">
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Bench Press / Flotări lastrate</div>
+              <div class="ex-sets">4 × 6–8</div>
+            </div>
+            <div class="ex-note">Greutatea principală a zilei. Umeri în spate, piept activ, tempou controlat.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Overhead Press (bară/gantere)</div>
+              <div class="ex-sets">4 × 8–10</div>
+            </div>
+            <div class="ex-note">Coloana neutră. Nu îndoi spatele pentru a ridica greutatea.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Dips / Close-Grip Press</div>
+              <div class="ex-sets">3 × 8–10</div>
+            </div>
+            <div class="ex-note">Adaugă greutate dacă faci 10 reps cu corpul ușor.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Lateral Raises</div>
+              <div class="ex-sets">3 × 12–15</div>
+            </div>
+            <div class="ex-note">Greutate mică, control total. Nu balansa din corp.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Plank cu greutate pe spate</div>
+              <div class="ex-sets">3 × 45 sec</div>
+            </div>
+            <div class="ex-note">Pelvis neutru, coloana dreaptă. Progresează cu discul pe spate.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZI B -->
+      <div class="day-col">
+        <div class="day-header">
+          <div class="day-top-bar"></div>
+          <div class="day-tag">Miercuri · Tragere + Picioare</div>
+          <div class="day-num">B</div>
+          <div class="day-name">Pull +<br>Lower</div>
+          <div class="day-sub">Spate · Biceps · Picioare</div>
+        </div>
+        <div class="day-body">
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Deadlift / Romanian Deadlift</div>
+              <div class="ex-sets">4 × 5–6</div>
+            </div>
+            <div class="ex-note">Mișcarea rege. Nu e opțional. Formă perfectă înainte de greutate.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Pull-ups / Lat Pulldown</div>
+              <div class="ex-sets">4 × 6–8</div>
+            </div>
+            <div class="ex-note">Tragere prin coate, nu prin mâini. Adaugă greutate la 8+ ușor.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Seated Row / Bent-over Row</div>
+              <div class="ex-sets">3 × 8–10</div>
+            </div>
+            <div class="ex-note">Coatele aproape de corp la tragere. Pauză 1 sec în contracție.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Goblet Squat / Hack Squat</div>
+              <div class="ex-sets">3 × 10–12</div>
+            </div>
+            <div class="ex-note">Adâncime completă. Nu jumătăți de mișcare — nu există jumătăți de rezultate.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Curl cu haltera</div>
+              <div class="ex-sets">2 × 10</div>
+            </div>
+            <div class="ex-note">Auxiliar rapid. Coatele fixe pe lângă corp, nu balans.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZI C -->
+      <div class="day-col">
+        <div class="day-header">
+          <div class="day-top-bar"></div>
+          <div class="day-tag">Vineri · Full Body + Capacitate</div>
+          <div class="day-num">C</div>
+          <div class="day-name">Full<br>Body</div>
+          <div class="day-sub">Compus · Zone 2 · Recuperare</div>
+        </div>
+        <div class="day-body">
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Squat (bară / Smith)</div>
+              <div class="ex-sets">4 × 6–8</div>
+            </div>
+            <div class="ex-note">Paralel sau mai jos. Genunchii urmează direcția degetelor.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Chin-ups (priză supinație)</div>
+              <div class="ex-sets">3 × max</div>
+            </div>
+            <div class="ex-note">Tempou controlat la coborâre. Greutate adăugată la 8+ fără efort.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Military Press cu gantere</div>
+              <div class="ex-sets">3 × 10–12</div>
+            </div>
+            <div class="ex-note">Unilateral pentru echilibru stânga–dreapta.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Face Pulls / Rear Delt</div>
+              <div class="ex-sets">3 × 15</div>
+            </div>
+            <div class="ex-note">Investiție în sănătatea umerilor pe termen lung. Nu sări.</div>
+          </div>
+          <div class="ex">
+            <div class="ex-top">
+              <div class="ex-name">Cardio Zone 2 — Finisher</div>
+              <div class="ex-sets">15 min</div>
+            </div>
+            <div class="ex-note">Bici / mers rapid / vâslă la 60–65% FCmax. Conversație posibilă = zona corectă.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PROGRESSION -->
+  <div class="progression">
+    <div class="section-label">Regula de Progresie — Fără Asta Nu Există Sistem</div>
+    <div class="prog-grid">
+      <div class="prog-card">
+        <div class="prog-num">+<span>1</span></div>
+        <div class="prog-title">Rep per Sesiune</div>
+        <div class="prog-text">La fiecare sesiune, o repetare în plus față de sesiunea anterioară. Pe aceeași greutate. Asta e progresia minimală acceptabilă.</div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-num">+<span>2.5</span></div>
+        <div class="prog-title">kg la Greutate</div>
+        <div class="prog-text">Când ai atins capătul superior în 2 sesiuni consecutive — crești cu 2.5 kg și reiei din capătul inferior al intervalului.</div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-num"><span>72</span>h</div>
+        <div class="prog-title">Repaus Obligatoriu</div>
+        <div class="prog-text">Minimum 72 ore între sesiuni care solicită aceleași grupe. Adaptarea se întâmplă în repaus — nu în sală.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULE BOX -->
+  <div class="rule-box">
+    <div class="rule-label">Legea BUILT</div>
+    <div class="rule-text">
+      Nu frecvența ucide progresul. <strong>Absența progresiei sistematice</strong> — aceeași greutate, aceleași repetări, luni de zile, fără niciun stimul nou — ucide progresul. Corpul se adaptează exact atât cât îl forțezi.
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-name">Iordache Claudiu</div>
+      <div class="footer-role">Fondator BUILT · Arhitectura Corpului pe 90 de Zile</div>
+      <div class="footer-handle">@iordacheclaudiu_ &nbsp;·&nbsp; instagram</div>
+    </div>
+    <div class="footer-brand">
+      <div class="footer-brand-name">BU<span>I</span>LT</div>
+      <div class="footer-tagline">Sistemul bate voința. Întotdeauna.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

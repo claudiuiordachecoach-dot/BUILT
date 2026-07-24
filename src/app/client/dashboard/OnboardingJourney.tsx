@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 
 type Mission = { phase: string; title: string; body: string; ctaLabel: string; href: string };
@@ -16,7 +18,7 @@ const MISSIONS: Record<number, Mission> = {
     title: "Un singur lucru azi",
     body: "Bea 2L de apă și bifează „Hidratare” mai jos. Atât. Sistemul lucrează înainte să te epuizeze — primul rezultat vine rapid.",
     ctaLabel: "Vezi execuția de azi",
-    href: "/client/dashboard",
+    href: "#executia-ta",
   },
   3: {
     phase: "Ziua 3 · Planul tău",
@@ -37,7 +39,7 @@ const MISSIONS: Record<number, Mission> = {
     title: "Așa rămâi pe drum",
     body: "În fiecare zi: numerele (pași, somn) + un gând în reflecție. Constanța mică bate efortul mare. Asta e diferența dintre un plan și un sistem.",
     ctaLabel: "Completează azi",
-    href: "/client/dashboard",
+    href: "#executia-ta",
   },
   6: {
     phase: "Ziua 6 · Mintea întâi",
@@ -70,12 +72,24 @@ export default function OnboardingJourney({ day, qs }: { day: number; qs: string
       <p className="font-condensed text-[10px] uppercase tracking-widest text-built-red mb-1.5">{m.phase}</p>
       <h3 className="font-display text-2xl tracking-wide text-built-white leading-none mb-2">{m.title}</h3>
       <p className="text-sm text-zinc-300 leading-relaxed mb-4">{m.body}</p>
-      <Link
-        href={`${m.href}${qs}`}
-        className="press inline-flex items-center gap-2 bg-built-red text-white text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-lg hover:bg-built-red/90 transition-colors"
-      >
-        {m.ctaLabel} →
-      </Link>
+      {m.href.startsWith("#") ? (
+        <button
+          onClick={() => {
+            const el = document.getElementById(m.href.slice(1));
+            if (el) el.scrollIntoView({ behavior: "smooth" });
+          }}
+          className="press inline-flex items-center gap-2 bg-built-red text-white text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-lg hover:bg-built-red/90 transition-colors"
+        >
+          {m.ctaLabel} →
+        </button>
+      ) : (
+        <Link
+          href={`${m.href}${qs}`}
+          className="press inline-flex items-center gap-2 bg-built-red text-white text-xs font-semibold uppercase tracking-wider px-4 py-2.5 rounded-lg hover:bg-built-red/90 transition-colors"
+        >
+          {m.ctaLabel} →
+        </Link>
+      )}
     </div>
   );
 }

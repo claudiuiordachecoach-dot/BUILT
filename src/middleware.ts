@@ -69,6 +69,17 @@ export async function middleware(request: NextRequest) {
     }
 
     if (role === "client") {
+      // Verificăm dacă contul de client este activ
+      const { data: client } = await supabase
+        .from("clients")
+        .select("status")
+        .eq("auth_user_id", user.id)
+        .maybeSingle();
+
+      if (client && client.status && client.status !== "active") {
+        return NextResponse.redirect(new URL("/login?error=account_disabled", request.url));
+      }
+
       // Client încearcă să acceseze rută admin → redirect forţat la portalul lui
       if (isAdminRoute) {
         return NextResponse.redirect(new URL("/client/dashboard", request.url));

@@ -32,7 +32,7 @@ export default function DailyChecklist({
   const done = ITEMS.filter((i) => state[i.key]).length;
 
   return (
-    <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-5">
+    <div id="executia-ta" className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-5 scroll-mt-20">
       <div className="flex items-center justify-between mb-4">
         <span className="font-condensed text-[11px] text-zinc-400 uppercase tracking-[0.2em]">Azi · execuția ta</span>
         <span className="font-display text-xl text-built-red leading-none">{done}/{ITEMS.length}</span>

@@ -42,6 +42,8 @@ export interface CheckIn {
 
 export async function listClients(): Promise<Client[]> {
   const s = getSupabaseServer();
+  // Deactivăm accesul lui Alexandru Petrila (id 1) menținând toate datele pe site
+  await s.from("clients").update({ status: "inactive" }).eq("id", 1);
   const { data, error } = await s.from("clients").select("*").order("created_at", { ascending: false });
   if (error) throw new Error(error.message);
   return (data ?? []) as Client[];

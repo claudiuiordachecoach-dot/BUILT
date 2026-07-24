@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan Antrenament & Deficit: BUILT</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;500;600;700&family=Barlow+Condensed:wght@400;600;700;800&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red:   #C0392B;
+    --red2:  #8B1A1A;
+    --black: #F5F5F7; 
+    --card:  #FFFFFF; 
+    --card2: #FAFAFA; 
+    --b1:    rgba(0,0,0,0.08); 
+    --b2:    rgba(192,57,43,0.22);
+    --b3:    rgba(192,57,43,0.45);
+    --g3:    #666666; 
+    --g4:    #888888;
+    --g5:    #AAAAAA;
+    --white: #111111; 
+  }
+
+  body {
+    background: var(--black);
+    color: var(--white);
+    font-family: 'Barlow', sans-serif;
+    font-size: 13.5px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .page {
+    max-width: 794px;
+    margin: 0 auto;
+    background: var(--black);
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .page::before {
+    content: '';
+    position: absolute; top: -120px; left: -80px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(192,57,43,0.18) 0%, transparent 65%);
+    pointer-events: none; z-index: 0;
+  }
+  .page::after {
+    content: '';
+    position: absolute; top: 60px; right: -100px;
+    width: 360px; height: 360px;
+    background: radial-gradient(circle, rgba(192,57,43,0.10) 0%, transparent 60%);
+    pointer-events: none; z-index: 0;
+  }
+
+  .header {
+    position: relative; z-index: 1;
+    padding: 52px 56px 44px;
+    border-bottom: 1px solid var(--b1);
+    display: flex; align-items: flex-end; justify-content: space-between;
+  }
+
+  .brand-tag {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 10px;
+  }
+  .brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 72px; line-height: 0.86;
+    letter-spacing: 0.06em; color: var(--white);
+  }
+  .brand-name span { color: var(--red); }
+  .doc-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--g3); margin-top: 14px;
+  }
+
+  .header-author {
+    text-align: right;
+    display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
+  }
+  .author-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 18px; font-weight: 800;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--white); line-height: 1;
+  }
+  .author-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--red);
+  }
+  .author-sub {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--g4); margin-top: 2px;
+  }
+
+  .red-line { height: 3px; background: var(--red); position: relative; z-index: 1; }
+
+  .hero {
+    position: relative; z-index: 1;
+    padding: 44px 56px 40px;
+    border-bottom: 1px solid var(--b1);
+    display: flex; gap: 36px; align-items: flex-start;
+  }
+  .hero::after {
+    content: '';
+    position: absolute; bottom: -60px; right: 0;
+    width: 300px; height: 240px;
+    background: radial-gradient(circle, rgba(192,57,43,0.09) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .hero-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 100px; color: var(--red);
+    line-height: 0.78; flex-shrink: 0; width: 62px;
+    text-shadow: 0 0 40px rgba(192,57,43,0.25);
+  }
+  .hero-text h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 30px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--white); margin-bottom: 12px; line-height: 1.1;
+  }
+  .hero-text p { font-size: 14px; color: var(--g3); line-height: 1.7; max-width: 540px; }
+  .hero-text strong { color: var(--red); font-weight: 600;}
+
+  .body { padding: 40px 56px 0; position: relative; z-index: 1; }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--red); margin-bottom: 20px;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .section-label::before {
+    content: ''; display: block;
+    width: 24px; height: 2px; background: var(--red);
+  }
+
+  .days-wrap { padding: 0 56px; position: relative; z-index: 1; margin-bottom: 40px; }
+  .prog-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 12px; margin-top: 10px;
+  }
+  .prog-card {
+    background: var(--card);
+    border: 1px solid var(--b1);
+    border-radius: 12px;
+    padding: 22px 20px;
+    display: flex; flex-direction: column; gap: 8px;
+    position: relative; overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+  }
+  .prog-card:hover { border-color: var(--b2); box-shadow: 0 4px 15px rgba(192,57,43,0.1); }
+  .prog-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--red) 0%, transparent 100%);
+  }
+  .prog-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 32px; line-height: 0.85;
+    color: var(--white); margin-bottom: 4px;
+    text-shadow: 0 0 20px rgba(192,57,43,0.15);
+  }
+  .prog-num span { color: var(--red); font-size: 20px; font-family: 'Barlow Condensed', sans-serif; letter-spacing: 0.05em; margin-left: 4px;}
+  .prog-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 14px; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--white); line-height: 1.2;
+  }
+  .prog-text { font-size: 12.5px; color: var(--g3); line-height: 1.55; }
+  .prog-text ul { padding-left: 20px; margin-top: 10px; margin-bottom: 10px;}
+  .prog-text li { margin-bottom: 4px; }
+  .prog-text strong { color: var(--white); font-weight: 600; }
+
+  .prog-card.full-width { grid-column: 1 / -1; }
+
+  .workout-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+  .workout-item { border-bottom: 1px solid var(--b1); padding-bottom: 8px; }
+  .workout-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .w-title { font-size: 13.5px; font-weight: 600; color: var(--white); }
+  .w-details { font-size: 12.5px; color: var(--g3); margin-top: 2px; }
+  .w-details span { font-size: 11px; color: var(--g4); }
+
+  .rule-box {
+    position: relative; z-index: 1;
+    margin: 40px 56px 0;
+    background: var(--card2);
+    border: 1px solid var(--b2);
+    border-radius: 12px;
+    padding: 36px 40px;
+    display: flex; align-items: center; gap: 36px;
+    overflow: hidden;
+  }
+  .rule-box::before {
+    content: '';
+    position: absolute; left: -40px; top: -40px;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(192,57,43,0.15) 0%, transparent 65%);
+    pointer-events: none;
+  }
+  .rule-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 700; letter-spacing: 0.35em;
+    text-transform: uppercase; color: var(--red);
+    white-space: nowrap; writing-mode: vertical-rl;
+    text-orientation: mixed; transform: rotate(180deg);
+    position: relative; z-index: 1;
+  }
+  .rule-text {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 20px; font-weight: 600; color: var(--white);
+    letter-spacing: 0.02em; line-height: 1.5;
+    position: relative; z-index: 1;
+  }
+  .rule-text strong { color: var(--red); }
+
+  .footer {
+    position: relative; z-index: 1;
+    padding: 28px 56px;
+    margin-top: 40px;
+    border-top: 1px solid var(--b1);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .footer-left { display: flex; flex-direction: column; gap: 3px; }
+  .footer-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 16px; font-weight: 800;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--white);
+  }
+  .footer-role {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--red);
+  }
+  .footer-handle {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--g4); margin-top: 1px;
+  }
+  .footer-brand {
+    display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
+  }
+  .footer-brand-name {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 40px; letter-spacing: 0.06em;
+    color: var(--white); line-height: 1;
+  }
+  .footer-brand-name span { color: var(--red); }
+  .footer-tagline {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 9px; font-weight: 600;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--g4);
+  }
+
+  @media print {
+    html, body { background: #FFFFFF !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    @page { size: A4 portrait; margin: 0; }
+    .page { border: none; background: #FFFFFF; }
+    .prog-card { page-break-inside: avoid; break-inside: avoid; }
+    .rule-box, .footer { page-break-inside: avoid; break-inside: avoid; }
+    .prog-grid { break-inside: avoid; }
+    .workout-item { page-break-inside: avoid; break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <div class="brand-tag">Transformare Completă · Pilonii 2, 3 și 4</div>
+      <div class="brand-name">BU<span>I</span>LT</div>
+      <div class="doc-title">Planul Tău: Pași, Forță & Deficit Caloric</div>
+    </div>
+    <div class="header-author">
+      <div class="author-name">Iordache Claudiu</div>
+      <div class="author-title">Fondator BUILT</div>
+      <div class="author-sub">Hybrid Athlete · +10 ani<br>@iordacheclaudiu_</div>
+    </div>
+  </div>
+  <div class="red-line"></div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-num">✓</div>
+    <div class="hero-text">
+      <h2>1 Kg de grăsime echivalează cu aproximativ 7.700 de calorii.</h2>
+      <p>Cât de repede poți arde aceste calorii prin combinarea mișcării zilnice cu un program simplu de antrenament? Rezultatele se cumulează rapid în timp. <strong>Consecvența bate întotdeauna intensitatea.</strong> Fără epuizare, fără stres inutil asupra corpului.</p>
+    </div>
+  </div>
+
+  <!-- SECTION 1 -->
+  <div class="body">
+    <div class="section-label">Fundația: Mersul pe Jos (NEAT)</div>
+  </div>
+  <div class="days-wrap">
+    <div class="prog-grid">
+      <div class="prog-card full-width">
+        <div class="prog-num">01<span>MATEMATICA PAȘILOR</span></div>
+        <div class="prog-title">Câte calorii arzi doar mergând?</div>
+        <div class="prog-text">
+          Mersul pe jos generează un stres redus asupra corpului, fiind extrem de ușor de menținut pe termen lung. Iată estimarea caloriilor arse în funcție de numărul de pași zilnici:
+          <ul>
+            <li><strong>5.000 de pași</strong> = 150–250 calorii</li>
+            <li><strong>10.000 de pași</strong> = 300–500 calorii</li>
+            <li><strong>15.000 de pași</strong> = 500–700+ calorii</li>
+          </ul>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-num">02<span>TIMP ESTIMAT</span></div>
+        <div class="prog-title">Cât durează să pierzi 1 KG?</div>
+        <div class="prog-text">Dacă menții un număr constant de pași în fiecare zi, ritmul de slăbire doar prin mers arată cam așa:<br><br>• <strong>10.000 pași/zi:</strong> 2–3 săptămâni<br>• <strong>15.000 pași/zi:</strong> 10–14 zile<br>• <strong>Peste 20.000 pași/zi:</strong> 7–10 zile</div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-num">03<span>DEFICIT CALORIC</span></div>
+        <div class="prog-title">Cum accelerezi rezultatele</div>
+        <div class="prog-text">Combinația perfectă este: <strong>Numărul zilnic de pași + Deficitul caloric.</strong><br>Află-ți mentenanța (ex: greutatea ta x 24), scade 300-500 de calorii și respectă acea țintă. Crește numărul de pași treptat, fără să te epuizezi.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: WORKOUT PLAN -->
+  <div class="body" style="padding-top:0;">
+    <div class="section-label">Planul Tău: Antrenamentul de Forță & Cardio</div>
+  </div>
+  <div class="days-wrap">
+    
+    <div class="prog-card full-width" style="margin-bottom: 12px; border-left: 3px solid var(--red);">
+      <div class="prog-title" style="color:var(--red); font-size:16px;">Reguli înainte de a începe</div>
+      <div class="prog-text" style="margin-top:6px;">
+        • <strong>RIR (Repetări în Rezervă):</strong> Alege o greutate la care simți că mai puteai face 2 repetări corecte la finalul setului. Nu merge la epuizare totală (ești începător).<br>
+        • <strong>Recuperare:</strong> Lasă cel puțin o zi de pauză (doar mers / pași) între Ziua A și Ziua B.
+      </div>
+    </div>
+
+    <div class="prog-grid">
+      <!-- DAY A -->
+      <div class="prog-card">
+        <div class="prog-num">ZIUA<span>A</span></div>
+        <div class="prog-title">Full-Body & Cardio</div>
+        <div class="workout-list">
+          <div class="workout-item">
+            <div class="w-title">1. Presa pentru picioare (Leg Press)</div>
+            <div class="w-details">3 seturi × 10-12 repetări <span>(Pauză: 90s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">2. Tracțiuni la scripete (Lat Pulldown)</div>
+            <div class="w-details">3 seturi × 10-12 repetări <span>(Pauză: 90s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">3. Împins la aparat piept (Chest Press)</div>
+            <div class="w-details">3 seturi × 10-12 repetări <span>(Pauză: 90s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">4. Extensii picioare (Leg Extensions)</div>
+            <div class="w-details">2 seturi × 12-15 repetări <span>(Pauză: 60s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">5. Plank (Planșă)</div>
+            <div class="w-details">3 seturi × 30-45 secunde <span>(Pauză: 60s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">6. Cardio (Zona 2)</div>
+            <div class="w-details">20-30 min bandă (înclinat) / bicicletă, la final.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DAY B -->
+      <div class="prog-card">
+        <div class="prog-num">ZIUA<span>B</span></div>
+        <div class="prog-title">Full-Body & Cardio</div>
+        <div class="workout-list">
+          <div class="workout-item">
+            <div class="w-title">1. Goblet Squat (cu gantera la piept)</div>
+            <div class="w-details">3 seturi × 10-12 repetări <span>(Pauză: 90s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">2. Ramat la scripete (Seated Row)</div>
+            <div class="w-details">3 seturi × 10-12 repetări <span>(Pauză: 90s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">3. Presă umeri aparat (Shoulder Press)</div>
+            <div class="w-details">3 seturi × 10-12 repetări <span>(Pauză: 90s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">4. Flexii femurali (Leg Curls)</div>
+            <div class="w-details">2 seturi × 12-15 repetări <span>(Pauză: 60s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">5. Abdomene la aparat / Crunch</div>
+            <div class="w-details">3 seturi × 15-20 repetări <span>(Pauză: 60s)</span></div>
+          </div>
+          <div class="workout-item">
+            <div class="w-title">6. Cardio (Zona 2)</div>
+            <div class="w-details">20-30 min bandă (înclinat) / bicicletă, la final.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULE BOX -->
+  <div class="rule-box">
+    <div class="rule-label">Obiectiv 4 Săptămâni</div>
+    <div class="rule-text">
+      <strong>Planul este simplu:</strong> Efectuează între 8.000 și 12.000 de pași zilnic, menține deficitul caloric, fă 2 antrenamente simple de forță la aparate pe săptămână și fii consecvent 4 săptămâni... <strong>rezultatele se vor vedea mai repede decât te aștepți.</strong>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="footer-left">
+      <div class="footer-name">Iordache Claudiu</div>
+      <div class="footer-role">Fondator BUILT · Arhitectura Corpului pe 90 de Zile</div>
+      <div class="footer-handle">@iordacheclaudiu_ &nbsp;·&nbsp; instagram</div>
+    </div>
+    <div class="footer-brand">
+      <div class="footer-brand-name">BU<span>I</span>LT</div>
+      <div class="footer-tagline">Mersul pe jos este instrumentul suprem.</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

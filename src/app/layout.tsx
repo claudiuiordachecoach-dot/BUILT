@@ -38,6 +38,10 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "BUILT",
   description: "Command Center — Metoda BUILT",
+  robots: {
+    index: false,
+    follow: false,
+  },
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

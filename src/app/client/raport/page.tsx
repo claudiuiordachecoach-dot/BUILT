@@ -94,7 +94,7 @@ export default async function RaportPage({
             />
             <Stat label="Pași / zi" value={r.avgSteps != null ? r.avgSteps.toLocaleString("ro-RO") : "—"} sub="media săptămânii" />
             <Stat label="Somn / noapte" value={r.avgSleep != null ? `${r.avgSleep}h` : "—"} sub="media săptămânii" />
-            <Stat label="Zile logate" value={`${r.daysLogged}/7`} sub="prezență" accent={r.daysLogged >= 4} />
+            <Stat label="Zile bifate" value={`${r.daysLogged}/7`} sub="prezență" accent={r.daysLogged >= 4} />
           </div>
 
           {/* Evoluția corpului */}

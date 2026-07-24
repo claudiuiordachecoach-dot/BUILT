@@ -251,7 +251,7 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
       </div>
 
       {exNames.length > 0 && (
-        <div className="fixed bottom-[64px] md:bottom-4 left-0 md:left-56 right-0 px-4 z-20">
+        <div className="sticky bottom-[64px] md:bottom-4 z-20 mt-8 pb-4">
           <div className="max-w-5xl mx-auto">
             {saved && <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 mb-2 text-center">Antrenament salvat ✓</p>}
             <button onClick={save} disabled={saving} className="w-full font-condensed text-sm uppercase tracking-wider bg-built-red text-white py-3 rounded-xl hover:bg-built-red-dark transition-colors disabled:opacity-50 shadow-lg shadow-black/40">

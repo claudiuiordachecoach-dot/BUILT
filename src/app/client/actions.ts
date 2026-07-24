@@ -29,10 +29,13 @@ export async function getClientId(): Promise<number | null> {
     // Clientul logat — cauta dupa auth_user_id
     const { data: linkedClient } = await db
       .from("clients")
-      .select("id")
+      .select("id, status")
       .eq("auth_user_id", user.id)
       .maybeSingle();
-    if (linkedClient) return linkedClient.id;
+    if (linkedClient) {
+      if (linkedClient.status && linkedClient.status !== "active") return null;
+      return linkedClient.id;
+    }
   }
 
   // Admin sau fara auth — citeste cookie-ul setat de "View as Client"
