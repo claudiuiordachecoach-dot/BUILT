@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BUILT — Rețete Vol. 2 · Claudia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--rdim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;line-height:1.5;overflow-x:hidden;padding-bottom:120px;}
+a{text-decoration:none;color:inherit;cursor:pointer;}
+ul{list-style:none;}
+
+/* TYPOGRAPHY */
+h1,h2,h3,h4,.bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:0.5px;text-transform:uppercase;font-weight:400;line-height:1.1;}
+.mono{font-family:'DM Mono',monospace;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:100;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:center;height:60px;}
+.nav-logo{color:var(--red);font-size:28px;letter-spacing:1px;}
+.nav-logo span{color:var(--wht);}
+
+/* HEADER */
+.hero{padding:100px 20px 40px;text-align:center;border-bottom:1px solid var(--brd);background:linear-gradient(180deg,var(--drk2) 0%,var(--blk) 100%);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:150%;height:100%;background:radial-gradient(circle at top,var(--rdim) 0%,transparent 60%);pointer-events:none;}
+.hero-tag{display:inline-block;padding:6px 12px;background:var(--card);border:1px solid var(--brd);border-radius:100px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:20px;font-weight:600;}
+.hero-tag span{color:var(--red);}
+.hero h1{font-size:56px;margin-bottom:16px;}
+.hero p{font-size:16px;color:var(--muted);max-width:400px;margin:0 auto;line-height:1.6;}
+.macro-ribbon{display:flex;align-items:center;justify-content:center;gap:15px;margin-top:30px;flex-wrap:wrap;}
+.mr-item{display:flex;flex-direction:column;align-items:center;}
+.mr-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--wht);line-height:1;}
+.mr-lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-top:4px;}
+.mr-div{width:1px;height:24px;background:var(--brd);}
+
+/* FILTER BAR */
+.filter-wrap{position:sticky;top:60px;z-index:90;background:var(--blk);border-bottom:1px solid var(--brd);padding:0 20px;}
+.filter-scroll{display:flex;gap:10px;overflow-x:auto;padding:15px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.filter-scroll::-webkit-scrollbar{display:none;}
+.f-btn{white-space:nowrap;padding:10px 20px;background:var(--card);border:1px solid var(--brd);border-radius:100px;color:var(--muted);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:0.5px;transition:all 0.2s;}
+.f-btn.active{background:var(--wht);color:var(--blk);border-color:var(--wht);}
+
+/* RECIPE LIST */
+.container{padding:20px;max-width:600px;margin:0 auto;}
+.day-group{margin-bottom:60px;display:none;animation:fadeIn 0.3s ease forwards;}
+.day-group.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.recipe-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;overflow:hidden;margin-bottom:24px;position:relative;}
+.rp-img{width:100%;height:220px;background:var(--drk);position:relative;}
+.ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--brd);font-size:40px;display:none;}
+.ph-fill{position:absolute;inset:0;background:var(--drk);display:none;align-items:center;justify-content:center;color:var(--brd);font-size:40px;}
+.rp-img img{width:100%;height:100%;object-fit:cover;display:block;}
+.rp-badge{position:absolute;top:15px;left:15px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:6px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--wht);border:1px solid rgba(255,255,255,0.1);z-index:2;}
+.rp-diff{position:absolute;top:15px;right:15px;display:flex;gap:4px;z-index:2;}
+.rp-diff span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.rp-diff span.on{background:var(--red);}
+
+.rp-body{padding:24px;}
+.rp-head{margin-bottom:20px;}
+.rp-title{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1.1;color:var(--wht);margin-bottom:12px;letter-spacing:0.5px;}
+.rp-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.rp-tags span{padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+.tag-p{background:rgba(230,126,34,0.15);color:var(--orange);}
+.tag-m{background:rgba(41,128,185,0.15);color:#3498DB;}
+.tag-t{background:var(--drk2);color:var(--muted);border:1px solid var(--brd);}
+
+.rp-nut{display:flex;gap:8px;margin-bottom:24px;}
+.nut{flex:1;background:var(--drk);border:1px solid var(--brd);border-radius:8px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.nut-l{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:4px;}
+.nut-v{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--wht);line-height:1;}
+.nut.cal .nut-v{color:var(--red);}
+
+.rp-div{height:1px;background:var(--brd);margin:24px 0;}
+
+.rp-sec{margin-bottom:24px;}
+.rp-sec:last-child{margin-bottom:0;}
+.sec-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--brd);}
+.ing-list{list-style:none;}
+.ing-list li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--brd);font-size:14px;color:var(--wht);}
+.ing-list li:last-child{border-bottom:none;}
+.ing-n{font-weight:500;}
+.ing-q{color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;}
+
+.prep-list{list-style:none;counter-reset:prep-counter;}
+.prep-list li{position:relative;padding-left:32px;margin-bottom:16px;font-size:14px;color:var(--muted);line-height:1.6;}
+.prep-list li::before{counter-increment:prep-counter;content:counter(prep-counter);position:absolute;left:0;top:0;width:20px;height:20px;background:var(--drk);border:1px solid var(--brd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--wht);}
+
+.rp-note{background:rgba(39,174,96,0.1);border-left:3px solid var(--green);padding:12px 16px;border-radius:0 8px 8px 0;margin-top:20px;}
+.rp-note p{font-size:13px;color:var(--wht);line-height:1.5;}
+.rp-note span{display:block;font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--green);font-weight:700;margin-bottom:4px;}
+
+/* BOTTOM NAV */
+.bnav{position:fixed;bottom:0;left:0;right:0;background:rgba(10,10,10,0.9);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-top:1px solid var(--brd);display:flex;padding:15px 20px 25px;justify-content:space-around;z-index:100;}
+.bnav-item{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--muted);transition:color 0.2s;}
+.bnav-item svg{width:22px;height:22px;stroke-width:1.5px;}
+.bnav-item span{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;}
+.bnav-item.active{color:var(--red);}
+
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">BUILT<span>.</span></div>
+</nav>
+
+<div class="hero">
+  <div class="hero-tag">MODULAR VOL 2 <span>(ORICE COMBINAȚIE)</span></div>
+  <h1>CARTEA TA<br>DE REȚETE VOL 2</h1>
+  <p>Aceleași calorii și macronutrienți, rețete complet noi. Poți alege absolut orice Mic Dejun + Prânz + Cină din Volumul 1 sau 2 și vei ajunge mereu la aceleași valori zilnice.</p>
+  
+  <div class="macro-ribbon">
+    <div class="mr-item"><span class="mr-val">1400</span><span class="mr-lbl">Kcal Totale</span></div>
+    <div class="mr-div"></div>
+    <div class="mr-item"><span class="mr-val" style="color:var(--red);">130G</span><span class="mr-lbl">Proteine</span></div>
+    <div class="mr-div"></div>
+    <div class="mr-item"><span class="mr-val" style="color:#2980B9;">85G</span><span class="mr-lbl">Carbohidrați</span></div>
+    <div class="mr-div"></div>
+    <div class="mr-item"><span class="mr-val" style="color:#E67E22;">60G</span><span class="mr-lbl">Grăsimi</span></div>
+  </div>
+</div>
+
+<div class="filter-wrap">
+  <div class="filter-scroll">
+    <div class="f-btn active" data-target="z1">Ziua 1</div>
+    <div class="f-btn" data-target="z2">Ziua 2</div>
+    <div class="f-btn" data-target="z3">Ziua 3</div>
+    <div class="f-btn" data-target="z4">Ziua 4</div>
+    <div class="f-btn" data-target="z5">Ziua 5</div>
+    <div class="f-btn" data-target="z6">Ziua 6</div>
+    <div class="f-btn" data-target="z7">Ziua 7</div>
+  </div>
+</div>
+
+<div class="container">
+
+<div class="day-group active" id="z1">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z1_md.png" alt="FRENCH TOAST PROTEIC CU SCORȚIȘOARĂ" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z1 &middot; MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">FRENCH TOAST<br>PROTEIC CU SCORȚIȘOARĂ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 10 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Pâine toast integrală</span><span class="ing-q">2 felii (50g)</span></li><li><span class="ing-n">Ouă</span><span class="ing-q">1 ou + 150g albuș</span></li><li><span class="ing-n">Scorțișoară + Îndulcitor</span><span class="ing-q">Din plin</span></li><li><span class="ing-n">Afine</span><span class="ing-q">30g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Bate oul și albușurile cu scorțișoara și îndulcitorul într-o farfurie adâncă.</li><li>Trece feliile de pâine prin amestec până se îmbibă bine.</li><li>Gătește-le în tigaia antiaderentă pe ambele părți și adaugă afinele la final.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z1_p.png" alt="LIPITĂ CU VITĂ ȘI SOS DE IAURT" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z1 &middot; PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">LIPITĂ CU VITĂ<br>ȘI SOS DE IAURT</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Carne tocată vită slabă</span><span class="ing-q">150g</span></li><li><span class="ing-n">Lipie integrală mică</span><span class="ing-q">40g</span></li><li><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">50g (pentru sos)</span></li><li><span class="ing-n">Roșii + Salată verde</span><span class="ing-q">Din plin</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Condimentează și gătește carnea de vită la tigaie, fără ulei.</li><li>Fă un sos rapid din iaurt grecesc, mărar și usturoi.</li><li>Pune carnea în lipie cu salată, roșii și sosul răcoros.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z1_c.png" alt="SOMON LA CUPTOR CU SPARANGHEL" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z1 &middot; CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SOMON LA CUPTOR<br>CU SPARANGHEL</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 20 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">43G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">File de somon crud</span><span class="ing-q">130g</span></li><li><span class="ing-n">Sparanghel verde</span><span class="ing-q">150g</span></li><li><span class="ing-n">Cartof fiert</span><span class="ing-q">100g</span></li><li><span class="ing-n">Zeamă de lămâie</span><span class="ing-q">O jumătate</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Pune somonul și sparanghelul pe foaie de copt. Stropește cu lămâie și sare.</li><li>Coace la 200°C timp de 15 minute.</li><li>Servește alături de cartoful fiert.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z1_g.png" alt="SHAKE PROTEIC CLASIC" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z1 &middot; GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SHAKE PROTEIC CLASIC</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">100</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Pudră proteică (Whey)</span><span class="ing-q">20g</span></li><li><span class="ing-n">Lapte 1.5% grăsime</span><span class="ing-q">150ml</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Pune totul în shaker și bucură-te de un boost rapid de proteine.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z2">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z2_md.png" alt="BOWL CU PERLE ȘI MANGO" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z2 &middot; MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BOWL CU PERLE<br>ȘI MANGO</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 3 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Brânză perle light</span><span class="ing-q">200g</span></li><li><span class="ing-n">Pudră proteică vanilie</span><span class="ing-q">15g</span></li><li><span class="ing-n">Mango tăiat cubulețe</span><span class="ing-q">50g</span></li><li><span class="ing-n">Migdale feliate</span><span class="ing-q">10g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Amestecă perlele de brânză cu pudra proteică pentru dulceață.</li><li>Pune mango deasupra.</li><li>Presară migdalele feliate pentru extra textură crocantă.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z2_p.png" alt="SALATĂ CU QUINOA ȘI PUI GRILL" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z2 &middot; PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SALATĂ CU QUINOA<br>ȘI PUI GRILL</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Piept pui la grătar</span><span class="ing-q">150g</span></li><li><span class="ing-n">Quinoa gătită</span><span class="ing-q">60g</span></li><li><span class="ing-n">Ardei, castravete, ceapă</span><span class="ing-q">Multe</span></li><li><span class="ing-n">Ulei de măsline</span><span class="ing-q">10ml</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Taie pieptul de pui cald fâșii.</li><li>Amestecă-l cu quinoa și legumele tăiate cubulețe.</li><li>Adaugă uleiul de măsline, lămâie și condimente după gust.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z2_c.png" alt="COTLET DE PORC CU CARTOF DULCE PURE" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z2 &middot; CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">COTLET DE PORC<br>CU CARTOF DULCE PURE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 25 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">43G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Cotlet porc (fără grăsime)</span><span class="ing-q">160g</span></li><li><span class="ing-n">Cartof dulce</span><span class="ing-q">100g</span></li><li><span class="ing-n">Broccoli</span><span class="ing-q">O mână mare</span></li><li><span class="ing-n">Unt 82%</span><span class="ing-q">5g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Gătește cotletul de porc la tigaie (condimentat simplu cu sare și piper).</li><li>Fierbe cartoful dulce și pasează-l cu 5g de unt.</li><li>Fierbe broccoli la abur (2-3 minute) pentru garnitură verde.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z2_g.png" alt="IAURT GRECESC SIMPLU" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z2 &middot; GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT GRECESC SIMPLU</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">100</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">130g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Gustarea perfectă când vrei ceva cremos. Adaugă scorțișoară opțional.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z3">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z3_md.png" alt="OMLETĂ CU SPANAC ȘI FETA LIGHT" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z3 &middot; MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OMLETĂ CU SPANAC<br>ȘI FETA LIGHT</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 8 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">1 ou întreg + 150g albuș</span><span class="ing-q">~200g</span></li><li><span class="ing-n">Feta light (sau telemea)</span><span class="ing-q">30g</span></li><li><span class="ing-n">Spanac proaspăt</span><span class="ing-q">O mână generoasă</span></li><li><span class="ing-n">Pâine integrală toast</span><span class="ing-q">1 felie (25g)</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Sotează spanacul 1 minut în tigaie.</li><li>Toarnă ouăle bătute peste spanac și gătește.</li><li>La final, adaugă feta mărunțită și servește cu toastul integral.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z3_p.png" alt="CHIFTELE DE CURCAN CU ZUCCHINI NOODLES" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z3 &middot; PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CHIFTELE DE CURCAN<br>CU ZUCCHINI NOODLES</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 25 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Carne curcan tocată slabă</span><span class="ing-q">150g</span></li><li><span class="ing-n">Dovlecei tăiați spaghete</span><span class="ing-q">2 bucăți</span></li><li><span class="ing-n">Sos pasata roșii</span><span class="ing-q">100ml</span></li><li><span class="ing-n">Parmezan</span><span class="ing-q">10g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Fă chifteluțele și coace-le 15-20 min la cuptor.</li><li>Taie dovleceii fâșii subțiri (ca pastele) și trage-i la tigaie cu sosul de roșii.</li><li>Pune chiftelele peste pastele de dovlecel și presară parmezan.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z3_c.png" alt="STIR FRY DE PUI ÎN STIL ASIATIC" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z3 &middot; CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">STIR FRY DE PUI<br>ÎN STIL ASIATIC</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">43G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Piept de pui crud</span><span class="ing-q">160g</span></li><li><span class="ing-n">Mix legume congelate asiatice</span><span class="ing-q">200g</span></li><li><span class="ing-n">Orez Basmati (fiert)</span><span class="ing-q">40g</span></li><li><span class="ing-n">Sos soia (light)</span><span class="ing-q">2 linguri</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Taie puiul fâșii și rumenește-l în tigaia wok.</li><li>Adaugă legumele și sosul de soia, amestecând constant.</li><li>Servește cu orezul fiert alături (sau amestecat).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z3_g.png" alt="CURCAN ROLL-UPS" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z3 &middot; GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CURCAN ROLL-UPS</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 3 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">100</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Șuncă curcan slabă</span><span class="ing-q">50g</span></li><li><span class="ing-n">Castravete</span><span class="ing-q">1/2 buc</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Taie castravetele bețișoare și înfășoară feliile de șuncă în jurul lor.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z4">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z4_md.png" alt="OVERNIGHT OATS CU CIOCOLATĂ" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z4 &middot; MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OVERNIGHT OATS<br>CU CIOCOLATĂ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 5 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Fulgi de ovăz</span><span class="ing-q">30g</span></li><li><span class="ing-n">Pudră proteică cacao</span><span class="ing-q">25g</span></li><li><span class="ing-n">Lapte migdale/apă</span><span class="ing-q">100ml</span></li><li><span class="ing-n">Unt de arahide</span><span class="ing-q">10g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Amestecă seara ovăzul, pudra și laptele într-un bol.</li><li>Lasă-l la frigider peste noapte.</li><li>Dimineața, pune untul de arahide deasupra și mănâncă-l direct rece.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z4_p.png" alt="TUNA PASTA SALAD CU IAURT" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z4 &middot; PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">TUNA PASTA SALAD<br>CU IAURT</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Paste integrale fierte</span><span class="ing-q">60g</span></li><li><span class="ing-n">Ton conservă (scurs)</span><span class="ing-q">130g</span></li><li><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">50g (pentru dressing)</span></li><li><span class="ing-n">Măsline negre + Ceapă</span><span class="ing-q">10g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Amestecă pastele reci cu tonul și măslinele.</li><li>Fă un dressing din iaurt, lămâie și piper.</li><li>Combină totul pentru o salată sățioasă de paste.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z4_c.png" alt="VITĂ LA CUPTOR CU CARTOFI RUMENI" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z4 &middot; CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">VITĂ LA CUPTOR<br>CU CARTOFI RUMENI</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 35 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">43G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Mușchiuleț vită crud</span><span class="ing-q">150g</span></li><li><span class="ing-n">Cartofi albi (tăiați wedges)</span><span class="ing-q">120g</span></li><li><span class="ing-n">Ulei măsline</span><span class="ing-q">5ml</span></li><li><span class="ing-n">Rozmarin</span><span class="ing-q">Din plin</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Pune cartofii condimentați cu ulei și rozmarin la cuptor.</li><li>Când sunt aproape gata, frige mușchiulețul de vită în tigaie (medium-rare).</li><li>O cină ca la restaurant, perfect încadrată.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z4_g.png" alt="KEFIR PROASPĂT" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z4 &middot; GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">KEFIR PROASPĂT</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">100</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Kefir 1.5%</span><span class="ing-q">250ml</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Simplu, rapid, hrănitor pentru microbiom.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z5">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z5_md.png" alt="CUPCAKE PROTEIC LA MICROUNDE" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z5 &middot; MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CUPCAKE PROTEIC<br>LA MICROUNDE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 5 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Pudră proteică</span><span class="ing-q">25g</span></li><li><span class="ing-n">Făină de ovăz</span><span class="ing-q">20g</span></li><li><span class="ing-n">1 ou + 50g iaurt</span><span class="ing-q">1 buc</span></li><li><span class="ing-n">Cacao pudră + praf copt</span><span class="ing-q">1 linguriță</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Amestecă toate ingredientele într-o cană mare (Mug).</li><li>Bagă la microunde la putere maximă 90-120 secunde.</li><li>Mănâncă cu o linguriță, e practic o prăjitură fierbinte la mic dejun.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z5_p.png" alt="FAJITA BOWL DE PUI FĂRĂ LIPIE" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z5 &middot; PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">FAJITA BOWL DE PUI<br>FĂRĂ LIPIE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Piept pui crud</span><span class="ing-q">150g</span></li><li><span class="ing-n">Orez gătit</span><span class="ing-q">50g</span></li><li><span class="ing-n">Ardei gras + ceapă</span><span class="ing-q">Multe</span></li><li><span class="ing-n">Ulei măsline</span><span class="ing-q">5ml</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Trage puiul și legumele tăiate fâșii în tigaie cu condiment mexican (Fajita/Taco).</li><li>Așează-le în bol peste orezul cald.</li><li>Ai un prânz super aromat și voluminoas.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z5_c.png" alt="CREVEȚI ÎN SOS DE ROȘII CU OREZ" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z5 &middot; CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CREVEȚI ÎN SOS<br>DE ROȘII CU OREZ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">43G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Creveți decorticați</span><span class="ing-q">180g</span></li><li><span class="ing-n">Sos roșii (pasata)</span><span class="ing-q">150ml</span></li><li><span class="ing-n">Orez alb gătit</span><span class="ing-q">70g</span></li><li><span class="ing-n">Usturoi + Pătrunjel</span><span class="ing-q">Multe</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Gătește rapid creveții cu usturoi (2 minute).</li><li>Toarnă sosul de roșii și mai lasă 3 minute la foc mic.</li><li>Pune totul peste orezul alb cald, cu pătrunjel proaspăt.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z5_g.png" alt="BRÂNZĂ PERLE" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z5 &middot; GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BRÂNZĂ PERLE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">100</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Brânză perle light</span><span class="ing-q">75g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Proteină lentă, gust răcoros.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z6">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z6_md.png" alt="PÂINE PRĂJITĂ CU OUĂ POȘATE" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z6 &middot; MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PÂINE PRĂJITĂ CU<br>OUĂ POȘATE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 10 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Ouă</span><span class="ing-q">1 întreg + 150g albuș</span></li><li><span class="ing-n">Pâine integrală</span><span class="ing-q">2 felii (40g)</span></li><li><span class="ing-n">Roșii felii</span><span class="ing-q">1-2 roșii</span></li><li><span class="ing-n">Unt 82%</span><span class="ing-q">5g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Unge feliile prăjite cu puțin unt.</li><li>Poșează oul întreg (în apă clocotită cu oțet). Gătește albușurile separat omletă.</li><li>Așează ouăle pe toast peste feliile de roșie.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z6_p.png" alt="BURGER BOWL CU VITĂ" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z6 &middot; PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BURGER BOWL CU<br>VITĂ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Carne vită slabă</span><span class="ing-q">150g</span></li><li><span class="ing-n">Cartofi la cuptor</span><span class="ing-q">80g</span></li><li><span class="ing-n">Salată, castraveți murați</span><span class="ing-q">Din plin</span></li><li><span class="ing-n">Muștar + Ketchup Zero</span><span class="ing-q">Aromatizare</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Gătește carnea sub formă de burger patty în tigaie.</li><li>Taie patty-ul în bucăți peste salată și cartofi.</li><li>Pune muștar și ketchup (fără zahăr) - gust de burger complet!</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z6_c.png" alt="PUI CU CIUPERCI ȘI SMÂNTÂNĂ LIGHT" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z6 &middot; CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PUI CU CIUPERCI<br>ȘI SMÂNTÂNĂ LIGHT</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 20 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">43G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Piept de pui crud</span><span class="ing-q">150g</span></li><li><span class="ing-n">Ciuperci proaspete</span><span class="ing-q">150g</span></li><li><span class="ing-n">Smântână gătit light(15%)</span><span class="ing-q">20g</span></li><li><span class="ing-n">Mămăligă gătită</span><span class="ing-q">50g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Rumenește puiul cu ciupercile într-o tigaie.</li><li>La final, dă focul mic, adaugă smântâna light și amestecă.</li><li>Servește imediat cu mămăliga caldă.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z6_g.png" alt="WHEY & MIGDALE" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z6 &middot; GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">WHEY & MIGDALE</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">100</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Pudră proteică</span><span class="ing-q">15g</span></li><li><span class="ing-n">Migdale</span><span class="ing-q">5g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Bea shake-ul rapid și savurează migdalele.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z7">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z7_md.png" alt="GRIȘ CU LAPTE PROTEIC" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z7 &middot; MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">GRIȘ CU LAPTE<br>PROTEIC</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 10 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">350</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Griș</span><span class="ing-q">20g</span></li><li><span class="ing-n">Lapte 1.5%</span><span class="ing-q">150ml</span></li><li><span class="ing-n">Pudră proteică vanilie</span><span class="ing-q">25g</span></li><li><span class="ing-n">Fructe pădure</span><span class="ing-q">30g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Fierbe laptele și adaugă grișul 'în ploaie', amestecând constant.</li><li>Când e gata, ia de pe foc, lasă 1 min și încorporează pudra proteică.</li><li>Servește cu fructe de pădure deasupra. Gustul copilăriei.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z7_p.png" alt="CHILI CON CARNE LIGHT" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z7 &middot; PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CHILI CON CARNE<br>LIGHT</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 25 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">42G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Carne curcan/vită slabă</span><span class="ing-q">150g</span></li><li><span class="ing-n">Fasole roșie conservă</span><span class="ing-q">80g</span></li><li><span class="ing-n">Porumb</span><span class="ing-q">20g</span></li><li><span class="ing-n">Sos roșii + Chilli</span><span class="ing-q">100ml</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Călește carnea (fără ulei).</li><li>Adaugă sosul, fasolea spălată, porumbul și chilli.</li><li>Lasă să fiarbă la foc mic 10 minute până se îngroașă.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z7_c.png" alt="BOWL MEDITERANEAN CU CURCAN GRILL" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z7 &middot; CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BOWL MEDITERANEAN<br>CU CURCAN GRILL</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 15 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">43G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Piept curcan crud</span><span class="ing-q">150g</span></li><li><span class="ing-n">Cartof fiert cuburi</span><span class="ing-q">80g</span></li><li><span class="ing-n">Mix măsline, roșii, castraveți</span><span class="ing-q">Salată mare</span></li><li><span class="ing-n">Ulei măsline</span><span class="ing-q">5ml</span></li><li><span class="ing-n">Feta light</span><span class="ing-q">20g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Condimentează curcanul cu oregano și fă-l la grătar.</li><li>Amestecă toate ingredientele într-un bol mare.</li><li>Presară feta fărâmițată deasupra.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/claudia_1400_v2/v2_z7_g.png" alt="IAURT CU SCORȚIȘOARĂ" onerror="this.style.display='none';this.parentNode.querySelector('.ph-fill').style.display='flex';">
+    <div class="rp-badge">Z7 &middot; GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT CU SCORȚIȘOARĂ</div>
+      <div class="rp-tags"><span class="tag-p">Intelligent Fueling</span><span class="tag-t">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">100</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">12G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">130g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare pas cu pas</div>
+      <ul class="prep-list">
+        <li>Aroma perfectă de scorțișoară pentru a regla pofta de dulce.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+  <!-- Ciocolata Neagra e globala in fiecare seara -->
+  <div class="recipe-card" style="margin-top:40px; border-color:var(--red);">
+    <div class="rp-body">
+      <div class="rp-head" style="text-align:center;">
+        <div class="rp-title" style="margin-bottom:5px;">RECOMPENSA DE SEARĂ</div>
+        <div style="font-size:14px; color:var(--muted);">În fiecare zi, după cină, te bucuri de ciocolată!</div>
+      </div>
+      <div class="rp-nut" style="margin-bottom:0;">
+        <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">50</span></div>
+        <div class="nut"><span class="nut-l">Ciocolată</span><span class="nut-v" style="font-size:16px;">10g (85% cacao)</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom Navigation -->
+<div class="bnav">
+  <a href="/client/retete" class="bnav-item active">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+    <span>Rețete</span>
+  </a>
+  <a href="/client/antrenament" class="bnav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z"></path></svg>
+    <span>Antrenament</span>
+  </a>
+  <a href="/client/nutritie" class="bnav-item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+    <span>Macros</span>
+  </a>
+</div>
+
+<script>
+document.querySelectorAll('.f-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    document.querySelectorAll('.day-group').forEach(grp => grp.classList.remove('active'));
+    const target = document.getElementById(btn.dataset.target);
+    if(target) {
+      target.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+  });
+});
+</script>
+</body>
+</html>
