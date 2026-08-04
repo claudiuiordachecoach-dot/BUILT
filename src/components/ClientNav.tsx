@@ -22,7 +22,7 @@ const NAV = [
   { label: "Profilul Meu", short: "Profil", href: "/client/profil", key: "profil" },
 ];
 
-function ClientNavContent() {
+function ClientNavContent({ clientStatus }: { clientStatus?: string }) {
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -35,6 +35,10 @@ function ClientNavContent() {
   const segs = pathname.split("/");
   const backHref = (segs.length > 3 ? segs.slice(0, -1).join("/") : "/client/dashboard") + qs;
 
+  // Filter for suspended users (only show dashboard as entry point, bonuses and profile)
+  const allowedForSuspended = ["dashboard", "bonusuri", "profil"];
+  const displayNav = clientStatus === "suspended" ? NAV.filter(i => allowedForSuspended.includes(i.key)) : NAV;
+
   return (
     <>
       {/* DESKTOP — sidebar stânga */}
@@ -44,7 +48,7 @@ function ClientNavContent() {
           <div className="mt-4"><UserDisplay /></div>
         </div>
         <nav className="flex-1 overflow-y-auto py-3 px-3 space-y-0.5">
-          {NAV.map(item => {
+          {displayNav.map(item => {
             const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
             return (
               <Link key={item.href} href={`${item.href}${qs}`}
@@ -103,7 +107,7 @@ function ClientNavContent() {
 
       {/* MOBILE — bottom nav: TOATE paginile, scrollabile orizontal */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#111111]/95 backdrop-blur-md border-t border-white/10 flex items-stretch overflow-x-auto pt-1 mobile-bottomnav [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-        {NAV.map(item => {
+        {displayNav.map(item => {
           const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
           return (
             <Link key={item.href} href={`${item.href}${qs}`}
@@ -126,12 +130,12 @@ function ClientNavContent() {
   );
 }
 
-export function ClientNav() {
+export function ClientNav({ clientStatus }: { clientStatus?: string }) {
   return (
     <Suspense fallback={
       <aside className="hidden md:flex w-56 shrink-0 bg-[#111111] border-r border-white/10 flex-col h-screen sticky top-0" />
     }>
-      <ClientNavContent />
+      <ClientNavContent clientStatus={clientStatus} />
     </Suspense>
   );
 }

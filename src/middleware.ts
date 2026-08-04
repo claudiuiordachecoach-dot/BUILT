@@ -76,8 +76,12 @@ export async function middleware(request: NextRequest) {
         .eq("auth_user_id", user.id)
         .maybeSingle();
 
-      if (client && client.status && client.status !== "active") {
-        return NextResponse.redirect(new URL("/login?error=account_disabled", request.url));
+      if (client && client.status) {
+        if (client.status === "disabled") {
+          return NextResponse.redirect(new URL("/login?error=account_disabled", request.url));
+        }
+        // Suspended clients now pass through to see the payment wall / bonuses
+
       }
 
       // Client încearcă să acceseze rută admin → redirect forţat la portalul lui

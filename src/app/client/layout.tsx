@@ -2,6 +2,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { ClientNav } from "@/components/ClientNav";
 import { RouteTransition } from "@/components/RouteTransition";
+import { SuspendedWall } from "@/components/SuspendedWall";
 import { getUserRole, getSupabaseAuth } from "@/lib/supabase/auth-server";
 import { linkAuthToClient } from "./actions";
 
@@ -15,7 +16,19 @@ export default async function ClientLayout({ children }: { children: React.React
   const isAdmin = role === "admin";
 
   // Leagă auth_user_id la clientul invitat (silențios, doar dacă e necesar)
-  if (!isAdmin) await linkAuthToClient().catch(() => null);
+  let clientStatus = "active";
+  if (!isAdmin) {
+    await linkAuthToClient().catch(() => null);
+    const { data: client } = await supabase.from('clients').select('status').eq('auth_user_id', user.id).maybeSingle();
+    if (client && client.status) {
+      clientStatus = client.status;
+    }
+  }
+
+  // Interceptare directă dacă e suspendat: fără meniu, fără rute.
+  if (clientStatus === "suspended") {
+    return <SuspendedWall />;
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -33,7 +46,7 @@ export default async function ClientLayout({ children }: { children: React.React
         </div>
       )}
       <div className="flex flex-1 min-h-0">
-        <ClientNav />
+        <ClientNav clientStatus={clientStatus} />
         <main className="flex-1 min-w-0 mobile-header-offset mobile-bottomnav-offset md:pt-0 md:pb-0">
           <RouteTransition>{children}</RouteTransition>
         </main>
