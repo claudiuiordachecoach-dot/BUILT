@@ -35,51 +35,51 @@
       "Extensii triceps în jos la scripetă cu bara"
     ],
     "b": [
-      "Tracțiuni la aparat (Lat Pulldown)",
+      "Tracțiuni la aparat (Lat Trasdown)",
       "Ramat cu cablu șezut",
-      "Face Pulls (Cablu)",
+      "Face Trass (Cablu)",
       "Flexii biceps cu gantere",
-      "Flexii ciocan (Hammer Curl)"
+      "Flexii ciocan (Flexii Ciocan)"
     ],
     "c": [
       "Presă picioare (Leg Press)",
-      "Squat cu gantera la piept (Goblet Squat)",
+      "Squat cu gantera la piept (Genuflexiuni tip Goblet)",
       "Leg Curl (Aparat culcat)",
       "Ridicări pe vârfuri (Calf Raise)",
       "Plank"
     ],
     "combo": [
       "Împins la aparat (Chest Press Machine)",
-      "Tracțiuni cu priză îngustă (Close-grip Pull-ups)",
-      "Ridicări laterale cu gantere (Lateral Raises)",
+      "Tracțiuni cu priză îngustă (Close-grip Tras-ups)",
+      "Ridicări laterale cu gantere (Ridicări Laterales)",
       "Ridicări trapez cu gantere (Shrugs)",
       "Bayesian curls + Triceps dips (superset)"
     ]
   },
-  "ciprian": {
-    "ziuaA": [
-      "Mers pe loc cu genunchii sus",
-      "Squat bodyweight lent (pauză jos 3 sec)",
-      "1. Squat cu rucsac (8 kg pe spate)",
-      "2. Bulgarian Split Squat",
-      "3. Single-Leg Glute Bridge",
-      "4. Calf Raises pe un picior"
+  "andy": {
+    "a": [
+      "Leg Extensions (Extensii)",
+      "Leg Press (Presă)",
+      "Chest Press (Aparat)",
+      "Shoulder Press (Aparat)",
+      "Lateral Raises (Gantere)",
+      "Triceps Pushdown (Cablu)"
     ],
-    "ziuaB": [
-      "1. Hollow Body Hold",
-      "2. Dead Bug",
-      "3. Reverse Crunch",
-      "4. Bird Dog (sprijin pe pumni dacă palma deranjează)",
-      "5. Side-Lying Hip Raise",
-      "6. Flutter Kicks (forfecări picioare)"
+    "b": [
+      "Lat Pulldown (Tracțiuni la scripete)",
+      "Seated Cable Row (Ramat)",
+      "Face Pulls (La cablu cu sfoara)",
+      "Leg Curls (Aparat șezut/culcat)",
+      "Biceps Curls (Gantere / Cablu)",
+      "Cable Crunch (Abdomen la scripete)"
     ],
-    "ziuaC": [
-      "Hip 90/90 pe podea",
-      "1. Squat Sumo cu Greutate (Bidon de Apă)",
-      "2. Reverse Lunge cu rucsac (8 kg)",
-      "3. Single-Leg RDL (Romanian Deadlift pe un picior)",
-      "4. Frog Pumps (Pompe pentru fese)",
-      "5. Finisher Core: Flutter Kicks + Hollow Hold"
+    "c": [
+      "Leg Extensions",
+      "Leg Press (Poziție Largă)",
+      "Chest Fly (Aparat)",
+      "Lat Pulldown (Priză Strânsă)",
+      "Hammer Curls + Triceps Overhead",
+      "Plank pe antebrațe"
     ]
   },
   "claudia": {
@@ -171,6 +171,16 @@
       "Walking Lunges (Gantere)",
       "Leg Extension",
       "Adductor (Aparat)"
+    ]
+  },
+  "otilia": {
+    "lower": [
+      "Genuflexiuni pe cutie (Box Squats)",
+      "Sumo Deadlift (cu sticlă/ganteră)",
+      "Podul Fesierilor (Glute Bridges)",
+      "Îndreptări Românești (RDL)",
+      "Scoica (Clamshells)",
+      "Ridicări pe vârfuri"
     ]
   }
 }

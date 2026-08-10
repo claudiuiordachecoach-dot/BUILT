@@ -144,6 +144,7 @@ const QUICKREF_ANTRENAMENT: Record<number, string> = {
   5: "/quickref/andrei-antrenament.html",
   6: "/quickref/claudia-antrenament.html",
   9: "/quickref/andy-antrenament.html",
+  11: "/quickref/otilia-antrenament.html",
 };
 
 const QUICKREF_ACASA: Record<number, string> = {
@@ -154,6 +155,7 @@ const QUICKREF_ACASA: Record<number, string> = {
   5: "/quickref/general-acasa.html",
   6: "/quickref/general-acasa.html",
   9: "/quickref/general-acasa.html",
+  11: "/quickref/general-acasa.html",
 };
 
 export async function getNutritionPlan() {
