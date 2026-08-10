@@ -7,6 +7,6 @@ export const PERSONAL_COOKBOOKS: Record<number, CookbookEntry> = {
   2: { file: "/Cartea_Retete_Letitia.html", name: "Letitia", emoji: "👩‍🍳" },
   4: { file: "/Cartea_Retete_Ciprian.html", name: "Ciprian", emoji: "👨‍🍳" },
   5: { file: "/Cartea_Retete_Andrei.html", name: "Andrei", emoji: "👨‍🍳" },
-  6: { file: "/Cartea_Retete_Claudia_1400.html", name: "Claudia 1400 kcal", emoji: "🥑" },
+  6: { file: "/Cartea_Retete_Claudia_v3.html", name: "Claudia 1460 kcal", emoji: "🥑" },
   9: { file: "/Cartea_Retete_Andy.html", name: "Andy", emoji: "👨‍🍳" },
 };
