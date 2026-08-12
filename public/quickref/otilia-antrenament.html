@@ -230,18 +230,165 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 
 <!-- TAB: LOWER A -->
 <div class="panel" id="tab-lowera">
-{create_warmup(
-    "Mers pe bandă — 5 min la 5.0-5.5 km/h. (Dacă nu e bandă: mers pe loc cu genunchii sus 2 min + 20 Jumping Jacks)",
-    "Mobilitate Gleznă (10 rep/picior, genunchiul peste vârful degetelor, călcâiul jos) + Cat-Cow (10 rep lent) + Bird-Dog (8 rep/parte) + Genuflexiuni fără greutate (10 rep).",
-    "La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale. (Această serie nu se notează în aplicație).",
-    "ÎNCĂLZIRE LOWER A (12-15 MIN)"
-)}
-{create_ex_block("la1", "01", "Leg Extensions", 3, "15-20", 60, "https://www.youtube.com/results?search_query=how+to+do+leg+extensions+properly", "Leg Extensions", [("ÎNCĂLZIRE GENUNCHI — greutate ușoară, control total. Nu folosi impuls.", "good")], 3)}
-{create_ex_block("la2", "02", "Box Squats", 3, "12-15", 90, "https://www.youtube.com/shorts/glg8jtvDLNE", "Box Squats", [("Te învață mecanica corectă și preia presiunea de pe rotulă.", "good"), "Coboară controlat până atingi cu fesierul un scaun/cutie, ducând bazinul mult în spate. Nu te relaxa pe scaun."], 3)}
-{create_ex_block("la3", "03", "Sumo Deadlift (ganteră)", 3, "12-15", 90, "https://www.youtube.com/shorts/tSz-vQYacZs", "Sumo Deadlift", ["Picioarele mai depărtate decât umerii, vârfurile spre exterior. Împinge bazinul în spate și ridică greutatea de pe sol."], 3)}
-{create_ex_block("la4", "04", "Glute Bridges", 3, "12-15", 60, "https://www.youtube.com/shorts/RrU4zx4ysnI", "Glute Bridges", ["Împinge în călcâie și ridică bazinul. Strânge fesierii tare sus 1 secundă. Nu curba spatele excesiv."], 3)}
-{create_ex_block("la5", "05", "RDL (Îndreptări Românești)", 3, "12-15", 60, "https://www.youtube.com/shorts/1-jVBQsuYdk", "RDL", [("⚠ Coloana DREAPTĂ pe tot parcursul mișcării. Mișcarea vine din șold.", "warn")], 3)}
-{create_ex_block("la6", "06", "Ridicări pe vârfuri (Calf Raises)", 3, "15-20", 60, "https://www.youtube.com/shorts/4Z39vG9HJ2g", "Ridicări pe vârfuri", ["Din stând, te sprijini de un perete și te ridici lent pe vârfuri. Controlează coborârea."], 3)}
+
+  <div class="alert">
+    <div class="alert-ttl">🔥 ÎNCĂLZIRE LOWER A (12-15 MIN)</div>
+    <strong>Faza 1:</strong> Mers pe bandă — 5 min la 5.0-5.5 km/h. (Dacă nu e bandă: mers pe loc cu genunchii sus 2 min + 20 Jumping Jacks)<br>
+    <strong>Faza 2:</strong> Mobilitate Gleznă (10 rep/picior, genunchiul peste vârful degetelor, călcâiul jos) + Cat-Cow (10 rep lent) + Bird-Dog (8 rep/parte) + Genuflexiuni fără greutate (10 rep).<br>
+    <strong>Faza 3:</strong> La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale. (Această serie nu se notează în aplicație).
+  </div>
+
+  <div class="ex-block" id="ex-la1">
+    <div class="ex-hdr" onclick="toggleEx('ex-la1')">
+      <div class="ex-left">
+        <div class="ex-num">01</div>
+        <div class="ex-ttl">Leg Extensions</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15-20</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=how+to+do+leg+extensions+properly" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Leg Extensions</a>
+      <div class="ex-cue good">ÎNCĂLZIRE GENUNCHI — greutate ușoară, control total. Nu folosi impuls.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="la1s1"><div class="set-num">S1</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la1s2"><div class="set-num">S2</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la1s3"><div class="set-num">S3</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-la2">
+    <div class="ex-hdr" onclick="toggleEx('ex-la2')">
+      <div class="ex-left">
+        <div class="ex-num">02</div>
+        <div class="ex-ttl">Box Squats</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/shorts/glg8jtvDLNE" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Box Squats</a>
+      <div class="ex-cue good">Te învață mecanica corectă și preia presiunea de pe rotulă.</div>
+      <div class="ex-cue">Coboară controlat până atingi cu fesierul un scaun/cutie, ducând bazinul mult în spate. Nu te relaxa pe scaun.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="la2s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la2s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la2s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-la3">
+    <div class="ex-hdr" onclick="toggleEx('ex-la3')">
+      <div class="ex-left">
+        <div class="ex-num">03</div>
+        <div class="ex-ttl">Sumo Deadlift (ganteră)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/shorts/tSz-vQYacZs" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Sumo Deadlift</a>
+      <div class="ex-cue">Picioarele mai depărtate decât umerii, vârfurile spre exterior. Împinge bazinul în spate și ridică greutatea de pe sol.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="la3s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la3s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la3s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-la4">
+    <div class="ex-hdr" onclick="toggleEx('ex-la4')">
+      <div class="ex-left">
+        <div class="ex-num">04</div>
+        <div class="ex-ttl">Glute Bridges</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/shorts/RrU4zx4ysnI" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Glute Bridges</a>
+      <div class="ex-cue">Împinge în călcâie și ridică bazinul. Strânge fesierii tare sus 1 secundă. Nu curba spatele excesiv.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="la4s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la4s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la4s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-la5">
+    <div class="ex-hdr" onclick="toggleEx('ex-la5')">
+      <div class="ex-left">
+        <div class="ex-num">05</div>
+        <div class="ex-ttl">RDL (Îndreptări Românești)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/shorts/1-jVBQsuYdk" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — RDL</a>
+      <div class="ex-cue warn">⚠ Coloana DREAPTĂ pe tot parcursul mișcării. Mișcarea vine din șold.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="la5s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la5s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la5s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-la6">
+    <div class="ex-hdr" onclick="toggleEx('ex-la6')">
+      <div class="ex-left">
+        <div class="ex-num">06</div>
+        <div class="ex-ttl">Ridicări pe vârfuri (Calf Raises)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15-20</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/shorts/4Z39vG9HJ2g" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Ridicări pe vârfuri</a>
+      <div class="ex-cue">Din stând, te sprijini de un perete și te ridici lent pe vârfuri. Controlează coborârea.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="la6s1"><div class="set-num">S1</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la6s2"><div class="set-num">S2</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="la6s3"><div class="set-num">S3</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
   <div class="cond-block" data-work="30" id="cond-la">
     <div class="cond-hdr">
       <div>
@@ -265,30 +412,171 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
       <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
     </div>
   </div>
-{create_stretching([
-    "Stretching Cvadriceps: 30s/picior. Sprijinit la perete, trage călcâiul spre fesier. Genunchiul drept în jos.",
-    "Stretching Femurale: 30s/picior. Piciorul drept pe o treaptă, apleacă trunchiul (spatele drept) din șold.",
-    "Stretching Fesieri (Figure 4): 30s/parte. Glezna pe genunchiul opus, apasă ușor genunchiul în jos.",
-    "Stretching Adductori: 30s/parte. Din picioare depărtate (sumo), transferă greutatea pe un picior, celălalt rămâne drept.",
-    "Cat-Cow: 8 rep lent pentru decompresie coloană.",
-    "Child's Pose: 30s. Șezi pe călcâie, mâinile întinse mult în față pe sol. Relaxează tot corpul."
-])}
+
+  <div class="alert blue">
+    <div class="alert-ttl">🧊 STRETCHING FINAL (5-10 MIN)</div>
+    <strong>1.</strong> Stretching Cvadriceps: 30s/picior. Sprijinit la perete, trage călcâiul spre fesier. Genunchiul drept în jos.<br><strong>2.</strong> Stretching Femurale: 30s/picior. Piciorul drept pe o treaptă, apleacă trunchiul (spatele drept) din șold.<br><strong>3.</strong> Stretching Fesieri (Figure 4): 30s/parte. Glezna pe genunchiul opus, apasă ușor genunchiul în jos.<br><strong>4.</strong> Stretching Adductori: 30s/parte. Din picioare depărtate (sumo), transferă greutatea pe un picior, celălalt rămâne drept.<br><strong>5.</strong> Cat-Cow: 8 rep lent pentru decompresie coloană.<br><strong>6.</strong> Child's Pose: 30s. Șezi pe călcâie, mâinile întinse mult în față pe sol. Relaxează tot corpul.
+  </div>
+
 </div>
 
 <!-- TAB: UPPER -->
 <div class="panel" id="tab-upper">
-{create_warmup(
-    "Mers pe bandă — 5 min la 5.0-5.5 km/h.",
-    "Rotații de Umeri (15 rep înainte/înapoi) + Band Pull-Aparts sau mimare (15 rep) + Wall Slides la perete (10 rep) + Flotări la perete (10 rep).",
-    "La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale.",
-    "ÎNCĂLZIRE UPPER (10-12 MIN)"
-)}
-{create_ex_block("u1", "01", "Lat Pulldown (Helcometru)", 3, "12-15", 90, "https://www.youtube.com/results?search_query=lat+pulldown+tutorial+for+beginners", "Lat Pulldown", ["Trage bara spre piept, nu în spatele capului. Concentrează-te pe coatele care merg în jos și înapoi."], 3)}
-{create_ex_block("u2", "02", "Chest Press la aparat", 3, "12-15", 90, "https://www.youtube.com/results?search_query=machine+chest+press+tutorial", "Chest Press", ["Aparat, nu haltere — e mai sigur. Coatele la 45° față de trunchi, nu la 90° (nu perfect aliniate cu umerii)."], 3)}
-{create_ex_block("u3", "03", "Seated Row la aparat / cablu", 3, "12-15", 90, "https://www.youtube.com/results?search_query=seated+cable+row+tutorial", "Seated Row", ["Trage spre abdomen, strânge omoplații. Pieptul scos în față. Nu trage din biceps."], 3)}
-{create_ex_block("u4", "04", "Shoulder Press cu gantere", 2, "12-15", 60, "https://www.youtube.com/results?search_query=dumbbell+shoulder+press+tutorial", "Shoulder Press", ["Stai pe bancă cu spătar ridicat. Împinge ganterele de la nivelul urechilor. Începe ușor (2-4kg)."], 2)}
-{create_ex_block("u5", "05", "Biceps Curls cu gantere", 2, "12-15", 60, "https://www.youtube.com/results?search_query=dumbbell+bicep+curl+tutorial", "Biceps Curls", ["Coatele lipite de trunchi. Ridică lent, coboară și mai lent. Nu te balansa."], 2)}
-{create_ex_block("u6", "06", "Triceps Pushdown la cablu", 2, "12-15", 60, "https://www.youtube.com/results?search_query=tricep+rope+pushdown+tutorial", "Triceps Pushdown", ["Coatele fixe lipite de corp. Mișcarea doar din antebraț. Strânge tare jos."], 2)}
+
+  <div class="alert">
+    <div class="alert-ttl">🔥 ÎNCĂLZIRE UPPER (10-12 MIN)</div>
+    <strong>Faza 1:</strong> Mers pe bandă — 5 min la 5.0-5.5 km/h.<br>
+    <strong>Faza 2:</strong> Rotații de Umeri (15 rep înainte/înapoi) + Band Pull-Aparts sau mimare (15 rep) + Wall Slides la perete (10 rep) + Flotări la perete (10 rep).<br>
+    <strong>Faza 3:</strong> La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale.
+  </div>
+
+  <div class="ex-block" id="ex-u1">
+    <div class="ex-hdr" onclick="toggleEx('ex-u1')">
+      <div class="ex-left">
+        <div class="ex-num">01</div>
+        <div class="ex-ttl">Lat Pulldown (Helcometru)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=lat+pulldown+tutorial+for+beginners" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Lat Pulldown</a>
+      <div class="ex-cue">Trage bara spre piept, nu în spatele capului. Concentrează-te pe coatele care merg în jos și înapoi.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="u1s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u1s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u1s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-u2">
+    <div class="ex-hdr" onclick="toggleEx('ex-u2')">
+      <div class="ex-left">
+        <div class="ex-num">02</div>
+        <div class="ex-ttl">Chest Press la aparat</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=machine+chest+press+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Chest Press</a>
+      <div class="ex-cue">Aparat, nu haltere — e mai sigur. Coatele la 45° față de trunchi, nu la 90° (nu perfect aliniate cu umerii).</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="u2s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u2s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u2s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-u3">
+    <div class="ex-hdr" onclick="toggleEx('ex-u3')">
+      <div class="ex-left">
+        <div class="ex-num">03</div>
+        <div class="ex-ttl">Seated Row la aparat / cablu</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=seated+cable+row+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Seated Row</a>
+      <div class="ex-cue">Trage spre abdomen, strânge omoplații. Pieptul scos în față. Nu trage din biceps.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="u3s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u3s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u3s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-u4">
+    <div class="ex-hdr" onclick="toggleEx('ex-u4')">
+      <div class="ex-left">
+        <div class="ex-num">04</div>
+        <div class="ex-ttl">Shoulder Press cu gantere</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">2 × 12-15</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=dumbbell+shoulder+press+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Shoulder Press</a>
+      <div class="ex-cue">Stai pe bancă cu spătar ridicat. Împinge ganterele de la nivelul urechilor. Începe ușor (2-4kg).</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="u4s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u4s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-u5">
+    <div class="ex-hdr" onclick="toggleEx('ex-u5')">
+      <div class="ex-left">
+        <div class="ex-num">05</div>
+        <div class="ex-ttl">Biceps Curls cu gantere</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">2 × 12-15</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=dumbbell+bicep+curl+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Biceps Curls</a>
+      <div class="ex-cue">Coatele lipite de trunchi. Ridică lent, coboară și mai lent. Nu te balansa.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="u5s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u5s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-u6">
+    <div class="ex-hdr" onclick="toggleEx('ex-u6')">
+      <div class="ex-left">
+        <div class="ex-num">06</div>
+        <div class="ex-ttl">Triceps Pushdown la cablu</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">2 × 12-15</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=tricep+rope+pushdown+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Triceps Pushdown</a>
+      <div class="ex-cue">Coatele fixe lipite de corp. Mișcarea doar din antebraț. Strânge tare jos.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="u6s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="u6s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
   <div class="cond-block" data-work="30" id="cond-u">
     <div class="cond-hdr">
       <div>
@@ -312,30 +600,174 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
       <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
     </div>
   </div>
-{create_stretching([
-    "Stretching Piept: 30s/parte. La cadrul ușii, antebrațul pe cadru, cotul la 90°. Pas înainte, rotește corpul opus.",
-    "Stretching Latissimus (Spate lateral): 30s/parte. Apucă un stâlp sus, lasă-te pe spate și lateral ca un arc.",
-    "Stretching Trapez/Gât: 30s/parte. Stai drept, trage ușor capul spre un umăr cu mâna. Umărul opus rămâne jos.",
-    "Stretching Triceps: 20s/parte. Mâna la spate (spre omoplat), trage ușor de cot cu cealaltă mână.",
-    "Stretching Biceps: 20s/parte. Brațul întins pe perete la nivelul umărului, rotește corpul în sens opus.",
-    "Child's Pose: 30s. Decompresie totală a coloanei, exact ca la Lower."
-])}
+
+  <div class="alert blue">
+    <div class="alert-ttl">🧊 STRETCHING FINAL (5-10 MIN)</div>
+    <strong>1.</strong> Stretching Piept: 30s/parte. La cadrul ușii, antebrațul pe cadru, cotul la 90°. Pas înainte, rotește corpul opus.<br><strong>2.</strong> Stretching Latissimus (Spate lateral): 30s/parte. Apucă un stâlp sus, lasă-te pe spate și lateral ca un arc.<br><strong>3.</strong> Stretching Trapez/Gât: 30s/parte. Stai drept, trage ușor capul spre un umăr cu mâna. Umărul opus rămâne jos.<br><strong>4.</strong> Stretching Triceps: 20s/parte. Mâna la spate (spre omoplat), trage ușor de cot cu cealaltă mână.<br><strong>5.</strong> Stretching Biceps: 20s/parte. Brațul întins pe perete la nivelul umărului, rotește corpul în sens opus.<br><strong>6.</strong> Child's Pose: 30s. Decompresie totală a coloanei, exact ca la Lower.
+  </div>
+
 </div>
 
 <!-- TAB: LOWER B -->
 <div class="panel" id="tab-lowerb">
-{create_warmup(
-    "Mers pe bandă — 5 min la 5.0-5.5 km/h.",
-    "Mobilitate Gleznă (10 rep/picior) + Cat-Cow (10 rep lent) + Hip Circles din picioare (8 rep/direcție/picior) + Bodyweight Squats (10 rep).",
-    "La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale.",
-    "ÎNCĂLZIRE LOWER B (12-15 MIN)"
-)}
-{create_ex_block("lb1", "01", "Leg Extensions", 3, "15-20", 60, "https://www.youtube.com/results?search_query=how+to+do+leg+extensions+properly", "Leg Extensions", [("ÎNCĂLZIRE GENUNCHI — greutate ușoară, control total. Nu folosi impuls.", "good")], 3)}
-{create_ex_block("lb2", "02", "Leg Press", 3, "12-15", 90, "https://www.youtube.com/results?search_query=leg+press+tutorial+glute+focus", "Leg Press", ["Picioarele plasate mai SUS pe platformă = mai mult fesier, mai puțin stres pe genunchi. Nu întinde genunchii complet la final."], 3)}
-{create_ex_block("lb3", "03", "Hip Thrust la aparat / bancă", 3, "12-15", 90, "https://www.youtube.com/results?search_query=hip+thrust+tutorial+for+beginners", "Hip Thrust", ["Spatele pe bancă, greutate pe bazin. Strânge fesierii sus 1 secundă. Bărbia în piept, privirea mereu înainte."], 3)}
-{create_ex_block("lb4", "04", "Leg Curl (Flexii Femurali)", 3, "12-15", 60, "https://www.youtube.com/results?search_query=seated+leg+curl+machine+tutorial", "Leg Curl", ["Mișcare strictă din genunchi. Trage exploziv în jos, eliberează lent în sus (3 secunde)."], 3)}
-{create_ex_block("lb5", "05", "Abductor la aparat", 3, "15-20", 60, "https://www.youtube.com/results?search_query=hip+abductor+machine+tutorial", "Abductor (Exterior)", ["Deschide picioarele lent, controlat. Nu lăsa greutatea să te tragă înapoi brusc. Pauză 1 sec în poziția deschis."], 3)}
-{create_ex_block("lb6", "06", "Adductor la aparat", 3, "15-20", 60, "https://www.youtube.com/results?search_query=hip+adductor+machine+tutorial", "Adductor (Interior)", ["Închide picioarele controlat. Stabilizează interiorul coapselor. Ajută la protecția genunchiului."], 3)}
+
+  <div class="alert">
+    <div class="alert-ttl">🔥 ÎNCĂLZIRE LOWER B (12-15 MIN)</div>
+    <strong>Faza 1:</strong> Mers pe bandă — 5 min la 5.0-5.5 km/h.<br>
+    <strong>Faza 2:</strong> Mobilitate Gleznă (10 rep/picior) + Cat-Cow (10 rep lent) + Hip Circles din picioare (8 rep/direcție/picior) + Bodyweight Squats (10 rep).<br>
+    <strong>Faza 3:</strong> La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale.
+  </div>
+
+  <div class="ex-block" id="ex-lb1">
+    <div class="ex-hdr" onclick="toggleEx('ex-lb1')">
+      <div class="ex-left">
+        <div class="ex-num">01</div>
+        <div class="ex-ttl">Leg Extensions</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15-20</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=how+to+do+leg+extensions+properly" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Leg Extensions</a>
+      <div class="ex-cue good">ÎNCĂLZIRE GENUNCHI — greutate ușoară, control total. Nu folosi impuls.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="lb1s1"><div class="set-num">S1</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb1s2"><div class="set-num">S2</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb1s3"><div class="set-num">S3</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-lb2">
+    <div class="ex-hdr" onclick="toggleEx('ex-lb2')">
+      <div class="ex-left">
+        <div class="ex-num">02</div>
+        <div class="ex-ttl">Leg Press</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=leg+press+tutorial+glute+focus" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Leg Press</a>
+      <div class="ex-cue">Picioarele plasate mai SUS pe platformă = mai mult fesier, mai puțin stres pe genunchi. Nu întinde genunchii complet la final.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="lb2s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb2s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb2s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-lb3">
+    <div class="ex-hdr" onclick="toggleEx('ex-lb3')">
+      <div class="ex-left">
+        <div class="ex-num">03</div>
+        <div class="ex-ttl">Hip Thrust la aparat / bancă</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">90 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=hip+thrust+tutorial+for+beginners" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Hip Thrust</a>
+      <div class="ex-cue">Spatele pe bancă, greutate pe bazin. Strânge fesierii sus 1 secundă. Bărbia în piept, privirea mereu înainte.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="lb3s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb3s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb3s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-lb4">
+    <div class="ex-hdr" onclick="toggleEx('ex-lb4')">
+      <div class="ex-left">
+        <div class="ex-num">04</div>
+        <div class="ex-ttl">Leg Curl (Flexii Femurali)</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 12-15</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=seated+leg+curl+machine+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Leg Curl</a>
+      <div class="ex-cue">Mișcare strictă din genunchi. Trage exploziv în jos, eliberează lent în sus (3 secunde).</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="lb4s1"><div class="set-num">S1</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb4s2"><div class="set-num">S2</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb4s3"><div class="set-num">S3</div><div class="set-tgt">12-15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-lb5">
+    <div class="ex-hdr" onclick="toggleEx('ex-lb5')">
+      <div class="ex-left">
+        <div class="ex-num">05</div>
+        <div class="ex-ttl">Abductor la aparat</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15-20</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=hip+abductor+machine+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Abductor (Exterior)</a>
+      <div class="ex-cue">Deschide picioarele lent, controlat. Nu lăsa greutatea să te tragă înapoi brusc. Pauză 1 sec în poziția deschis.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="lb5s1"><div class="set-num">S1</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb5s2"><div class="set-num">S2</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb5s3"><div class="set-num">S3</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="ex-block" id="ex-lb6">
+    <div class="ex-hdr" onclick="toggleEx('ex-lb6')">
+      <div class="ex-left">
+        <div class="ex-num">06</div>
+        <div class="ex-ttl">Adductor la aparat</div>
+        <div class="ex-meta">
+          <span class="tag tag-red">3 × 15-20</span>
+          <span class="tag tag-orange">60 sec pauză</span>
+        </div>
+      </div>
+      <div class="ex-icon">▼</div>
+    </div>
+    <div class="ex-body">
+      <a href="https://www.youtube.com/results?search_query=hip+adductor+machine+tutorial" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Adductor (Interior)</a>
+      <div class="ex-cue">Închide picioarele controlat. Stabilizează interiorul coapselor. Ajută la protecția genunchiului.</div>
+      <div class="sets-wrap">
+        <div class="set-labels"><div>KG</div><div>REPS</div></div>
+        <div class="set-row" data-id="lb6s1"><div class="set-num">S1</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb6s2"><div class="set-num">S2</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <div class="set-row" data-id="lb6s3"><div class="set-num">S3</div><div class="set-tgt">15-20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
+        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
+      </div>
+    </div>
+  </div>
+
   <div class="cond-block" data-work="30" id="cond-lb">
     <div class="cond-hdr">
       <div>
@@ -359,13 +791,12 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
       <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
     </div>
   </div>
-{create_stretching([
-    "Stretching Cvadriceps: 30s/picior.",
-    "Stretching Femurale: 30s/picior.",
-    "Stretching Fesieri (Figure 4): 30s/parte.",
-    "Frog Stretch (Deschidere Șolduri): 30s. Din 4 labe, depărtează genunchii larg și lasă bazinul în spate, spre călcâie.",
-    "Child's Pose: 30s."
-])}
+
+  <div class="alert blue">
+    <div class="alert-ttl">🧊 STRETCHING FINAL (5-10 MIN)</div>
+    <strong>1.</strong> Stretching Cvadriceps: 30s/picior.<br><strong>2.</strong> Stretching Femurale: 30s/picior.<br><strong>3.</strong> Stretching Fesieri (Figure 4): 30s/parte.<br><strong>4.</strong> Frog Stretch (Deschidere Șolduri): 30s. Din 4 labe, depărtează genunchii larg și lasă bazinul în spate, spre călcâie.<br><strong>5.</strong> Child's Pose: 30s.
+  </div>
+
 </div>
 
 <div class="t-bar">
@@ -382,15 +813,15 @@ let restTimer=null,restEnd=0;const tVal=document.getElementById('t-val');
 function startRest(sec){if(restTimer)clearInterval(restTimer);restEnd=Date.now()+sec*1000;tVal.className='t-val active';tickRest();restTimer=setInterval(tickRest,1000);}
 function tickRest(){const left=Math.round((restEnd-Date.now())/1000);if(left<=0){tVal.textContent='00:00';tVal.className='t-val';clearInterval(restTimer);restTimer=null;}else{const m=Math.floor(left/60);const s=left%60;tVal.textContent=m+':'+(s<10?'0':'')+s;}}
 function toggleSet(btn){btn.classList.toggle('done');saveState();}
-function saveState(){const state={{}};document.querySelectorAll('.set-row').forEach(function(r){const id=r.getAttribute('data-id');const kg=r.querySelector('.kg').value;const rep=r.querySelector('.rep').value;const done=r.querySelector('.set-chk').classList.contains('done');if(kg||rep||done){state[id]={{k:kg,r:rep,d:done}};}});localStorage.setItem('built_log_otilia',JSON.stringify(state));updateSums();}
+function saveState(){const state={};document.querySelectorAll('.set-row').forEach(function(r){const id=r.getAttribute('data-id');const kg=r.querySelector('.kg').value;const rep=r.querySelector('.rep').value;const done=r.querySelector('.set-chk').classList.contains('done');if(kg||rep||done){state[id]={k:kg,r:rep,d:done};}});localStorage.setItem('built_log_otilia',JSON.stringify(state));updateSums();}
 function loadState(){try{const state=JSON.parse(localStorage.getItem('built_log_otilia'));if(!state)return;for(const id in state){const r=document.querySelector('.set-row[data-id="'+id+'"]');if(r){r.querySelector('.kg').value=state[id].k||'';r.querySelector('.rep').value=state[id].r||'';if(state[id].d)r.querySelector('.set-chk').classList.add('done');}}}catch(e){}updateSums();}
 function updateSums(){let sets=0,vol=0;document.querySelectorAll('.set-row').forEach(function(r){if(r.querySelector('.set-chk').classList.contains('done')){sets++;const k=parseFloat(r.querySelector('.kg').value)||0;const rp=parseFloat(r.querySelector('.rep').value)||0;vol+=k*rp;}});document.getElementById('sum-sets').textContent=sets;document.getElementById('sum-vol').textContent=Math.round(vol);}
 function confirmReset(){if(confirm('Sigur vrei să ștergi toate greutățile și bifele pentru o săptămână nouă?')){localStorage.removeItem('built_log_otilia');document.querySelectorAll('.kg, .rep').forEach(function(i){i.value=''});document.querySelectorAll('.set-chk').forEach(function(c){c.classList.remove('done')});document.querySelectorAll('.rdot').forEach(function(d){d.classList.remove('done')});document.getElementById('modal').classList.remove('active');updateSums();}}
-function exportCSV(){const state=JSON.parse(localStorage.getItem('built_log_otilia'))||{{}};let csv='Exercitiu,Set,Kg,Reps,Bifat\n';for(const id in state){csv+=id+','+state[id].k+','+state[id].r+','+(state[id].d?'Da':'Nu')+'\n';}const blob=new Blob([csv],{{type:'text/csv'}});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='istoric_otilia_'+new Date().toISOString().slice(0,10)+'.csv';a.click();}
-let condTimers={{}};
+function exportCSV(){const state=JSON.parse(localStorage.getItem('built_log_otilia'))||{};let csv='Exercitiu,Set,Kg,Reps,Bifat\n';for(const id in state){csv+=id+','+state[id].k+','+state[id].r+','+(state[id].d?'Da':'Nu')+'\n';}const blob=new Blob([csv],{type:'text/csv'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='istoric_otilia_'+new Date().toISOString().slice(0,10)+'.csv';a.click();}
+let condTimers={};
 function startCond(b){
   const id=b.id; 
-  if(!condTimers[id]){condTimers[id]={{w:parseInt(b.getAttribute('data-work')),r:15,st:0,end:0,tmr:null,lbl:b.querySelector('.cond-state'),val:b.querySelector('.cond-cd'),btn:b.querySelector('.cond-start'),dots:b.querySelectorAll('.rdot')}};}
+  if(!condTimers[id]){condTimers[id]={w:parseInt(b.getAttribute('data-work')),r:15,st:0,end:0,tmr:null,lbl:b.querySelector('.cond-state'),val:b.querySelector('.cond-cd'),btn:b.querySelector('.cond-start'),dots:b.querySelectorAll('.rdot')};}
   const c=condTimers[id];
   if(c.tmr) return;
   const nextRnd=Array.from(c.dots).findIndex(function(d){return !d.classList.contains('done');});
@@ -433,7 +864,7 @@ document.querySelectorAll('.set-inp').forEach(function(i){i.addEventListener('in
 window.addEventListener('DOMContentLoaded',function(){
   loadState();
   const hash = window.location.hash.replace('#','');
-  if(hash) {{ const btn=document.querySelector('.tab[onclick*="'+hash+'"]'); if(btn) showTab(btn,hash); }}
+  if(hash) { const btn=document.querySelector('.tab[onclick*="'+hash+'"]'); if(btn) showTab(btn,hash); }
 });
 </script>
 </body>
