@@ -19,8 +19,6 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
 body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:100%;margin:0;padding-bottom:130px;}
-
-/* HEADER */
 .hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:12px 16px 10px;position:sticky;top:0;z-index:100;}
 .hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;}
@@ -33,18 +31,12 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .prog-fill{height:100%;background:var(--red);border-radius:2px;transition:width 1.2s ease;width:0%;}
 .prog-meta{display:flex;justify-content:space-between;margin-top:3px;}
 .prog-meta span{font-size:9px;color:var(--muted);letter-spacing:1px;}
-
-/* TABS */
 .tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;}
 .tabs::-webkit-scrollbar{display:none;}
 .tab{flex:0 0 auto;padding:11px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-weight:700;}
 .tab.active{color:var(--red);border-bottom-color:var(--red);}
-
-/* PANELS */
 .panel{display:none;padding:16px;}
 .panel.active{display:block;}
-
-/* ALERT BOX */
 .alert{border-left:3px solid var(--red);background:var(--rdim);padding:11px 13px;margin-bottom:14px;font-size:12px;color:#ccc;line-height:1.6;border-radius:0 4px 4px 0;}
 .alert.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
 .alert.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
@@ -53,14 +45,10 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .alert.green .alert-ttl{color:var(--green);}
 .alert.orange .alert-ttl{color:var(--orange);}
 .alert.blue .alert-ttl{color:var(--blue);}
-
-/* PILLS */
 .pills{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px;}
 .pill{font-size:9px;padding:4px 10px;border-radius:3px;background:var(--card);border:1px solid var(--brd);color:#aaa;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
 .pill.red{background:var(--rdim);border-color:rgba(192,57,43,.3);color:var(--red);}
 .pill.blue{background:rgba(41,128,185,.1);border-color:rgba(41,128,185,.3);color:var(--blue);}
-
-/* EXERCISE BLOCK */
 .ex-block{background:var(--card);border:1px solid var(--brd);border-radius:6px;margin-bottom:10px;overflow:hidden;}
 .ex-hdr{display:flex;justify-content:space-between;align-items:center;padding:12px 13px;cursor:pointer;user-select:none;}
 .ex-hdr:hover{background:rgba(255,255,255,.02);}
@@ -76,12 +64,10 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .ex-icon{font-size:11px;color:var(--muted);transition:transform .25s;display:flex;align-items:center;justify-content:center;width:22px;height:22px;background:var(--drk2);border:1px solid var(--brd);border-radius:3px;flex-shrink:0;}
 .ex-block.open .ex-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
 .ex-body{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1);}
-.ex-block.open .ex-body{max-height:800px;}
+.ex-block.open .ex-body{max-height:1200px;}
 .ex-cue{padding:0 13px 10px;font-size:12px;color:#aaa;line-height:1.6;border-bottom:1px solid var(--brd);}
 .ex-cue.warn{color:var(--orange);}
 .ex-cue.good{color:var(--green);}
-
-/* SET TRACKER */
 .sets-wrap{padding:8px 10px 10px;}
 .set-labels{display:flex;padding:0 36px 4px 44px;font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
 .set-labels div{flex:1;text-align:center;}
@@ -97,6 +83,29 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .rest-btn{width:100%;background:var(--drk2);border:1px solid var(--brd);color:var(--muted);padding:8px;font-size:10px;letter-spacing:1px;font-weight:700;text-transform:uppercase;cursor:pointer;border-radius:3px;margin-top:8px;transition:all .15s;}
 .rest-btn:hover{border-color:var(--red);color:var(--red);}
 
+/* TIMER BAR */
+.t-bar{position:fixed;bottom:0;left:0;width:100%;background:var(--drk);border-top:1px solid var(--brd);padding:10px 16px 20px;display:flex;justify-content:space-between;align-items:center;z-index:200;}
+.t-lbl{font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;}
+.t-val{font-family:'DM Mono',monospace;font-size:24px;color:var(--wht);font-weight:500;}
+.t-val.active{color:var(--orange);}
+
+.modal-ov{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);z-index:300;display:none;justify-content:center;align-items:center;backdrop-filter:blur(3px);}
+.modal-ov.active{display:flex;}
+.modal-box{background:var(--drk);border:1px solid var(--brd);border-radius:8px;padding:20px;width:90%;max-width:320px;}
+.modal-ttl{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--wht);margin-bottom:15px;letter-spacing:1px;text-align:center;}
+.modal-ttl span{color:var(--red);}
+.modal-btn{width:100%;padding:12px;background:var(--rdim);border:1px solid rgba(192,57,43,.3);color:var(--red);border-radius:4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;cursor:pointer;margin-bottom:8px;transition:all .2s;}
+.modal-btn:hover{background:var(--red);color:#fff;}
+.modal-btn.cancel{background:transparent;border-color:var(--brd);color:var(--muted);}
+.modal-btn.cancel:hover{border-color:var(--wht);color:var(--wht);}
+.modal-btn.green-btn{background:rgba(39,174,96,0.1);border-color:rgba(39,174,96,0.3);color:var(--green);}
+.modal-btn.green-btn:hover{background:var(--green);color:#fff;}
+.sum-grid{display:flex;gap:10px;margin-bottom:15px;}
+.sum-box{flex:1;background:var(--blk);border:1px solid var(--brd);border-radius:4px;padding:12px;text-align:center;}
+.sum-val{font-family:'DM Mono',monospace;font-size:20px;color:var(--wht);margin-bottom:2px;}
+.sum-lbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.modal-desc{font-size:11px;color:var(--muted);text-align:center;margin-bottom:15px;line-height:1.4;}
+
 /* CONDITIONING BLOCK */
 .cond-block{border:1px solid var(--orange);border-radius:6px;background:rgba(230,126,34,.04);padding:14px;margin-top:14px;}
 .cond-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;}
@@ -106,68 +115,37 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .cond-rounds{display:flex;gap:7px;justify-content:center;margin-bottom:10px;}
 .rdot{height:8px;flex:1;border-radius:4px;background:var(--brd);transition:all .3s;}
 .rdot.done{background:var(--green);}
-.rdot.active.work{background:var(--orange);}
-.rdot.active.rest{background:var(--blue);}
-.cond-state{text-align:center;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;min-height:16px;transition:color .3s;}
-.cond-cd{font-family:'Bebas Neue',sans-serif;font-size:58px;text-align:center;letter-spacing:2px;color:var(--wht);line-height:1;margin-bottom:14px;transition:color .3s;}
-.cond-ctrls{display:flex;gap:8px;}
-.cond-btn{flex:1;padding:11px;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;border-radius:4px;cursor:pointer;transition:all .15s;border:1px solid;}
-.cond-start{background:rgba(230,126,34,.15);border-color:var(--orange);color:var(--orange);}
-.cond-start:hover{background:rgba(230,126,34,.25);}
-.cond-reset{background:var(--drk2);border-color:var(--brd);color:var(--muted);}
-.cond-reset:hover{border-color:var(--red);color:var(--red);}
+.cond-state{text-align:center;font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-bottom:5px;}
+.cond-cd{text-align:center;font-family:'DM Mono',monospace;font-size:42px;color:var(--wht);font-weight:500;margin-bottom:15px;}
+.cond-ctrls{display:flex;gap:10px;}
+.cond-btn{flex:1;padding:12px;background:var(--drk);border:1px solid var(--brd);border-radius:4px;color:var(--muted);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
+.cond-btn.cond-start{background:rgba(230,126,34,.1);border-color:rgba(230,126,34,.3);color:var(--orange);}
+.cond-btn.cond-start.active{background:var(--orange);color:#fff;}
+.cond-btn:hover{filter:brightness(1.2);}
 
-/* McGILL */
-.mcg-card{background:var(--drk);border:1px solid rgba(39,174,96,.35);border-radius:6px;padding:14px;margin-bottom:12px;}
-.mcg-ttl{font-family:'Bebas Neue',sans-serif;font-size:19px;color:var(--wht);letter-spacing:1px;margin-bottom:2px;}
-.mcg-sets{font-family:'DM Mono',monospace;font-size:12px;color:var(--orange);margin-bottom:10px;}
-.mcg-steps{list-style:none;}
-.mcg-steps li{font-size:12px;color:#ccc;padding:5px 0 5px 16px;border-bottom:1px solid rgba(255,255,255,.04);line-height:1.5;position:relative;}
-.mcg-steps li::before{content:'→';position:absolute;left:0;color:var(--green);font-size:11px;}
-.mcg-steps li:last-child{border-bottom:none;}
-.mcg-timer-btn{width:100%;background:rgba(39,174,96,.1);border:1px solid rgba(39,174,96,.3);color:var(--green);padding:10px;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;border-radius:3px;cursor:pointer;margin-top:10px;}
+/* CALENDAR TABS */
+.cal-grid{display:flex;flex-direction:column;gap:4px;margin-top:10px;}
+.cal-day{display:flex;align-items:center;background:var(--drk2);border:1px solid var(--brd);border-radius:4px;padding:8px 12px;}
+.cal-day.active{border-color:var(--red);background:var(--rdim);}
+.cal-day .d-name{width:40px;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+.cal-day.active .d-name{color:var(--red);font-weight:700;}
+.cal-day .d-workout{flex:1;font-size:13px;color:var(--wht);font-weight:500;}
+.cal-day.active .d-workout{color:var(--red);}
 
-/* REGULI */
-.rule-card{background:var(--drk);border:1px solid var(--brd);border-radius:6px;padding:14px;margin-bottom:12px;}
-.rule-ttl{font-family:'Bebas Neue',sans-serif;font-size:17px;color:var(--wht);letter-spacing:1px;margin-bottom:8px;display:flex;align-items:center;gap:8px;}
-.rule-body{font-size:12px;color:#ccc;line-height:1.7;}
-.rule-body strong{color:var(--orange);}
-.rule-body .ok{color:var(--green);}
+/* RULE LIST */
+.rule-list{list-style:none;}
+.rule-list li{padding:10px 0 10px 20px;position:relative;font-size:12px;color:#bbb;border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.55;}
+.rule-list li::before{content:'→';position:absolute;left:0;color:var(--red);}
+.rule-list li strong{color:var(--wht);}
 
-/* SUMMARY MODAL */
-.modal-ov{position:fixed;inset:0;background:rgba(0,0,0,.88);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .3s;}
-.modal-ov.open{opacity:1;pointer-events:auto;}
-.modal-box{background:var(--card);border:1px solid var(--red);border-radius:8px;padding:24px;width:90%;max-width:400px;text-align:center;transform:translateY(20px);transition:transform .3s;}
-.modal-ov.open .modal-box{transform:translateY(0);}
-.modal-ttl{font-family:'Bebas Neue',sans-serif;font-size:30px;color:var(--wht);letter-spacing:2px;margin-bottom:20px;}
-.modal-ttl span{color:var(--red);}
-.sum-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
-.sum-box{background:var(--blk);border:1px solid var(--brd);border-radius:4px;padding:16px 10px;}
-.sum-val{font-family:'Bebas Neue',sans-serif;font-size:34px;color:var(--red);line-height:1;margin-bottom:4px;}
-.sum-lbl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.modal-desc{font-size:13px;color:#aaa;margin-bottom:18px;line-height:1.6;}
-.modal-btn{width:100%;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);padding:12px;font-weight:700;letter-spacing:1px;font-size:12px;border-radius:4px;cursor:pointer;text-transform:uppercase;margin-bottom:8px;transition:all .2s;}
-.modal-btn.green-btn{background:rgba(39,174,96,.15);border-color:rgba(39,174,96,.4);color:var(--green);margin-bottom:12px;}
-.modal-btn.cancel{background:transparent;border-color:var(--brd);color:var(--muted);margin-bottom:0;}
+.btn-yt{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:9px 14px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,80,80,0.3);border-radius:4px;color:#ff6b6b;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all .2s; border-radius:10px;}
+.btn-yt:hover{background:rgba(255,0,0,0.2);color:#fff;}
+.btn-yt-icon{width:20px;height:14px;background:#ff0000;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.btn-yt-icon::after{content:'';border-style:solid;border-width:4px 0 4px 8px;border-color:transparent transparent transparent #fff;}
 
-/* TIMER BAR */
-.timer-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(13,13,13,.97);backdrop-filter:blur(12px);border-top:1px solid var(--brd);padding:11px 16px;display:flex;justify-content:space-between;align-items:center;z-index:1000;max-width:480px;margin:0 auto;}
-.t-info{display:flex;flex-direction:column;gap:2px;}
-.t-lbl{font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
-.t-val{font-family:'DM Mono',monospace;font-size:26px;color:var(--wht);line-height:1;font-weight:600;}
-.t-val.active{color:var(--blue);}
-.t-val.done{color:var(--green);}
-.t-ctrls{display:flex;gap:8px;align-items:center;}
-.t-btn{background:var(--card);border:1px solid var(--brd);color:var(--wht);font-size:10px;font-weight:700;padding:9px 14px;border-radius:3px;cursor:pointer;text-transform:uppercase;letter-spacing:1px;}
-.t-btn.red{color:var(--red);}
-.fin-btn{font-size:10px;background:var(--rdim);border:1px solid rgba(192,57,43,.4);color:var(--red);padding:9px 12px;border-radius:3px;cursor:pointer;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-}
-
-@media(max-width:767px){body{max-width:480px;margin:0 auto;}}
-
-/* BUILT app-skin (injectat) — aliniază foaia la designul dashboard-ului */
+/* BUILT app-skin */
 :root{ --brd:rgba(255,255,255,.10) !important; }
-.ex-block,.alert,.card,.proto,.guide-box,.urg-card,.opt-block,.day-card,.day-grid>div,.scenario,.phase-block,.stat,.box,.info,.ok{ border-radius:14px !important; border-color:rgba(255,255,255,.10) !important; }
+.ex-block,.alert,.card,.proto,.guide-box,.urg-card,.opt-block,.day-card,.day-grid>div,.scenario,.phase-block,.stat,.box,.info,.ok,.circuit,.c-block{ border-radius:14px !important; border-color:rgba(255,255,255,.10) !important; }
 .ex-block{ margin-bottom:12px !important; background:#111111 !important; }
 .ex-hdr{ padding:14px 15px !important; }
 .hdr{ background:#0A0A0A !important; border-bottom:1px solid rgba(255,255,255,.08) !important; }
@@ -175,39 +153,27 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .tab{ font-size:11px !important; letter-spacing:1px !important; padding:13px 14px !important; }
 .tab.active{ border-bottom:2px solid var(--red) !important; }
 .panel{ padding:16px 14px !important; }
-.btn-yt{ border-radius:10px !important; }
-.macro-bar,.macro-item{ border-radius:14px !important; }
-
-.btn-yt{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:9px 14px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,80,80,0.3);border-radius:4px;color:#ff6b6b;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all .2s;}
-.btn-yt:hover{background:rgba(255,0,0,0.2);color:#fff;}
-.btn-yt-icon{width:20px;height:14px;background:#ff0000;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-.btn-yt-icon::after{content:'';border-style:solid;border-width:4px 0 4px 8px;border-color:transparent transparent transparent #fff;}
+.alert{ border-radius:14px !important; }
 </style>
 </head>
 <body>
 
-<!-- HEADER -->
 <div class="hdr">
   <div class="hdr-top">
-    <div class="logo">BUILT<span>GYM</span></div>
-    <div class="hdr-right">
-      <div class="hdr-name">Otilia · Gym Log</div>
-      <div class="hdr-day" id="hdr-day">Zi — din 90</div>
-    </div>
-  </div>
-  <div class="prog-wrap">
-    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
-    <div class="prog-meta">
-      <span id="prog-phase">FAZA 1: Fundație</span>
-      <span id="prog-pct">0% complet</span>
+    <div class="logo">BUILT</div>
+    <div class="hdr-right" onclick="document.getElementById('modal').classList.add('active')">
+      <div class="hdr-name">Otilia</div>
+      <div class="hdr-day">FAZA 1</div>
     </div>
   </div>
 </div>
 
-
-<!-- TABS -->
 <div class="tabs">
-  <div class="tab active" onclick="showTab('lower')">LOWER (Picioare)</div>
+  <div class="tab active" onclick="showTab(this,'calendar')">PROGRAM</div>
+  <div class="tab" onclick="showTab(this,'lowera')">LOWER A</div>
+  <div class="tab" onclick="showTab(this,'upper')">UPPER</div>
+  <div class="tab" onclick="showTab(this,'lowerb')">LOWER B</div>
+  <div class="tab" onclick="showTab(this,'reguli')">REGULI</div>
 </div>
 
 <!-- SUMMARY MODAL -->
@@ -221,179 +187,62 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
     <div class="modal-desc">Descarcă istoricul înainte să resetezi pentru o săptămână nouă.</div>
     <button class="modal-btn green-btn" onclick="exportCSV()">📥 Descarcă Istoric (CSV)</button>
     <button class="modal-btn" onclick="confirmReset()">Resetează pentru Săptămâna Nouă</button>
-    <button class="modal-btn cancel" onclick="closeModal()">Înapoi</button>
+    <button class="modal-btn cancel" onclick="document.getElementById('modal').classList.remove('active')">Înapoi</button>
   </div>
 </div>
 
-<!-- ═══════════════════════════ LOWER ═══════════════════════════ -->
-<div class="panel active" id="tab-lower">
+<!-- TAB: PROGRAM -->
+<div class="panel active" id="tab-calendar">
   <div class="alert">
-    <div class="alert-ttl">ZIUA LOWER BODY & CORE</div>
-    Picioare, fesieri și abdomen. Zero stres pe genunchi. Accent pe contracția musculară.
+    <div class="alert-ttl">CALENDARUL TĂU</div>
+    Frecvență: 3 antrenamente pe săptămână. Respectă zilele de pauză pentru recuperare.
   </div>
-
-  <!-- EX 1 -->
-  <div class="ex-block open" id="ex-l1">
-    <div class="ex-hdr" onclick="toggleEx('ex-l1')">
-      <div class="ex-left">
-        <div class="ex-num">01</div>
-        <div class="ex-ttl">Genuflexiuni pe cutie (Box Squats)</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">4 × 12–15</span>
-          <span class="tag tag-orange">90 sec pauză</span>
-        </div>
-      </div>
-      <div class="ex-icon">▼</div>
-    </div>
-    <div class="ex-body">
-      <a href="https://www.youtube.com/shorts/glg8jtvDLNE" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Box Squats</a>
-      <div class="ex-cue good">Te învață mecanica corectă și preia toată presiunea de pe rotulă.</div>
-      <div class="ex-cue">Coboară controlat până atingi cu fesierul un scaun/cutie, ducând bazinul mult în spate. Nu te lăsa cu toată greutatea pe scaun.</div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="l1s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l1s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l1s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l1s4"><div class="set-num">S4</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
-      </div>
-    </div>
+  <div class="cal-grid">
+    <div class="cal-day active"><div class="d-name">LUN</div><div class="d-workout">LOWER A (Picioare & Fesieri)</div></div>
+    <div class="cal-day"><div class="d-name">MAR</div><div class="d-workout">— PAUZĂ / MERS —</div></div>
+    <div class="cal-day active"><div class="d-name">MIE</div><div class="d-workout">UPPER (Spate, Piept, Brațe)</div></div>
+    <div class="cal-day"><div class="d-name">JOI</div><div class="d-workout">— PAUZĂ / MERS —</div></div>
+    <div class="cal-day active"><div class="d-name">VIN</div><div class="d-workout">LOWER B (Picioare & Fesieri)</div></div>
+    <div class="cal-day"><div class="d-name">SÂM</div><div class="d-workout">— PAUZĂ / MERS —</div></div>
+    <div class="cal-day"><div class="d-name">DUM</div><div class="d-workout">— PAUZĂ / MERS —</div></div>
   </div>
+</div>
 
-  <!-- EX 2 -->
-  <div class="ex-block" id="ex-l2">
-    <div class="ex-hdr" onclick="toggleEx('ex-l2')">
-      <div class="ex-left">
-        <div class="ex-num">02</div>
-        <div class="ex-ttl">Sumo Deadlift (cu sticlă/ganteră)</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">4 × 12–15</span>
-          <span class="tag tag-orange">90 sec pauză</span>
-        </div>
-      </div>
-      <div class="ex-icon">▼</div>
-    </div>
-    <div class="ex-body">
-      <a href="https://www.youtube.com/shorts/tSz-vQYacZs" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Sumo Deadlift</a>
-      <div class="ex-cue">Picioarele mai depărtate decât lățimea umerilor, vârfurile orientate spre exterior. Împinge bazinul în spate și ridică greutatea de pe sol.</div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="l2s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l2s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l2s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l2s4"><div class="set-num">S4</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(90)">Start Pauză 1:30</button>
-      </div>
-    </div>
+<!-- TAB: REGULI -->
+<div class="panel" id="tab-reguli">
+  <div class="alert orange">
+    <div class="alert-ttl">GHIDUL TĂU DE ÎNCEPĂTOARE</div>
+    Aceste reguli sunt fundamentul succesului tău. Citește-le cu atenție înainte de fiecare antrenament în primele 2 săptămâni.
   </div>
+  <ul class="rule-list">
+    <li><strong>1. RESPIRAȚIA:</strong> Inspiri pe coborâre (faza ușoară). Expiri pe efort (ridicare/împingere). Nu-ți ține respirația niciodată!</li>
+    <li><strong>2. TEMPO-UL:</strong> 2 secunde coborâre – 1 sec pauză – 2 secunde ridicare. Niciodată cu impuls. Dacă trebuie să te „arunci" ca să ridici greutatea, e prea grea.</li>
+    <li><strong>3. CUM ALEGI GREUTATEA:</strong> Seria 1 = ușoară (acomodare). Seriile 2-3 = greutatea de lucru. Ultimele 2-3 repetări trebuie să fie grele dar fezabile. Dacă poți face 18+ repetări ușor → crește cu 1-2 kg data viitoare. Dacă nu poți face 10 repetări → scade greutatea.</li>
+    <li><strong>4. PROGRESIE:</strong> Când reușești 15 repetări pe TOATE seriile → crește cu cel mai mic increment posibil (1-2kg). Nu te grăbi. Progresia vine în săptămâni, nu în zile.</li>
+    <li><strong>5. PAUZA ÎNTRE SERII:</strong> 90s la exerciții compuse (Squat, Deadlift, Leg Press, Chest Press). 60s la exerciții de izolare (Biceps, Triceps, Calf). Cronometrează-le! Telefonul e cronometrul tău, nu distracția.</li>
+    <li><strong>6. FRECVENȚA:</strong> Luni = Lower A, Miercuri = Upper, Vineri = Lower B. Restul zilelor: mers 7000+ pași, mobilitate, viață.</li>
+    <li><strong>7. ÎNCĂLZIREA (NON-NEGOCIABIL):</strong> 5 min mers pe bandă + Exerciții de mobilitate specifice + 1 serie ușoară (50% greutate × 12 rep) înainte de primul set real la FIECARE exercițiu.</li>
+    <li><strong>8. STRETCHING-UL:</strong> 5 minute de stretching static DUPĂ antrenament (niciodată înainte!). Ține fiecare stretch 30 secunde. Nu forța — trebuie să simți o tensiune confortabilă, nu durere.</li>
+    <li><strong>9. GENUNCHIUL:</strong> Dacă simți disconfort într-un exercițiu → OPREȘTE-TE. Nu împinge prin durere. Există mereu o alternativă. Leg Extensions ușoare la început = cel mai bun lucru pentru genunchi.</li>
+    <li><strong>10. PRIMELE 2 SĂPTĂMÂNI:</strong> Nu te concentra pe greutate. Concentrează-te pe FORMĂ. Filmează-te dacă poți, sau trimite-mi un video pe WhatsApp. Durerea musculară (DOMS) e normală. Durerea articulară NU e normală.</li>
+  </ul>
+</div>
 
-  <!-- EX 3 -->
-  <div class="ex-block" id="ex-l3">
-    <div class="ex-hdr" onclick="toggleEx('ex-l3')">
-      <div class="ex-left">
-        <div class="ex-num">03</div>
-        <div class="ex-ttl">Podul Fesierilor (Glute Bridges)</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">4 × 12–15</span>
-          <span class="tag tag-orange">60 sec pauză</span>
-        </div>
-      </div>
-      <div class="ex-icon">▼</div>
-    </div>
-    <div class="ex-body">
-      <a href="https://www.youtube.com/shorts/RrU4zx4ysnI" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Glute Bridges</a>
-      <div class="ex-cue">Împinge în călcâie și ridică bazinul. Strânge fesierii tare sus timp de o secundă.</div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="l3s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l3s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l3s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l3s4"><div class="set-num">S4</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- EX 4 -->
-  <div class="ex-block" id="ex-l4">
-    <div class="ex-hdr" onclick="toggleEx('ex-l4')">
-      <div class="ex-left">
-        <div class="ex-num">04</div>
-        <div class="ex-ttl">Îndreptări Românești (RDL)</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">4 × 12–15</span>
-          <span class="tag tag-orange">60 sec pauză</span>
-        </div>
-      </div>
-      <div class="ex-icon">▼</div>
-    </div>
-    <div class="ex-body">
-      <a href="https://www.youtube.com/shorts/1-jVBQsuYdk" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — RDL</a>
-      <div class="ex-cue warn">⚠ Coloana DREAPTĂ pe tot parcursul mișcării. Mișcarea vine din șold.</div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="l4s1"><div class="set-num">S1</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l4s2"><div class="set-num">S2</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l4s3"><div class="set-num">S3</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l4s4"><div class="set-num">S4</div><div class="set-tgt">12–15</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- EX 5 -->
-  <div class="ex-block" id="ex-l5">
-    <div class="ex-hdr" onclick="toggleEx('ex-l5')">
-      <div class="ex-left">
-        <div class="ex-num">05</div>
-        <div class="ex-ttl">Scoica (Clamshells)</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">3 × 15–20 / parte</span>
-          <span class="tag tag-orange">60 sec pauză</span>
-        </div>
-      </div>
-      <div class="ex-icon">▼</div>
-    </div>
-    <div class="ex-body">
-      <a href="https://www.youtube.com/shorts/FrF9jTHLlg0" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Clamshells</a>
-      <div class="ex-cue">Menținând tălpile lipite, deschide genunchiul de sus. Impact zero absolut.</div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="l5s1"><div class="set-num">S1</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l5s2"><div class="set-num">S2</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l5s3"><div class="set-num">S3</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- EX 6 -->
-  <div class="ex-block" id="ex-l6">
-    <div class="ex-hdr" onclick="toggleEx('ex-l6')">
-      <div class="ex-left">
-        <div class="ex-num">06</div>
-        <div class="ex-ttl">Ridicări pe vârfuri</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">3 × 15–20</span>
-          <span class="tag tag-orange">60 sec pauză</span>
-        </div>
-      </div>
-      <div class="ex-icon">▼</div>
-    </div>
-    <div class="ex-body">
-      <a href="https://www.youtube.com/shorts/4Z39vG9HJ2g" target="_blank" class="btn-yt"><div class="btn-yt-icon"></div>YouTube — Ridicări pe vârfuri</a>
-      <div class="ex-cue">Din stând, te sprijini de un perete și te ridici lent pe vârfuri.</div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="l6s1"><div class="set-num">S1</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l6s2"><div class="set-num">S2</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="l6s3"><div class="set-num">S3</div><div class="set-tgt">15–20</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="cond-block" data-work="90" id="cond-l1">
+<!-- TAB: LOWER A -->
+<div class="panel" id="tab-lowera">
+{create_warmup(
+    "Mers pe bandă — 5 min la 5.0-5.5 km/h. (Dacă nu e bandă: mers pe loc cu genunchii sus 2 min + 20 Jumping Jacks)",
+    "Mobilitate Gleznă (10 rep/picior, genunchiul peste vârful degetelor, călcâiul jos) + Cat-Cow (10 rep lent) + Bird-Dog (8 rep/parte) + Genuflexiuni fără greutate (10 rep).",
+    "La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale. (Această serie nu se notează în aplicație).",
+    "ÎNCĂLZIRE LOWER A (12-15 MIN)"
+)}
+{create_ex_block("la1", "01", "Leg Extensions", 3, "15-20", 60, "https://www.youtube.com/results?search_query=how+to+do+leg+extensions+properly", "Leg Extensions", [("ÎNCĂLZIRE GENUNCHI — greutate ușoară, control total. Nu folosi impuls.", "good")], 3)}
+{create_ex_block("la2", "02", "Box Squats", 3, "12-15", 90, "https://www.youtube.com/shorts/glg8jtvDLNE", "Box Squats", [("Te învață mecanica corectă și preia presiunea de pe rotulă.", "good"), "Coboară controlat până atingi cu fesierul un scaun/cutie, ducând bazinul mult în spate. Nu te relaxa pe scaun."], 3)}
+{create_ex_block("la3", "03", "Sumo Deadlift (ganteră)", 3, "12-15", 90, "https://www.youtube.com/shorts/tSz-vQYacZs", "Sumo Deadlift", ["Picioarele mai depărtate decât umerii, vârfurile spre exterior. Împinge bazinul în spate și ridică greutatea de pe sol."], 3)}
+{create_ex_block("la4", "04", "Glute Bridges", 3, "12-15", 60, "https://www.youtube.com/shorts/RrU4zx4ysnI", "Glute Bridges", ["Împinge în călcâie și ridică bazinul. Strânge fesierii tare sus 1 secundă. Nu curba spatele excesiv."], 3)}
+{create_ex_block("la5", "05", "RDL (Îndreptări Românești)", 3, "12-15", 60, "https://www.youtube.com/shorts/1-jVBQsuYdk", "RDL", [("⚠ Coloana DREAPTĂ pe tot parcursul mișcării. Mișcarea vine din șold.", "warn")], 3)}
+{create_ex_block("la6", "06", "Ridicări pe vârfuri (Calf Raises)", 3, "15-20", 60, "https://www.youtube.com/shorts/4Z39vG9HJ2g", "Ridicări pe vârfuri", ["Din stând, te sprijini de un perete și te ridici lent pe vârfuri. Controlează coborârea."], 3)}
+  <div class="cond-block" data-work="30" id="cond-la">
     <div class="cond-hdr">
       <div>
         <div class="cond-lbl">CIRCUIT FINALIZARE</div>
@@ -407,7 +256,7 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 </div>
     </div>
     <div class="cond-rounds">
-      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
     </div>
     <div class="cond-state">GATA SĂ ÎNCEPI</div>
     <div class="cond-cd">01:30</div>
@@ -416,259 +265,176 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
       <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
     </div>
   </div>
-
+{create_stretching([
+    "Stretching Cvadriceps: 30s/picior. Sprijinit la perete, trage călcâiul spre fesier. Genunchiul drept în jos.",
+    "Stretching Femurale: 30s/picior. Piciorul drept pe o treaptă, apleacă trunchiul (spatele drept) din șold.",
+    "Stretching Fesieri (Figure 4): 30s/parte. Glezna pe genunchiul opus, apasă ușor genunchiul în jos.",
+    "Stretching Adductori: 30s/parte. Din picioare depărtate (sumo), transferă greutatea pe un picior, celălalt rămâne drept.",
+    "Cat-Cow: 8 rep lent pentru decompresie coloană.",
+    "Child's Pose: 30s. Șezi pe călcâie, mâinile întinse mult în față pe sol. Relaxează tot corpul."
+])}
 </div>
-<!-- ─── JAVASCRIPT ─── -->
+
+<!-- TAB: UPPER -->
+<div class="panel" id="tab-upper">
+{create_warmup(
+    "Mers pe bandă — 5 min la 5.0-5.5 km/h.",
+    "Rotații de Umeri (15 rep înainte/înapoi) + Band Pull-Aparts sau mimare (15 rep) + Wall Slides la perete (10 rep) + Flotări la perete (10 rep).",
+    "La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale.",
+    "ÎNCĂLZIRE UPPER (10-12 MIN)"
+)}
+{create_ex_block("u1", "01", "Lat Pulldown (Helcometru)", 3, "12-15", 90, "https://www.youtube.com/results?search_query=lat+pulldown+tutorial+for+beginners", "Lat Pulldown", ["Trage bara spre piept, nu în spatele capului. Concentrează-te pe coatele care merg în jos și înapoi."], 3)}
+{create_ex_block("u2", "02", "Chest Press la aparat", 3, "12-15", 90, "https://www.youtube.com/results?search_query=machine+chest+press+tutorial", "Chest Press", ["Aparat, nu haltere — e mai sigur. Coatele la 45° față de trunchi, nu la 90° (nu perfect aliniate cu umerii)."], 3)}
+{create_ex_block("u3", "03", "Seated Row la aparat / cablu", 3, "12-15", 90, "https://www.youtube.com/results?search_query=seated+cable+row+tutorial", "Seated Row", ["Trage spre abdomen, strânge omoplații. Pieptul scos în față. Nu trage din biceps."], 3)}
+{create_ex_block("u4", "04", "Shoulder Press cu gantere", 2, "12-15", 60, "https://www.youtube.com/results?search_query=dumbbell+shoulder+press+tutorial", "Shoulder Press", ["Stai pe bancă cu spătar ridicat. Împinge ganterele de la nivelul urechilor. Începe ușor (2-4kg)."], 2)}
+{create_ex_block("u5", "05", "Biceps Curls cu gantere", 2, "12-15", 60, "https://www.youtube.com/results?search_query=dumbbell+bicep+curl+tutorial", "Biceps Curls", ["Coatele lipite de trunchi. Ridică lent, coboară și mai lent. Nu te balansa."], 2)}
+{create_ex_block("u6", "06", "Triceps Pushdown la cablu", 2, "12-15", 60, "https://www.youtube.com/results?search_query=tricep+rope+pushdown+tutorial", "Triceps Pushdown", ["Coatele fixe lipite de corp. Mișcarea doar din antebraț. Strânge tare jos."], 2)}
+  <div class="cond-block" data-work="30" id="cond-u">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">CIRCUIT FINALIZARE</div>
+        <div class="cond-equip">CORE & STABILITATE (4 RUNDE)</div>
+      </div>
+      <div class="cond-setup">30s Plank<br>30s Dead Bug<br>30s Mountain climbers
+<br>
+<a href="https://www.youtube.com/shorts/xe2MXatLTUw" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Plank</a><br>
+<a href="https://www.youtube.com/shorts/htfn3L8Efw8" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Dead Bug</a><br>
+<a href="https://www.youtube.com/shorts/7W4JEfEKuC4" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Mountain climbers</a>
+</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">01:30</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START RUNDĂ</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+{create_stretching([
+    "Stretching Piept: 30s/parte. La cadrul ușii, antebrațul pe cadru, cotul la 90°. Pas înainte, rotește corpul opus.",
+    "Stretching Latissimus (Spate lateral): 30s/parte. Apucă un stâlp sus, lasă-te pe spate și lateral ca un arc.",
+    "Stretching Trapez/Gât: 30s/parte. Stai drept, trage ușor capul spre un umăr cu mâna. Umărul opus rămâne jos.",
+    "Stretching Triceps: 20s/parte. Mâna la spate (spre omoplat), trage ușor de cot cu cealaltă mână.",
+    "Stretching Biceps: 20s/parte. Brațul întins pe perete la nivelul umărului, rotește corpul în sens opus.",
+    "Child's Pose: 30s. Decompresie totală a coloanei, exact ca la Lower."
+])}
+</div>
+
+<!-- TAB: LOWER B -->
+<div class="panel" id="tab-lowerb">
+{create_warmup(
+    "Mers pe bandă — 5 min la 5.0-5.5 km/h.",
+    "Mobilitate Gleznă (10 rep/picior) + Cat-Cow (10 rep lent) + Hip Circles din picioare (8 rep/direcție/picior) + Bodyweight Squats (10 rep).",
+    "La FIECARE exercițiu, fă 1 serie × 12 rep cu 50% din greutatea de lucru ÎNAINTE de seriile reale.",
+    "ÎNCĂLZIRE LOWER B (12-15 MIN)"
+)}
+{create_ex_block("lb1", "01", "Leg Extensions", 3, "15-20", 60, "https://www.youtube.com/results?search_query=how+to+do+leg+extensions+properly", "Leg Extensions", [("ÎNCĂLZIRE GENUNCHI — greutate ușoară, control total. Nu folosi impuls.", "good")], 3)}
+{create_ex_block("lb2", "02", "Leg Press", 3, "12-15", 90, "https://www.youtube.com/results?search_query=leg+press+tutorial+glute+focus", "Leg Press", ["Picioarele plasate mai SUS pe platformă = mai mult fesier, mai puțin stres pe genunchi. Nu întinde genunchii complet la final."], 3)}
+{create_ex_block("lb3", "03", "Hip Thrust la aparat / bancă", 3, "12-15", 90, "https://www.youtube.com/results?search_query=hip+thrust+tutorial+for+beginners", "Hip Thrust", ["Spatele pe bancă, greutate pe bazin. Strânge fesierii sus 1 secundă. Bărbia în piept, privirea mereu înainte."], 3)}
+{create_ex_block("lb4", "04", "Leg Curl (Flexii Femurali)", 3, "12-15", 60, "https://www.youtube.com/results?search_query=seated+leg+curl+machine+tutorial", "Leg Curl", ["Mișcare strictă din genunchi. Trage exploziv în jos, eliberează lent în sus (3 secunde)."], 3)}
+{create_ex_block("lb5", "05", "Abductor la aparat", 3, "15-20", 60, "https://www.youtube.com/results?search_query=hip+abductor+machine+tutorial", "Abductor (Exterior)", ["Deschide picioarele lent, controlat. Nu lăsa greutatea să te tragă înapoi brusc. Pauză 1 sec în poziția deschis."], 3)}
+{create_ex_block("lb6", "06", "Adductor la aparat", 3, "15-20", 60, "https://www.youtube.com/results?search_query=hip+adductor+machine+tutorial", "Adductor (Interior)", ["Închide picioarele controlat. Stabilizează interiorul coapselor. Ajută la protecția genunchiului."], 3)}
+  <div class="cond-block" data-work="30" id="cond-lb">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">CIRCUIT FINALIZARE</div>
+        <div class="cond-equip">CORE & STABILITATE (4 RUNDE)</div>
+      </div>
+      <div class="cond-setup">30s Plank<br>30s Dead Bug<br>30s Mountain climbers
+<br>
+<a href="https://www.youtube.com/shorts/xe2MXatLTUw" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Plank</a><br>
+<a href="https://www.youtube.com/shorts/htfn3L8Efw8" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Dead Bug</a><br>
+<a href="https://www.youtube.com/shorts/7W4JEfEKuC4" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Mountain climbers</a>
+</div>
+    </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">01:30</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START RUNDĂ</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
+    </div>
+  </div>
+{create_stretching([
+    "Stretching Cvadriceps: 30s/picior.",
+    "Stretching Femurale: 30s/picior.",
+    "Stretching Fesieri (Figure 4): 30s/parte.",
+    "Frog Stretch (Deschidere Șolduri): 30s. Din 4 labe, depărtează genunchii larg și lasă bazinul în spate, spre călcâie.",
+    "Child's Pose: 30s."
+])}
+</div>
+
+<div class="t-bar">
+  <div>
+    <div class="t-lbl">Timp Pauză</div>
+    <div class="t-val" id="t-val">00:00</div>
+  </div>
+</div>
+
 <script>
-/* ─── TABS ─── */
-function showTab(id) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  event.target.classList.add('active');
-  document.getElementById('tab-' + id).classList.add('active');
-  window.scrollTo(0, 0);
+function showTab(btn,id){document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active')});document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active')});btn.classList.add('active');document.getElementById('tab-'+id).classList.add('active');window.scrollTo(0,0);}
+function toggleEx(id){document.getElementById(id).classList.toggle('open');}
+let restTimer=null,restEnd=0;const tVal=document.getElementById('t-val');
+function startRest(sec){if(restTimer)clearInterval(restTimer);restEnd=Date.now()+sec*1000;tVal.className='t-val active';tickRest();restTimer=setInterval(tickRest,1000);}
+function tickRest(){const left=Math.round((restEnd-Date.now())/1000);if(left<=0){tVal.textContent='00:00';tVal.className='t-val';clearInterval(restTimer);restTimer=null;}else{const m=Math.floor(left/60);const s=left%60;tVal.textContent=m+':'+(s<10?'0':'')+s;}}
+function toggleSet(btn){btn.classList.toggle('done');saveState();}
+function saveState(){const state={{}};document.querySelectorAll('.set-row').forEach(function(r){const id=r.getAttribute('data-id');const kg=r.querySelector('.kg').value;const rep=r.querySelector('.rep').value;const done=r.querySelector('.set-chk').classList.contains('done');if(kg||rep||done){state[id]={{k:kg,r:rep,d:done}};}});localStorage.setItem('built_log_otilia',JSON.stringify(state));updateSums();}
+function loadState(){try{const state=JSON.parse(localStorage.getItem('built_log_otilia'));if(!state)return;for(const id in state){const r=document.querySelector('.set-row[data-id="'+id+'"]');if(r){r.querySelector('.kg').value=state[id].k||'';r.querySelector('.rep').value=state[id].r||'';if(state[id].d)r.querySelector('.set-chk').classList.add('done');}}}catch(e){}updateSums();}
+function updateSums(){let sets=0,vol=0;document.querySelectorAll('.set-row').forEach(function(r){if(r.querySelector('.set-chk').classList.contains('done')){sets++;const k=parseFloat(r.querySelector('.kg').value)||0;const rp=parseFloat(r.querySelector('.rep').value)||0;vol+=k*rp;}});document.getElementById('sum-sets').textContent=sets;document.getElementById('sum-vol').textContent=Math.round(vol);}
+function confirmReset(){if(confirm('Sigur vrei să ștergi toate greutățile și bifele pentru o săptămână nouă?')){localStorage.removeItem('built_log_otilia');document.querySelectorAll('.kg, .rep').forEach(function(i){i.value=''});document.querySelectorAll('.set-chk').forEach(function(c){c.classList.remove('done')});document.querySelectorAll('.rdot').forEach(function(d){d.classList.remove('done')});document.getElementById('modal').classList.remove('active');updateSums();}}
+function exportCSV(){const state=JSON.parse(localStorage.getItem('built_log_otilia'))||{{}};let csv='Exercitiu,Set,Kg,Reps,Bifat\n';for(const id in state){csv+=id+','+state[id].k+','+state[id].r+','+(state[id].d?'Da':'Nu')+'\n';}const blob=new Blob([csv],{{type:'text/csv'}});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='istoric_otilia_'+new Date().toISOString().slice(0,10)+'.csv';a.click();}
+let condTimers={{}};
+function startCond(b){
+  const id=b.id; 
+  if(!condTimers[id]){condTimers[id]={{w:parseInt(b.getAttribute('data-work')),r:15,st:0,end:0,tmr:null,lbl:b.querySelector('.cond-state'),val:b.querySelector('.cond-cd'),btn:b.querySelector('.cond-start'),dots:b.querySelectorAll('.rdot')}};}
+  const c=condTimers[id];
+  if(c.tmr) return;
+  const nextRnd=Array.from(c.dots).findIndex(function(d){return !d.classList.contains('done');});
+  if(nextRnd===-1) return;
+  c.st=1; c.end=Date.now()+c.w*1000;
+  c.btn.classList.add('active'); c.btn.textContent='LUCRU...'; c.lbl.textContent='RUNDA '+(nextRnd+1)+' — LUCRU'; c.val.style.color='var(--orange)';
+  c.tmr=setInterval(function(){tickCond(id);}, 100);
 }
-
-/* ─── ACCORDION ─── */
-function toggleEx(id) {
-  document.getElementById(id).classList.toggle('open');
-}
-
-/* ─── REST TIMER ─── */
-let restTimer = null, restEnd = 0;
-const tVal = document.getElementById('t-val');
-
-function startRest(sec) {
-  if (restTimer) clearInterval(restTimer);
-  restEnd = Date.now() + sec * 1000;
-  tVal.className = 't-val active';
-  tickRest();
-  restTimer = setInterval(tickRest, 1000);
-}
-
-function tickRest() {
-  const left = Math.round((restEnd - Date.now()) / 1000);
-  if (left <= 0) {
-    clearInterval(restTimer);
-    tVal.textContent = '00:00';
-    tVal.className = 't-val done';
-    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-    return;
-  }
-  const m = Math.floor(left / 60), s = left % 60;
-  tVal.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-}
-
-function stopRest() {
-  if (restTimer) clearInterval(restTimer);
-  tVal.textContent = '00:00';
-  tVal.className = 't-val';
-}
-
-/* ─── INTERVAL TIMER (CONDITIONING) ─── */
-let ivTimer = null, ivBlock = null;
-let ivPhase = 'idle', ivRound = 0, ivRemaining = 0;
-let ivWorkSec = 30, ivRestSec = 30, ivTotalRounds = 4;
-
-function startCond(block) {
-  if (ivTimer) clearInterval(ivTimer);
-  ivBlock = block;
-  ivWorkSec = parseInt(block.dataset.work);
-  ivRestSec = parseInt(block.dataset.rest);
-  ivTotalRounds = parseInt(block.dataset.rounds);
-  ivRound = 0;
-  ivPhase = 'work';
-  ivRemaining = ivWorkSec;
-  updateCondUI();
-  ivTimer = setInterval(tickCond, 1000);
-}
-
-function tickCond() {
-  ivRemaining--;
-  if (ivRemaining <= 0) {
-    if (ivPhase === 'work') {
-      ivPhase = 'rest';
-      ivRemaining = ivRestSec;
-      if (navigator.vibrate) navigator.vibrate(300);
-    } else {
-      ivRound++;
-      if (ivRound >= ivTotalRounds) {
-        ivPhase = 'done';
-        clearInterval(ivTimer);
-        ivTimer = null;
-        if (navigator.vibrate) navigator.vibrate([300, 100, 300, 100, 300]);
-      } else {
-        ivPhase = 'work';
-        ivRemaining = ivWorkSec;
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+function tickCond(id){
+  const c=condTimers[id]; const left=Math.max(0,c.end-Date.now());
+  if(left===0){
+    if(c.st===1){
+      const nextRnd=Array.from(c.dots).findIndex(function(d){return !d.classList.contains('done');});
+      c.dots[nextRnd].classList.add('done');
+      if(nextRnd===c.dots.length-1){
+        c.st=0; clearInterval(c.tmr); c.tmr=null;
+        c.lbl.textContent='CIRCUIT COMPLET!'; c.val.textContent='DONE'; c.val.style.color='var(--green)'; c.btn.classList.remove('active'); c.btn.textContent='GATA';
+      }else{
+        c.st=2; c.end=Date.now()+c.r*1000;
+        c.btn.textContent='PAUZĂ'; c.lbl.textContent='RUNDA '+(nextRnd+1)+' COMPLETĂ — PAUZĂ'; c.val.style.color='var(--muted)';
       }
+    }else if(c.st===2){
+      c.st=1; c.end=Date.now()+c.w*1000;
+      const r=Array.from(c.dots).findIndex(function(d){return !d.classList.contains('done');});
+      c.btn.textContent='LUCRU...'; c.lbl.textContent='RUNDA '+(r+1)+' — LUCRU'; c.val.style.color='var(--orange)';
     }
+  }else{
+    const s=Math.ceil(left/1000); const m=Math.floor(s/60); const rs=s%60;
+    c.val.textContent='0'+m+':'+(rs<10?'0':'')+rs;
   }
-  updateCondUI();
 }
-
-function updateCondUI() {
-  if (!ivBlock) return;
-  const stateEl = ivBlock.querySelector('.cond-state');
-  const cdEl = ivBlock.querySelector('.cond-cd');
-  const dots = ivBlock.querySelectorAll('.rdot');
-
-  if (ivPhase === 'done') {
-    stateEl.textContent = '✓ COMPLET';
-    stateEl.style.color = 'var(--green)';
-    cdEl.textContent = '00:00';
-    cdEl.style.color = 'var(--green)';
-    dots.forEach(d => { d.classList.remove('active'); d.classList.add('done'); });
-    return;
-  }
-
-  if (ivPhase === 'work') {
-    stateEl.textContent = 'LUCRU';
-    stateEl.style.color = 'var(--orange)';
-    cdEl.style.color = 'var(--orange)';
-  } else {
-    stateEl.textContent = 'PAUZĂ';
-    stateEl.style.color = 'var(--blue)';
-    cdEl.style.color = 'var(--blue)';
-  }
-
-  const m = Math.floor(ivRemaining / 60), s = ivRemaining % 60;
-  cdEl.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-
-  dots.forEach((d, i) => {
-    d.classList.remove('active', 'done', 'work', 'rest');
-    if (i < ivRound) d.classList.add('done');
-    else if (i === ivRound) { d.classList.add('active'); d.classList.add(ivPhase); }
-  });
+function resetCond(b){
+  const id=b.id; if(!condTimers[id]) return; const c=condTimers[id];
+  clearInterval(c.tmr); c.tmr=null; c.st=0;
+  c.lbl.textContent='GATA SĂ ÎNCEPI'; c.val.textContent='0'+Math.floor(c.w/60)+':'+(c.w%60<10?'0':'')+(c.w%60); c.val.style.color='';
+  c.btn.classList.remove('active'); c.btn.textContent='START RUNDĂ';
+  c.dots.forEach(function(d){d.classList.remove('done');});
 }
-
-function resetCond(block) {
-  if (ivTimer && ivBlock === block) { clearInterval(ivTimer); ivTimer = null; ivBlock = null; }
-  const workSec = parseInt(block.dataset.work);
-  const stateEl = block.querySelector('.cond-state');
-  const cdEl = block.querySelector('.cond-cd');
-  const m = Math.floor(workSec / 60), s = workSec % 60;
-  stateEl.textContent = 'GATA SĂ ÎNCEPI';
-  stateEl.style.color = '';
-  cdEl.textContent = (m < 10 ? '0' + m : m) + ':' + (s < 10 ? '0' + s : s);
-  cdEl.style.color = '';
-  block.querySelectorAll('.rdot').forEach(d => d.classList.remove('active', 'done', 'work', 'rest'));
-}
-
-/* ─── 90-DAY PROGRESS ─── */
-(function() {
-  const day1 = new Date(2026, 5, 1);
-  const today = new Date();
-  const elapsed = Math.max(0, Math.floor((today - day1) / (1000*60*60*24)));
-  const dayNum = Math.min(elapsed + 1, 90);
-  const pct = Math.min(100, Math.round((elapsed / 89) * 100));
-
-  document.getElementById('hdr-day').textContent = 'Zi ' + dayNum + ' din 90';
-  document.getElementById('prog-pct').textContent = pct + '% complet';
-
-  setTimeout(() => {
-    document.getElementById('prog-fill').style.width = pct + '%';
-  }, 300);
-
-  const phase = elapsed < 30 ? 'FAZA 1: Fundație' : elapsed < 60 ? 'FAZA 2: Progresie' : 'FAZA 3: Vârf';
-  document.getElementById('prog-phase').textContent = phase;
-})();
-
-/* ─── LOCALSTORAGE ─── */
-const LS_KEY = 'built_otilia_gym';
-
-function loadData() {
-  let data = {};
-  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
-
-  document.querySelectorAll('.set-row').forEach(row => {
-    const id = row.dataset.id;
-    if (!id || !data[id]) return;
-    const kg = row.querySelector('.set-inp.kg');
-    const rep = row.querySelector('.set-inp.rep');
-    const chk = row.querySelector('.set-chk');
-    if (kg && data[id].kg !== undefined) kg.value = data[id].kg;
-    if (rep && data[id].rep !== undefined) rep.value = data[id].rep;
-    if (data[id].done) chk.classList.add('done');
-    if (kg) kg.addEventListener('change', () => saveRow(row));
-    if (rep) rep.addEventListener('change', () => saveRow(row));
-  });
-}
-
-function saveRow(row) {
-  const id = row.dataset.id;
-  if (!id) return;
-  let data = {};
-  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
-  const kg = row.querySelector('.set-inp.kg');
-  const rep = row.querySelector('.set-inp.rep');
-  const chk = row.querySelector('.set-chk');
-  data[id] = { kg: kg ? kg.value : '', rep: rep ? rep.value : '', done: chk.classList.contains('done') };
-  localStorage.setItem(LS_KEY, JSON.stringify(data));
-}
-
-function toggleSet(btn) {
-  btn.classList.toggle('done');
-  const row = btn.closest('.set-row');
-  if (row) saveRow(row);
-}
-
-/* ─── MODAL / SUMMARY ─── */
-function showModal() {
-  let data = {};
-  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
-  let sets = 0, vol = 0;
-  Object.values(data).forEach(s => {
-    if (s.done) {
-      sets++;
-      const kg = parseFloat(s.kg), rep = parseInt(s.rep, 10);
-      if (!isNaN(kg) && !isNaN(rep)) vol += kg * rep;
-    }
-  });
-  document.getElementById('sum-sets').textContent = sets;
-  document.getElementById('sum-vol').textContent = new Intl.NumberFormat('de-DE').format(Math.round(vol));
-  document.getElementById('modal').classList.add('open');
-}
-
-function closeModal() { document.getElementById('modal').classList.remove('open'); }
-function confirmReset() { localStorage.removeItem(LS_KEY); location.reload(); }
-
-function exportCSV() {
-  let data = {};
-  try { data = JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch(e) {}
-  let lines = ['ID,Greutate(kg),Reps,Finalizat'];
-  for (const [id, s] of Object.entries(data)) lines.push(`${id},${s.kg||0},${s.rep||0},${s.done?'DA':'NU'}`);
-  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'BUILT_Otilia_' + new Date().toISOString().split('T')[0] + '.csv';
-  a.click();
-}
-
-document.addEventListener('DOMContentLoaded', loadData);
+document.querySelectorAll('.set-inp').forEach(function(i){i.addEventListener('input',saveState);});
+window.addEventListener('DOMContentLoaded',function(){
+  loadState();
+  const hash = window.location.hash.replace('#','');
+  if(hash) {{ const btn=document.querySelector('.tab[onclick*="'+hash+'"]'); if(btn) showTab(btn,hash); }}
+});
 </script>
-<script>
-/* BUILT: deschide tabul zilei din hash (#lowera, #upper etc.) — folosit de "Antrenamentul de azi" */
-(function(){
-  function act(){
-    var h=(location.hash||'').replace(/^#/,'');
-    if(!h) return;
-    var panel=document.getElementById('tab-'+h);
-    if(!panel) return;
-    document.querySelectorAll('.panel').forEach(function(p){p.classList.remove('active');});
-    document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
-    panel.classList.add('active');
-    document.querySelectorAll('.tab').forEach(function(t){
-      var oc=t.getAttribute('onclick')||'';
-      if(oc.indexOf("'"+h+"'")>-1) t.classList.add('active');
-    });
-    try{window.scrollTo(0,0);}catch(e){}
-  }
-  window.addEventListener('DOMContentLoaded',act);
-  window.addEventListener('hashchange',act);
-})();
-</script>
-<script>/* BUILT: deschide tab-ul zilei din #hash */(function(){function a(){var h=(location.hash||'').replace('#','');if(h&&document.getElementById('tab-'+h)&&typeof showTab==='function'){try{showTab(h);}catch(e){}}}if(document.readyState!=='loading')a();else document.addEventListener('DOMContentLoaded',a);window.addEventListener('hashchange',a);})();</script>
 </body>
 </html>
