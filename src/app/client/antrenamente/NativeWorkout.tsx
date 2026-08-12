@@ -61,6 +61,18 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
       const doc = new DOMParser().parseFromString(text, "text/html");
       const styleCss = [...doc.querySelectorAll("style")].map((s) => s.textContent || "").join("\n").replace(/:root/g, ":host");
       setCss(styleCss);
+      
+      // Injectăm scripturile din pagina de antrenament global ca să funcționeze butoanele custom (ex: cond-block)
+      if (!(window as any).__workoutScriptsLoaded) {
+        (window as any).__workoutScriptsLoaded = true;
+        const scripts = [...doc.querySelectorAll("script")].map((s) => s.textContent || "").join("\n");
+        if (scripts) {
+          const s = document.createElement("script");
+          s.textContent = scripts;
+          document.head.appendChild(s);
+        }
+      }
+
       // Includem TOATE tab-urile foii (program/ghid/cardio/reguli + zilele de exerciții) → zero pierdere.
       const ds: Day[] = [];
       for (const p of [...doc.querySelectorAll('[id^="tab-"]')]) {
