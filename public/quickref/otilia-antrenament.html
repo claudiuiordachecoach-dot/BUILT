@@ -392,38 +392,29 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
     </div>
   </div>
 
-  <div class="ex-block" id="ex-la7">
-    <div class="ex-hdr" onclick="toggleEx('ex-la7')">
-      <div class="ex-left">
-        <div class="ex-num">07</div>
-        <div class="ex-ttl">Circuit Core (4 Runde)</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">4 × 30s</span>
-          <span class="tag tag-orange">60 sec pauză</span>
-        </div>
+  <div class="cond-block" data-work="30" id="cond-la">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">CIRCUIT FINALIZARE</div>
+        <div class="cond-equip">CORE & STABILITATE (4 RUNDE)</div>
       </div>
-      <div class="ex-icon">▼</div>
+      <div class="cond-setup">30s Plank<br>30s Dead Bug<br>30s Mountain climbers
+<br>
+<a href="https://www.youtube.com/shorts/xe2MXatLTUw" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Plank</a><br>
+<a href="https://www.youtube.com/shorts/htfn3L8Efw8" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Dead Bug</a><br>
+<a href="https://www.youtube.com/shorts/7W4JEfEKuC4" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Mountain climbers</a>
+</div>
     </div>
-    <div class="ex-body">
-      <div class="ex-cue">Execută fiecare exercițiu 30 de secunde. La finalul celor 3, iei pauză și aceea reprezintă o rundă.</div>
-      <div class="ex-cue warn">1. Plank (30s)</div>
-      <div class="ex-cue warn">2. Dead Bug (30s)</div>
-      <div class="ex-cue warn">3. Mountain Climbers (30s)</div>
-      <div class="ex-cue"><br><a href='https://www.youtube.com/shorts/xe2MXatLTUw' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Plank</a></div>
-      <div class="ex-cue"><a href='https://www.youtube.com/shorts/htfn3L8Efw8' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Dead Bug</a></div>
-      <div class="ex-cue"><a href='https://www.youtube.com/shorts/7W4JEfEKuC4' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Mountain climbers</a></div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="la7s1"><div class="set-num">S1</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="la7s2"><div class="set-num">S2</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="la7s3"><div class="set-num">S3</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="la7s4"><div class="set-num">S4</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
-      </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">01:30</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START RUNDĂ</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
     </div>
   </div>
-
-
 
   <div class="alert blue">
     <div class="alert-ttl">🧊 STRETCHING FINAL (5-10 MIN)</div>
@@ -589,38 +580,29 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
     </div>
   </div>
 
-  <div class="ex-block" id="ex-u7">
-    <div class="ex-hdr" onclick="toggleEx('ex-u7')">
-      <div class="ex-left">
-        <div class="ex-num">07</div>
-        <div class="ex-ttl">Circuit Core (4 Runde)</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">4 × 30s</span>
-          <span class="tag tag-orange">60 sec pauză</span>
-        </div>
+  <div class="cond-block" data-work="30" id="cond-u">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">CIRCUIT FINALIZARE</div>
+        <div class="cond-equip">CORE & STABILITATE (4 RUNDE)</div>
       </div>
-      <div class="ex-icon">▼</div>
+      <div class="cond-setup">30s Plank<br>30s Dead Bug<br>30s Mountain climbers
+<br>
+<a href="https://www.youtube.com/shorts/xe2MXatLTUw" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Plank</a><br>
+<a href="https://www.youtube.com/shorts/htfn3L8Efw8" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Dead Bug</a><br>
+<a href="https://www.youtube.com/shorts/7W4JEfEKuC4" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Mountain climbers</a>
+</div>
     </div>
-    <div class="ex-body">
-      <div class="ex-cue">Execută fiecare exercițiu 30 de secunde. La finalul celor 3, iei pauză și aceea reprezintă o rundă.</div>
-      <div class="ex-cue warn">1. Plank (30s)</div>
-      <div class="ex-cue warn">2. Dead Bug (30s)</div>
-      <div class="ex-cue warn">3. Mountain Climbers (30s)</div>
-      <div class="ex-cue"><br><a href='https://www.youtube.com/shorts/xe2MXatLTUw' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Plank</a></div>
-      <div class="ex-cue"><a href='https://www.youtube.com/shorts/htfn3L8Efw8' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Dead Bug</a></div>
-      <div class="ex-cue"><a href='https://www.youtube.com/shorts/7W4JEfEKuC4' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Mountain climbers</a></div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="u7s1"><div class="set-num">S1</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="u7s2"><div class="set-num">S2</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="u7s3"><div class="set-num">S3</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="u7s4"><div class="set-num">S4</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
-      </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">01:30</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START RUNDĂ</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
     </div>
   </div>
-
-
 
   <div class="alert blue">
     <div class="alert-ttl">🧊 STRETCHING FINAL (5-10 MIN)</div>
@@ -789,38 +771,29 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
     </div>
   </div>
 
-  <div class="ex-block" id="ex-lb7">
-    <div class="ex-hdr" onclick="toggleEx('ex-lb7')">
-      <div class="ex-left">
-        <div class="ex-num">07</div>
-        <div class="ex-ttl">Circuit Core (4 Runde)</div>
-        <div class="ex-meta">
-          <span class="tag tag-red">4 × 30s</span>
-          <span class="tag tag-orange">60 sec pauză</span>
-        </div>
+  <div class="cond-block" data-work="30" id="cond-lb">
+    <div class="cond-hdr">
+      <div>
+        <div class="cond-lbl">CIRCUIT FINALIZARE</div>
+        <div class="cond-equip">CORE & STABILITATE (4 RUNDE)</div>
       </div>
-      <div class="ex-icon">▼</div>
+      <div class="cond-setup">30s Plank<br>30s Dead Bug<br>30s Mountain climbers
+<br>
+<a href="https://www.youtube.com/shorts/xe2MXatLTUw" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Plank</a><br>
+<a href="https://www.youtube.com/shorts/htfn3L8Efw8" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Dead Bug</a><br>
+<a href="https://www.youtube.com/shorts/7W4JEfEKuC4" target="_blank" style="color:var(--orange); text-decoration:underline;">▶ Mountain climbers</a>
+</div>
     </div>
-    <div class="ex-body">
-      <div class="ex-cue">Execută fiecare exercițiu 30 de secunde. La finalul celor 3, iei pauză și aceea reprezintă o rundă.</div>
-      <div class="ex-cue warn">1. Plank (30s)</div>
-      <div class="ex-cue warn">2. Dead Bug (30s)</div>
-      <div class="ex-cue warn">3. Mountain Climbers (30s)</div>
-      <div class="ex-cue"><br><a href='https://www.youtube.com/shorts/xe2MXatLTUw' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Plank</a></div>
-      <div class="ex-cue"><a href='https://www.youtube.com/shorts/htfn3L8Efw8' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Dead Bug</a></div>
-      <div class="ex-cue"><a href='https://www.youtube.com/shorts/7W4JEfEKuC4' target='_blank' style='color:var(--orange);text-decoration:none;'>▶ Video: Mountain climbers</a></div>
-      <div class="sets-wrap">
-        <div class="set-labels"><div>KG</div><div>REPS</div></div>
-        <div class="set-row" data-id="lb7s1"><div class="set-num">S1</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="lb7s2"><div class="set-num">S2</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="lb7s3"><div class="set-num">S3</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <div class="set-row" data-id="lb7s4"><div class="set-num">S4</div><div class="set-tgt">30s</div><input class="set-inp kg" type="number" placeholder="kg"><input class="set-inp rep" type="number" placeholder="rp"><div class="set-chk" onclick="toggleSet(this)"></div></div>
-        <button class="rest-btn" onclick="startRest(60)">Start Pauză 1:00</button>
-      </div>
+    <div class="cond-rounds">
+      <div class="rdot"></div><div class="rdot"></div><div class="rdot"></div><div class="rdot"></div>
+    </div>
+    <div class="cond-state">GATA SĂ ÎNCEPI</div>
+    <div class="cond-cd">01:30</div>
+    <div class="cond-ctrls">
+      <button class="cond-btn cond-start" onclick="startCond(this.closest('.cond-block'))">START RUNDĂ</button>
+      <button class="cond-btn cond-reset" onclick="resetCond(this.closest('.cond-block'))">RESET</button>
     </div>
   </div>
-
-
 
   <div class="alert blue">
     <div class="alert-ttl">🧊 STRETCHING FINAL (5-10 MIN)</div>
