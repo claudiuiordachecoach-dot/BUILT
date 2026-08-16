@@ -1031,3 +1031,45 @@ export async function saveWorkoutSession(
   });
   return { ok: !error };
 }
+
+// ── Client Journal Actions ──
+export type JournalEntry = {
+  id: string;
+  type: string;
+  label: string | null;
+  photo_url: string;
+  note: string | null;
+  created_at: string;
+};
+
+export async function getJournalEntries(overrideClientId?: number): Promise<JournalEntry[]> {
+  const clientId = overrideClientId ?? await getClientId();
+  if (!clientId) return [];
+  const db = getSupabaseServer();
+  const { data } = await db.from("client_journal")
+    .select("*")
+    .eq("client_id", clientId)
+    .order("created_at", { ascending: false });
+  return data ?? [];
+}
+
+export async function addJournalEntry(entry: { type: string; label?: string; photo_url: string; note?: string }) {
+  const clientId = await getClientId();
+  if (!clientId) throw new Error("Not auth");
+  const db = getSupabaseServer();
+  const { error } = await db.from("client_journal").insert({
+    client_id: clientId,
+    type: entry.type,
+    label: entry.label ?? null,
+    photo_url: entry.photo_url,
+    note: entry.note ?? null
+  });
+  if (error) console.error("Error adding journal entry:", error);
+}
+
+export async function deleteJournalEntry(id: string) {
+  const clientId = await getClientId();
+  if (!clientId) return;
+  const db = getSupabaseServer();
+  await db.from("client_journal").delete().eq("id", id).eq("client_id", clientId);
+}

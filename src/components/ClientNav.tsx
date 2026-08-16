@@ -11,6 +11,7 @@ import { NAV_ICONS as ICONS } from "./nav-icons";
 // restul se descoperă la scroll. Ordinea = prioritatea de folosire zilnică.
 const NAV = [
   { label: "Acasă", short: "Acasă", href: "/client/dashboard", key: "dashboard" },
+  { label: "Jurnal", short: "Jurnal", href: "/client/jurnal", key: "jurnal" },
   { label: "Antrenamente", short: "Antren.", href: "/client/antrenamente", key: "antrenamente" },
   { label: "Nutriție", short: "Nutriție", href: "/client/nutritie", key: "nutritie" },
   { label: "Rețetele mele", short: "Rețete", href: "/client/retete", key: "retete" },
