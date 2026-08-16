@@ -14,7 +14,11 @@ type ProgressEntry = {
 };
 
 export default function ProgressGallery({ clientId, initialGallery }: { clientId: number, initialGallery: ProgressEntry[] }) {
-  const [gallery, setGallery] = useState<ProgressEntry[]>(initialGallery || []);
+  const validGallery = (initialGallery || []).filter((e) => {
+    const l = (e.label || "").toLowerCase();
+    return !l.includes("pranz") && !l.includes("prânz") && !l.includes("cina") && !l.includes("cină") && !l.includes("gustare") && !l.includes("mese") && !l.includes("mic dejun");
+  });
+  const [gallery, setGallery] = useState<ProgressEntry[]>(validGallery);
   const [isAdding, setIsAdding] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({

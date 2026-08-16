@@ -1,6 +1,6 @@
 "use client";
 
-type Entry = { weight_kg: number; date: string };
+type Entry = { weight_kg: number; date: string; label?: string };
 
 export default function WeightGoal({
   gallery,
@@ -11,14 +11,18 @@ export default function WeightGoal({
 }) {
   if (target == null) return null;
 
-  const points = (gallery || [])
-    .filter((e) => typeof e.weight_kg === "number")
+  const validPoints = (gallery || [])
+    .filter((e) => typeof e.weight_kg === "number" && e.weight_kg > 0)
+    .filter((e) => {
+      const l = (e.label || "").toLowerCase();
+      return !l.includes("pranz") && !l.includes("prânz") && !l.includes("cina") && !l.includes("cină") && !l.includes("gustare") && !l.includes("mese") && !l.includes("mic dejun");
+    })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  if (points.length === 0) return null;
+  if (validPoints.length === 0) return null;
 
-  const start = points[0].weight_kg;
-  const current = points[points.length - 1].weight_kg;
+  const start = validPoints[0].weight_kg;
+  const current = validPoints[validPoints.length - 1].weight_kg;
 
   const total = Math.abs(target - start);
   const done = Math.abs(start - current);

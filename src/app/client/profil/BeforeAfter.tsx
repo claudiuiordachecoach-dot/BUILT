@@ -21,11 +21,15 @@ function Card({ entry, tag }: { entry: Entry; tag: string }) {
 }
 
 export default function BeforeAfter({ gallery }: { gallery: Entry[] }) {
-  const points = (gallery || [])
+  const validPoints = (gallery || [])
     .filter((e) => e.photo_url)
+    .filter((e) => {
+      const l = (e.label || "").toLowerCase();
+      return !l.includes("pranz") && !l.includes("prânz") && !l.includes("cina") && !l.includes("cină") && !l.includes("gustare") && !l.includes("mese") && !l.includes("mic dejun");
+    })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  if (points.length < 2) {
+  if (validPoints.length < 2) {
     return (
       <div className="bg-[#111111] border border-white/10 rounded-lg p-6">
         <p className="text-sm text-zinc-500">
@@ -35,8 +39,8 @@ export default function BeforeAfter({ gallery }: { gallery: Entry[] }) {
     );
   }
 
-  const first = points[0];
-  const last = points[points.length - 1];
+  const first = validPoints[0];
+  const last = validPoints[validPoints.length - 1];
 
   return (
     <div className="flex gap-4 items-stretch">

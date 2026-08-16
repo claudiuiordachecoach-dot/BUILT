@@ -5,11 +5,24 @@ import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "rec
 type Entry = { label: string; weight_kg: number; date: string };
 
 export default function WeightSummary({ gallery }: { gallery: Entry[] }) {
-  const points = (gallery || [])
-    .filter((e) => typeof e.weight_kg === "number")
+  const validPoints = (gallery || [])
+    .filter((e) => typeof e.weight_kg === "number" && e.weight_kg > 0)
+    .filter((e) => {
+      const l = (e.label || "").toLowerCase();
+      return !l.includes("pranz") && !l.includes("prânz") && !l.includes("cina") && !l.includes("cină") && !l.includes("gustare") && !l.includes("mese") && !l.includes("mic dejun");
+    })
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-  if (points.length === 0) {
+  // Grupăm pe zile ca să nu apară mai multe puncte în aceeași zi
+  const pointsByDay = new Map<string, number>();
+  validPoints.forEach(e => {
+    const day = new Date(e.date).toLocaleDateString("ro-RO", { month: "short", day: "numeric" });
+    pointsByDay.set(day, e.weight_kg);
+  });
+
+  const chartData = Array.from(pointsByDay.entries()).map(([day, kg]) => ({ name: day, kg }));
+
+  if (chartData.length === 0) {
     return (
       <div className="bg-[#111111] border border-white/10 rounded-lg p-6">
         <p className="text-sm text-zinc-500">
@@ -19,17 +32,12 @@ export default function WeightSummary({ gallery }: { gallery: Entry[] }) {
     );
   }
 
-  const start = points[0].weight_kg;
-  const current = points[points.length - 1].weight_kg;
-  const delta = +(current - start).toFixed(1);
+  const current = chartData[chartData.length - 1].kg;
+  const previous = chartData.length > 1 ? chartData[chartData.length - 2].kg : current;
+  const delta = +(current - previous).toFixed(1);
   const deltaLabel =
-    delta === 0 ? "stabil" : delta < 0 ? `${delta} kg de la start` : `+${delta} kg de la start`;
-  const deltaColor = delta < 0 ? "text-green-400" : delta > 0 ? "text-zinc-300" : "text-zinc-400";
-
-  const chartData = points.map((p) => ({
-    name: p.label,
-    kg: p.weight_kg,
-  }));
+    delta === 0 ? "stabil" : delta < 0 ? `${delta} kg față de ieri` : `+${delta} kg față de ieri`;
+  const deltaColor = delta < 0 ? "text-green-400" : delta > 0 ? "text-built-red" : "text-zinc-400";
 
   return (
     <div className="bg-[#111111] border border-white/10 rounded-lg p-6">
@@ -40,7 +48,7 @@ export default function WeightSummary({ gallery }: { gallery: Entry[] }) {
       </div>
       <p className="text-[11px] uppercase tracking-widest text-zinc-600 mb-4">Greutatea actuală</p>
 
-      {points.length >= 2 && (
+      {chartData.length >= 2 && (
         <div className="h-40 -mx-2">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
