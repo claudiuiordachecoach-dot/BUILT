@@ -46,7 +46,12 @@ export default function JournalGallery({
     setEntries(updatedEntries);
     
     try {
-      await addJournalEntry(newEntry);
+      await addJournalEntry({
+        type: formData.type,
+        label: formData.label,
+        photo_url: formData.photo_url,
+        note: formData.note
+      });
       setIsAdding(false);
       setFormData({ type: "meal", label: "", photo_url: "", note: "" });
     } catch (error) {
