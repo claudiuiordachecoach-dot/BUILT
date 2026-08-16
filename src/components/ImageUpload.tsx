@@ -4,7 +4,7 @@ import { useRef, useState } from "react";
 import CropModal from "./CropModal";
 
 type Props = {
-  folder: "avatars" | "progress" | "coach";
+  folder: "avatars" | "progress" | "coach" | "journal";
   onUploaded: (url: string) => void;
   /** URL curent (pentru preview inițial) */
   value?: string;
