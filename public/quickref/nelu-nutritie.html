@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Nutriție · Nelu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blk: #0A0A0A; --drk: #141414; --drk2: #1A1A1A;
+  --red: #C0392B; --red-dim: rgba(192,57,43,0.12);
+  --wht: #F5F5F5; --muted: #777; --brd: #252525; --card: #111111;
+  --orange: #E67E22; --green: #27AE60; --blue: #2980B9; --purple: #8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:100px;}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:16px;}
+.stat-card{background:var(--card);border:1px solid var(--brd);padding:12px 8px;text-align:center;border-radius:4px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--red);line-height:1;}
+.stat-unit{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.stat-lbl{font-size:10px;color:#aaa;margin-top:4px;}
+
+.guide-box{background:var(--drk);border:1px solid var(--brd);border-left:3px solid var(--orange);padding:16px;margin-bottom:18px;border-radius:0 6px 6px 0;}
+.guide-hdr{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--orange);margin-bottom:8px;}
+.guide-p{font-size:12px;color:#ccc;line-height:1.55;margin-bottom:14px;}
+
+.acc-card{background:var(--drk);border:1px solid var(--brd);margin-bottom:14px;border-radius:6px;overflow:hidden;transition:border-color 0.2s;}
+.acc-card.open{border-color:var(--red);}
+.acc-card.open.orange{border-color:var(--orange);}
+.acc-card.open.green{border-color:var(--green);}
+.acc-card.open.purple{border-color:var(--purple);}
+
+.acc-hdr{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;background:rgba(255,255,255,0.02);}
+.acc-title-area{flex:1;padding-right:10px;}
+.acc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--wht);}
+.acc-icon{font-size:12px;color:var(--muted);transition:transform 0.3s ease;display:flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--card);border:1px solid var(--brd);border-radius:4px;}
+.acc-card.open .acc-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+
+.acc-content{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+.acc-card.open .acc-content{max-height:2800px;}
+.acc-body{padding:14px 16px;}
+.acc-body p{margin-bottom:12px;font-size:13px;color:#ccc;}
+
+.meal-opt{background:var(--blk);border:1px solid var(--brd);border-radius:6px;padding:12px;margin-bottom:10px;}
+.meal-opt:last-child{margin-bottom:0;}
+.opt-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;border-bottom:1px solid rgba(255,255,255,0.05);padding-bottom:6px;}
+.opt-name{font-size:12px;font-weight:700;color:var(--wht);text-transform:uppercase;letter-spacing:1px;}
+.opt-macros{display:flex;gap:6px;}
+.opt-macro{font-family:'DM Mono',monospace;font-size:10px;padding:2px 6px;border-radius:3px;background:var(--drk2);border:1px solid var(--brd);}
+.opt-macro.p{color:var(--red);border-color:rgba(192,57,43,0.3);background:var(--red-dim);}
+
+.ing-list{list-style:none;}
+.ing-item{display:flex;justify-content:space-between;font-size:12px;color:#bbb;padding:4px 0;border-bottom:1px dashed rgba(255,255,255,0.05);}
+.ing-item:last-child{border-bottom:none;}
+.ing-qty{color:var(--wht);font-family:'DM Mono',monospace;}
+
+.prot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.prot-item{background:var(--blk);border:1px solid var(--brd);padding:10px;border-radius:4px;text-align:center;}
+.prot-item .food{font-size:11px;font-weight:700;color:var(--wht);text-transform:uppercase;margin-bottom:4px;}
+.prot-item .qty{font-family:'DM Mono',monospace;font-size:14px;color:var(--red);line-height:1;}
+.prot-item .desc{font-size:9px;color:var(--muted);letter-spacing:1px;margin-top:4px;}
+
+.alert{border-left:3px solid var(--red);background:var(--red-dim);padding:11px 13px;margin-bottom:14px;font-size:12px;color:#ccc;line-height:1.6;border-radius:0 4px 4px 0;}
+.alert.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
+.alert.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
+.alert.blue{border-color:var(--blue);background:rgba(41,128,185,0.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:1px;color:var(--red);margin-bottom:3px;}
+.alert.green .alert-ttl{color:var(--green);}
+.alert.orange .alert-ttl{color:var(--orange);}
+
+@media(max-width:767px){body{max-width:480px;margin:0 auto;}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT<span>NUTRITION</span></div>
+    <div class="hdr-name">Nelu · Recompoziție</div>
+  </div>
+  <div class="budget-bar">
+    <span>Buget Zilnic</span>
+    <strong>2100 KCAL</strong>
+  </div>
+</div>
+
+<div style="padding:16px;">
+
+  <div class="stat-grid">
+    <div class="stat-card" style="border-bottom:2px solid var(--red);">
+      <div class="stat-val">160</div>
+      <div class="stat-unit">GRAME</div>
+      <div class="stat-lbl">Proteine</div>
+    </div>
+    <div class="stat-card" style="border-bottom:2px solid var(--blue);">
+      <div class="stat-val">220</div>
+      <div class="stat-unit">GRAME</div>
+      <div class="stat-lbl">Carbohidrați</div>
+    </div>
+    <div class="stat-card" style="border-bottom:2px solid var(--orange);">
+      <div class="stat-val">65</div>
+      <div class="stat-unit">GRAME</div>
+      <div class="stat-lbl">Grăsimi</div>
+    </div>
+  </div>
+
+  <div class="guide-box">
+    <div class="guide-hdr">FĂRĂ DIETĂ, DOAR STRUCTURĂ</div>
+    <div class="guide-p">
+      Ești medic, muncești 14 ore/zi și nu îți place să gătești. Dacă îți dau o „dietă" rigidă cu piept de pui fiert la caserolă, renunți în 3 zile.<br><br>
+      Abordarea BUILT pentru tine:<br>
+      1. <strong>Fără restrictii mentale.</strong> Dacă mănânci ceva în afara planului, nu se anulează nimic. Pur și simplu următoarea masă e în plan.<br>
+      2. <strong>Fără gătit complicat.</strong> Ai opțiuni de fast-food (KFC, McDonald's) alese corect.<br>
+      3. <strong>Proteina e singura ancoră.</strong> Dacă îți atingi 150-160g proteină/zi, recompunerea corporală (pierdut grăsime, pus mușchi) va avea loc garantat.
+    </div>
+  </div>
+
+  <h2 style="font-family:'Bebas Neue';font-size:24px;color:var(--wht);letter-spacing:1px;margin:20px 0 10px;">PLANUL TĂU — MESE DE URGENȚĂ (FĂRĂ GĂTIT)</h2>
+
+  <!-- MASA 1: MIC DEJUN -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="this.parentNode.classList.toggle('open')">
+      <div class="acc-title-area">
+        <div class="acc-name">MASA 1 — MIC DEJUN (~06:30)</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body">
+      <div class="alert">Mic dejunul tău e perfect deja. Doar îi menținem structura și adăugăm puțină diversitate. Nu-l sări.</div>
+      
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Iaurt cu Banană (Classic)</div>
+          <div class="opt-macros"><div class="opt-macro p">25g P</div><div class="opt-macro">250 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Iaurt proteic (Zuzu Fit / Ehrmann)</span><span class="ing-qty">1 cutie (200g)</span></li>
+          <li class="ing-item"><span>Banană (medie)</span><span class="ing-qty">1 buc</span></li>
+          <li class="ing-item"><span>Cafea (fără zahăr)</span><span class="ing-qty">1 cană</span></li>
+        </ul>
+      </div>
+
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Sandwich cu Curcan</div>
+          <div class="opt-macros"><div class="opt-macro p">22g P</div><div class="opt-macro">310 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Pâine Toast integrală</span><span class="ing-qty">2 felii</span></li>
+          <li class="ing-item"><span>Șuncă de curcan (>80% carne)</span><span class="ing-qty">3-4 felii</span></li>
+          <li class="ing-item"><span>Brânză light / Cascaval light</span><span class="ing-qty">1 felie</span></li>
+        </ul>
+      </div>
+
+    </div></div>
+  </div>
+
+  <!-- MASA 2: PRÂNZ -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="this.parentNode.classList.toggle('open')">
+      <div class="acc-title-area">
+        <div class="acc-name">MASA 2 — PRÂNZ LA CABINET (PE FUGĂ)</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body">
+      <div class="alert orange">Aici e capcana ta. Patiseria și covrigii nu țin de foame, cresc glicemia (de aici oboseala de la ora 15:00) și nu au proteină. Comandă sau cumpără ceva structurat.</div>
+      
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Lipie cu Pui (Kaufland/Mega)</div>
+          <div class="opt-macros"><div class="opt-macro p">35g P</div><div class="opt-macro">450 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Lipie/Wrap cu pui (gata făcută)</span><span class="ing-qty">1 porție</span></li>
+          <li class="ing-item"><span>Kefir / Sana light (1.5%)</span><span class="ing-qty">1 sticlă (330ml)</span></li>
+        </ul>
+      </div>
+
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Meniul KFC "Recompoziție"</div>
+          <div class="opt-macros"><div class="opt-macro p">45g P</div><div class="opt-macro">550 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Crispy Strips (NU aripioare)</span><span class="ing-qty">5 bucăți</span></li>
+          <li class="ing-item"><span>Salată Coleslaw mică</span><span class="ing-qty">1 buc</span></li>
+          <li class="ing-item"><span>Apă / Cola Zero</span><span class="ing-qty">1 pahar</span></li>
+          <li class="ing-item"><span><i>Cartofi prăjiți</i></span><span class="ing-qty"><i>FĂRĂ</i></span></li>
+        </ul>
+      </div>
+
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Salată cu Pui (Comandă Tazz/Glovo)</div>
+          <div class="opt-macros"><div class="opt-macro p">40g P</div><div class="opt-macro">400 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Salată Caesar (pui la grătar)</span><span class="ing-qty">1 porție mare</span></li>
+          <li class="ing-item"><span>Sosul dressing</span><span class="ing-qty">Doar JUMĂTATE</span></li>
+        </ul>
+      </div>
+
+    </div></div>
+  </div>
+
+  <!-- GUSTARE ORA 16:00 -->
+  <div class="acc-card open orange">
+    <div class="acc-hdr" onclick="this.parentNode.classList.toggle('open')">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--orange);">GUSTARE OBLIGATORIE — ORA 16:00</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body">
+      <div class="alert">Plecând de la cabinet târziu, dacă nu mănânci ceva la ora 16:00, ajungi acasă la 20:00 lihnit de foame și vei face Binge Eating. Asta e piesa de puzzle care repară serile.</div>
+      
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Baton Proteic (Simplu și Rapid)</div>
+          <div class="opt-macros"><div class="opt-macro p">20g P</div><div class="opt-macro">200 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Orice baton proteic de la sală/Mega</span><span class="ing-qty">1 buc</span></li>
+          <li class="ing-item"><span>Apă</span><span class="ing-qty">500 ml</span></li>
+        </ul>
+      </div>
+
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Puding Proteic</div>
+          <div class="opt-macros"><div class="opt-macro p">20g P</div><div class="opt-macro">150 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Puding proteic (Zuzu Fit / Ehrmann)</span><span class="ing-qty">1 cutie</span></li>
+        </ul>
+      </div>
+
+    </div></div>
+  </div>
+
+  <!-- MASA 3: CINĂ -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="this.parentNode.classList.toggle('open')">
+      <div class="acc-title-area">
+        <div class="acc-name">MASA 3 — CINĂ ACASĂ (20:00+)</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body">
+      <div class="alert green">Ai avut o zi lungă. Nu vrei să gătești. Nici o problemă. Ai opțiuni care se fac în 5 minute sau se comandă inteligent.</div>
+      
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Paste cu Ton (Gata în 5 minute)</div>
+          <div class="opt-macros"><div class="opt-macro p">35g P</div><div class="opt-macro">450 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Paste fierte (fierbi 100g uscate)</span><span class="ing-qty">1 porție</span></li>
+          <li class="ing-item"><span>Ton în suc propriu (scurs bine)</span><span class="ing-qty">1 conservă (150g)</span></li>
+          <li class="ing-item"><span>Suc de roșii (passata) + usturoi praf</span><span class="ing-qty">3-4 linguri</span></li>
+        </ul>
+      </div>
+
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Meniul McPuișor "Inteligent"</div>
+          <div class="opt-macros"><div class="opt-macro p">35g P</div><div class="opt-macro">650 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>McChicken / 2x McPuișor</span><span class="ing-qty">1 porție</span></li>
+          <li class="ing-item"><span>Chicken McNuggets</span><span class="ing-qty">6 bucăți</span></li>
+          <li class="ing-item"><span>Cola Zero</span><span class="ing-qty">1 pahar</span></li>
+          <li class="ing-item"><span><i>Cartofi prăjiți</i></span><span class="ing-qty"><i>FĂRĂ (sau porție mică)</i></span></li>
+        </ul>
+      </div>
+
+      <div class="meal-opt">
+        <div class="opt-hdr">
+          <div class="opt-name">Shaorma la Farfurie (Comandă)</div>
+          <div class="opt-macros"><div class="opt-macro p">45g P</div><div class="opt-macro">600 kcal</div></div>
+        </div>
+        <ul class="ing-list">
+          <li class="ing-item"><span>Carne pui/vită (nu amestec)</span><span class="ing-qty">Porție dublă</span></li>
+          <li class="ing-item"><span>Salată, varză, roșii</span><span class="ing-qty">Din belșug</span></li>
+          <li class="ing-item"><span>Sos tzatziki/usturoi (evită maioneza)</span><span class="ing-qty">1 porție</span></li>
+          <li class="ing-item"><span>Cartofi prăjiți / Lipie</span><span class="ing-qty">Mănânci DOAR JUMĂTATE</span></li>
+        </ul>
+      </div>
+
+    </div></div>
+  </div>
+
+  <h2 style="font-family:'Bebas Neue';font-size:24px;color:var(--wht);letter-spacing:1px;margin:30px 0 10px;">REGULI DE SUPRAVIEȚUIRE</h2>
+
+  <div class="acc-card open orange">
+    <div class="acc-hdr" onclick="this.parentNode.classList.toggle('open')">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--orange);">Regula celor 2 Zile</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body">
+      <p>Cel mai mare inamic al tău nu e fast-food-ul seara. E perfecționismul. Când "strici" planul la o masă, îți spui: <i>"Gata, am dat cu bâta în baltă, o las pe săptămâna viitoare."</i></p>
+      <p><strong>REGULA: Niciodată nu ratezi 2 zile la rând.</strong></p>
+      <p>Ai ieșit seara și ai băgat o pizza mare și beri? Foarte bine. Bucură-te de ea. Dar următoarea masă (dimineața) revine la Iaurt + Banană. Nu anulezi restul zilei sau săptămânii. O masă stricată e doar un punct pe grafic, nu o sentință.</p>
+    </div></div>
+  </div>
+
+  <div class="acc-card open red">
+    <div class="acc-hdr" onclick="this.parentNode.classList.toggle('open')">
+      <div class="acc-title-area">
+        <div class="acc-name" style="color:var(--red);">Protocolul Anti-Binge (Seara)</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content"><div class="acc-body">
+      <p>Ajungi acasă la 20:30, rupt de oboseală. Mintea ta vrea cea mai rapidă sursă de dopamină și calorii (Glovo fast food).</p>
+      <p>1. <strong>Oprește-te 5 minute.</strong> Bea un pahar mare de apă cu lămâie imediat ce intri în casă. Asta distruge foamea falsă de deshidratare.</p>
+      <p>2. <strong>Ai mâncat gustarea de la ora 16:00?</strong> Dacă nu, foamea e reală, corpul tău e în deficit agresiv. Mănâncă o porție de proteină rapidă (Baton, Iaurt proteic, o felie de șuncă de curcan) ÎNAINTE să comanzi ceva.</p>
+      <p>3. <strong>Dacă tot comanzi fast food:</strong> Folosește "Fast Food Inteligent" de mai sus (McChicken cu pui fără cartofi, Shaorma la farfurie cu cartofi 50%). E o reducere a daunelor cu 70%.</p>
+    </div></div>
+  </div>
+
+</div>
+
+<script>
+  // Add some interactivity to the accordion cards
+  document.querySelectorAll('.acc-hdr').forEach(hdr => {
+    hdr.addEventListener('click', function() {
+      const card = this.parentElement;
+      card.classList.toggle('open');
+    });
+  });
+</script>
+</body>
+</html>

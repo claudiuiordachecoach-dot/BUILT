@@ -134,6 +134,7 @@ const QUICKREF_NUTRITIE: Record<number, string> = {
   5: "/quickref/andrei-nutritie.html",
   6: "/quickref/claudia-nutritie.html",
   9: "/quickref/andy-nutritie.html",
+  12: "/quickref/nelu-nutritie.html",
 };
 
 const QUICKREF_ANTRENAMENT: Record<number, string> = {
@@ -145,6 +146,7 @@ const QUICKREF_ANTRENAMENT: Record<number, string> = {
   6: "/quickref/claudia-antrenament.html",
   9: "/quickref/andy-antrenament.html",
   11: "/quickref/otilia-antrenament.html",
+  12: "/quickref/nelu-antrenament.html",
 };
 
 const QUICKREF_ACASA: Record<number, string> = {
