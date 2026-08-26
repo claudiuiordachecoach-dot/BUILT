@@ -181,24 +181,24 @@ PREMIUM_IMAGES = [
     "nelu_z3_c_1787775968932.png",
     # ZIUA 4
     "nelu_z4_m_1787775996179.png",
-    "caesar_salad_luxury_editorial_1778825678568.png", # Z4 P
-    "built_muscle_smoothie_luxury_1778759377496.png", # Z4 G
-    "turkey_stir_fry_luxury_1778759338351.png", # Z4 C
+    "MISSING", # Z4 P
+    "MISSING", # Z4 G
+    "MISSING", # Z4 C
     # ZIUA 5
-    "overnight_oats_peanuts_premium_1778791117335.png", # Z5 M
-    "chicken_hummus_wrap_luxury_1778825800473.png", # Z5 P
-    "beef_burrito_luxury_editorial_1778825627283.png", # Z5 G
-    "halloumi_quinoa_bowl_premium_1778825755247.png", # Z5 C
+    "MISSING", # Z5 M
+    "MISSING", # Z5 P
+    "MISSING", # Z5 G
+    "MISSING", # Z5 C
     # ZIUA 6
-    "green_energy_smoothie_vibrant_1778791194541.png", # Z6 M
-    "chicken_hummus_wrap_luxury_1778825800473.png", # Z6 P
-    "berry_blast_smoothie_vibrant_1778791327344.png", # Z6 G
-    "premium_beef_burger_editorial_1778825656454.png", # Z6 C
+    "MISSING", # Z6 M
+    "MISSING", # Z6 P
+    "MISSING", # Z6 G
+    "MISSING", # Z6 C
     # ZIUA 7
-    "coffee_kick_smoothie_luxury_1778791419068.png", # Z7 M
-    "tuna_salad_premium_editorial_1778759324344.png", # Z7 P
-    "cottage_cheese_walnuts_premium_1778791238349.png", # Z7 G
-    "frittata_ciuperci_editorial_1778944102363.png" # Z7 C
+    "MISSING", # Z7 M
+    "MISSING", # Z7 P
+    "MISSING", # Z7 G
+    "MISSING" # Z7 C
 ]
 
 global_recipe_index = 0
@@ -216,9 +216,17 @@ def render_recipe(num, r):
     img = PREMIUM_IMAGES[global_recipe_index % len(PREMIUM_IMAGES)]
     global_recipe_index += 1
     
+    if img == "MISSING":
+        photo_html = f'''<div style="background:#141414; display:flex; flex-direction:column; align-items:center; justify-content:center; position:absolute; inset:0; z-index:1; border-bottom:1px solid #333;">
+          <div style="color:var(--red);font-family:'Bebas Neue';font-size:32px;letter-spacing:1px;">FOTOGRAFIE ÎN LUCRU...</div>
+          <div style="color:#777;font-family:'DM Sans';font-size:14px;margin-top:8px;">Va fi disponibilă mâine.</div>
+        </div>'''
+    else:
+        photo_html = f'''<img src="./cookbook-images/{img}" alt="{esc(dish)}" onerror="this.style.display='none';this.parentNode.querySelector('.ph').style.display='flex';">'''
+    
     return f'''<div class="page rp">
   <div class="rp-photo">
-    <img src="./cookbook-images/{img}" alt="{esc(dish)}" onerror="this.style.display='none';this.parentNode.querySelector('.ph').style.display='flex';">
+    {photo_html}
     <div class="ph" style="display:none;position:absolute;inset:0;background:var(--ink);align-items:center;justify-content:center;flex-direction:column;border:1px solid #333;"><div class="ph-k" style="color:var(--red);font-family:'Bebas Neue';font-size:24px;">BUILT · MÂNCARE REALĂ</div><div class="ph-d" style="color:#666;font-family:'Barlow Condensed';font-size:16px;">Fără poză, dar cu gust 100%</div></div>
     <div class="rp-photo-overlay"></div>
     <div class="rp-badge">{badge}</div>
