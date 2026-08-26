@@ -116,6 +116,25 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .rule-body .ok{color:var(--green);}
 .rule-body .warn{color:var(--red);}
 
+/* WEEK GRID */
+.wgrid {
+  display: grid;
+  grid-template-columns: repeat(7,1fr);
+  gap: 3px;
+  margin-bottom: 18px;
+}
+.wd {
+  background: var(--card);
+  border: 1px solid var(--brd);
+  padding: 8px 4px;
+  text-align: center;
+}
+.wd.on { border-color: var(--green); background: rgba(39,174,96,0.1); }
+.wd-n { font-size: 8px; letter-spacing: 1px; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+.wd-t { font-family: 'Bebas Neue', sans-serif; font-size: 11px; color: var(--wht); line-height: 1.2; }
+.wd.on .wd-t { color: var(--green); }
+.wd-s { font-size: 8px; color: var(--muted); margin-top: 2px; line-height: 1.2; }
+
 /* ── CASETA EXERCIȚIU ── */
 .caseta{margin:0 0 10px;border:1px solid rgba(41,128,185,0.25);border-left:3px solid var(--blue);background:rgba(41,128,185,0.05);border-radius:0 4px 4px 0;overflow:hidden;}
 .caseta-hdr{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;cursor:pointer;user-select:none;}
