@@ -146,7 +146,7 @@ const QUICKREF_ANTRENAMENT: Record<number, string> = {
   6: "/quickref/claudia-antrenament.html",
   9: "/quickref/andy-antrenament.html",
   11: "/quickref/otilia-antrenament.html",
-  12: "/quickref/nelu-antrenament.html",
+  12: "/quickref/nelu-antrenament-v2.html",
 };
 
 const QUICKREF_ACASA: Record<number, string> = {
