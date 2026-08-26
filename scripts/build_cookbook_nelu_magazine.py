@@ -163,7 +163,41 @@ SLUG  = {"Mic dejun":"micdejun","Gustare":"gustare","Prânz":"pranz","Cină":"ci
 
 def esc(s): return str(s).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
 
+PREMIUM_IMAGES = [
+    "greek_yogurt_bowl_premium_1778758718649.png",
+    "chicken_sweet_potato_editorial_1778758701417.png",
+    "protein_fluff_luxury_1778791350579.png",
+    "salmon_performance_editorial_1778758645266.png",
+    "recipe_omelet_bright_premium_1778756295256.png",
+    "steak_asparagus_premium_1778759452913.png",
+    "yogurt_mango_parfait_luxury_1778791463934.png",
+    "beef_bowl_strength_max_editorial_1778876051531.png",
+    "chicken_hummus_wrap_luxury_1778825800473.png",
+    "pesto_chicken_pasta_editorial_1778759467266.png",
+    "chia_pudding_protein_luxury_1778759482215.png",
+    "shakshuka_premium_editorial_1778825694835.png",
+    "cottage_cheese_walnuts_premium_1778791238349.png",
+    "caesar_salad_luxury_editorial_1778825678568.png",
+    "built_muscle_smoothie_luxury_1778759377496.png",
+    "turkey_stir_fry_luxury_1778759338351.png",
+    "overnight_oats_peanuts_premium_1778791117335.png",
+    "beef_burrito_luxury_editorial_1778825627283.png",
+    "date_energy_balls_luxury_1778791556040.png",
+    "halloumi_quinoa_bowl_premium_1778825755247.png",
+    "green_energy_smoothie_vibrant_1778791194541.png",
+    "chicken_hummus_wrap_luxury_1778825800473.png",
+    "berry_blast_smoothie_vibrant_1778791327344.png",
+    "premium_beef_burger_editorial_1778825656454.png",
+    "coffee_kick_smoothie_luxury_1778791419068.png",
+    "tuna_salad_premium_editorial_1778759324344.png",
+    "cottage_pancakes_strength_max_editorial_1778876071396.png",
+    "frittata_ciuperci_editorial_1778944102363.png"
+]
+
+global_recipe_index = 0
+
 def render_recipe(num, r):
+    global global_recipe_index
     k,p,c,f = r["macros"]
     title = "<br>".join(r["title"])
     dish = " ".join(r["title"]).capitalize()
@@ -171,15 +205,13 @@ def render_recipe(num, r):
     dots = "".join('<span class="on"></span>' if i < r["diff"] else '<span></span>' for i in range(3))
     ings = "".join(f'<div class="ing"><span class="ing-n">{esc(n)}</span><span class="ing-q">{esc(q)}</span></div>' for (n,q) in r["ings"])
     steps = "".join(f'<div class="step"><span class="sn">{i+1:02d}</span><div class="st">{esc(s)}</div></div>' for i,s in enumerate(r["steps"]))
-    img = f"z{num}_{SLUG[r['meal']]}.png" # Folosim acelasi pattern de imagini (care va pica pe onerror daca nu exista)
     
-    # Vom folosi poze generice fitness pentru Nelu ca fallback
-    fallback_img = f"https://source.unsplash.com/800x800/?healthy,food,meat,salad&sig={num}{r['meal']}"
-    onerr = f"this.src='{fallback_img}';"
+    img = PREMIUM_IMAGES[global_recipe_index % len(PREMIUM_IMAGES)]
+    global_recipe_index += 1
     
     return f'''<div class="page rp">
   <div class="rp-photo">
-    <img src="./cookbook-images/nelu/{img}" alt="{esc(dish)}" onerror="this.style.display='none';this.parentNode.querySelector('.ph').style.display='flex';">
+    <img src="./cookbook-images/{img}" alt="{esc(dish)}" onerror="this.style.display='none';this.parentNode.querySelector('.ph').style.display='flex';">
     <div class="ph" style="display:none;position:absolute;inset:0;background:var(--ink);align-items:center;justify-content:center;flex-direction:column;border:1px solid #333;"><div class="ph-k" style="color:var(--red);font-family:'Bebas Neue';font-size:24px;">BUILT · MÂNCARE REALĂ</div><div class="ph-d" style="color:#666;font-family:'Barlow Condensed';font-size:16px;">Fără poză, dar cu gust 100%</div></div>
     <div class="rp-photo-overlay"></div>
     <div class="rp-badge">{badge}</div>
