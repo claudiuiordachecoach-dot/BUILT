@@ -244,81 +244,42 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 
   <div class="alert">
     <div class="alert-ttl">PROTOCOL PRE-ANTRENAMENT — OBLIGATORIU</div>
-    <strong>Nu intri la sală pe stomacul gol.</strong> Glicemia ta e 71 — fără mâncare vei avea un tremurat al mâinilor în timp ce ridici greutăți. Cu 60–90 min înainte: iaurt + banană, pâine cu brânză, sau orice din gustarea de la 15:00. Atât.
+    <strong>Nu intra la sală complet pe gol.</strong> Știu că ești pe fugă dimineața cu băiețelul la grădiniță, dar un iaurt proteic + o banană la ora 07:00-07:30 îți vor oferi energia necesară pentru a trage tare la 08:30. Bea-ți cafeaua (fără zahăr, cum îți place) și hidratează-te bine.
   </div>
 
-  <!-- CALENDAR IUNIE 2026 -->
+  <!-- CALENDARUL TĂU -->
   <div class="rule-card" style="border-color:var(--blue);">
-    <div class="rule-ttl" style="color:var(--blue);">CALENDARUL TĂU — IULIE 2026</div>
+    <div class="rule-ttl" style="color:var(--blue);">CALENDARUL TĂU DE ANTRENAMENT</div>
     <div class="rule-body">
-      <div id="cal-grid" style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:10px;">
-        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">L</div>
-        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">M</div>
-        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">M</div>
-        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">J</div>
-        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">V</div>
-        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">S</div>
-        <div style="font-size:9px;text-align:center;color:var(--muted);letter-spacing:1px;">D</div>
-        <!-- 1 Iulie 2026 = Miercuri → două spacere -->
-        <div></div><div></div>
+      <div class="wgrid">
+        <div class="wd"><div class="wd-n">Luni</div><div class="wd-t">Rest</div><div class="wd-s">Muncă</div></div>
+        <div class="wd"><div class="wd-n">Marți</div><div class="wd-t">Rest</div><div class="wd-s">Muncă</div></div>
+        <div class="wd"><div class="wd-n">Mier</div><div class="wd-t">Rest</div><div class="wd-s">Muncă</div></div>
+        <div class="wd on"><div class="wd-n">Joi</div><div class="wd-t">PUSH</div><div class="wd-s">A</div></div>
+        <div class="wd"><div class="wd-n">Vin</div><div class="wd-t">Rest</div><div class="wd-s">Muncă</div></div>
+        <div class="wd on"><div class="wd-n">Sâm</div><div class="wd-t">PULL</div><div class="wd-s">B</div></div>
+        <div class="wd on"><div class="wd-n">Dum</div><div class="wd-t">LEGS</div><div class="wd-s">C</div></div>
       </div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;">
-        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#ccc;"><div style="width:10px;height:10px;background:rgba(192,57,43,0.7);border-radius:2px;"></div>Muncă</div>
-        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#ccc;"><div style="width:10px;height:10px;background:rgba(39,174,96,0.7);border-radius:2px;"></div>Sală</div>
-        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#ccc;"><div style="width:10px;height:10px;background:rgba(52,152,219,0.7);border-radius:2px;"></div>Vacanță</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- SĂPTĂMÂNILE DE ANTRENAMENT -->
-  <div class="rule-card" style="border-color:var(--green);">
-    <div class="rule-ttl" style="color:var(--green);">SESIUNILE PLANIFICATE IULIE</div>
-    <div class="rule-body">
-      <div style="margin-bottom:10px;padding:10px;background:rgba(39,174,96,0.06);border:1px solid rgba(39,174,96,0.2);border-radius:4px;">
-        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:4px;">Săpt. 29 Iun – 5 Iul — 3 Zile</div>
-        <div style="font-size:12px;color:#ccc;"><strong style="color:var(--wht);">Marți 30 (Iun)</strong> → Împins (A) &nbsp;·&nbsp; <strong style="color:var(--wht);">Joi 2</strong> → Tras (B) &nbsp;·&nbsp; <strong style="color:var(--wht);">Sâmbătă 4</strong> → Picioare (C)</div>
-      </div>
-      <div style="margin-bottom:10px;padding:10px;background:rgba(39,174,96,0.06);border:1px solid rgba(39,174,96,0.2);border-radius:4px;">
-        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--green);margin-bottom:4px;">Săpt. 6–12 Iul — 3 Zile</div>
-        <div style="font-size:12px;color:#ccc;"><strong style="color:var(--wht);">Luni 6</strong> → Împins (A) &nbsp;·&nbsp; <strong style="color:var(--wht);">Vineri 10</strong> → Tras (B) &nbsp;·&nbsp; <strong style="color:var(--wht);">Duminică 12</strong> → Picioare (C)</div>
-      </div>
-      <div style="margin-bottom:10px;padding:10px;background:rgba(230,126,34,0.06);border:1px solid rgba(230,126,34,0.2);border-radius:4px;">
-        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:4px;">Săpt. 13–19 Iul — 2 Zile</div>
-        <div style="font-size:12px;color:#ccc;"><strong style="color:var(--wht);">Miercuri 15</strong> → COMBO Upper &nbsp;·&nbsp; <strong style="color:var(--wht);">Joi 16</strong> → Picioare (C)</div>
-      </div>
-      <div style="margin-bottom:10px;padding:10px;background:rgba(52,152,219,0.06);border:1px solid rgba(52,152,219,0.2);border-radius:4px;">
-        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--blue);margin-bottom:4px;">Săpt. 20–26 Iul — VACANȚĂ & 2 ZILE</div>
-        <div style="font-size:12px;color:#ccc;"><span style="color:var(--muted);">20-23: Mare</span> &nbsp;·&nbsp; <strong style="color:var(--wht);">Vineri 24</strong> → COMBO Upper &nbsp;·&nbsp; <strong style="color:var(--wht);">Duminică 26</strong> → Picioare (C)</div>
-      </div>
-      <div style="padding:10px;background:rgba(230,126,34,0.06);border:1px solid rgba(230,126,34,0.2);border-radius:4px;">
-        <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:4px;">Săpt. 27 Iul – 2 Aug — 2 Zile</div>
-        <div style="font-size:12px;color:#ccc;"><strong style="color:var(--wht);">Miercuri 29</strong> → COMBO Upper &nbsp;·&nbsp; <strong style="color:var(--wht);">Joi 30</strong> → Picioare (C)</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;">
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#ccc;"><div style="width:10px;height:10px;background:rgba(39,174,96,0.7);border-radius:2px;"></div>Zi de Antrenament (A/B/C)</div>
+        <div style="display:flex;align-items:center;gap:4px;font-size:10px;color:#ccc;"><div style="width:10px;height:10px;background:rgba(192,57,43,0.7);border-radius:2px;"></div>Odihnă / Muncă</div>
       </div>
     </div>
   </div>
 
   <!-- NEAT -->
   <div class="rule-card" style="border-color:var(--orange);">
-    <div class="rule-ttl" style="color:var(--orange);">NEAT — Cardio-ul Tău Gratuit</div>
+    <div class="rule-ttl" style="color:var(--orange);">NEAT — Pașii Tăi Zilnici</div>
     <div class="rule-body">
-      La muncă stai afară și te miști toată ziua — arzi calorii fără să te gândește-te. Cafeneaua, drumurile, plimbările din zilele libere = Zone 2 natural.<br><br>
-      <strong>Nu adăuga ore de alergat.</strong> În zilele libere: 10.000+ pași. În zilele de muncă: mișcarea de la job e suficientă. Finisher-ul de 5 min de la sală completează Zone 2 și HIIT. Atât.
+      Având un job sedentar (13-14 ore de activitate fără mișcare considerabilă), e vital să compensezi. Targetul tău este de <strong>minim 8.000 de pași, ideal spre 10.000+ pași zilnic</strong>.<br><br>
+      Dacă ești pe fugă în timpul săptămânii, încearcă să parchezi mașina mai departe, să eviți liftul și să mergi mai mult pe jos în weekend-uri. 15 minute de mers înclinat la finalul antrenamentelor te ajută masiv la acest target.
     </div>
   </div>
 
-  <!-- PROTOCOL RESPIRATIE -->
-  <div class="rule-card" style="border-color:var(--red);">
-    <div class="rule-ttl" style="color:var(--red);">RESPIRATUL GREU LA EFORT — Ce Faci</div>
-    <div class="rule-body">
-      Faptul că respiri greu la efort indică lipsa antrenamentului, nu o problemă medicală. Se va îmbunătăți în 3–4 săptămâni garantat.<br><br>
-      <strong>Warm-up-ul de 5 min pe bicicletă/bandă e obligatoriu</strong> — nu îl sări. Pornește lent și lasă corpul să se adapteze.<br><br>
-      În timpul execuției: <strong>expiră pe faza de efort (când împingi/tragi greutatea)</strong> și inspiră controlat pe revenire. Este crucial să nu îți blochezi respirația. Dacă simți că ritmul respirator o ia razna sau nu poți respira corect, e un semn că trebuie să reduci greutatea. Nu forța inutil.
-    </div>
-  </div>
-
+  <!-- REGULI -->
   <div class="alert green" style="margin-top:4px;">
-    <div class="alert-ttl">Regula de Bază</div>
-    Te antrenezi doar în zilele libere. La muncă (6:30–20:15+) nu ai energie pentru sală — și nici nu ai nevoie. Sistemul e construit pe realitatea ta, nu pe una imaginară.
+    <div class="alert-ttl">Constanță și Reguli</div>
+    Programul tău permite antrenamente Joi, Sâmbătă și Duminică. Dacă ratezi o zi din cauza unui neprevăzut, <strong>nu o sări complet</strong>. Fă măcar un circuit de 15 minute acasă din planul de Home Workout. Menține reflexul activ.
   </div>
 
 </div>
