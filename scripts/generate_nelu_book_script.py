@@ -320,7 +320,39 @@ nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-
     Toate gramajele la carne, orez, cartofi sau paste sunt calculate pentru forma lor CRUDĂ (înainte de gătire). Nu le cântări fierte/prăjite, cantitățile se vor schimba masiv!
   </div>
 
+  <div style="background:var(--drk);border:1px solid var(--brd);border-radius:12px;padding:20px;margin-bottom:24px;">
+    <h2 style="font-family:'Bebas Neue';font-size:22px;color:var(--orange);margin-bottom:12px;">STRATEGIA MEAL PREP (CUM GĂTEȘTI)</h2>
+    <p style="font-size:14px;color:#bbb;margin-bottom:10px;">Pentru a nu sta în bucătărie zilnic, sistemul tău se bazează pe "Batch Cooking":</p>
+    <ul class="rule-list" style="list-style:none;margin-bottom:15px;font-size:13px;">
+      <li style="padding-left:15px;position:relative;margin-bottom:6px;"><span style="position:absolute;left:0;color:var(--orange);">■</span> <strong>Duminica:</strong> Gătești 3 porții din Prânzul ales și 3 porții din Cina aleasă. Așa ai mâncarea rezolvată pentru Luni, Marți, Miercuri.</li>
+      <li style="padding-left:15px;position:relative;margin-bottom:6px;"><span style="position:absolute;left:0;color:var(--orange);">■</span> <strong>Miercuri seara:</strong> Faci prep-ul pentru Joi și Vineri.</li>
+      <li style="padding-left:15px;position:relative;margin-bottom:6px;"><span style="position:absolute;left:0;color:var(--orange);">■</span> <strong>Mic dejun & Gustare:</strong> ZERO gătit. Le pregătești în 2 minute pe loc sau de seara (ex. Overnight Oats).</li>
+      <li style="padding-left:15px;position:relative;margin-bottom:6px;"><span style="position:absolute;left:0;color:var(--orange);">■</span> <strong>Sfat:</strong> Alege doar UN MENIU pentru 3 zile. Nu-ți bate capul cu diversitatea zilnică, alege diversitate la nivel de "batch" săptămânal.</li>
+    </ul>
+
+    <h2 style="font-family:'Bebas Neue';font-size:22px;color:var(--blue);margin-bottom:12px;margin-top:24px;">LISTA DE CUMPĂRĂTURI</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:12px;">
+      <div style="background:rgba(255,255,255,0.03);padding:10px;border-radius:6px;border:1px solid var(--brd);">
+        <strong style="color:var(--blue);display:block;margin-bottom:4px;">PROTEINE (Cărnuri/Ouă)</strong>
+        Piept de pui, Cotlet porc slab, Carne vită tocată slabă, Somon, Ton (conservă), Ouă, Albuș lichid, Șuncă curcan (>80%).
+      </div>
+      <div style="background:rgba(255,255,255,0.03);padding:10px;border-radius:6px;border:1px solid var(--brd);">
+        <strong style="color:var(--blue);display:block;margin-bottom:4px;">CARBOHIDRAȚI</strong>
+        Orez, Cartofi albi/dulci, Paste integrale, Fulgi ovăz, Pâine integrală.
+      </div>
+      <div style="background:rgba(255,255,255,0.03);padding:10px;border-radius:6px;border:1px solid var(--brd);">
+        <strong style="color:var(--blue);display:block;margin-bottom:4px;">LACTATE & GRĂSIMI</strong>
+        Iaurt grecesc 2%, Kefir, Puding Proteic (Ehrmann/Zuzu), Brânză vaci slabă, Cașcaval light, Unt de arahide, Migdale/Nuci, Ulei măsline.
+      </div>
+      <div style="background:rgba(255,255,255,0.03);padding:10px;border-radius:6px;border:1px solid var(--brd);">
+        <strong style="color:var(--blue);display:block;margin-bottom:4px;">FRUCTE / LEGUME / DIVERSE</strong>
+        Banane, Mere, Legume (la alegere/congelate), Pudră proteică (Whey), Batoane proteice.
+      </div>
+    </div>
+  </div>
+
 """
+
 
 def render_meal(meal_type, label, m):
     prefix = meal_type
