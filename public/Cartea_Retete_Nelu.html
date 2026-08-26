@@ -1,0 +1,1128 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BUILT — Rețete · Nelu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--rdim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;line-height:1.5;overflow-x:hidden;padding-bottom:120px;}
+a{text-decoration:none;color:inherit;cursor:pointer;}
+ul{list-style:none;}
+
+/* TYPOGRAPHY */
+h1,h2,h3,h4,.bebas{font-family:'Bebas Neue',sans-serif;letter-spacing:0.5px;text-transform:uppercase;font-weight:400;line-height:1.1;}
+.mono{font-family:'DM Mono',monospace;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;background:rgba(10,10,10,0.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:100;border-bottom:1px solid var(--brd);display:flex;align-items:center;justify-content:center;height:60px;}
+.nav-logo{color:var(--red);font-size:28px;letter-spacing:1px;}
+.nav-logo span{color:var(--wht);}
+
+/* HEADER */
+.hero{padding:100px 20px 40px;text-align:center;border-bottom:1px solid var(--brd);background:linear-gradient(180deg,var(--drk2) 0%,var(--blk) 100%);position:relative;overflow:hidden;}
+.hero::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:150%;height:100%;background:radial-gradient(circle at top,var(--rdim) 0%,transparent 60%);pointer-events:none;}
+.hero-tag{display:inline-block;padding:6px 12px;background:var(--card);border:1px solid var(--brd);border-radius:100px;font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:20px;font-weight:600;}
+.hero-tag span{color:var(--red);}
+.hero h1{font-size:56px;margin-bottom:16px;}
+.hero p{font-size:16px;color:var(--muted);max-width:400px;margin:0 auto;line-height:1.6;}
+.macro-ribbon{display:flex;align-items:center;justify-content:center;gap:15px;margin-top:30px;flex-wrap:wrap;}
+.mr-item{display:flex;flex-direction:column;align-items:center;}
+.mr-val{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--wht);line-height:1;}
+.mr-lbl{font-size:11px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-top:4px;}
+.mr-div{width:1px;height:24px;background:var(--brd);}
+
+/* FILTER BAR */
+.filter-wrap{position:sticky;top:60px;z-index:90;background:var(--blk);border-bottom:1px solid var(--brd);padding:0 20px;}
+.filter-scroll{display:flex;gap:10px;overflow-x:auto;padding:15px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
+.filter-scroll::-webkit-scrollbar{display:none;}
+.f-btn{white-space:nowrap;padding:10px 20px;background:var(--card);border:1px solid var(--brd);border-radius:100px;color:var(--muted);font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:0.5px;transition:all 0.2s;}
+.f-btn.active{background:var(--wht);color:var(--blk);border-color:var(--wht);}
+
+/* RECIPE LIST */
+.container{padding:20px;max-width:600px;margin:0 auto;}
+.day-group{margin-bottom:60px;display:none;animation:fadeIn 0.3s ease forwards;}
+.day-group.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+
+.recipe-card{background:var(--card);border:1px solid var(--brd);border-radius:16px;overflow:hidden;margin-bottom:24px;position:relative;}
+.rp-img{width:100%;height:220px;background:var(--drk);position:relative;}
+.ph-fill{position:absolute;inset:0;background:var(--drk);display:flex;align-items:center;justify-content:center;color:var(--brd);font-size:40px;}
+.rp-img img{width:100%;height:100%;object-fit:cover;display:block;position:absolute;inset:0;z-index:1;}
+.rp-badge{position:absolute;top:15px;left:15px;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:6px 12px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:1px;color:var(--wht);border:1px solid rgba(255,255,255,0.1);z-index:2;}
+.rp-diff{position:absolute;top:15px;right:15px;display:flex;gap:4px;z-index:2;}
+.rp-diff span{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.2);}
+.rp-diff span.on{background:var(--red);}
+
+.rp-body{padding:24px;}
+.rp-head{margin-bottom:20px;}
+.rp-title{font-family:'Bebas Neue',sans-serif;font-size:26px;line-height:1.1;color:var(--wht);margin-bottom:12px;letter-spacing:0.5px;}
+.rp-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.rp-tags span{padding:4px 10px;border-radius:100px;font-size:11px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+.tag-p{background:rgba(230,126,34,0.15);color:var(--orange);}
+.tag-time{background:var(--drk2);color:var(--muted);border:1px solid var(--brd);}
+
+.rp-nut{display:flex;gap:8px;margin-bottom:24px;}
+.nut{flex:1;background:var(--drk);border:1px solid var(--brd);border-radius:8px;padding:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.nut-l{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:600;margin-bottom:4px;}
+.nut-v{font-family:'Bebas Neue',sans-serif;font-size:20px;color:var(--wht);line-height:1;}
+.nut.cal .nut-v{color:var(--red);}
+
+.rp-div{height:1px;background:var(--brd);margin:24px 0;}
+
+.rp-sec{margin-bottom:24px;}
+.rp-sec:last-child{margin-bottom:0;}
+.sec-title{font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--muted);font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--brd);}
+.ing-list{list-style:none;}
+.ing-list li{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed var(--brd);font-size:14px;color:var(--wht);}
+.ing-list li:last-child{border-bottom:none;}
+.ing-n{font-weight:500;}
+.ing-q{color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;}
+
+.prep-list{list-style:none;counter-reset:prep-counter;}
+.prep-list li{position:relative;padding-left:32px;margin-bottom:16px;font-size:14px;color:var(--muted);line-height:1.6;}
+.prep-list li::before{counter-increment:prep-counter;content:counter(prep-counter);position:absolute;left:0;top:0;width:20px;height:20px;background:var(--drk);border:1px solid var(--brd);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--wht);}
+
+.alert-box{border-left:3px solid var(--red);background:var(--red-dim);padding:14px;margin-bottom:24px;border-radius:0 6px 6px 0;font-size:13px;color:#ccc;line-height:1.6;}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo bebas">BUILT<span>NUTRITION</span></div>
+</nav>
+
+<header class="hero">
+  <div class="hero-tag">Plan Nutrițional <span>Nelu</span></div>
+  <h1 class="bebas">CARTEA DE REȚETE<br>MIX & MATCH</h1>
+  <p>Opțiuni rapide, gândite pentru medici și profesioniști fără timp de stat în bucătărie. Zero gătit dimineața, meal prep duminica.</p>
+  
+  <div class="macro-ribbon">
+    <div class="mr-item"><div class="mr-val">2.440</div><div class="mr-lbl">Kcal / Zi</div></div>
+    <div class="mr-div"></div>
+    <div class="mr-item"><div class="mr-val">165g</div><div class="mr-lbl">Proteină Fixă</div></div>
+  </div>
+</header>
+
+<div class="filter-wrap">
+  <div class="filter-scroll">
+    <button class="f-btn active" data-target="z1">Ziua 1</button>
+    <button class="f-btn" data-target="z2">Ziua 2</button>
+    <button class="f-btn" data-target="z3">Ziua 3</button>
+    <button class="f-btn" data-target="z4">Ziua 4</button>
+    <button class="f-btn" data-target="z5">Ziua 5</button>
+    <button class="f-btn" data-target="z6">Ziua 6</button>
+    <button class="f-btn" data-target="z7">Ziua 7</button>
+  </div>
+</div>
+
+<div class="container">
+  
+  <div class="alert-box">
+    <strong style="color:var(--red);font-family:'Bebas Neue';font-size:16px;letter-spacing:1px;display:block;margin-bottom:4px;">IMPORTANT: CÂNTĂREȘTE PE CRUD</strong>
+    Toate gramajele la carne, orez, cartofi sau paste sunt calculate pentru forma lor CRUDĂ (înainte de gătire). Nu le cântări fierte/prăjite, cantitățile se vor schimba masiv!
+  </div>
+
+
+<div class="day-group active" id="z1">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z1_md.png" alt="IAURT GRECESC + WHEY" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z1 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT GRECESC + WHEY</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">480</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">35G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">300g</span></li><li><span class="ing-n">Whey Protein</span><span class="ing-q">15g</span></li><li><span class="ing-n">Banană</span><span class="ing-q">120g</span></li><li><span class="ing-n">Unt de arahide</span><span class="ing-q">20g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Amestecă iaurtul cu pudra proteică până se omogenizează.</li><li>Adaugă felii de banană și untul de arahide deasupra.</li><li>Rapid și sățios.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z1_p.png" alt="PUI GRĂTAR + OREZ" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z1 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PUI GRĂTAR + OREZ</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 30 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">650</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">50G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Piept de pui (crud)</span><span class="ing-q">200g</span></li><li><span class="ing-n">Orez (crud)</span><span class="ing-q">80g</span></li><li><span class="ing-n">Ulei de măsline</span><span class="ing-q">15g</span></li><li><span class="ing-n">Legume mixte</span><span class="ing-q">150g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Gătește puiul la grătar sau în tigaie.</li><li>Fierbe orezul (cântărit CRUD înainte).</li><li>Sotează legumele în uleiul de măsline.</li><li>Opțiune perfectă pentru Meal Prep de duminică.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z1_g.png" alt="BATON PROTEIC + CAFEA" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z1 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BATON PROTEIC + CAFEA</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">220</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">20G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Baton Proteic (>20g P)</span><span class="ing-q">1 buc</span></li><li><span class="ing-n">Cafea neagră</span><span class="ing-q">1 cană</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Salvează situația la ora 16:00 la cabinet.</li><li>Mănâncă-l pe fugă ca să nu faci Binge Eating seara.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z1_c.png" alt="SOMON LA CUPTOR + OREZ" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z1 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SOMON LA CUPTOR + OREZ</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 25 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">910</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">48G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Somon file (crud)</span><span class="ing-q">220g</span></li><li><span class="ing-n">Orez (crud)</span><span class="ing-q">100g</span></li><li><span class="ing-n">Legume verzi</span><span class="ing-q">150g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Pune somonul la cuptor 20 de minute (sau la airfryer).</li><li>Fierbe orezul (ideal împreună cu cel de la prânz, la grămadă).</li><li>Cea mai relaxantă masă pentru seară.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z2">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z2_md.png" alt="OUĂ + ALBUȘ LICHID" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z2 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OUĂ + ALBUȘ LICHID</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 10 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">430</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">35G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Ouă întregi</span><span class="ing-q">3 buc</span></li><li><span class="ing-n">Albuș lichid</span><span class="ing-q">100g</span></li><li><span class="ing-n">Pâine integrală</span><span class="ing-q">60g</span></li><li><span class="ing-n">Legume (roșii)</span><span class="ing-q">La discreție</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Fă o omletă mare din cele 3 ouă și albușul lichid (albușul e esențial pt extra proteină fără grăsime).</li><li>Servește cu cele 2 felii de pâine.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z2_p.png" alt="PORC LA CUPTOR" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z2 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PORC LA CUPTOR</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 45 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">680</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">58G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Cotlet porc slab (crud)</span><span class="ing-q">250g</span></li><li><span class="ing-n">Cartofi (cruzi)</span><span class="ing-q">350g</span></li><li><span class="ing-n">Ulei măsline</span><span class="ing-q">10g</span></li><li><span class="ing-n">Murături</span><span class="ing-q">Din plin</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Condimentează porcul și cartofii.</li><li>Bagă totul la cuptor într-o tavă mare.</li><li>Recomandat să faci porție triplă (Meal Prep).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z2_g.png" alt="IAURT + MĂR" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z2 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">IAURT + MĂR</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">200</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">20G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Iaurt grecesc 2%</span><span class="ing-q">200g</span></li><li><span class="ing-n">Măr</span><span class="ing-q">100g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Fără explicații. Deschizi și mănânci.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z2_c.png" alt="CHILI CON CARNE" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z2 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CHILI CON CARNE</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 30 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">850</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">52G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Carne vită slabă (crud)</span><span class="ing-q">200g</span></li><li><span class="ing-n">Orez (crud)</span><span class="ing-q">80g</span></li><li><span class="ing-n">Fasole roșie (conservă)</span><span class="ing-q">50g</span></li><li><span class="ing-n">Suc de roșii</span><span class="ing-q">100ml</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Gătește carnea cu fasolea și sucul de roșii (lasă la scăzut).</li><li>Servește peste patul de orez.</li><li>Se ține la frigider 4 zile perfect.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z3">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z3_md.png" alt="SANDWICH CURCAN" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z3 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SANDWICH CURCAN</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 3 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">450</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">39G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Șuncă curcan >80% carne</span><span class="ing-q">100g</span></li><li><span class="ing-n">Cașcaval light</span><span class="ing-q">50g</span></li><li><span class="ing-n">Pâine integrală</span><span class="ing-q">60g</span></li><li><span class="ing-n">Măr</span><span class="ing-q">1 buc</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Pune curcanul și cașcavalul între felii.</li><li>Poți să-l mănânci în mașină.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z3_p.png" alt="PASTE CU VITĂ" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z3 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span class="on"></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PASTE CU VITĂ</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 20 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">670</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">48G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Paste integrale (uscate)</span><span class="ing-q">100g</span></li><li><span class="ing-n">Carne tocată vită <10% (crudă)</span><span class="ing-q">150g</span></li><li><span class="ing-n">Passata roșii</span><span class="ing-q">150ml</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Fierbe pastele. Călește carnea în tigaie și adaugă passata.</li><li>Nu se usucă la frigider dacă iei la pachet a doua zi.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z3_g.png" alt="PUDING + MIGDALE" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z3 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PUDING + MIGDALE</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">250</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">23G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Puding proteic</span><span class="ing-q">200g</span></li><li><span class="ing-n">Migdale crunte</span><span class="ing-q">15g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Ca un desert anti-stres la ora 16:00.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z3_c.png" alt="CINĂ TRADIȚIONALĂ" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z3 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">CINĂ TRADIȚIONALĂ</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 5 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">720</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">44G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Ouă ochiuri/fierte</span><span class="ing-q">4 buc</span></li><li><span class="ing-n">Telemea light</span><span class="ing-q">100g</span></li><li><span class="ing-n">Pâine integrală</span><span class="ing-q">90g</span></li><li><span class="ing-n">Roșie mare</span><span class="ing-q">1 buc</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Varianta de panică când ajungi mort de oboseală și vrei ceva cu gust autentic.</li><li>Zero preparare grea.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z4">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z4_md.png" alt="BRÂNZĂ DULCE + MIERE" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z4 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BRÂNZĂ DULCE + MIERE</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 2 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">460</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">36G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Brânză de vaci slabă</span><span class="ing-q">200g</span></li><li><span class="ing-n">Miere</span><span class="ing-q">20g</span></li><li><span class="ing-n">Nuci/migdale</span><span class="ing-q">30g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Amestecă totul într-un bol. Are gust de prăjitură.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z4_p.png" alt="SALATĂ CAESAR DELIVERY" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z4 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SALATĂ CAESAR DELIVERY</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 0 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">500</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">50G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Salată Caesar de la restaurant</span><span class="ing-q">1 porție</span></li><li><span class="ing-n">EXTRA Pui grătar</span><span class="ing-q">100g extra</span></li><li><span class="ing-n">Dressing</span><span class="ing-q">Jumătate din el</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Soluție de salvare la cabinet. CRITIC: Cere extra pui, altfel are doar ~20g proteină.</li><li>Aruncă jumătate din dressing (acolo sunt sute de calorii din ulei).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z4_g.png" alt="SHAKE CU LAPTE" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z4 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SHAKE CU LAPTE</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">200</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">30G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Pudră proteică (Whey)</span><span class="ing-q">30g</span></li><li><span class="ing-n">Lapte 1.5%</span><span class="ing-q">200ml</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Pus în shaker, agitat 10 secunde.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z4_c.png" alt="PUI + CARTOFI (AIRFRYER)" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z4 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PUI + CARTOFI (AIRFRYER)</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 25 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">820</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">58G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Piept de pui (crud)</span><span class="ing-q">250g</span></li><li><span class="ing-n">Cartofi dulci (cruzi)</span><span class="ing-q">400g</span></li><li><span class="ing-n">Ulei măsline</span><span class="ing-q">15g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Taie cartofii și puiul, aruncă-le în airfryer (sau la cuptor).</li><li>Volum uriaș de mâncare, sațietate garantată.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z5">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z5_md.png" alt="OVERNIGHT OATS" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z5 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">OVERNIGHT OATS</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 3 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">470</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">32G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Puding proteic (Ehrmann)</span><span class="ing-q">200g</span></li><li><span class="ing-n">Lapte 1.5%</span><span class="ing-q">150ml</span></li><li><span class="ing-n">Ovăz (crud)</span><span class="ing-q">40g</span></li><li><span class="ing-n">Măr tăiat</span><span class="ing-q">1 buc</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Se pun la borcan în frigider de seara.</li><li>Dimineața doar iei borcanul și mănânci.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z5_p.png" alt="KFC INTELIGENT" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z5 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">KFC INTELIGENT</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 0 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">550</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">50G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Crispy Strips KFC</span><span class="ing-q">5 bucăți</span></li><li><span class="ing-n">Salată Coleslaw mică</span><span class="ing-q">1 buc</span></li><li><span class="ing-n">Cola Zero</span><span class="ing-q">1 pahar</span></li><li><span class="ing-n">Cartofi</span><span class="ing-q">FĂRĂ</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Nu iei meniu. Iei produsele individual.</li><li>Strips-urile au carne adevărată. Fără cartofi ai tăiat 400 de calorii inutile.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z5_g.png" alt="RULOURI CURCAN + MĂR" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z5 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">RULOURI CURCAN + MĂR</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">150</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">18G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Șuncă curcan >80% carne</span><span class="ing-q">100g</span></li><li><span class="ing-n">Măr</span><span class="ing-q">1 buc</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Mănânci șunca rulată (ca niște sticksuri) alături de măr.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z5_c.png" alt="SHAORMA LA FARFURIE" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z5 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SHAORMA LA FARFURIE</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 0 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">700</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">55G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Carne pui porție dublă</span><span class="ing-q">Minim 200g</span></li><li><span class="ing-n">Salată & Tzatziki</span><span class="ing-q">Din plin</span></li><li><span class="ing-n">Lipie</span><span class="ing-q">Jumătate (50g)</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Comandă la farfurie.</li><li>CRITIC: Specifică clar fără cartofi. Bazează-te pe carne și salată.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z6">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z6_md.png" alt="SHAKE BLENDER" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z6 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SHAKE BLENDER</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 2 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">510</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Whey Protein</span><span class="ing-q">45g (1.5 cupe)</span></li><li><span class="ing-n">Lapte 1.5%</span><span class="ing-q">250ml</span></li><li><span class="ing-n">Banană</span><span class="ing-q">120g</span></li><li><span class="ing-n">Unt arahide</span><span class="ing-q">20g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Blenduit tot. Ai băut și ai ieșit pe ușă.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z6_p.png" alt="LIPIE MEGA + IAURT" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z6 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">LIPIE MEGA + IAURT</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 0 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">550</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">45G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Lipie cu Pui gata făcută</span><span class="ing-q">1 buc mare</span></li><li><span class="ing-n">Iaurt proteic băubil</span><span class="ing-q">1 sticlă</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Când n-ai apucat nici să comanzi. Intri 2 minute într-un Mega/Kaufland.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z6_g.png" alt="SKYR + AFINE" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z6 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">SKYR + AFINE</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">150</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">22G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Skyr Islandez</span><span class="ing-q">200g</span></li><li><span class="ing-n">Afine</span><span class="ing-q">1 pumn</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Textură densă, te satură enorm.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z6_c.png" alt="BURGER ARTIZANAL" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z6 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">BURGER ARTIZANAL</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 0 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">750</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">40G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Burger de vită (comandă)</span><span class="ing-q">1 buc</span></li><li><span class="ing-n">Cartofi</span><span class="ing-q">FĂRĂ</span></li><li><span class="ing-n">Kefir pe lângă</span><span class="ing-q">1 pahar</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Mănânci burgerul ca atare. Pentru că burgerul are de obicei doar ~30g proteină, kefirul suplimentează restul.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="day-group" id="z7">
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z7_md.png" alt="KEFIR + WHEY (SHAKER)" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z7 · MIC DEJUN</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">KEFIR + WHEY (SHAKER)</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">490</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">36G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Kefir</span><span class="ing-q">330ml</span></li><li><span class="ing-n">Pudră Whey</span><span class="ing-q">30g (1 cupă)</span></li><li><span class="ing-n">Migdale</span><span class="ing-q">40g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Amestecat în shaker, luat în mașină.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z7_p.png" alt="TON + OREZ" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z7 · PRÂNZ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">TON + OREZ</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 10 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">620</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">46G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Ton în suc propriu</span><span class="ing-q">150g (scurs)</span></li><li><span class="ing-n">Orez (crud)</span><span class="ing-q">80g</span></li><li><span class="ing-n">Porumb</span><span class="ing-q">50g</span></li><li><span class="ing-n">Ulei măsline</span><span class="ing-q">10g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Fierbi orezul, amesteci totul rece într-un bol. Pui ulei de măsline deasupra.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z7_g.png" alt="PERLE BRÂNZĂ + PÂINE" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z7 · GUSTARE</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PERLE BRÂNZĂ + PÂINE</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 1 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">160</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">16G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Cottage Cheese (Perle)</span><span class="ing-q">100g</span></li><li><span class="ing-n">Pâine integrală</span><span class="ing-q">30g</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>O gustare mai sărată, înainte de plecare spre casă.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div class="recipe-card">
+  <div class="rp-img">
+    <div class="ph-fill">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+    </div>
+    <img src="/cookbook-images/nelu_2400/z7_c.png" alt="PIZZA + SHAKE WHEY" onerror="this.style.display='none';this.previousElementSibling.style.display='flex';">
+    <div class="rp-badge">Z7 · CINĂ</div>
+    <div class="rp-diff"><span class="on"></span><span></span><span></span></div>
+  </div>
+  <div class="rp-body">
+    <div class="rp-head">
+      <div class="rp-title">PIZZA + SHAKE WHEY</div>
+      <div class="rp-tags"><span class="tag-time">⏱ 0 min</span></div>
+    </div>
+    <div class="rp-nut">
+      <div class="nut cal"><span class="nut-l">Calorii</span><span class="nut-v">950</span></div>
+      <div class="nut"><span class="nut-l">Proteine</span><span class="nut-v">55G</span></div>
+    </div>
+    <div class="rp-div"></div>
+    <div class="rp-sec">
+      <div class="sec-title">Ingrediente & Cantități</div>
+      <ul class="ing-list">
+        <li><span class="ing-n">Pizza Prosciutto</span><span class="ing-q">3/4 dintr-o pizza medie</span></li><li><span class="ing-n">Whey Protein</span><span class="ing-q">25g (1 cupă) cu apă</span></li>
+      </ul>
+    </div>
+    <div class="rp-sec">
+      <div class="sec-title">Preparare / Explicații</div>
+      <ul class="prep-list">
+        <li>Cum mănânci pizza fără să distrugi planul? Simplu: mănânci un pic mai puțin din ea, iar pe lângă bei un shake să asiguri proteina (pizza are prea puțină proteină pt tine).</li>
+      </ul>
+    </div>
+  </div>
+</div>
+</div>
+
+</div>
+
+<script>
+document.querySelectorAll('.f-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.f-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    document.querySelectorAll('.day-group').forEach(grp => grp.classList.remove('active'));
+    const target = document.getElementById(btn.dataset.target);
+    if(target) {
+      target.classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    }
+  });
+});
+</script>
+</body>
+</html>
