@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Quick Ref Antrenament · Ciprian</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blk: #0A0A0A; --drk: #141414; --drk2: #1A1A1A;
+  --red: #C0392B; --red-dim: rgba(192,57,43,0.12);
+  --wht: #F5F5F5; --muted: #777; --brd: #252525; --card: #111111;
+  --orange: #E67E22; --green: #27AE60; --blue: #2980B9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:480px;margin:0 auto;padding-bottom:80px;}
+
+/* HEADER */
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);border-radius:4px;padding:6px 12px;display:flex;justify-content:space-between;align-items:center;}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);}
+
+/* TABS */
+.tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;-ms-overflow-style:none;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:10px 14px;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:color 0.15s,border-color 0.15s;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+/* PANELS */
+.panel{display:none;padding:18px;}
+.panel.active{display:block;}
+
+/* WEEK GRID */
+.wgrid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;margin-bottom:18px;}
+.wd{background:var(--card);border:1px solid var(--brd);padding:8px 4px;text-align:center;border-radius:3px;}
+.wd.on{border-color:var(--red);background:var(--red-dim);}
+.wd-n{font-size:8px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;}
+.wd-t{font-family:'Bebas Neue',sans-serif;font-size:11px;color:var(--wht);line-height:1.2;}
+.wd.on .wd-t{color:var(--red);}
+.wd-s{font-size:8px;color:var(--muted);margin-top:2px;line-height:1.2;}
+
+/* ACCORDION CARDS */
+.acc-card{background:var(--drk);border:1px solid var(--brd);margin-bottom:14px;border-radius:6px;overflow:hidden;transition:border-color 0.2s;}
+.acc-card.open{border-color:var(--red);}
+.acc-card.open.orange{border-color:var(--orange);}
+.acc-card.open.blue{border-color:var(--blue);}
+.acc-card.open.green{border-color:var(--green);}
+
+.acc-hdr{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;background:rgba(255,255,255,0.02);transition:background 0.15s;}
+.acc-hdr:hover{background:rgba(255,255,255,0.04);}
+.acc-title-area{flex:1;padding-right:10px;}
+.acc-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:2px;}
+.acc-card.orange .acc-label{color:var(--orange);}
+.acc-card.green .acc-label{color:var(--green);}
+.acc-card.blue .acc-label{color:var(--blue);}
+
+.acc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--wht);display:flex;align-items:center;gap:8px;}
+.acc-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);margin-top:2px;}
+.acc-icon{font-size:12px;color:var(--muted);transition:transform 0.3s ease, color 0.3s ease;display:flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--card);border:1px solid var(--brd);border-radius:4px;}
+.acc-card.open .acc-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.acc-card.open.orange .acc-icon{color:var(--orange);border-color:var(--orange);}
+.acc-card.open.blue .acc-icon{color:var(--blue);border-color:var(--blue);}
+.acc-card.open.green .acc-icon{color:var(--green);border-color:var(--green);}
+
+.acc-content{max-height:0;overflow:hidden;transition:max-height 0.35s cubic-bezier(0.4,0,0.2,1);}
+.acc-card.open .acc-content{max-height:2800px;}
+
+.acc-body{padding:14px 16px;}
+
+/* EXERCISE LIST */
+.ex-list{padding:0;}
+.ex-item{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.ex-item:last-child{border-bottom:none;}
+.ex-name{font-size:13px;color:var(--wht);font-weight:700;line-height:1.4;flex:1;margin-bottom:4px;}
+.ex-cue{font-size:12px;color:#ccc;line-height:1.5;}
+.ex-cue.warn{color:var(--orange);font-style:normal;font-weight:500;}
+.ex-cue.ok{color:var(--green);font-style:normal;font-weight:500;}
+.ex-sets{font-family:'DM Mono',monospace;font-size:12px;color:var(--red);white-space:nowrap;text-align:right;font-weight:600;}
+.ex-rest{font-size:10px;color:var(--muted);text-align:right;margin-top:2px;}
+
+/* VIDEO BUTTON */
+.btn-vid {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--drk2);
+  border: 1px solid var(--brd);
+  color: var(--wht);
+  text-decoration: none;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  margin-top: 8px;
+  transition: border-color 0.2s;
+}
+.btn-vid:hover { border-color: var(--red); }
+.btn-vid span { color: var(--red); font-size: 12px; }
+
+/* TAGS & ALERTS */
+.tag{display:inline-block;font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:2px 8px;border-radius:2px;margin-bottom:10px;}
+.tag-red{background:var(--red-dim);color:var(--red);border:1px solid rgba(192,57,43,0.3);}
+.tag-orange{background:rgba(230,126,34,0.1);color:var(--orange);border:1px solid rgba(230,126,34,0.3);}
+.tag-green{background:rgba(39,174,96,0.08);color:var(--green);border:1px solid rgba(39,174,96,0.25);}
+.tag-blue{background:rgba(41,128,185,0.1);color:var(--blue);border:1px solid rgba(41,128,185,0.3);}
+
+.alert-box{border-left:3px solid var(--red);background:var(--red-dim);padding:12px 14px;margin-bottom:14px;font-size:12px;color:#ccc;line-height:1.65;border-radius:0 4px 4px 0;}
+.alert-box.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
+.alert-box.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
+.alert-box.blue{border-color:var(--blue);background:rgba(41,128,185,0.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--red);margin-bottom:4px;}
+.alert-box.orange .alert-ttl{color:var(--orange);}
+.alert-box.green .alert-ttl{color:var(--green);}
+.alert-box.blue .alert-ttl{color:var(--blue);}
+
+/* LISTS */
+.rule-list{list-style:none;margin:10px 0;}
+.rule-list li{padding:7px 0 7px 18px;position:relative;font-size:12px;color:#bbb;border-bottom:1px solid rgba(255,255,255,0.04);line-height:1.55;}
+.rule-list li::before{content:'→';position:absolute;left:0;color:var(--red);}
+.rule-list li strong{color:var(--wht);}
+
+.sec-ttl{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--red);margin:20px 0 10px;}
+.sec-ttl:first-child{margin-top:0;}
+
+/* PROGRESS BOXES */
+.prog-box{background:var(--card);border:1px solid var(--brd);border-left:3px solid var(--red);padding:12px 14px;margin-bottom:10px;border-radius:0 4px 4px 0;}
+.prog-label{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:6px;}
+.prog-val{font-family:'Bebas Neue',sans-serif;font-size:24px;color:var(--red);line-height:1;}
+.prog-note{font-size:11px;color:#999;margin-top:6px;line-height:1.5;}
+
+/* INJURY BAR */
+.injury-bar{background:rgba(230,126,34,0.1);border:1px solid rgba(230,126,34,0.35);border-radius:4px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:var(--orange);letter-spacing:1px;text-align:center;font-weight:600;line-height:1.5;}
+
+/* STRETCH & VIDEO */
+.stretch-item{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.stretch-item:last-child{border-bottom:none;}
+.stretch-name{font-size:13px;color:var(--wht);font-weight:700;margin-bottom:4px;}
+.stretch-note{font-size:12px;color:#ccc;line-height:1.5;}
+.stretch-dur{font-family:'DM Mono',monospace;font-size:12px;color:var(--orange);white-space:nowrap;font-weight:600;}
+
+.vid-link{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--brd);padding:12px 14px;margin-bottom:10px;text-decoration:none;color:var(--wht);border-radius:4px;transition:border-color 0.15s;}
+.vid-link:hover{border-color:var(--red);}
+.vid-icon{font-size:16px;flex-shrink:0;color:var(--red);}
+.vid-info{flex:1;}
+.vid-title{font-size:12px;font-weight:500;color:var(--wht);}
+.vid-sub{font-size:10px;color:var(--muted);margin-top:2px;}
+.vid-arr{font-size:14px;color:var(--red);}
+
+/* SUPERSET TAG */
+.superset{display:inline-block;font-size:8px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);border:1px solid rgba(230,126,34,0.35);padding:1px 5px;margin-left:5px;vertical-align:middle;border-radius:2px;}
+@media(min-width:768px){body{max-width:900px!important;font-size:15px;padding:0 32px 48px;}}
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT</div>
+    <div class="hdr-name">Quick Ref Antrenament · Ciprian</div>
+  </div>
+  <div class="budget-bar">
+    <span>Sesiune</span>
+    <strong>35–45 MIN TOTAL</strong>
+    <span>Claviculă Protejată (Safe)</span>
+  </div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="showTab('saptamana')">Săptămâna &amp; NEAT</div>
+  <div class="tab" onclick="showTab('ziuaA')">Ziua A (Lower)</div>
+  <div class="tab" onclick="showTab('ziuaB')">Ziua B (Core)</div>
+  <div class="tab" onclick="showTab('ziuaC')">Ziua C (Lower+)</div>
+  <div class="tab" onclick="showTab('mve')">MVE &amp; Platou</div>
+  <div class="tab" onclick="showTab('progresie')">Mobilitate &amp; Progresie</div>
+</div>
+
+<!-- ==================== TAB 1: SĂPTĂMÂNA & NEAT ==================== -->
+<div class="panel active" id="tab-saptamana">
+
+  <div class="injury-bar">
+    ⚠ CLAVICULĂ DREAPTĂ RECUPERARE — Interdicție totală de a folosi brațul drept cu greutăți externe sau împins activ până la re-evaluarea medicală din noiembrie.
+  </div>
+
+  <div class="wgrid">
+    <div class="wd on"><div class="wd-n">Lun</div><div class="wd-t">ZIUA A</div><div class="wd-s">Lower Vol</div></div>
+    <div class="wd"><div class="wd-n">Mar</div><div class="wd-t">Rest</div><div class="wd-s">10k pași</div></div>
+    <div class="wd on"><div class="wd-n">Mie</div><div class="wd-t">ZIUA B</div><div class="wd-s">Core / Unilat</div></div>
+    <div class="wd"><div class="wd-n">Joi</div><div class="wd-t">Rest</div><div class="wd-s">10k pași</div></div>
+    <div class="wd on"><div class="wd-n">Vin</div><div class="wd-t">ZIUA C</div><div class="wd-s">Lower Intens</div></div>
+    <div class="wd"><div class="wd-n">Sâm</div><div class="wd-t">Cardio</div><div class="wd-s">Proiecte/Curte</div></div>
+    <div class="wd"><div class="wd-n">Dum</div><div class="wd-t">Liber</div><div class="wd-s">Plimbare</div></div>
+  </div>
+
+  <div class="alert-box green">
+    <div class="alert-ttl">Navigare Interactivă (Apasă pe secțiune)</div>
+    Apasă pe titlul fiecărei secțiuni de mai jos sau din celelalte tab-uri pentru a deschide sau ascunde detaliile. Experiență de tip aplicație mobilă, fără scroll excesiv.
+  </div>
+
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">Structura Sesiunii (Acasă sau în Curte)</div>
+        <div class="acc-time">40–45 min total · Zero echipament</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.6;">
+        Mobilitate înainte: <strong>5 min</strong> → Exerciții de bază: <strong>30–35 min</strong> → Stretching după: <strong>5 min</strong><br><br>
+        Nu forțezi ritmul. Execuția curată, protejând clavicula, este singurul obiectiv.
+      </div>
+    </div>
+  </div>
+
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-name">Reguli de Sistem · Antrenament</div>
+        <div class="acc-time">Pilonii de consistență</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <ul class="rule-list">
+          <li><strong>Minim 1 zi de odihnă</strong> între sesiuni — întotdeauna.</li>
+          <li>Ratezi o zi? <strong>Nu compensa.</strong> Treci la ziua următoare din structură.</li>
+          <li>Durere ascuțită în umărul drept? <strong>Oprești imediat și trimiți mesaj.</strong></li>
+          <li>Muncă fizică grea (peste 6h) în zi de antrenament = <strong>sari antrenamentul, munca fizică ESTE antrenamentul zilei.</strong></li>
+          <li>O sesiune incompletă (15 min) este infinit mai bună decât nicio sesiune.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="sec-ttl">NEAT &amp; Zone 2 — Avantajul tău Major</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div class="prog-box">
+      <div class="prog-label">Target Zilnic</div>
+      <div class="prog-val">10.000</div>
+      <div class="prog-note">Pași/zi · Munca fizică și activitatea din curte contorizează 100%</div>
+    </div>
+    <div class="prog-box" style="border-color:var(--orange);">
+      <div class="prog-label">Zi Sedentară (Ploaie)</div>
+      <div class="prog-val" style="color:var(--orange);">5.000</div>
+      <div class="prog-note">Minimul absolut · Adaugă o plimbare de 30 min seara</div>
+    </div>
+  </div>
+
+  <div class="acc-card green open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">Cardio Gratuit</div>
+        <div class="acc-name" style="color:var(--green);">Zone 2 din Ecosistemul de Muncă</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body" style="font-size:12px;color:#ccc;line-height:1.6;">
+        Munca fizică intensă, activitățile din curte sau diversele proiecte reprezintă <strong>cea mai bună formă de cardio Zone 2 și ardere de grăsimi</strong>. Cât timp poți vorbi în propoziții fără să gâfâi extrem, ești exact în zona de ardere a lipidelor. Nu duplica efortul în sala de sport.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== TAB 2: ZIUA A (LOWER) ==================== -->
+<div class="panel" id="tab-ziuaA">
+
+  <div class="tag tag-red">Ziua A — Luni · Lower Body Volum · Picioare + Fese</div>
+
+  <!-- MOBILITATE PRE -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">🔥 Mobilitate Înainte (5 min)</div>
+        <div class="acc-name">Activare Șolduri + Genunchi</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Mers pe loc cu genunchii sus</div>
+              <div class="ex-cue">2 min ușor — ridici ritmul cardiac și încălzești articulațiile</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+high+knees+marching+in+place" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">2 min</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Rotații șolduri (cercuri mari)</div>
+              <div class="ex-cue">Mâini pe șolduri, cercuri lente și ample. Lubrifiere articulară.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+standing+hip+circles+mobility" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">10/parte</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Squat bodyweight lent (pauză jos 3 sec)</div>
+              <div class="ex-cue">Activare musculatură picioare. Nu forță — deschidere șolduri.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+bodyweight+squat+correct+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">2 × 8</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCITII PRINCIPALE -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">💪 Exerciții Principale (35 min)</div>
+        <div class="acc-name">Lower Body Complet (Zero Încărcare Umăr)</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">1. Squat cu greutatea corpului (Genuflexiuni)</div>
+              <div class="ex-cue">Picioare lățimea umerilor. Coborâre lentă (3 sec jos), urcare explozivă (1 sec). Spatele drept, privirea înainte.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+bodyweight+squats+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 15</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">2. Fandare alternativă pe loc</div>
+              <div class="ex-cue">10 per picior. Pas larg în față, genunchiul din spate coboară aproape de podea. Mâini pe șolduri pentru echilibru.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+alternating+lunges+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 10/parte</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">3. Hip Thrust (Ridicare bazin de pe podea)</div>
+              <div class="ex-cue">Pe spate, genunchii îndoiți la 90°. Împingi în călcâie, ridici șoldurile sus și strângi fesele maxim 1 sec în vârf.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+glute+bridges+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 15</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">4. Calf Raises (Ridicări pe vârfuri)</div>
+              <div class="ex-cue">Pe o treaptă sau pe podea. Ridicare lentă sus (2 sec), coborâre lentă (3 sec) până simți întinderea în gambă.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+standing+calf+raises+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 20</div>
+              <div class="ex-rest">Rest 45s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert-box green">
+    <div class="alert-ttl">De ce picioarele sunt prioritatea #1</div>
+    La 118 kg, picioarele și fesierii reprezintă peste 60% din masa ta musculară totală. Antrenarea lor generează cel mai mare consum caloric și efect EPOC (ardere de calorii după antrenament) din întreg corpul, protejând în același timp complet clavicula.
+  </div>
+
+</div>
+
+<!-- ==================== TAB 3: ZIUA B (CORE) ==================== -->
+<div class="panel" id="tab-ziuaB">
+
+  <div class="tag tag-orange">Ziua B — Miercuri · Core Profund + Brațul Stâng Unilateral</div>
+
+  <div class="alert-box orange">
+    <div class="alert-ttl">Regula Brațului Drept (Claviculă)</div>
+    Brațul drept participă exclusiv la sprijin pasiv sau rămâne relaxat pe lângă corp. <strong>Interdicție totală de a împinge activ sau de a ridica greutăți cu brațul drept.</strong> Ne concentrăm pe brațul stâng și pe peretele abdominal.
+  </div>
+
+  <!-- MOBILITATE PRE -->
+  <div class="acc-card orange open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">🔥 Mobilitate Înainte (5 min)</div>
+        <div class="acc-name" style="color:var(--orange);">Activare Core + Umăr Stâng</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Cat-Cow pe mâini și genunchi</div>
+              <div class="ex-cue">Pisică (arcuire spate în sus) → Vacă (arcuire spate în jos). Lent, controlat. Decomprimă coloana vertebrală.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+cat+cow+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">2 × 10</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Rotații umăr stâng (cercuri înainte + înapoi)</div>
+              <div class="ex-cue">Braț stâng extins, cercuri mari și lente. Activare completă fără greutate.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+standing+arm+circles+mobility" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">10+10</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Rotații umăr drept (foarte lente și blânde)</div>
+              <div class="ex-cue warn">⚠ Oprești imediat dacă simți orice durere ascuțită în claviculă.</div>
+            </div>
+            <div class="ex-sets">10+10</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCITII PRINCIPALE -->
+  <div class="acc-card orange open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">💪 Exerciții Principale (30 min)</div>
+        <div class="acc-name" style="color:var(--orange);">Core Stabilitate + Brațul Stâng</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">1. Plank (Planșă frontală pe antebrațe)</div>
+              <div class="ex-cue">Corp perfect drept. Strângi fesele și abdomenul. Nu lăsa bazinul să cadă spre podea. Respiră constant.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+forearm+plank+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 30s</div>
+              <div class="ex-rest">Rest 45s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">2. Dead Bug Asimetric</div>
+              <div class="ex-cue">Pe spate, brațe sus, genunchi la 90°. Cobori brațul stâng și piciorul drept simultan spre podea. Brațul drept rămâne nemișcat sus. Lombarul lipit de podea.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+dead+bug+exercise+tutorial+core" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 10/parte</div>
+              <div class="ex-rest">Rest 45s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">3. Flotări asimetrice pe genunchi (Focus Stânga)</div>
+              <div class="ex-cue">Sprijin pe genunchi. Împingi activ cu brațul stâng, în timp ce brațul drept oferă doar sprijin pasiv de echilibru. Coborâre lentă 3 sec. Când atingi 3×12, treci la flotări complete.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+kneeling+push+ups+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 8–12</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">4. Bird Dog Asimetric</div>
+              <div class="ex-cue">Pe mâini și genunchi. Extinzi brațul stâng și piciorul drept opus. Menții poziția 2 secunde în vârf. Corp perfect paralel cu podeaua.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+bird+dog+exercise+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 10/parte</div>
+              <div class="ex-rest">Rest 45s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">5. Plank Lateral Stâng</div>
+              <div class="ex-cue">Sprijin pe antebrațul stâng. Ridici bazinul, corpul formează o linie dreaptă. Brațul drept stă relaxat pe șold.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+side+plank+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 20s</div>
+              <div class="ex-rest">Rest 45s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== TAB 4: ZIUA C (LOWER+) ==================== -->
+<div class="panel" id="tab-ziuaC">
+
+  <div class="tag tag-red">Ziua C — Vineri / Sâmbătă · Lower Body Intensiv</div>
+
+  <!-- MOBILITATE PRE -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">🔥 Mobilitate Înainte (5 min)</div>
+        <div class="acc-name">Activare Șolduri Profund</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">World's Greatest Stretch</div>
+              <div class="ex-cue">Fandare amplă în față + rotație toracică spre genunchiul din față. Cel mai complet exercițiu de încălzire pentru șolduri.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+worlds+greatest+stretch" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">5/parte</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Hip 90/90 pe podea</div>
+              <div class="ex-cue">Șezi pe podea cu ambii genunchi îndoiți la 90°. Rotești șoldurile de la stânga la dreapta menținând trunchiul drept.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+90+90+stretch+how+to" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">5/parte</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXERCITII PRINCIPALE -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">💪 Exerciții Principale (40 min)</div>
+        <div class="acc-name">Lower Body Intensiv + Core Lateral</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">1. Squat Sumo cu Greutate (Bidon de Apă)</div>
+              <div class="ex-cue">Picioare depărtate larg, vârfurile orientate spre exterior. Ții un bidon de 5L apă în mâini (brațe întinse jos). Coborâre adâncă, genunchii în afară.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+sumo+squat+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">4 × 12</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">2. Step-Up pe treaptă / scaun solid</div>
+              <div class="ex-cue">Pui piciorul drept pe scaun, împingi exclusiv în el pentru a urca (nu te împinge cu cel de jos). Cobori controlat.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+step+up+exercise+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 12/parte</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">3. Good Morning (Aplecări din șold)</div>
+              <div class="ex-cue">Picioare lățimea umerilor, genunchi ușor deblocați. Ții un rucsac pe piept. Te apleci din șold ducând bazinul în spate, spatele perfect drept. Tensiune în femurali.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+good+morning+exercise+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 12</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">4. Hip Thrust cu Greutate (Rucsac pe Bazin)</div>
+              <div class="ex-cue">Pui un rucsac cu greutăți (5-10 kg) sau un bidon de apă pe bazin. Împingi exploziv sus, menții contracția 2 secunde.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+weighted+glute+bridge+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 × 12</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">5. Superset: Plank Lateral Stâng + Plank Frontal <span class="superset">Superset</span></div>
+              <div class="ex-cue">Plank lateral stâng 20 sec → treci direct în Plank frontal 30 sec. Zero pauză între ele.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+side+plank+to+plank+transition" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div>
+              <div class="ex-sets">3 runde</div>
+              <div class="ex-rest">Rest 60s</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== TAB 5: MVE & PLATOU ==================== -->
+<div class="panel" id="tab-mve">
+
+  <div class="tag tag-red">Protocolul MVE (Minimum Viable Effort) · 20 Min</div>
+
+  <div class="intro" style="font-size:13px;color:#ccc;margin-bottom:16px;line-height:1.6;">
+    Când plouă torențial, ai o zi extrem de aglomerată sau ești epuizat, activezi protocolul MVE în casă. <strong>Misiunea MVE: menținerea momentum-ului. 20 de minute executate în sufragerie bat 0 minute perfecte.</strong>
+  </div>
+
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">⚡ 5 Runde · Sufragerie · Zero Scuze</div>
+        <div class="acc-name">CIRCUITUL MVE DE URGENȚĂ — 20 MINUTE</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <p style="font-size:12px;color:#bbb;margin-bottom:14px;line-height:1.5;">
+          <strong>Structura:</strong> 45 secunde lucru efectiv → 15 secunde pauză → treci la exercițiul următor. O rundă durează 4 minute. 5 runde = 20 minute efective.
+        </p>
+
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">1. Bodyweight Squats (Genuflexiuni)</div>
+              <div class="ex-cue">Ritm constant, coborâre completă. Spatele drept.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+bodyweight+squat+correct+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">45s / 15s</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">2. Flotări pe scaun / masă / perete (Focus Stânga)</div>
+              <div class="ex-cue">Alege o înclinație care să-ți permită 45s de lucru continuu fără să forțezi clavicula dreaptă.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+incline+push+ups+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">45s / 15s</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">3. Superman Holds pe podea</div>
+              <div class="ex-cue">Pe burtă, ridici ușor pieptul și picioarele de pe podea. Activează întregul lanț posterior. Brațul drept stă jos dacă e nevoie.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+superman+hold+exercise+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">45s / 15s</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">4. Plank Hold (Planșă statică pe antebrațe)</div>
+              <div class="ex-cue">Abdomen de fier, respirație controlată. Dacă cedezi, pui genunchii jos 3s și continui.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+forearm+plank+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="ex-sets">45s / 15s</div>
+          </div>
+        </div>
+
+        <div style="margin-top:14px;padding-top:10px;border-top:1px solid rgba(192,57,43,0.2);font-size:11px;color:#ccc;text-align:center;">
+          ↻ REPETĂ DE 5 ORI. Pauză între runde: 30 secunde.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tag tag-orange" style="margin-top:10px;">Protocolul de Gestionare a Platoului (Săptămânile 4–6)</div>
+  
+  <div class="prog-box" style="border-color:var(--orange);">
+    <div class="prog-label">Regula de Aur a Platoului</div>
+    <div class="prog-val" style="color:var(--orange);font-size:18px;">2 Săptămâni de Blocaj Real</div>
+    <div class="prog-note">
+      Un platou real înseamnă că greutatea ȘI circumferința taliei rămân complet nemodificate timp de 14 zile consecutive. Nu schimbi nimic după doar 4-5 zile de stagnare (fluctuații normale de apă).
+    </div>
+  </div>
+
+  <div class="acc-card orange open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">Intervenție Strategică</div>
+        <div class="acc-name" style="color:var(--orange);">Cei 4 Pași de Deblocare a Platoului</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <ul class="rule-list">
+          <li><strong>Pasul 1 (Audit strict de 7 zile):</strong> Verificăm dacă s-au strecurat calorii invizibile (ulei turnat cu ochiul liber, ronțăieli necontorizate, sucuri).</li>
+          <li><strong>Pasul 2 (Ajustare calorică fină):</strong> Dacă tracking-ul a fost perfect, reducem plafonul caloric cu <strong>100–150 kcal</strong> (tăiem 30g carbohidrați din cina de seară).</li>
+          <li><strong>Pasul 3 (Creștere NEAT):</strong> Adăugăm o plimbare dedicată de 45 de minute în fiecare seară (în afara muncii fizice din zi) pentru a forța arderea lipidelor.</li>
+          <li><strong>Pasul 4 (Diet Break strategic):</strong> Dacă platoul persistă la săptămâna 8, introducem o săptămână de „Diet Break” la mentenanță (3.500 kcal) pentru a reseta hormonii tiroidieni și leptina.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ==================== TAB 6: MOBILITATE & PROGRESIE ==================== -->
+<div class="panel" id="tab-progresie">
+
+  <div class="tag tag-green">Stretching După Antrenament · 5 Min · Obligatoriu</div>
+
+  <div class="alert-box green">
+    <div class="alert-ttl">De ce nu se sare stretchingul</div>
+    La 118 kg, tensiunea pe articulații și tendoane este masivă. 5 minute de stretching la finalul antrenamentului redau elasticitatea mușchiului, previn durerile lombare și accelerează recuperarea musculară pentru a doua zi.
+  </div>
+
+  <!-- STRETCHING -->
+  <div class="acc-card green open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">Recuperare (5 min)</div>
+        <div class="acc-name" style="color:var(--green);">Rutina de Stretching (După fiecare sesiune)</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="stretch-item">
+            <div>
+              <div class="stretch-name">Quad Stretch (Întindere coapsă anterioară)</div>
+              <div class="stretch-note">În picioare, sprijin pe un perete. Tragi piciorul stâng/drept la spate spre fesă. Genunchii apropiați.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+standing+quad+stretch+correct+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="stretch-dur">30s/parte</div>
+          </div>
+          <div class="stretch-item">
+            <div>
+              <div class="stretch-name">Hip Flexor Stretch (Fandare statică pe genunchi)</div>
+              <div class="stretch-note">Un genunchi pe podea, celălalt în față la 90°. Împingi bazinul ușor înainte până simți întinderea în șold.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+kneeling+hip+flexor+stretch+correct+form" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="stretch-dur">30s/parte</div>
+          </div>
+          <div class="stretch-item">
+            <div>
+              <div class="stretch-name">Hamstring Stretch (Întindere femurali)</div>
+              <div class="stretch-note">Pe spate, tragi un picior extins spre piept ținându-l de spatele coapsei. Genunchiul drept.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+lying+hamstring+stretch+tutorial" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="stretch-dur">30s/parte</div>
+          </div>
+          <div class="stretch-item">
+            <div>
+              <div class="stretch-name">Pigeon Pose (Întindere fesieri și șold)</div>
+              <div class="stretch-note">Pe podea, un picior îndoit în față, celălalt extins în spate. Cobori pieptul peste genunchiul din față.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+pigeon+pose+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="stretch-dur">30s/parte</div>
+          </div>
+          <div class="stretch-item">
+            <div>
+              <div class="stretch-name">Child's Pose (Întindere lombar și dorsal)</div>
+              <div class="stretch-note">Pe genunchi, te așezi pe călcâie și întinzi brațele mult în față pe podea. Umărul stâng se întinde activ, brațul drept relaxat.</div>
+              <a href="https://www.google.com/search?btnI=1&q=site:youtube.com+how+to+do+childs+pose+correctly" target="_blank" class="btn-vid"><span>▶</span> Video</a>
+            </div>
+            <div class="stretch-dur">45s</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESIA PE FAZE -->
+  <div class="acc-card open">
+    <div class="acc-hdr" onclick="toggleAcc(this)">
+      <div class="acc-title-area">
+        <div class="acc-label">Planificare Strategică</div>
+        <div class="acc-name">Progresia pe 3 Faze (Mai → Noiembrie)</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-content">
+      <div class="acc-body">
+        <div class="ex-list">
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Faza 1: Fundația (Săptămânile 1–4)</div>
+              <div class="ex-cue">Focus exclusiv pe execuție tehnică perfectă, tempo lent și conexiune minte-mușchi. 3 antrenamente + 2 sesiuni Zone 2 (activitate/proiecte).</div>
+            </div>
+            <div class="ex-sets">Mai – Iun</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Faza 2: Progresia (Săptămânile 5–8)</div>
+              <div class="ex-cue">Creștem volumul la 5 serii (5×15) și introducem greutate externă (rucsac 5-10 kg la genuflexiuni/step-up, bidon la hip thrust).</div>
+            </div>
+            <div class="ex-sets">Iul – Aug</div>
+          </div>
+          <div class="ex-item">
+            <div>
+              <div class="ex-name">Faza 3: Intensificare (Săptămânile 9–12)</div>
+              <div class="ex-cue">Introducem a 4-a zi de antrenament (circuit finisher 15 min) și creștem densitatea (pauze reduse la 45 sec).</div>
+            </div>
+            <div class="ex-sets">Sep – Oct</div>
+          </div>
+          <div class="ex-item" style="border-top:1px solid rgba(230,126,34,0.3);padding-top:12px;margin-top:4px;">
+            <div>
+              <div class="ex-name" style="color:var(--orange);">Viziunea Noiembrie (Deblocarea Upper Body)</div>
+              <div class="ex-cue">După re-evaluarea medicală și confirmarea vindecării complete a claviculei, reintroducem treptat antrenamentul complet pentru trenul superior (flotări, ramat bilateral, împins).</div>
+            </div>
+            <div class="ex-sets" style="color:var(--orange);">Noiembrie</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showTab(id) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + id).classList.add('active');
+  event.target.classList.add('active');
+}
+function toggleAcc(el) {
+  const card = el.closest('.acc-card');
+  card.classList.toggle('open');
+}
+</script>
+</body>
+</html>
