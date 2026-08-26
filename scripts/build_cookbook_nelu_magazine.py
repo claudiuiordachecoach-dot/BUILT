@@ -164,34 +164,41 @@ SLUG  = {"Mic dejun":"micdejun","Gustare":"gustare","Prânz":"pranz","Cină":"ci
 def esc(s): return str(s).replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")
 
 PREMIUM_IMAGES = [
-    "greek_yogurt_bowl_premium_1778758718649.png",
-    "chicken_sweet_potato_editorial_1778758701417.png",
-    "protein_fluff_luxury_1778791350579.png",
-    "salmon_performance_editorial_1778758645266.png",
-    "recipe_omelet_bright_premium_1778756295256.png",
-    "steak_asparagus_premium_1778759452913.png",
-    "yogurt_mango_parfait_luxury_1778791463934.png",
-    "beef_bowl_strength_max_editorial_1778876051531.png",
-    "chicken_hummus_wrap_luxury_1778825800473.png",
-    "pesto_chicken_pasta_editorial_1778759467266.png",
-    "chia_pudding_protein_luxury_1778759482215.png",
-    "shakshuka_premium_editorial_1778825694835.png",
-    "cottage_cheese_walnuts_premium_1778791238349.png",
-    "caesar_salad_luxury_editorial_1778825678568.png",
-    "built_muscle_smoothie_luxury_1778759377496.png",
-    "turkey_stir_fry_luxury_1778759338351.png",
-    "overnight_oats_peanuts_premium_1778791117335.png",
-    "beef_burrito_luxury_editorial_1778825627283.png",
-    "date_energy_balls_luxury_1778791556040.png",
-    "halloumi_quinoa_bowl_premium_1778825755247.png",
-    "green_energy_smoothie_vibrant_1778791194541.png",
-    "chicken_hummus_wrap_luxury_1778825800473.png",
-    "berry_blast_smoothie_vibrant_1778791327344.png",
-    "premium_beef_burger_editorial_1778825656454.png",
-    "coffee_kick_smoothie_luxury_1778791419068.png",
-    "tuna_salad_premium_editorial_1778759324344.png",
-    "cottage_pancakes_strength_max_editorial_1778876071396.png",
-    "frittata_ciuperci_editorial_1778944102363.png"
+    # ZIUA 1
+    "nelu_z1_m_1787775832262.png",
+    "nelu_z1_p_1787775843592.png",
+    "nelu_z1_g_1787775854302.png",
+    "nelu_z1_c_1787775868187.png",
+    # ZIUA 2
+    "nelu_z2_m_1787775884334.png",
+    "nelu_z2_p_1787775896496.png",
+    "nelu_z2_g_1787775908064.png",
+    "nelu_z2_c_1787775922915.png",
+    # ZIUA 3
+    "nelu_z3_m_1787775933856.png",
+    "nelu_z3_p_1787775946665.png",
+    "nelu_z3_g_1787775958020.png",
+    "nelu_z3_c_1787775968932.png",
+    # ZIUA 4
+    "nelu_z4_m_1787775996179.png",
+    "caesar_salad_luxury_editorial_1778825678568.png", # Z4 P
+    "built_muscle_smoothie_luxury_1778759377496.png", # Z4 G
+    "turkey_stir_fry_luxury_1778759338351.png", # Z4 C
+    # ZIUA 5
+    "overnight_oats_peanuts_premium_1778791117335.png", # Z5 M
+    "chicken_hummus_wrap_luxury_1778825800473.png", # Z5 P
+    "beef_burrito_luxury_editorial_1778825627283.png", # Z5 G
+    "halloumi_quinoa_bowl_premium_1778825755247.png", # Z5 C
+    # ZIUA 6
+    "green_energy_smoothie_vibrant_1778791194541.png", # Z6 M
+    "chicken_hummus_wrap_luxury_1778825800473.png", # Z6 P
+    "berry_blast_smoothie_vibrant_1778791327344.png", # Z6 G
+    "premium_beef_burger_editorial_1778825656454.png", # Z6 C
+    # ZIUA 7
+    "coffee_kick_smoothie_luxury_1778791419068.png", # Z7 M
+    "tuna_salad_premium_editorial_1778759324344.png", # Z7 P
+    "cottage_cheese_walnuts_premium_1778791238349.png", # Z7 G
+    "frittata_ciuperci_editorial_1778944102363.png" # Z7 C
 ]
 
 global_recipe_index = 0
