@@ -178,25 +178,24 @@ PREMIUM_IMAGES = [
     "nelu_z3_m_1787775933856.png",
     "nelu_z3_p_1787775946665.png",
     "nelu_z3_g_1787775958020.png",
-    "nelu_z3_c_1787775968932.png",
     # ZIUA 4
     "nelu_z4_m_1787775996179.png",
-    "MISSING", # Z4 P
-    "MISSING", # Z4 G
-    "MISSING", # Z4 C
+    "nelu_z4_p_1787819252669.png", # Z4 P
+    "nelu_z4_g_1787819265115.png", # Z4 G
+    "nelu_z4_c_1787819277613.png", # Z4 C
     # ZIUA 5
-    "MISSING", # Z5 M
-    "MISSING", # Z5 P
-    "MISSING", # Z5 G
-    "MISSING", # Z5 C
+    "nelu_z5_m_1787819290917.png", # Z5 M
+    "nelu_z5_p_1787819302924.png", # Z5 P
+    "nelu_z5_g_1787819314975.png", # Z5 G
+    "nelu_z5_c_1787819327934.png", # Z5 C
     # ZIUA 6
-    "MISSING", # Z6 M
-    "MISSING", # Z6 P
-    "MISSING", # Z6 G
-    "MISSING", # Z6 C
+    "nelu_z6_m_1787819357759.png", # Z6 M
+    "nelu_z6_p_1787819369422.png", # Z6 P
+    "nelu_z6_g_1787819381282.png", # Z6 G
+    "nelu_z6_c_1787819393403.png", # Z6 C
     # ZIUA 7
-    "MISSING", # Z7 M
-    "MISSING", # Z7 P
+    "nelu_z7_m_1787819404924.png", # Z7 M
+    "nelu_z7_p_1787819418725.png", # Z7 P
     "MISSING", # Z7 G
     "MISSING" # Z7 C
 ]
