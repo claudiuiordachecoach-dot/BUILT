@@ -113,6 +113,10 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .tab.active{ border-bottom:2px solid var(--red) !important; }
 .panel{ padding:16px 14px !important; }
 .alert{ border-radius:14px !important; }
+.btn-yt{display:flex;align-items:center;gap:8px;margin:0 0 10px;padding:9px 14px;background:rgba(255,0,0,0.1);border:1px solid rgba(255,80,80,0.3);border-radius:4px;color:#ff6b6b;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;text-decoration:none;transition:all .2s; border-radius:10px;}
+.btn-yt:hover{background:rgba(255,0,0,0.2);color:#fff;}
+.btn-yt-icon{width:20px;height:14px;background:#ff0000;border-radius:3px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.btn-yt-icon::after{content:'';border-style:solid;border-width:4px 0 4px 8px;border-color:transparent transparent transparent #fff;}
 </style>
 <script>
 function showTab(elem, tabId) {
