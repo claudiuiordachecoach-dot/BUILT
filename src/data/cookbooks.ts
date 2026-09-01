@@ -10,4 +10,6 @@ export const PERSONAL_COOKBOOKS: Record<number, CookbookEntry> = {
   6: { file: "/Cartea_Retete_Claudia_v3.html", name: "Claudia 1460 kcal", emoji: "🥑" },
   9: { file: "/Cartea_Retete_Andy.html", name: "Andy", emoji: "👨‍🍳" },
   12: { file: "/Cartea_Retete_Nelu.html", name: "Nelu", emoji: "👨‍🍳" },
+  13: { file: "/quickref/dana-nutritie.html", name: "Dana", emoji: "👩‍🍳" },
+  14: { file: "/quickref/dana-nutritie.html", name: "Dana", emoji: "👩‍🍳" },
 };
