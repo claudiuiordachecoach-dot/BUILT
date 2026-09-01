@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>BUILT — Nutriție · Dana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --blk:#0A0A0A;--drk:#141414;--drk2:#1A1A1A;
+  --red:#C0392B;--rdim:rgba(192,57,43,0.12);
+  --wht:#F5F5F5;--muted:#777;--brd:#252525;--card:#111;
+  --orange:#E67E22;--green:#27AE60;--blue:#2980B9;--purple:#8E44AD;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;line-height:1.65;-webkit-font-smoothing:antialiased;max-width:100%;margin:0 auto;padding-bottom:30px;}
+@media(max-width:767px){body{max-width:480px;margin:0 auto;}}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:12px 16px 10px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;}
+.logo span{color:var(--red);}
+.hdr-right{text-align:right;}
+.hdr-name{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.hdr-day{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-top:2px;}
+.macro-bar{background:var(--rdim);border:1px solid rgba(192,57,43,.25);border-radius:4px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;}
+.macro-item{text-align:center;flex:1;}
+.macro-val{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--wht);line-height:1;}
+.macro-val span{font-size:12px;color:var(--muted);}
+.macro-lbl{font-size:8px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-top:2px;}
+.macro-val.kcal{color:var(--red);}
+
+.tabs{display:flex;overflow-x:auto;background:var(--drk2);border-bottom:1px solid var(--brd);scrollbar-width:none;position:sticky;top:0;z-index:90;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{flex:0 0 auto;padding:13px 15px;font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap;transition:all .15s;font-weight:700;}
+.tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+.panel{display:none;padding:16px;}
+.panel.active{display:block;}
+
+.alert{border-left:3px solid var(--red);background:var(--rdim);padding:12px 14px;margin-bottom:14px;font-size:12.5px;color:#ccc;line-height:1.65;border-radius:0 4px 4px 0;}
+.alert.green{border-color:var(--green);background:rgba(39,174,96,.06);}
+.alert.orange{border-color:var(--orange);background:rgba(230,126,34,.07);}
+.alert.blue{border-color:var(--blue);background:rgba(41,128,185,.07);}
+.alert.purple{border-color:var(--purple);background:rgba(142,68,173,.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:15px;letter-spacing:1px;color:var(--red);margin-bottom:5px;}
+.alert.green .alert-ttl{color:var(--green);}
+.alert.orange .alert-ttl{color:var(--orange);}
+.alert.blue .alert-ttl{color:var(--blue);}
+.alert.purple .alert-ttl{color:var(--purple);}
+.alert strong{color:var(--wht);}
+.alert em{color:var(--muted);}
+
+.acc-card{background:var(--drk);border:1px solid var(--brd);margin-bottom:10px;border-radius:6px;overflow:hidden;transition:border-color .2s;}
+.acc-card.open{border-color:var(--red);}
+.acc-hdr{padding:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none;}
+.acc-hdr:hover{background:rgba(255,255,255,.02);}
+.acc-left{flex:1;padding-right:8px;}
+.acc-lbl{font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--red);margin-bottom:2px;}
+.acc-ttl{font-family:'Bebas Neue',sans-serif;font-size:19px;letter-spacing:.5px;color:var(--wht);}
+.acc-sub{font-size:11px;color:#aaa;margin-top:2px;}
+.acc-icon{font-size:11px;color:var(--muted);transition:transform .25s;display:flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--card);border:1px solid var(--brd);border-radius:3px;flex-shrink:0;}
+.acc-card.open .acc-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+.acc-body{max-height:0;overflow:hidden;transition:max-height .4s cubic-bezier(.4,0,.2,1);}
+.acc-card.open .acc-body{max-height:4000px;}
+.acc-content{padding:4px 14px 14px;}
+.why{font-size:11.5px;color:#bbb;line-height:1.55;background:rgba(255,255,255,.02);border-left:2px solid var(--red);padding:8px 10px;margin-bottom:10px;}
+.why b{color:var(--wht);}
+
+.opt{background:var(--card);border:1px solid var(--brd);border-radius:5px;padding:11px 12px;margin-bottom:8px;}
+.opt:last-child{margin-bottom:0;}
+.opt-n{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;color:var(--red);font-weight:600;margin-bottom:3px;letter-spacing:1px;}
+.opt-ttl{font-size:13px;font-weight:700;color:var(--wht);margin-bottom:4px;}
+.opt-macros{font-family:'DM Mono',monospace;font-size:10.5px;color:var(--orange);margin-bottom:4px;}
+.opt-note{font-size:11.5px;color:#aaa;line-height:1.55;}
+.opt-note strong{color:var(--wht);}
+.tip{font-size:11px;color:var(--green);line-height:1.5;margin-top:10px;padding-top:8px;border-top:1px dashed var(--brd);}
+.tip b{color:var(--wht);}
+
+.meal-img{width:100%;border-radius:8px;margin-bottom:12px;aspect-ratio:1/1;object-fit:cover;opacity:.85;}
+
+.rule{display:flex;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px;color:#ccc;line-height:1.55;}
+.rule:last-child{border-bottom:none;}
+.rule b{font-family:'DM Mono',monospace;color:var(--red);flex-shrink:0;}
+.rule strong{color:var(--wht);}
+.sec-h{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--red);margin:18px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--brd);}
+.sec-h:first-child{margin-top:4px;}
+
+.ftr{text-align:center;padding:24px 16px 0;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
+.ftr span{color:var(--red);font-family:'Bebas Neue',sans-serif;letter-spacing:4px;font-size:14px;display:block;margin-bottom:6px;}
+
+/* BUILT — macro distincte */
+.macro-bar .macro-item:nth-child(1) .macro-val{color:#C0392B}
+.macro-bar .macro-item:nth-child(2) .macro-val{color:#F5F5F5}
+.macro-bar .macro-item:nth-child(3) .macro-val{color:#5B9BD5}
+.macro-bar .macro-item:nth-child(4) .macro-val{color:#5FB87A}
+
+/* BUILT app-skin */
+:root{ --brd:rgba(255,255,255,.10) !important; }
+.ex-block,.alert,.card,.proto,.guide-box,.urg-card,.opt-block,.day-card,.day-grid>div,.scenario,.phase-block,.stat,.box,.info,.ok{ border-radius:14px !important; border-color:rgba(255,255,255,.10) !important; }
+.hdr{ background:#0A0A0A !important; border-bottom:1px solid rgba(255,255,255,.08) !important; }
+.tabs{ background:#0A0A0A !important; border-bottom:1px solid rgba(255,255,255,.08) !important; padding:0 6px; }
+.tab{ font-size:11px !important; letter-spacing:1px !important; padding:13px 14px !important; }
+.tab.active{ border-bottom:2px solid var(--red) !important; }
+.panel{ padding:16px 14px !important; }
+.macro-bar,.macro-item{ border-radius:14px !important; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT<span>NUT</span></div>
+    <div class="hdr-right">
+      <div class="hdr-name">Dana · Nutriție</div>
+      <div class="hdr-day" id="hdr-day">Mix & Match</div>
+    </div>
+  </div>
+  <div class="macro-bar">
+    <div class="macro-item"><div class="macro-val kcal">1700</div><div class="macro-lbl">kcal</div></div>
+    <div class="macro-item"><div class="macro-val">130<span>g</span></div><div class="macro-lbl">Proteină</div></div>
+    <div class="macro-item"><div class="macro-val">182<span>g</span></div><div class="macro-lbl">Carbi</div></div>
+    <div class="macro-item"><div class="macro-val">50<span>g</span></div><div class="macro-lbl">Grăsimi</div></div>
+  </div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" data-tab="mese" onclick="showTab('mese')">Plan mese</div>
+  <div class="tab" data-tab="reguli" onclick="showTab('reguli')">Reguli de bază</div>
+  <div class="tab" data-tab="apa" onclick="showTab('apa')">Apă & Suplimente</div>
+  <div class="tab" data-tab="urgente" onclick="showTab('urgente')">Urgențe</div>
+</div>
+
+
+<!-- ═══════════════════════ PLAN MESE ═══════════════════════ -->
+<div class="panel active" id="tab-mese">
+
+  <div class="alert orange">
+    <div class="alert-ttl">CUM FUNCȚIONEAZĂ PLANUL ĂLA</div>
+    Fiecare masă are <strong>5 variante</strong> cu aceleași macronutriente. Alegi ce ai chef dimineața, la prânz și seara — <strong>orice combinație iese la aceleași calorii la final de zi</strong>. Poți lua Micul Dejun din Varianta 1 cu Prânzul din Varianta 4 și Cina din Varianta 2. Totul bate la fix. <em>Zero stres, zero calcule.</em>
+  </div>
+
+  <!-- MIC DEJUN -->
+  <div class="acc-card open" id="acc-md">
+    <div class="acc-hdr" onclick="toggleAcc('acc-md')">
+      <div class="acc-left">
+        <div class="acc-lbl">Mic dejun · 07:00-08:00 · Start de zi</div>
+        <div class="acc-ttl">Ancora zilei — Proteină + Carbi</div>
+        <div class="acc-sub">~33g proteină · ~50g carbi · ~12g grăsimi · ~425 kcal</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <img class="meal-img" src="img/dana-md.jpg" alt="Mic dejun">
+      <div class="why"><b>De ce contează:</b> Prima masă din zi îți stabilizează glicemia. Dacă sari peste ea sau mănânci doar un covrig, ajungi la 11:00 să razi tot ce prinzi. <strong>Minimum 30g proteină aici e non-negociabil.</strong></div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Iaurt grec cu ovăz și fructe (pregătit seara)</div><div class="opt-macros">P 33g · C 50g · G 12g · 430 kcal</div><div class="opt-note"><strong>250g iaurt grec 2%</strong> + <strong>50g fulgi de ovăz</strong> + <strong>100g fructe de pădure</strong> (afine, zmeură) + <strong>10g nuci</strong> + <strong>1 linguriță miere (~7g)</strong>. Pui totul seara în bol la frigider. Dimineața e gata.</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Omletă cu legume + pâine integrală</div><div class="opt-macros">P 34g · C 48g · G 13g · 435 kcal</div><div class="opt-note"><strong>3 ouă</strong> + <strong>30g cașcaval slab</strong> + <strong>100g legume</strong> (ardei, roșii, ciupercuțe) prăjite fără ulei în tigaia antiaderentă + <strong>2 felii pâine integrală (~70g)</strong>.</div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Clătite proteice cu banană</div><div class="opt-macros">P 33g · C 52g · G 11g · 425 kcal</div><div class="opt-note"><strong>2 ouă</strong> + <strong>40g fulgi de ovăz</strong> + <strong>150g brânză de vaci</strong>, blenduite. Tragi la tigaie antiaderentă fără ulei. Servești cu <strong>1 banană (~100g)</strong> feliată deasupra + <strong>1 linguriță de miere (~7g)</strong>.</div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Toast cu ou și avocado</div><div class="opt-macros">P 32g · C 48g · G 14g · 440 kcal</div><div class="opt-note"><strong>2 felii pâine integrală (~70g)</strong> prăjite + <strong>3 ouă</strong> (ochiuri sau fierte tare) + <strong>30g avocado</strong> (¼ avocado mic) + roșii cherry (<strong>50g</strong>). Sare, piper, fulgi de chili.</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">Budincă de ovăz cu pudră proteică</div><div class="opt-macros">P 34g · C 51g · G 10g · 420 kcal</div><div class="opt-note"><strong>40g fulgi de ovăz</strong> + <strong>1 scoop pudră proteică (~30g)</strong> + <strong>200ml lapte 1.5%</strong> + <strong>80g banană</strong> zdrobită. Amesteci seara, pui la frigider, dimineața adaugi <strong>50g fructe</strong>.</div></div>
+      <div class="tip"><b>💡 Tip:</b> Dacă ai dimineți în care nu ai timp, VAR 1 și VAR 5 (pregătite seara) sunt cele mai rapide: scoți bolul din frigider și mănânci.</div>
+    </div></div>
+  </div>
+
+  <!-- GUSTARE -->
+  <div class="acc-card" id="acc-gust">
+    <div class="acc-hdr" onclick="toggleAcc('acc-gust')">
+      <div class="acc-left">
+        <div class="acc-lbl">Gustare · 10:30-11:00 · Între mese</div>
+        <div class="acc-ttl">Taie foamea — Proteină curată</div>
+        <div class="acc-sub">~25g proteină · ~17g carbi · ~8g grăsimi · ~225 kcal</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <img class="meal-img" src="img/dana-gustare.jpg" alt="Gustare">
+      <div class="why"><b>De ce:</b> Gustarea cu proteină de la 10:30 previne foamea acumulată care te face să mănânci pe nerăsuflate la prânz. <strong>E „zidul de apărare" dintre tine și covrigul de la automat.</strong></div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Brânză de vaci cu roșii</div><div class="opt-macros">P 25g · C 16g · G 7g · 225 kcal</div><div class="opt-note"><strong>200g brânză de vaci (cottage)</strong> + <strong>100g roșii cherry</strong> + <strong>10g semințe de dovleac</strong>. Sare, boia, puțin piper.</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Iaurt grec cu nuci</div><div class="opt-macros">P 26g · C 15g · G 9g · 235 kcal</div><div class="opt-note"><strong>200g iaurt grec 2%</strong> + <strong>15g nuci</strong> (caju sau migdale) + <strong>50g fruct</strong> (măr, piersică).</div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Shake proteic rapid</div><div class="opt-macros">P 25g · C 18g · G 7g · 220 kcal</div><div class="opt-note"><strong>1 scoop pudră proteică (~30g)</strong> + <strong>200ml lapte 1.5%</strong> + <strong>80g banană</strong>. Blenduit 30 de secunde. Super rapid la birou.</div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Ouă fierte + fructe</div><div class="opt-macros">P 24g · C 18g · G 8g · 230 kcal</div><div class="opt-note"><strong>3 ouă fierte</strong> + <strong>1 măr mediu (~150g)</strong>. Le fierbi seara, le iei la muncă.</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">Sandviș proteic simplu</div><div class="opt-macros">P 26g · C 17g · G 7g · 225 kcal</div><div class="opt-note"><strong>1 felie pâine integrală (~35g)</strong> + <strong>80g piept de pui/curcan feliat</strong> + <strong>20g cașcaval slab</strong> + frunze de salată, roșie.</div></div>
+    </div></div>
+  </div>
+
+  <!-- PRÂNZ -->
+  <div class="acc-card" id="acc-pranz">
+    <div class="acc-hdr" onclick="toggleAcc('acc-pranz')">
+      <div class="acc-left">
+        <div class="acc-lbl">Prânz · 13:00-14:00 · Masa principală</div>
+        <div class="acc-ttl">Combustibilul zilei — Carbohidrați + Proteină</div>
+        <div class="acc-sub">~42g proteină · ~65g carbi · ~15g grăsimi · ~555 kcal</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <img class="meal-img" src="img/dana-pranz.jpg" alt="Prânz">
+      <div class="why"><b>De ce e masa cea mai mare:</b> Aici pui cel mai mult combustibil (carbohidrați), pentru că ai nevoie de energie în a doua parte a zilei — mai ales în zilele de antrenament. <strong>Mănâncă liniștită, pe îndelete, minimum 15 minute.</strong></div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Piept de pui la grătar + orez + salată</div><div class="opt-macros">P 43g · C 64g · G 14g · 550 kcal</div><div class="opt-note"><strong>160g piept de pui</strong> la grătar/tigaie + <strong>80g orez basmati</strong> (cantitate uscată, fiert) + salată verde mare (<strong>150g</strong>: roșii, castraveți, ceapă roșie) + <strong>1 lingură ulei de măsline (~10ml)</strong>.</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Paste integrale cu carne tocată de curcan</div><div class="opt-macros">P 42g · C 66g · G 15g · 560 kcal</div><div class="opt-note"><strong>80g paste integrale</strong> (cantitate uscată) + <strong>150g carne tocată de curcan</strong> (gătită în tigaie antiaderentă cu spray de ulei) + <strong>150g sos de roșii</strong> (passata) + usturoi, busuioc, oregano. <strong>Parmezan ras 10g</strong> deasupra.</div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Cartofi copți cu pui și legume la cuptor</div><div class="opt-macros">P 41g · C 63g · G 14g · 545 kcal</div><div class="opt-note"><strong>200g cartofi</strong> tăiați cuburi, copți la cuptor cu boia + <strong>150g piept de pui</strong> tăiat cuburi, la cuptor + <strong>150g legume</strong> (ardei, dovlecel, ceapă) la cuptor + <strong>1 lingură ulei de măsline (~10ml)</strong> peste tot. Sare, piper, usturoi granulat.</div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Bowl de ton cu orez și legume</div><div class="opt-macros">P 43g · C 65g · G 13g · 545 kcal</div><div class="opt-note"><strong>1 conservă ton în suc propriu (~150g, scurs)</strong> + <strong>80g orez basmati</strong> (cantitate uscată, fiert) + <strong>100g porumb boabe</strong> + <strong>100g castraveți și roșii</strong> + <strong>1 lingurită ulei de măsline (~5ml)</strong> + zeamă de lămâie.</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">Ciorbă de pui cu legume + pâine</div><div class="opt-macros">P 40g · C 64g · G 15g · 555 kcal</div><div class="opt-note"><strong>400ml ciorbă de pui</strong> (făcută cu <strong>150g piept de pui</strong>, cartofi, morcov, țelină, fasole verde, roșii, leușten) + <strong>2 felii pâine integrală (~70g)</strong>. <strong>Faci o oală duminica și ai pentru 2-3 zile.</strong></div></div>
+      <div class="tip"><b>💡 Meal prep:</b> Gătești duminica 2-3 variante de prânz, le pui în caserole și ai mâncare pentru toată săptămâna. Zero scuze, zero fast-food.</div>
+    </div></div>
+  </div>
+
+  <!-- CINA -->
+  <div class="acc-card" id="acc-cina">
+    <div class="acc-hdr" onclick="toggleAcc('acc-cina')">
+      <div class="acc-left">
+        <div class="acc-lbl">Cina · 19:00-20:00 · Ultima masă</div>
+        <div class="acc-ttl">Recuperare — Proteină + Grăsimi bune</div>
+        <div class="acc-sub">~30g proteină · ~50g carbi · ~15g grăsimi · ~495 kcal</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <img class="meal-img" src="img/dana-cina.jpg" alt="Cină">
+      <div class="why"><b>De ce contează cina:</b> Seara nu e despre a mânca cât mai puțin. E despre a mânca <strong>destul și inteligent</strong> ca să nu te trezești la 22:00 raid prin frigider. Proteina + legumele te țin sătulă și repară mușchii peste noapte.</div>
+      <div class="opt"><span class="opt-n">VAR 1</span><div class="opt-ttl">Somon la tigaie cu cartofi dulci și broccoli</div><div class="opt-macros">P 31g · C 50g · G 15g · 495 kcal</div><div class="opt-note"><strong>120g file de somon</strong> la tigaie antiaderentă + <strong>200g cartof dulce</strong> copt la cuptor + <strong>150g broccoli</strong> la abur sau cuptor. Lămâie, sare, mărar.</div></div>
+      <div class="opt"><span class="opt-n">VAR 2</span><div class="opt-ttl">Tocăniță de pui cu legume + mămăligă</div><div class="opt-macros">P 32g · C 48g · G 14g · 490 kcal</div><div class="opt-note"><strong>140g piept de pui</strong> tăiat cuburi, călit în tigaie + <strong>200g legume</strong> (ardei, roșii, ceapă) + <strong>120g mămăligă</strong> (din ~40g mălai). Boia dulce, usturoi, pătrunjel.</div></div>
+      <div class="opt"><span class="opt-n">VAR 3</span><div class="opt-ttl">Salată mare cu ton și cartofi</div><div class="opt-macros">P 30g · C 52g · G 13g · 485 kcal</div><div class="opt-note"><strong>1 conservă ton în suc propriu (~150g, scurs)</strong> + <strong>150g cartofi fierți</strong> reci, tăiați cuburi + <strong>150g salată</strong> (roșii, castraveți, ceapă, măsline ~20g) + <strong>1 lingurița ulei de măsline (~5ml)</strong> + oțet balsamic.</div></div>
+      <div class="opt"><span class="opt-n">VAR 4</span><div class="opt-ttl">Omletă mare cu cartofi și legume</div><div class="opt-macros">P 30g · C 50g · G 16g · 500 kcal</div><div class="opt-note"><strong>3 ouă</strong> + <strong>150g cartofi</strong> fierți și tăiați cuburi, trași puțin la tigaie + <strong>100g legume</strong> (ardei, roșii, ceapă) + <strong>30g cașcaval slab</strong> ras deasupra. Totul gătit într-o tigaie antiaderentă.</div></div>
+      <div class="opt"><span class="opt-n">VAR 5</span><div class="opt-ttl">Wrap cu pui și hummus</div><div class="opt-macros">P 31g · C 51g · G 14g · 490 kcal</div><div class="opt-note"><strong>1 tortilla integrală (~60g)</strong> + <strong>120g piept de pui la grătar</strong> feliat + <strong>30g hummus</strong> + <strong>100g salată</strong> (iceberg, roșii, castraveți) + <strong>20g ceapă roșie</strong>. Rulezi și tai pe jumătate.</div></div>
+      <div class="tip"><b>💡 Regulă:</b> Mănâncă cina cu cel puțin 2 ore înainte de somn. Nu te culca imediat după masă — dă-i timp stomacului.</div>
+    </div></div>
+  </div>
+
+</div>
+
+
+<!-- ═══════════════════════ REGULI DE BAZĂ ═══════════════════════ -->
+<div class="panel" id="tab-reguli">
+
+  <div class="alert">
+    <div class="alert-ttl">REGULILE CARE FAC TOTUL SĂ FUNCȚIONEZE</div>
+    Planul de mai sus e perfect calculat, dar dacă nu respecți regulile de bază, macronutrienții nu contează. <strong>Citește-le, memorează-le, aplică-le zilnic.</strong>
+  </div>
+
+  <div class="sec-h">PROTEINĂ</div>
+  <div class="rule"><b>01</b> <strong>130g proteină pe zi</strong> — obligatoriu. Dacă nu ajungi la target, adaugă un shake sau un iaurt grec în plus la gustare.</div>
+  <div class="rule"><b>02</b> <strong>Proteină la fiecare masă.</strong> Nu lăsa mese „goale" (doar un covrig sau doar fructe). Fiecare masă are minimum 25g proteină.</div>
+  <div class="rule"><b>03</b> Surse preferate: <strong>piept de pui, curcan, ton, somon, ouă, iaurt grec, brânză de vaci, pudră proteică.</strong></div>
+
+  <div class="sec-h">CARBOHIDRAȚI</div>
+  <div class="rule"><b>04</b> <strong>182g carbi pe zi.</strong> Nu-i tăia și nu te speria de ei. Sunt combustibilul tău, mai ales în zilele de antrenament.</div>
+  <div class="rule"><b>05</b> Surse preferate: <strong>orez, paste integrale, cartofi, cartof dulce, pâine integrală, ovăz, fructe.</strong></div>
+  <div class="rule"><b>06</b> Pune carbii mai mult la <strong>mic dejun și prânz</strong> (când ai nevoie de energie), mai puțin seara.</div>
+
+  <div class="sec-h">GRĂSIMI</div>
+  <div class="rule"><b>07</b> <strong>50g grăsimi pe zi.</strong> Nu le elimina, dar nici nu exagera. Sunt esențiale pentru hormoni.</div>
+  <div class="rule"><b>08</b> Surse preferate: <strong>ulei de măsline, avocado, nuci, semințe, somon, ouă întregi.</strong></div>
+  <div class="rule"><b>09</b> <strong>Evită grăsimile ascunse:</strong> sosuri (maioneza, ranch), alimente prăjite, brânzeturi grase (brie, camembert).</div>
+
+  <div class="sec-h">COMPORTAMENT</div>
+  <div class="rule"><b>10</b> <strong>Mănâncă încet, minimum 15 minute per masă.</strong> Pune furculița jos între înghițituri.</div>
+  <div class="rule"><b>11</b> <strong>Nu sări peste mese.</strong> Dacă sari peste gustare sau mic dejun, ajungi să compensezi haotic seara.</div>
+  <div class="rule"><b>12</b> <strong>Cântărește alimentele prima săptămână.</strong> Apoi vei ști „din ochi" cât înseamnă 150g pui sau 80g orez.</div>
+  <div class="rule"><b>13</b> <strong>8.000 de pași pe zi — non-negociabil.</strong> Sunt gratuiți, ard calorii și îți mențin metabolismul activ.</div>
+  <div class="rule"><b>14</b> <strong>Somn minimum 7 ore.</strong> Lipsa somnului crește foamea, scade disciplina și sabotează recuperarea.</div>
+
+</div>
+
+
+<!-- ═══════════════════════ APĂ & SUPLIMENTE ═══════════════════════ -->
+<div class="panel" id="tab-apa">
+
+  <div class="alert blue">
+    <div class="alert-ttl">HIDRATARE</div>
+    La 67kg, ai nevoie de <strong>minimum 2 litri de apă pe zi</strong>. În zilele de antrenament, adaugă încă 500ml. <strong>Apa nu e opțională.</strong> Deshidratarea scade performanța, crește oboseala și te face să confunzi setea cu foamea.
+  </div>
+
+  <div class="sec-h">PROGRAM APĂRECE ZI</div>
+  <div class="rule"><b>07:00</b> <strong>1 pahar mare (300ml)</strong> — imediat la trezire, înainte de mic dejun.</div>
+  <div class="rule"><b>10:00</b> <strong>500ml</strong> — pe parcursul dimineții, la birou. Ține bidonul pe masă.</div>
+  <div class="rule"><b>13:00</b> <strong>1 pahar (300ml)</strong> — înainte de prânz.</div>
+  <div class="rule"><b>16:00</b> <strong>500ml</strong> — pe parcursul după-amiezii.</div>
+  <div class="rule"><b>19:00</b> <strong>1 pahar (300ml)</strong> — înainte de cină.</div>
+  <div class="rule"><b>Total</b> <strong>~2 litri</strong> — fără să numeri cafeaua sau ceaiul.</div>
+
+  <div class="sec-h">SUPLIMENTE RECOMANDATE</div>
+  <div class="rule"><b>01</b> <strong>Pudră proteică (Whey sau Izolat)</strong> — 1 scoop/zi dacă nu atingi targetul de 130g proteină din mâncare.</div>
+  <div class="rule"><b>02</b> <strong>Creatină monohidrat</strong> — 3-5g pe zi, în orice lichid, în orice moment al zilei. Ajută forța și recuperarea.</div>
+  <div class="rule"><b>03</b> <strong>Magneziu</strong> — 1 capsulă seara, înainte de culcare. Ajută somnul și reduce crampele musculare.</div>
+  <div class="rule"><b>04</b> <strong>Vitamina D3</strong> — 2000-4000 UI/zi, mai ales în sezonul rece (octombrie-aprilie).</div>
+
+</div>
+
+
+<!-- ═══════════════════════ URGENȚE ═══════════════════════ -->
+<div class="panel" id="tab-urgente">
+
+  <div class="alert">
+    <div class="alert-ttl">CÂND TOTUL SE DUCE PE APA SÂMBETEI</div>
+    Nimeni nu e perfect. Vor fi zile în care nu ai gătit, ești la restaurant, sau pur și simplu nu ai chef. <strong>Iată ce faci ca să nu strici totul:</strong>
+  </div>
+
+  <div class="acc-card" id="acc-urg1">
+    <div class="acc-hdr" onclick="toggleAcc('acc-urg1')">
+      <div class="acc-left">
+        <div class="acc-lbl">Situația 1</div>
+        <div class="acc-ttl">Nu am gătit nimic azi</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="opt"><span class="opt-n">SALVARE</span><div class="opt-ttl">Comanda de urgență</div><div class="opt-note">Comandă un <strong>piept de pui la grătar + orez + salată</strong> de la orice restaurant. Cere fără sos și fără unt pe orez. E cea mai sigură comandă care există. La Mega Image sau Lidl: <strong>salată cu pui gata făcută + o felie de pâine</strong>.</div></div>
+    </div></div>
+  </div>
+
+  <div class="acc-card" id="acc-urg2">
+    <div class="acc-hdr" onclick="toggleAcc('acc-urg2')">
+      <div class="acc-left">
+        <div class="acc-lbl">Situația 2</div>
+        <div class="acc-ttl">Sunt la restaurant / la masă cu prietenii</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="opt"><span class="opt-n">REGULĂ</span><div class="opt-ttl">Alege proteină + legume, evită sosurile</div><div class="opt-note">Comandă <strong>carne la grătar + salată sau legume la cuptor</strong>. Evită: sosuri cremă, alimente pane/prăjite, deserturi. <strong>Nu-ți cere scuze că mănânci sănătos.</strong> Dacă vrei desert, împarte-l cu cineva.</div></div>
+    </div></div>
+  </div>
+
+  <div class="acc-card" id="acc-urg3">
+    <div class="acc-hdr" onclick="toggleAcc('acc-urg3')">
+      <div class="acc-left">
+        <div class="acc-lbl">Situația 3</div>
+        <div class="acc-ttl">Am mâncat prost ieri — ce fac azi?</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="opt"><span class="opt-n">MINDSET</span><div class="opt-ttl">Nu compensa. Revino la plan.</div><div class="opt-note"><strong>NU sări peste mese azi.</strong> NU face cardio „pedeapsă". NU tăia carbohidrații. Pur și simplu <strong>revii la planul normal</strong> ca și cum nimic nu s-a întâmplat. O singură zi proastă nu strică nimic. 10 zile proaste una după alta — aia strică.</div></div>
+    </div></div>
+  </div>
+
+  <div class="acc-card" id="acc-urg4">
+    <div class="acc-hdr" onclick="toggleAcc('acc-urg4')">
+      <div class="acc-left">
+        <div class="acc-lbl">Situația 4</div>
+        <div class="acc-ttl">Poftesc la dulce seara</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body"><div class="acc-content">
+      <div class="opt"><span class="opt-n">ALTERNATIVĂ</span><div class="opt-ttl">Budincă de proteină cu cacao</div><div class="opt-note"><strong>200g iaurt grec 2%</strong> + <strong>1 scoop pudră proteică cu ciocolată</strong> + <strong>5g cacao pură</strong>. Amesteci bine. Are gust de desert, dar are 30g proteină și zero junk. <strong>Asta e desertul tău.</strong></div></div>
+    </div></div>
+  </div>
+
+</div>
+
+
+<!-- FOOTER -->
+<div class="ftr">
+  <span>BUILT</span>
+  Plan calculat pentru Dana · 1700 kcal · 130P / 182C / 50G<br>
+  Creat de Claudiu Iordache · BUILT Coaching
+</div>
+
+<script>
+function showTab(id){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  document.querySelector('.tab[data-tab="'+id+'"]').classList.add('active');
+}
+function toggleAcc(id){
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+</body>
+</html>
