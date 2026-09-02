@@ -130,6 +130,160 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
   </div>
 </div>
 
+<!-- TABS -->
+<div class="tabs">
+  <div class="tab active" onclick="showTab('mese')" data-tab="mese">PLAN MESE MIX & MATCH</div>
+</div>
+
+<!-- PLAN MESE -->
+<div class="panel active" id="tab-mese">
+  <div class="alert orange">
+    <div class="alert-ttl">REGULA MIX & MATCH</div>
+    Alege ORICE opțiune de la Mic Dejun, ORICE opțiune de la Prânz și ORICE opțiune de la Cină + 1 Gustare. Indiferent de combinația pe care o faci, vei atinge la milimetru ținta de 1700 kcal la finalul zilei!
+  </div>
+
+  <!-- MIC DEJUN -->
+  <div class="acc-card open" id="acc-md">
+    <div class="acc-hdr" onclick="toggleAcc('acc-md')">
+      <div class="acc-left">
+        <div class="acc-lbl">Mic Dejun</div>
+        <div class="acc-ttl">Masa 1 (40g P / 50g C / 15g F)</div>
+        <div class="acc-sub">~500 kcal per opțiune</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="acc-content">
+        <div class="opt">
+          <div class="opt-ttl">1. Ovăz Proteic cu Fructe</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 60g fulgi de ovăz, 30g proteină pudră (orice aromă), 100g iaurt grecesc 2%, 15g migdale sau nuci, 50g fructe de pădure (zmeură/afine).<br><em>Preparare:</em> Pui apă fierbinte peste ovăz, apoi amesteci cu restul.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">2. Ouă, Șuncă & Pâine</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 2 ouă întregi + 150g albuș lichid (sau 3 albușuri de ou din comerț), 50g șuncă pui/curcan, 2 felii pâine integrală (aprox. 60g total), legume la discreție, 5g unt pentru gătit ouăle.<br><em>Desert:</em> 1 măr mediu.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">3. Clătite Proteice RapiDe</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 1 ou, 50g ovăz măcinat (sau făină de ovăz), 30g proteină pudră, 100ml lapte, 50g banană pasată în aluat, 10g unt de arahide pus deasupra.<br><em>Preparare:</em> Se trag la tigaie antiaderentă.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">4. Brânză Cottage Dulce</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 200g perle de brânză light (Cottage), 20g proteină pudră amestecată în brânză, 50g cereale integrale crocante, 10g miere, 15g nuci.<br><em>Tip:</em> E o masă rece, super rapidă, gata în 1 minut.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">5. Wrap Sărat de Dimineață</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 1 lipie integrală mare, 2 ouă făcute ochi sau omletă, 80g șuncă curcan, 30g cremă de brânză light, salată/spanac.<br><em>Pe lângă:</em> 100g struguri sau un fruct la alegere.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PRÂNZ -->
+  <div class="acc-card orange" id="acc-pranz">
+    <div class="acc-hdr" onclick="toggleAcc('acc-pranz')">
+      <div class="acc-left">
+        <div class="acc-lbl">Prânz</div>
+        <div class="acc-ttl">Masa 2 (40g P / 50g C / 15g F)</div>
+        <div class="acc-sub">~500 kcal per opțiune</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="acc-content">
+        <div class="opt">
+          <div class="opt-ttl">1. Pui, Orez & Legume</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 150g piept de pui la grătar, 50g orez (cântărit crud), 150g legume asortate trase la tigaie sau fierte, 10ml ulei de măsline pus crud peste legume, condimente și sos zero.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">2. Paste cu Ton</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 60g paste integrale (cântărite crud), 1 conservă de ton în suc propriu (scursă bine - 130g net), sos de roșii la discreție, 10g parmezan ras, 10ml ulei de măsline adăugat la final peste paste.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">3. Salată Sățioasă cu Vită sau Pui</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 150g carne vită slabă (sau pui), 200g cartofi tăiați cubulețe făcuți la cuptor/airfryer, salată verde mare + legume, 15ml ulei de măsline pentru dressing, 1 felie pâine tip Wasa.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">4. Wrap Cald cu Pui și Mozzarella</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 1 lipie integrală mare, 120g pui gătit tăiat cuburi, 50g mozzarella light, 30g iaurt grecesc folosit ca sos cu usturoi, salată.<br><em>Pe lângă:</em> 1 măr mare.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">5. Ciorbă & Pui cu Piure</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 1 bol ciorbă clară de legume (fără smântână/ulei mult), 130g pui la grătar, 200g cartofi fierți pisați cu puțin lapte degresat (piure), salată de varză cu 10ml ulei, 1 felie de pâine integrală.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CINĂ -->
+  <div class="acc-card green" id="acc-cina">
+    <div class="acc-hdr" onclick="toggleAcc('acc-cina')">
+      <div class="acc-left">
+        <div class="acc-lbl">Cină</div>
+        <div class="acc-ttl">Masa 3 (40g P / 50g C / 15g F)</div>
+        <div class="acc-sub">~500 kcal per opțiune</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="acc-content">
+        <div class="opt">
+          <div class="opt-ttl">1. Pește la Cuptor cu Cartofi</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 180g pește alb (cod, șalău, doradă), 250g cartofi la cuptor, 150g fasole verde sau sparanghel, 10ml ulei de măsline peste legume, 10g parmezan ras.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">2. Salată Grecească cu Pui</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 150g pui grătar tăiat cubulețe, 50g brânză feta light, 20g măsline, roșii, castraveți, ceapă, 10ml ulei de măsline (dressing), 2 felii de pâine integrală prăjite (sau crutoane făcute din ele).<br><em>Desert:</em> Un fruct la alegere.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">3. Burger de Vită Homemade</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 1 chiflă de burger (aprox 80g), 120g carne tocată vită slabă (5% grăsime) modelată chiftea, 1 felie brânză light/Cheddar, muștar, salată. 150g cartofi tăiați bețișoare, făcuți la Airfryer lângă.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">4. Cottage Cheese & Prosciutto (Fără Gătit)</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 200g brânză perle light (cottage), 60g prosciutto sau șuncă slabă, 2 felii pâine integrală, 100g struguri, 10g nuci/migdale.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">5. Mămăligă cu Ficăței sau Pui</div>
+          <div class="opt-note"><strong>Ingrediente:</strong> 150g ficăței de pui sau piept de pui făcuți la tigaie (fără ulei mult), 60g mălai uscat (fiert în mămăligă), 30g telemea/brânză rasă light, 10g unt adăugat la final deasupra.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUSTARE -->
+  <div class="acc-card blue" id="acc-snack">
+    <div class="acc-hdr" onclick="toggleAcc('acc-snack')">
+      <div class="acc-left">
+        <div class="acc-lbl">Gustări (Alege 1 pe zi)</div>
+        <div class="acc-ttl">Snack-ul Zilnic</div>
+        <div class="acc-sub">~200 kcal per opțiune</div>
+      </div>
+      <div class="acc-icon">▼</div>
+    </div>
+    <div class="acc-body">
+      <div class="acc-content">
+        <div class="opt">
+          <div class="opt-ttl">A. Iaurt cu Banană</div>
+          <div class="opt-note">150g iaurt grecesc 2% + 1 banană medie feliată + scorțișoară.</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">B. Baton Proteic</div>
+          <div class="opt-note">Orice baton proteic din comerț care are în jur de 200-220 de calorii (ex: Myprotein Impact Bar).</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">C. Ciocolată & Iaurt Proteic</div>
+          <div class="opt-note">30g ciocolată neagră (minim 70% cacao) alături de un iaurt proteic mic (ex: Zuzu Fit 150g sau similar).</div>
+        </div>
+        <div class="opt">
+          <div class="opt-ttl">D. Rondele cu Unt de Arahide</div>
+          <div class="opt-note">2 rondele de orez expandat unse cu 20g unt de arahide 100% natural + 50g banane feliate deasupra.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
 <!-- FOOTER -->
 <div class="ftr">
   <span>BUILT</span>
