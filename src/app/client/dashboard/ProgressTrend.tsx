@@ -19,6 +19,7 @@ export default function ProgressTrend({ clientId }: { clientId: number }) {
   if (points === null) return null;
   const weightPts = points.filter((p) => p.weight != null);
   const bfPts = points.filter((p) => p.body_fat != null);
+  const waistPts = points.filter((p) => p.waist != null);
   // Nu randăm un card mort — apare doar când ai destule date ca să spună o poveste.
   if (weightPts.length < 2 && waistPts.length < 2 && bfPts.length < 2) return null;
 
