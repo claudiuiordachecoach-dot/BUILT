@@ -18,15 +18,17 @@ export default function ProgressTrend({ clientId }: { clientId: number }) {
 
   if (points === null) return null;
   const weightPts = points.filter((p) => p.weight != null);
-  const waistPts = points.filter((p) => p.waist != null);
+  const bfPts = points.filter((p) => p.body_fat != null);
   // Nu randăm un card mort — apare doar când ai destule date ca să spună o poveste.
-  if (weightPts.length < 2 && waistPts.length < 2) return null;
+  if (weightPts.length < 2 && waistPts.length < 2 && bfPts.length < 2) return null;
 
   const wDelta = weightPts.length >= 2 ? weightPts[weightPts.length - 1].weight! - weightPts[0].weight! : null;
   const waDelta = waistPts.length >= 2 ? waistPts[waistPts.length - 1].waist! - waistPts[0].waist! : null;
+  const bfDelta = bfPts.length >= 2 ? bfPts[bfPts.length - 1].body_fat! - bfPts[0].body_fat! : null;
   const hasWaist = waistPts.length >= 2;
+  const hasBf = bfPts.length >= 2;
 
-  const data = points.map((p) => ({ date: fmtDate(p.date), weight: p.weight ?? null, waist: p.waist ?? null }));
+  const data = points.map((p) => ({ date: fmtDate(p.date), weight: p.weight ?? null, waist: p.waist ?? null, body_fat: p.body_fat ?? null }));
 
   return (
     <div className="bg-[#111111] border border-white/10 rounded-2xl p-5 mb-5">
@@ -52,6 +54,14 @@ export default function ProgressTrend({ clientId }: { clientId: number }) {
             <p className="text-[10px] text-zinc-600">talie</p>
           </div>
         )}
+        {bfDelta != null && (
+          <div>
+            <p className={`text-2xl font-bold ${bfDelta <= 0 ? "text-green-400" : "text-amber-400"}`}>
+              {bfDelta <= 0 ? "−" : "+"}{Math.abs(bfDelta).toFixed(1)} <span className="text-sm font-medium">%</span>
+            </p>
+            <p className="text-[10px] text-zinc-600">grăsime</p>
+          </div>
+        )}
       </div>
 
       <div style={{ height: 170 }}>
@@ -67,6 +77,7 @@ export default function ProgressTrend({ clientId }: { clientId: number }) {
             {target != null && <ReferenceLine y={target} stroke="#3FAE6A" strokeDasharray="4 4" />}
             <Line type="monotone" dataKey="weight" stroke="#C0392B" strokeWidth={2} dot={{ r: 2.5, fill: "#C0392B" }} name="Greutate (kg)" connectNulls />
             {hasWaist && <Line type="monotone" dataKey="waist" stroke="#60a5fa" strokeWidth={2} dot={{ r: 2.5, fill: "#60a5fa" }} name="Talie (cm)" connectNulls />}
+            {hasBf && <Line type="monotone" dataKey="body_fat" stroke="#E67E22" strokeWidth={2} dot={{ r: 2.5, fill: "#E67E22" }} name="Grăsime (%)" connectNulls />}
           </LineChart>
         </ResponsiveContainer>
       </div>
@@ -74,6 +85,7 @@ export default function ProgressTrend({ clientId }: { clientId: number }) {
       <div className="flex gap-4 mt-2">
         <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-built-red" /><span className="text-[10px] text-zinc-500">Greutate</span></span>
         {hasWaist && <span className="flex items-center gap-1.5"><span className="w-3 h-0.5" style={{ background: "#60a5fa" }} /><span className="text-[10px] text-zinc-500">Talie</span></span>}
+        {hasBf && <span className="flex items-center gap-1.5"><span className="w-3 h-0.5" style={{ background: "#E67E22" }} /><span className="text-[10px] text-zinc-500">Grăsime</span></span>}
         {target != null && <span className="flex items-center gap-1.5"><span className="w-3 h-0.5" style={{ background: "#3FAE6A" }} /><span className="text-[10px] text-zinc-500">Țintă</span></span>}
       </div>
     </div>

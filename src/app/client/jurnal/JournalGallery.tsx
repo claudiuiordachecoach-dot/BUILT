@@ -23,7 +23,9 @@ export default function JournalGallery({
     type: "meal",
     label: "",
     photo_url: "",
-    note: ""
+    note: "",
+    weight: "",
+    body_fat: ""
   });
 
   const filteredEntries = entries.filter(e => filter === "toate" || e.type === filter);
@@ -50,10 +52,12 @@ export default function JournalGallery({
         type: formData.type,
         label: formData.label,
         photo_url: formData.photo_url,
-        note: formData.note
+        note: formData.note,
+        weight: formData.type === "cantar" && formData.weight ? parseFloat(formData.weight) : undefined,
+        body_fat: formData.type === "cantar" && formData.body_fat ? parseFloat(formData.body_fat) : undefined
       });
       setIsAdding(false);
-      setFormData({ type: "meal", label: "", photo_url: "", note: "" });
+      setFormData({ type: "meal", label: "", photo_url: "", note: "", weight: "", body_fat: "" });
     } catch (error) {
       console.error("Eroare la salvare:", error);
       setEntries(entries);
@@ -82,6 +86,7 @@ export default function JournalGallery({
       case "meal": return "Masă";
       case "training": return "Antrenament";
       case "steps": return "Pași";
+      case "cantar": return "Cântar";
       case "other": return "Altceva";
       default: return type;
     }
@@ -96,6 +101,7 @@ export default function JournalGallery({
           { id: "meal", label: "Mese" },
           { id: "training", label: "Antrenament" },
           { id: "steps", label: "Pași" },
+          { id: "cantar", label: "Cântar" },
           { id: "other", label: "Altele" }
         ].map(f => (
           <button
@@ -189,10 +195,38 @@ export default function JournalGallery({
                   <option value="meal">Masă</option>
                   <option value="training">Antrenament</option>
                   <option value="steps">Pași</option>
+                  <option value="cantar">Cântar (Evoluție)</option>
                   <option value="other">Altceva</option>
                 </select>
               </div>
               
+              {formData.type === "cantar" && (
+                <div className="flex gap-4">
+                  <div className="flex-1">
+                    <label className="text-[10px] font-condensed uppercase tracking-wider text-zinc-500 mb-1.5 block">Greutate (kg)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={formData.weight}
+                      onChange={e => setFormData({ ...formData, weight: e.target.value })}
+                      className="w-full bg-black/50 border border-white/10 rounded-lg text-sm p-2.5 text-white focus:outline-none focus:border-built-red transition-colors"
+                      placeholder="ex: 81.6"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="text-[10px] font-condensed uppercase tracking-wider text-zinc-500 mb-1.5 block">Grăsime (%)</label>
+                    <input
+                      type="number"
+                      step="0.1"
+                      value={formData.body_fat}
+                      onChange={e => setFormData({ ...formData, body_fat: e.target.value })}
+                      className="w-full bg-black/50 border border-white/10 rounded-lg text-sm p-2.5 text-white focus:outline-none focus:border-built-red transition-colors"
+                      placeholder="ex: 35.2"
+                    />
+                  </div>
+                </div>
+              )}
+
               <div>
                 <label className="text-[10px] font-condensed uppercase tracking-wider text-zinc-500 mb-1.5 block">Titlu scurt (ex: Cină cu pește)</label>
                 <input

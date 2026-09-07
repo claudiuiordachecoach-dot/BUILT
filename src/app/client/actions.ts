@@ -630,7 +630,7 @@ export async function getMyTodayTraining(): Promise<{ status?: TrainingStatus; n
   }
 }
 
-export interface MetricPoint { date: string; weight?: number; waist?: number }
+export interface MetricPoint { date: string; weight?: number; waist?: number; body_fat?: number }
 
 /** Istoricul greutății + taliei din daily_logs — pentru graficul „Evoluția ta". */
 export async function getMetricHistory(clientId: number): Promise<{ points: MetricPoint[]; targetWeight: number | null }> {
@@ -645,7 +645,8 @@ export async function getMetricHistory(clientId: number): Promise<{ points: Metr
       const items = (row.items as Record<string, unknown>) ?? {};
       const w = typeof items.weight === "number" ? items.weight : undefined;
       const wa = typeof items.waist === "number" ? items.waist : undefined;
-      if (w != null || wa != null) points.push({ date: row.log_date as string, weight: w, waist: wa });
+      const bf = typeof items.body_fat === "number" ? items.body_fat : undefined;
+      if (w != null || wa != null || bf != null) points.push({ date: row.log_date as string, weight: w, waist: wa, body_fat: bf });
     }
     return { points, targetWeight: (clientRes.data?.target_weight_kg as number | null) ?? null };
   } catch {
@@ -1060,7 +1061,7 @@ export async function getJournalEntries(overrideClientId?: number): Promise<Jour
   return data ?? [];
 }
 
-export async function addJournalEntry(entry: { type: string; label?: string; photo_url: string; note?: string }) {
+export async function addJournalEntry(entry: { type: string; label?: string; photo_url: string; note?: string; weight?: number; body_fat?: number }) {
   const clientId = await getClientId();
   if (!clientId) throw new Error("Not auth");
   const db = getSupabaseServer();
@@ -1072,6 +1073,25 @@ export async function addJournalEntry(entry: { type: string; label?: string; pho
     note: entry.note ?? null
   });
   if (error) console.error("Error adding journal entry:", error);
+
+  if (entry.weight != null || entry.body_fat != null) {
+    const date = new Date().toISOString().slice(0, 10);
+    const { data: existing } = await db
+      .from("daily_logs")
+      .select("items")
+      .eq("client_id", clientId)
+      .eq("log_date", date)
+      .single();
+    
+    const items = existing?.items ? { ...(existing.items as Record<string, unknown>) } : {};
+    if (entry.weight != null) items.weight = entry.weight;
+    if (entry.body_fat != null) items.body_fat = entry.body_fat;
+    
+    await db.from("daily_logs").upsert(
+      { client_id: clientId, log_date: date, items },
+      { onConflict: "client_id, log_date" }
+    );
+  }
 }
 
 export async function deleteJournalEntry(id: string) {
