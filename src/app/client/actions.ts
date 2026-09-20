@@ -1199,3 +1199,47 @@ async function processMealImage(clientId: number, entryId: string, createdAt: st
     console.error("Live processing failed", e);
   }
 }
+
+
+async function processScaleImage(clientId: number, entryId: string, createdAt: string, photoUrl: string) {
+  try {
+    const anthropic = new (require('@anthropic-ai/sdk').default)({ apiKey: process.env.ANTHROPIC_API_KEY });
+    const imgResp = await fetch(photoUrl);
+    const arrayBuffer = await imgResp.arrayBuffer();
+    const base64Img = Buffer.from(arrayBuffer).toString('base64');
+    
+    const msg = await anthropic.messages.create({
+      model: "claude-3-5-sonnet-20241022", max_tokens: 512,
+      messages: [{
+        role: "user",
+        content: [
+          { type: "image", source: { type: "base64", media_type: "image/jpeg", data: base64Img } },
+          { type: "text", text: "Extract the person's body weight and body fat percentage from this scale/app screenshot. Return ONLY a valid JSON object. Keys required: 'weight' (float, kg), 'body_fat' (float, %). If missing, put null." }
+        ]
+      }]
+    });
+    
+    let extracted = "";
+    if (msg.content[0].type === 'text') extracted = msg.content[0].text;
+    const data = JSON.parse(extracted.trim().replace(/^```json/, '').replace(/```$/, ''));
+    
+    if (data.weight != null || data.body_fat != null) {
+      const dateStr = createdAt.slice(0, 10);
+      const db = getSupabaseServer();
+      
+      const { data: existing } = await db.from("daily_logs").select("items").eq("client_id", clientId).eq("log_date", dateStr).single();
+      const items = existing?.items ? { ...(existing.items as any) } : {};
+      
+      if (data.weight != null) items.weight = data.weight;
+      if (data.body_fat != null) items.body_fat = data.body_fat;
+      
+      await db.from("daily_logs").upsert(
+        { client_id: clientId, log_date: dateStr, items },
+        { onConflict: "client_id, log_date" }
+      );
+      console.log("Processed live scale image for", dateStr);
+    }
+  } catch (e) {
+    console.error("Live scale processing failed", e);
+  }
+}
