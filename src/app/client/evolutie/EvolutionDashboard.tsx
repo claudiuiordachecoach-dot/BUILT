@@ -108,7 +108,7 @@ export default function EvolutionDashboard({
                         contentStyle={{ background: '#111', border: '1px solid rgba(255,255,255,0.1)', borderRadius: 8 }}
                         labelStyle={{ color: '#a1a1aa', fontSize: 11 }}
                         itemStyle={{ fontSize: 12, color: '#fff' }}
-                        formatter={(val: number) => [`${val} kcal`, 'Consumat']}
+                        formatter={(val: any) => [`${val} kcal`, 'Consumat']}
                       />
                       {nutritionData[0]?.calories_goal && (
                         <ReferenceLine y={nutritionData[0].calories_goal} stroke="#3FAE6A" strokeDasharray="4 4" />
