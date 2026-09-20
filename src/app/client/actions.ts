@@ -1100,3 +1100,102 @@ export async function deleteJournalEntry(id: string) {
   const db = getSupabaseServer();
   await db.from("client_journal").delete().eq("id", id).eq("client_id", clientId);
 }
+
+/* ─── Nutritie & Evolutie (macros din poze) ──────────────────────────────── */
+
+export interface NutritionLog {
+  id: string;
+  log_date: string;
+  calories_goal: number | null;
+  calories_consumed: number | null;
+  protein_g: number | null;
+  protein_target: number | null;
+  carbs_g: number | null;
+  carbs_target: number | null;
+  fat_g: number | null;
+  fat_target: number | null;
+  activity_kcal: number | null;
+}
+
+export async function getNutritionLogs(clientId: number): Promise<NutritionLog[]> {
+  try {
+    const db = getSupabaseServer();
+    const { data } = await db
+      .from('nutrition_logs')
+      .select('*')
+      .eq('client_id', clientId)
+      .order('log_date', { ascending: true });
+    return data ?? [];
+  } catch (e) {
+    console.error('Eroare extragere nutrition logs:', e);
+    return [];
+  }
+}
+
+
+import Anthropic from '@anthropic-ai/sdk';
+
+async function processMealImage(clientId: number, entryId: string, createdAt: string, photoUrl: string) {
+  try {
+    const anthropic = new Anthropic({
+      apiKey: process.env.ANTHROPIC_API_KEY,
+    });
+    
+    const imgResp = await fetch(photoUrl);
+    const arrayBuffer = await imgResp.arrayBuffer();
+    const base64Img = Buffer.from(arrayBuffer).toString('base64');
+    
+    const msg = await anthropic.messages.create({
+      model: "claude-3-5-sonnet-20241022",
+      max_tokens: 1024,
+      messages: [
+        {
+          role: "user",
+          content: [
+            {
+              type: "image",
+              source: {
+                type: "base64",
+                media_type: "image/jpeg",
+                data: base64Img,
+              },
+            },
+            {
+              type: "text",
+              text: "You are a nutrition assistant. Extract macros from this MyFitnessPal screenshot. Return ONLY a valid JSON object, no markdown, no other text. Keys required: calories_goal, calories_consumed, protein_g, protein_target, carbs_g, carbs_target, fat_g, fat_target, activity_kcal. If any are missing, put null.",
+            }
+          ],
+        }
+      ],
+    });
+    
+    let extractedText = "";
+    if (msg.content[0].type === 'text') {
+      extractedText = msg.content[0].text;
+    }
+    const macros = JSON.parse(extractedText.trim().replace(/^```json/, '').replace(/```$/, ''));
+    
+    const dateStr = createdAt.slice(0, 10);
+    const db = getSupabaseServer();
+    
+    await db.from("nutrition_logs").upsert({
+      client_id: clientId,
+      log_date: dateStr,
+      journal_entry_id: entryId,
+      calories_goal: macros.calories_goal ?? null,
+      calories_consumed: macros.calories_consumed ?? null,
+      protein_g: macros.protein_g ?? null,
+      protein_target: macros.protein_target ?? null,
+      carbs_g: macros.carbs_g ?? null,
+      carbs_target: macros.carbs_target ?? null,
+      fat_g: macros.fat_g ?? null,
+      fat_target: macros.fat_target ?? null,
+      activity_kcal: macros.activity_kcal ?? null,
+      source: "vision_live"
+    }, { onConflict: "client_id,log_date" });
+    
+    console.log("Processed live meal image for", dateStr);
+  } catch (e) {
+    console.error("Live processing failed", e);
+  }
+}

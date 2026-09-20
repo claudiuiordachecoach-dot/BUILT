@@ -24,4 +24,5 @@ export const NAV_ICONS: Record<string, ReactNode> = {
   forta: <I><path d="M6.5 6.5 17.5 17.5" /><path d="M21 21l-1-1" /><path d="M3 3l1 1" /><path d="M18 22l4-4" /><path d="M2 6l4-4" /></I>,
   raport: <I><path d="M3 3v18h18" /><rect x="7" y="11" width="3" height="6" rx="0.5" /><rect x="12" y="7" width="3" height="10" rx="0.5" /><rect x="17" y="13" width="3" height="4" rx="0.5" /></I>,
   jurnal: <I><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" /><circle cx="12" cy="13" r="4" /></I>,
+  evolutie: <I><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" /></I>,
 };

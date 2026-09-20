@@ -16,6 +16,7 @@ const NAV = [
   { label: "Nutriție", short: "Nutriție", href: "/client/nutritie", key: "nutritie" },
   { label: "Rețetele mele", short: "Rețete", href: "/client/retete", key: "retete" },
   { label: "Check-in", short: "Check-in", href: "/client/checkin", key: "checkin" },
+  { label: "Evoluție", short: "Evoluție", href: "/client/evolutie", key: "evolutie" },
   { label: "Raportul Tău", short: "Raport", href: "/client/raport", key: "raport" },
   { label: "Mesaje", short: "Mesaje", href: "/client/mesaje", key: "mesaje" },
   { label: "Academia", short: "Academia", href: "/client/module", key: "module" },
