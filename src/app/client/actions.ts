@@ -1178,12 +1178,22 @@ async function processMealImage(clientId: number, entryId: string, createdAt: st
     const dateStr = createdAt.slice(0, 10);
     const db = getSupabaseServer();
     
+    let cals = macros.calories_consumed ?? 0;
+    const p = macros.protein_g ?? 0;
+    const c = macros.carbs_g ?? 0;
+    const f = macros.fat_g ?? 0;
+    
+    // Recalculate accurately based on macros
+    if (p > 0 || c > 0 || f > 0) {
+      cals = (p * 4) + (c * 4) + (f * 9);
+    }
+    
     await db.from("nutrition_logs").upsert({
       client_id: clientId,
       log_date: dateStr,
       journal_entry_id: entryId,
       calories_goal: macros.calories_goal ?? null,
-      calories_consumed: macros.calories_consumed ?? null,
+      calories_consumed: cals,
       protein_g: macros.protein_g ?? null,
       protein_target: macros.protein_target ?? null,
       carbs_g: macros.carbs_g ?? null,
