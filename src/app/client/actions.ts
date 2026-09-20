@@ -635,7 +635,7 @@ export interface MetricPoint { date: string; weight?: number; waist?: number; bo
 /** Istoricul greutății + taliei din daily_logs — pentru graficul „Evoluția ta". */
 export async function getMetricHistory(clientId: number): Promise<{ points: MetricPoint[]; targetWeight: number | null }> {
   try {
-    const db = getSupabaseServer();
+    const db = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
     const [logsRes, clientRes] = await Promise.all([
       db.from("daily_logs").select("log_date, items").eq("client_id", clientId).order("log_date", { ascending: true }),
       db.from("clients").select("target_weight_kg").eq("id", clientId).single(),
