@@ -9,7 +9,12 @@ type Block =
 type Day = { key: string; label: string; blocks: Block[] };
 
 type SetInput = { kg: string; reps: string };
-type ExLog = { sets: SetInput[]; lastBest: { kg: number; reps: number } | null; open: boolean };
+type ExLog = {
+  sets: SetInput[];
+  lastBest: { kg: number; reps: number } | null;
+  lastSets: { kg: number; reps: number }[];
+  open: boolean;
+};
 
 function bestOf(sets: { kg: number; reps: number }[]) {
   let b: { kg: number; reps: number } | null = null;
@@ -35,7 +40,17 @@ function ShadowHtml({ html, css }: { html: string; css: string }) {
   return <div ref={ref} />;
 }
 
-export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { quickrefUrl: string; todayKey: string | null; labelFor: (k: string) => string }) {
+export default function NativeWorkout({
+  quickrefUrl,
+  todayKey,
+  labelFor,
+  overrideClientId,
+}: {
+  quickrefUrl: string;
+  todayKey: string | null;
+  labelFor: (k: string) => string;
+  overrideClientId?: number;
+}) {
   const [css, setCss] = useState("");
   const [days, setDays] = useState<Day[]>([]);
   const [activeKey, setActiveKey] = useState("");
@@ -56,7 +71,8 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
   // 1) Fetch + parse foaia (same-origin) → CSS + zile cu blocuri în ORDINE (zero pierdere).
   useEffect(() => {
     let alive = true;
-    fetch(quickrefUrl).then((r) => r.text()).then((text) => {
+    const cacheBuster = quickrefUrl + (quickrefUrl.includes("?") ? "&" : "?") + "t=" + Date.now();
+    fetch(cacheBuster, { cache: "no-store" }).then((r) => r.text()).then((text) => {
       if (!alive) return;
       const doc = new DOMParser().parseFromString(text, "text/html");
       const styleCss = [...doc.querySelectorAll("style")].map((s) => s.textContent || "").join("\n").replace(/:root/g, ":host");
@@ -154,16 +170,25 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
     if (!active) return;
     setSaved(false);
     (async () => {
-      const last = await getLastSession(active.key);
+      const last = await getLastSession(active.key, overrideClientId);
       setLastDate(last?.logged_on ?? null);
       const byName = new Map((last?.exercises ?? []).map((e) => [e.name, e]));
       setLog(exNames.map((n) => {
         const le = byName.get(n);
-        return { sets: [{ kg: "", reps: "" }], lastBest: le ? bestOf(le.sets) : null, open: false };
+        const lastSets = le?.sets ?? [];
+        // Default to either previous sets count or at least 2 working sets
+        const count = Math.max(2, lastSets.length);
+        const initialSets = Array.from({ length: count }, () => ({ kg: "", reps: "" }));
+        return {
+          sets: initialSets,
+          lastBest: le ? bestOf(le.sets) : null,
+          lastSets: lastSets,
+          open: false
+        };
       }));
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeKey, days]);
+  }, [activeKey, days, overrideClientId]);
 
   const setField = (i: number, j: number, f: keyof SetInput, v: string) =>
     setLog((p) => p.map((e, k) => (k === i ? { ...e, sets: e.sets.map((s, m) => (m === j ? { ...s, [f]: v } : s)) } : e)));
@@ -183,7 +208,7 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
       name,
       sets: (log[i]?.sets ?? []).map((s) => ({ kg: Number(s.kg) || 0, reps: Number(s.reps) || 0 })).filter((s) => s.kg > 0 || s.reps > 0),
     })).filter((e) => e.sets.length > 0);
-    const r = await saveWorkoutSession(active.key, payload, "");
+    const r = await saveWorkoutSession(active.key, payload, "", overrideClientId);
     setSaving(false);
     if (r.ok) { setSaved(true); setLastDate(new Date().toISOString().slice(0, 10)); setTimeout(() => setSaved(false), 4000); }
     else alert("Loghează măcar un set la un exercițiu.");
@@ -236,18 +261,50 @@ export default function NativeWorkout({ quickrefUrl, todayKey, labelFor }: { qui
                     {b.start && <span className="text-[10px] font-semibold px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{b.start}</span>}
                   </div>
                 )}
-                {el?.lastBest && <p className="text-[12px] text-zinc-500 mt-2">Data trecută: <span className="text-zinc-300">{el.lastBest.kg}kg × {el.lastBest.reps}</span></p>}
+                {el?.lastSets && el.lastSets.length > 0 ? (
+                  <div className="flex flex-wrap items-center gap-1.5 mt-2 bg-white/[0.03] border border-white/10 rounded-lg px-2.5 py-1.5 text-[11px]">
+                    <span className="font-condensed uppercase tracking-wider text-zinc-500 text-[10px]">Data trecută:</span>
+                    {el.lastSets.map((ls, idx) => (
+                      <span key={idx} className="font-mono text-zinc-300 bg-black/50 px-2 py-0.5 rounded border border-white/5">
+                        <span className="text-zinc-500 text-[10px] mr-1">S{idx + 1}:</span>
+                        <strong className="text-white font-medium">{ls.kg}kg</strong> × {ls.reps}
+                      </span>
+                    ))}
+                  </div>
+                ) : el?.lastBest ? (
+                  <p className="text-[12px] text-zinc-500 mt-2">Data trecută: <span className="text-zinc-300">{el.lastBest.kg}kg × {el.lastBest.reps}</span></p>
+                ) : null}
                 {warn && <p className="text-[12px] text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-lg px-3 py-1.5 mt-2">↓ Sub data trecută ({el!.lastBest!.kg}kg × {el!.lastBest!.reps}).</p>}
 
                 <div className="space-y-1.5 mt-3">
-                  {el?.sets.map((s, j) => (
-                    <div key={j} className="flex items-center gap-2">
-                      <span className="font-condensed text-[10px] text-zinc-600 w-9 shrink-0">Set {j + 1}</span>
-                      <input inputMode="decimal" value={s.kg} onChange={(e) => setField(i, j, "kg", e.target.value)} placeholder={el?.lastBest ? String(el.lastBest.kg) : "kg"} className="w-20 bg-[#0A0A0A] border border-white/10 rounded-lg px-2.5 py-2 text-sm text-white text-center placeholder-zinc-600 focus:border-built-red/50 focus:outline-none tabular-nums" />
-                      <span className="text-zinc-600 text-sm">×</span>
-                      <input inputMode="numeric" value={s.reps} onChange={(e) => setField(i, j, "reps", e.target.value)} placeholder={el?.lastBest ? String(el.lastBest.reps) : "reps"} className="w-16 bg-[#0A0A0A] border border-white/10 rounded-lg px-2.5 py-2 text-sm text-white text-center placeholder-zinc-600 focus:border-built-red/50 focus:outline-none tabular-nums" />
-                    </div>
-                  ))}
+                  {el?.sets.map((s, j) => {
+                    const prev = el?.lastSets?.[j];
+                    return (
+                      <div key={j} className="flex items-center gap-2">
+                        <span className="font-condensed text-[10px] text-zinc-500 w-9 shrink-0">Set {j + 1}</span>
+                        <input
+                          inputMode="decimal"
+                          value={s.kg}
+                          onChange={(e) => setField(i, j, "kg", e.target.value)}
+                          placeholder={prev ? String(prev.kg) : (el?.lastBest ? String(el.lastBest.kg) : "kg")}
+                          className="w-20 bg-[#0A0A0A] border border-white/10 rounded-lg px-2.5 py-2 text-sm text-white text-center placeholder-zinc-600 focus:border-built-red/50 focus:outline-none tabular-nums"
+                        />
+                        <span className="text-zinc-600 text-sm">×</span>
+                        <input
+                          inputMode="numeric"
+                          value={s.reps}
+                          onChange={(e) => setField(i, j, "reps", e.target.value)}
+                          placeholder={prev ? String(prev.reps) : (el?.lastBest ? String(el.lastBest.reps) : "reps")}
+                          className="w-16 bg-[#0A0A0A] border border-white/10 rounded-lg px-2.5 py-2 text-sm text-white text-center placeholder-zinc-600 focus:border-built-red/50 focus:outline-none tabular-nums"
+                        />
+                        {prev && (
+                          <span className="text-[11px] font-mono text-zinc-500 ml-1">
+                            (anterior: <strong className="text-zinc-300">{prev.kg}kg</strong> × {prev.reps})
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
                 <div className="flex items-center gap-3 mt-2.5">
                   <button onClick={() => addSet(i)} className="font-condensed text-[10px] uppercase tracking-wider text-built-red hover:text-built-red-dark">+ set</button>

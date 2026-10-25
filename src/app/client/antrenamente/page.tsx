@@ -1,5 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { Suspense, useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getWorkoutPlan } from "../actions";
 import WeeklyTraining from "./WeeklyTraining";
@@ -34,11 +36,19 @@ const DAY_LABELS: Record<string, string> = {
 };
 const labelFor = (k: string) => DAY_LABELS[k.toLowerCase()] ?? k.toUpperCase();
 
-export default function AntrenamantePage() {
+function AntrenamenteContent() {
+  const searchParams = useSearchParams();
+  const clientIdParam = searchParams.get("clientId");
+  const overrideId = clientIdParam ? Number(clientIdParam) : undefined;
+
   const [plan, setPlan] = useState<WorkoutPlan | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => { getWorkoutPlan().then((p) => setPlan(p as WorkoutPlan | null)).finally(() => setLoading(false)); }, []);
+  useEffect(() => {
+    getWorkoutPlan(overrideId)
+      .then((p) => setPlan(p as WorkoutPlan | null))
+      .finally(() => setLoading(false));
+  }, [overrideId]);
 
   if (loading) return <PageSkeleton cards={4} />;
 
@@ -60,12 +70,12 @@ export default function AntrenamantePage() {
         <WeeklyTraining />
         <TodayTrainingLog daySummary={`Azi · ${RO_DAYS[new Date().getDay()]} — loghează-ți antrenamentul mai jos`} />
         {plan.quickref_acasa_url && (
-          <Link href="/client/antrenamente/acasa" className="flex items-center justify-between bg-[#111111] border border-white/10 rounded-2xl px-4 py-3 mb-5 press hover:border-built-red/40 transition-colors">
+          <Link href={`/client/antrenamente/acasa${overrideId ? `?clientId=${overrideId}` : ""}`} className="flex items-center justify-between bg-[#111111] border border-white/10 rounded-2xl px-4 py-3 mb-5 press hover:border-built-red/40 transition-colors">
             <span className="text-sm text-zinc-200">🏠 Antrenament de acasă (fără sală)</span>
             <span className="text-built-red">→</span>
           </Link>
         )}
-        <NativeWorkout quickrefUrl={plan.quickref_url} todayKey={todayKey} labelFor={labelFor} />
+        <NativeWorkout quickrefUrl={plan.quickref_url} todayKey={todayKey} labelFor={labelFor} overrideClientId={overrideId} />
       </div>
     );
   }
@@ -77,5 +87,13 @@ export default function AntrenamantePage() {
       <TodayTrainingLog />
       <EmptyState icon="⚡" title="Planul tău se construiește" subtitle="Apare aici în curând." />
     </div>
+  );
+}
+
+export default function AntrenamentePage() {
+  return (
+    <Suspense fallback={<PageSkeleton cards={4} />}>
+      <AntrenamenteContent />
+    </Suspense>
   );
 }

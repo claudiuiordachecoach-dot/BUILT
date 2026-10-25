@@ -106,8 +106,8 @@ export async function getModuleContent(moduleId: number) {
   return data;
 }
 
-export async function getWorkoutPlan() {
-  const clientId = await getClientId();
+export async function getWorkoutPlan(overrideClientId?: number) {
+  const clientId = overrideClientId ?? await getClientId();
   if (!clientId) return null;
   if (QUICKREF_ANTRENAMENT[clientId]) {
     return {
@@ -997,8 +997,8 @@ export async function getWorkoutDays(): Promise<WorkoutDay[]> {
   return [...map.entries()].map(([label, v]) => ({ label, lastDate: v.lastDate, count: v.count }));
 }
 
-export async function getLastSession(dayLabel: string): Promise<LastSession | null> {
-  const clientId = await getClientId();
+export async function getLastSession(dayLabel: string, overrideClientId?: number): Promise<LastSession | null> {
+  const clientId = overrideClientId ?? await getClientId();
   if (!clientId) return null;
   const db = getSupabaseServer();
   const { data } = await db
@@ -1017,8 +1017,9 @@ export async function saveWorkoutSession(
   dayLabel: string,
   exercises: WExercise[],
   note?: string,
+  overrideClientId?: number,
 ): Promise<{ ok: boolean }> {
-  const clientId = await getClientId();
+  const clientId = overrideClientId ?? await getClientId();
   if (!clientId) return { ok: false };
   const db = getSupabaseServer();
   const clean = exercises
