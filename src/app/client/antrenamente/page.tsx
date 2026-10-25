@@ -18,13 +18,13 @@ const TODAY_TAB: Record<string, Record<number, string>> = {
   ciprian: { 1: "ziuaA", 2: "ziuaB", 4: "ziuaC", 5: "ziuaD" },
   george: { 1: "upper-a", 2: "lower-a", 4: "upper-b", 5: "lower-b" },
   andy: { 1: "a", 3: "b", 5: "c" },
-  otilia: { 1: "lowera", 3: "upper", 5: "lowerb" },
+  otilia: { 1: "lowera", 2: "upper", 4: "lowerb", 5: "day4", 6: "day4" },
   nelu: { 4: "a", 6: "b", 0: "c" },
   dana: { 1: "lowera", 2: "upper", 4: "lowerb", 6: "circuit" },
 };
 
 const DAY_LABELS: Record<string, string> = {
-  lowera: "Lower A", upper: "Upper", lowerb: "Lower B",
+  lowera: "Lower A", upper: "Upper", lowerb: "Lower B", day4: "Brațe & VO2 Max",
   uppera: "Upper A", lower: "Lower", upperb: "Upper B",
   "upper-a": "Upper A", "lower-a": "Lower A", "upper-b": "Upper B", "lower-b": "Lower B",
   a: "Ziua A", b: "Ziua B", c: "Ziua C", ziuaa: "Ziua A", ziuab: "Ziua B", ziuac: "Ziua C", ziuad: "Ziua D", combo: "Combo",
