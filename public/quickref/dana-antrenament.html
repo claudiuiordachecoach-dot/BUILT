@@ -92,10 +92,10 @@ body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;fon
 .cond-btn.cond-start{background:rgba(230,126,34,.1);border-color:rgba(230,126,34,.3);color:var(--orange);}
 .cond-btn.cond-start.active{background:var(--orange);color:#fff;}
 .cond-btn:hover{filter:brightness(1.2);}
-.cal-grid{display:flex;flex-direction:column;gap:4px;margin-top:10px;}
-.cal-day{display:flex;align-items:center;background:var(--drk2);border:1px solid var(--brd);border-radius:4px;padding:8px 12px;}
+.cal-grid{display:flex;flex-direction:column;gap:6px;margin-top:10px;}
+.cal-day{display:flex;align-items:center;gap:14px;background:var(--drk2);border:1px solid var(--brd);border-radius:8px;padding:8px 12px;}
 .cal-day.active{border-color:var(--red);background:var(--rdim);}
-.cal-day .d-name{width:40px;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
+.cal-day .d-name{width:50px;min-width:50px;flex-shrink:0;font-size:10px;letter-spacing:1px;color:var(--muted);text-transform:uppercase;}
 .cal-day.active .d-name{color:var(--red);font-weight:700;}
 .cal-day .d-workout{flex:1;font-size:13px;color:var(--wht);font-weight:500;}
 .cal-day.active .d-workout{color:var(--red);}
