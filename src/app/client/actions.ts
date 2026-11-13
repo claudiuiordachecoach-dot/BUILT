@@ -1066,14 +1066,32 @@ export async function addJournalEntry(entry: { type: string; label?: string; pho
   const clientId = await getClientId();
   if (!clientId) throw new Error("Not auth");
   const db = getSupabaseServer();
-  const { error } = await db.from("client_journal").insert({
+  const { data, error } = await db.from("client_journal").insert({
     client_id: clientId,
     type: entry.type,
     label: entry.label ?? null,
     photo_url: entry.photo_url,
     note: entry.note ?? null
-  });
+  }).select("id").single();
   if (error) console.error("Error adding journal entry:", error);
+
+  // Auto-Vision trigger in fundal când se urcă o poză de mâncare sau cântar
+  if (entry.photo_url) {
+    const isMeal = entry.type === "meal" || /mese|mee-|pranz|micdejun|cina|gustare/i.test(entry.label || "");
+    const isScale = entry.type === "cantar" || /cantar|greut/i.test(entry.label || "");
+    const entryId = data?.id || "";
+    const createdAt = new Date().toISOString();
+
+    if (isMeal) {
+      processMealImage(clientId, entryId, createdAt, entry.photo_url).catch((err) =>
+        console.error("Auto meal vision background error:", err)
+      );
+    } else if (isScale) {
+      processScaleImage(clientId, entryId, createdAt, entry.photo_url).catch((err) =>
+        console.error("Auto scale vision background error:", err)
+      );
+    }
+  }
 
   if (entry.weight != null || entry.body_fat != null) {
     const date = new Date().toISOString().slice(0, 10);
@@ -1147,7 +1165,7 @@ async function processMealImage(clientId: number, entryId: string, createdAt: st
     const base64Img = Buffer.from(arrayBuffer).toString('base64');
     
     const msg = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022",
+      model: "claude-haiku-4-5-20251001",
       max_tokens: 1024,
       messages: [
         {
@@ -1220,7 +1238,7 @@ async function processScaleImage(clientId: number, entryId: string, createdAt: s
     const base64Img = Buffer.from(arrayBuffer).toString('base64');
     
     const msg = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022", max_tokens: 512,
+      model: "claude-haiku-4-5-20251001", max_tokens: 512,
       messages: [{
         role: "user",
         content: [
