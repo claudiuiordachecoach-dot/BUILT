@@ -105,6 +105,14 @@ export default function NativeWorkout({
               const tgt = (sc.querySelector(".set-target, .set-tgt")?.textContent || "").trim();
               if (rows) presc = `${rows} × ${tgt}`.trim();
             }
+            if (!presc) {
+              const sw = child.querySelector(".sets-wrap");
+              if (sw) {
+                const rows = sw.querySelectorAll(".set-row").length;
+                const tgt = (sw.querySelector(".set-tgt")?.textContent || "").trim();
+                if (rows) presc = `${rows} × ${tgt}`.trim();
+              }
+            }
             const body = child.querySelector(".ex-body") as HTMLElement | null;
             let bodyHtml = "";
             if (body) { body.querySelectorAll(".sets-wrap").forEach((e) => e.remove()); bodyHtml = body.innerHTML; }
@@ -173,11 +181,23 @@ export default function NativeWorkout({
       const last = await getLastSession(active.key, overrideClientId);
       setLastDate(last?.logged_on ?? null);
       const byName = new Map((last?.exercises ?? []).map((e) => [e.name, e]));
-      setLog(exNames.map((n) => {
-        const le = byName.get(n);
+      const exBlocks = active.blocks.filter((b): b is Extract<Block, { kind: "ex" }> => b.kind === "ex");
+      setLog(exBlocks.map((b) => {
+        const le = byName.get(b.name);
         const lastSets = le?.sets ?? [];
-        // Default to either previous sets count or at least 2 working sets
-        const count = Math.max(2, lastSets.length);
+
+        // Parsează numărul de serii prescrise (ex: "3 × 8–12" -> 3 serii, "2 × 8–12" -> 2 serii)
+        let prescribedCount = 2;
+        const m = b.presc.match(/^(\d+)\s*×/);
+        if (m) {
+          prescribedCount = parseInt(m[1], 10);
+        } else {
+          const rangeM = b.presc.match(/(\d+)\s*(?:–|-)\s*(\d+)\s*×/);
+          if (rangeM) prescribedCount = parseInt(rangeM[2], 10);
+        }
+
+        // Generează automat exact numărul de câmpuri prescrise
+        const count = Math.max(1, prescribedCount);
         const initialSets = Array.from({ length: count }, () => ({ kg: "", reps: "" }));
         return {
           sets: initialSets,
