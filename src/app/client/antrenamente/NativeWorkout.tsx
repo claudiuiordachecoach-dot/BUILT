@@ -8,7 +8,7 @@ type Block =
   | { kind: "html"; html: string };
 type Day = { key: string; label: string; blocks: Block[] };
 
-type SetInput = { kg: string; reps: string };
+type SetInput = { kg: string; reps: string; rir?: string };
 type ExLog = {
   sets: SetInput[];
   lastBest: { kg: number; reps: number } | null;
@@ -222,7 +222,7 @@ export default function NativeWorkout({
   let exIdx = -1;
 
   return (
-    <div className="pb-28">
+    <div className="pb-48">
       {/* Tab-uri zile + timer pauză (sticky) */}
       <div className="sticky top-0 z-10 bg-built-black/95 backdrop-blur-sm py-2.5 flex items-center gap-3 border-b border-white/5 mb-3">
         <div className="flex gap-1.5 overflow-x-auto flex-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
@@ -297,6 +297,14 @@ export default function NativeWorkout({
                           placeholder={prev ? String(prev.reps) : (el?.lastBest ? String(el.lastBest.reps) : "reps")}
                           className="w-16 bg-[#0A0A0A] border border-white/10 rounded-lg px-2.5 py-2 text-sm text-white text-center placeholder-zinc-600 focus:border-built-red/50 focus:outline-none tabular-nums"
                         />
+                        <input
+                          inputMode="numeric"
+                          value={s.rir ?? ""}
+                          onChange={(e) => setField(i, j, "rir", e.target.value)}
+                          placeholder="RIR"
+                          title="Reps in reserve (opțional)"
+                          className="w-12 bg-[#0A0A0A] border border-white/10 rounded-lg px-1.5 py-2 text-sm text-zinc-400 text-center placeholder-zinc-700 focus:border-blue-500/50 focus:outline-none tabular-nums"
+                        />
                         {prev && (
                           <span className="text-[11px] font-mono text-zinc-500 ml-1">
                             (anterior: <strong className="text-zinc-300">{prev.kg}kg</strong> × {prev.reps})
@@ -319,16 +327,33 @@ export default function NativeWorkout({
         })}
       </div>
 
-      {exNames.length > 0 && (
-        <div className="sticky bottom-[64px] md:bottom-4 z-20 mt-8 pb-4">
-          <div className="max-w-5xl mx-auto">
-            {saved && <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 mb-2 text-center">Antrenament salvat ✓</p>}
-            <button onClick={save} disabled={saving} className="w-full font-condensed text-sm uppercase tracking-wider bg-built-red text-white py-3 rounded-xl hover:bg-built-red-dark transition-colors disabled:opacity-50 shadow-lg shadow-black/40">
-              {saving ? "Salvez…" : `Salvează ${active?.label ?? "antrenamentul"}`}
-            </button>
+      {exNames.length > 0 && (() => {
+        const loggedExercises = log.filter((e) => e?.sets?.some((s) => Number(s.kg) > 0 || Number(s.reps) > 0)).length;
+        const loggedSets = log.reduce((acc, e) => acc + (e?.sets?.filter((s) => Number(s.kg) > 0 || Number(s.reps) > 0).length || 0), 0);
+        const totalSets = log.reduce((acc, e) => acc + (e?.sets?.length || 0), 0);
+        const isFull = loggedExercises === exNames.length && exNames.length > 0;
+        const isPartial = loggedExercises > 0 && !isFull;
+        return (
+          <div className="sticky bottom-[64px] md:bottom-4 z-20 mt-8 pb-4">
+            <div className="max-w-5xl mx-auto">
+              {saved && <p className="text-sm text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 rounded-xl px-4 py-2 mb-2 text-center">Antrenament salvat ✓</p>}
+              {isFull && !saved && (
+                <div className="text-[11px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-4 py-2 mb-2 text-center">
+                  ✓ Ședință completă ({loggedExercises}/{exNames.length} exerciții · {loggedSets}/{totalSets} serii)
+                </div>
+              )}
+              {isPartial && !saved && (
+                <div className="text-[11px] font-mono text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-2 mb-2 text-center">
+                  ⚡ Ședință parțială ({loggedExercises}/{exNames.length} exerciții · {loggedSets} serii — se salvează exact ce ai lucrat)
+                </div>
+              )}
+              <button onClick={save} disabled={saving} className="w-full font-condensed text-sm uppercase tracking-wider bg-built-red text-white py-3 rounded-xl hover:bg-built-red-dark transition-colors disabled:opacity-50 shadow-lg shadow-black/40">
+                {saving ? "Salvez…" : `Salvează ${active?.label ?? "antrenamentul"}`}
+              </button>
+            </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
     </div>
   );
 }
