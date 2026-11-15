@@ -183,7 +183,11 @@ export default function NativeWorkout({
       const byName = new Map((last?.exercises ?? []).map((e) => [e.name, e]));
       const exBlocks = active.blocks.filter((b): b is Extract<Block, { kind: "ex" }> => b.kind === "ex");
       setLog(exBlocks.map((b) => {
-        const le = byName.get(b.name);
+        const le = byName.get(b.name) || Array.from(byName.values()).find((x) => {
+          const n1 = x.name.toLowerCase();
+          const n2 = b.name.toLowerCase();
+          return n1.includes(n2) || n2.includes(n1) || (n1.includes("crunch") && n2.includes("crunch"));
+        });
         const lastSets = le?.sets ?? [];
 
         // Parsează numărul de serii prescrise (ex: "3 × 8–12" -> 3 serii, "2 × 8–12" -> 2 serii)
