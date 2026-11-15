@@ -23,6 +23,7 @@ const TODAY_TAB: Record<string, Record<number, string>> = {
   otilia: { 1: "lowera", 2: "upper", 4: "lowerb", 5: "day4", 6: "day4" },
   nelu: { 4: "a", 6: "b", 0: "c" },
   dana: { 1: "lowera", 2: "upper", 4: "lowerb", 6: "circuit" },
+  claudiu: { 1: "a", 3: "b", 5: "c" },
 };
 
 const DAY_LABELS: Record<string, string> = {

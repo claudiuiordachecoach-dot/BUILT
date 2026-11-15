@@ -137,6 +137,7 @@ const QUICKREF_NUTRITIE: Record<number, string> = {
   12: "/quickref/nelu-nutritie-v2.html",
   13: "/quickref/dana-nutritie.html",
   14: "/quickref/dana-nutritie.html",
+  15: "/quickref/claudiu-nutritie.html",
 };
 
 const QUICKREF_ANTRENAMENT: Record<number, string> = {
@@ -151,6 +152,7 @@ const QUICKREF_ANTRENAMENT: Record<number, string> = {
   12: "/quickref/nelu-antrenament-v4.html",
   13: "/quickref/dana-antrenament.html",
   14: "/quickref/dana-antrenament.html",
+  15: "/quickref/claudiu-antrenament.html",
 };
 
 const QUICKREF_ACASA: Record<number, string> = {
@@ -163,10 +165,11 @@ const QUICKREF_ACASA: Record<number, string> = {
   9: "/quickref/general-acasa.html",
   11: "/quickref/general-acasa.html",
   12: "/quickref/nelu-acasa-v4.html",
+  15: "/quickref/general-acasa.html",
 };
 
-export async function getNutritionPlan() {
-  const clientId = await getClientId();
+export async function getNutritionPlan(overrideClientId?: number) {
+  const clientId = overrideClientId ?? await getClientId();
   if (!clientId) return null;
   if (QUICKREF_NUTRITIE[clientId]) return { quickref_url: QUICKREF_NUTRITIE[clientId] };
   const db = getSupabaseServer();

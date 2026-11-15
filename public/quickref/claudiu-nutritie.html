@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>BUILT — Nutriție · Claudiu Popițanu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&family=DM+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blk: #0A0A0A; --drk: #141414; --drk2: #1A1A1A;
+  --red: #C0392B; --red-dim: rgba(192,57,43,0.12);
+  --wht: #F5F5F5; --muted: #777; --brd: #252525; --card: #111111;
+  --orange: #E67E22; --green: #27AE60; --blue: #2980B9;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--blk);color:var(--wht);font-family:'DM Sans',sans-serif;font-size:14px;padding-bottom:120px;}
+
+.hdr{background:var(--drk);border-bottom:1px solid var(--brd);padding:16px 18px 12px;position:sticky;top:0;z-index:100;}
+.hdr-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:5px;color:var(--red);}
+.hdr-name{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
+.budget-bar{display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid rgba(255,255,255,0.05);}
+.budget-bar span{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--red);}
+.budget-bar strong{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--wht);}
+
+.stat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:16px;}
+.stat-card{background:var(--card);border:1px solid var(--brd);padding:12px 8px;text-align:center;border-radius:6px;}
+.stat-val{font-family:'Bebas Neue',sans-serif;font-size:24px;line-height:1;}
+.stat-unit{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;}
+.stat-lbl{font-size:10px;color:#aaa;margin-top:4px;}
+
+.alert-box{border-left:3px solid var(--red);background:var(--red-dim);padding:12px 14px;margin:0 16px 14px;font-size:12px;color:#ccc;line-height:1.6;border-radius:0 4px 4px 0;}
+.alert-box.green{border-color:var(--green);background:rgba(39,174,96,0.06);}
+.alert-box.orange{border-color:var(--orange);background:rgba(230,126,34,0.07);}
+.alert-box.blue{border-color:var(--blue);background:rgba(41,128,185,0.07);}
+.alert-ttl{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--red);margin-bottom:4px;}
+.alert-box.green .alert-ttl{color:var(--green);}
+.alert-box.orange .alert-ttl{color:var(--orange);}
+.alert-box.blue .alert-ttl{color:var(--blue);}
+
+.acc-card{background:var(--drk);border:1px solid var(--brd);margin:0 16px 14px;border-radius:6px;overflow:hidden;}
+.acc-card.open{border-color:var(--red);}
+.acc-hdr{padding:14px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;background:rgba(255,255,255,0.02);}
+.acc-title-area{flex:1;}
+.acc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;}
+.acc-time{font-family:'DM Mono',monospace;font-size:11px;color:var(--red);margin-top:2px;}
+.acc-icon{font-size:12px;color:var(--muted);transition:transform 0.3s;display:flex;align-items:center;justify-content:center;width:24px;height:24px;background:var(--card);border:1px solid var(--brd);border-radius:4px;}
+.acc-card.open .acc-icon{transform:rotate(180deg);color:var(--red);border-color:var(--red);}
+
+.acc-content{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
+.acc-card.open .acc-content{max-height:4500px;}
+.acc-sub{padding:10px 16px;background:rgba(255,255,255,0.01);font-size:11px;color:#aaa;border-bottom:1px solid var(--brd);border-top:1px solid var(--brd);}
+.acc-body{padding:14px 16px;}
+
+.opt-block{background:var(--card);border:1px solid var(--brd);border-radius:4px;padding:14px;margin-bottom:12px;cursor:pointer;transition:all 0.2s;}
+.opt-block:hover{border-color:var(--red);}
+.opt-block.selected{border-color:var(--green);background:rgba(39,174,96,0.06);box-shadow:0 0 15px rgba(39,174,96,0.15);}
+.opt-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.opt-num{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--orange);font-weight:700;background:rgba(230,126,34,0.12);padding:2px 6px;border-radius:2px;border:1px solid rgba(230,126,34,0.3);}
+.opt-block.selected .opt-num{color:var(--green);background:rgba(39,174,96,0.2);border-color:rgba(39,174,96,0.4);}
+.opt-p{font-family:'DM Mono',monospace;font-size:12px;color:var(--red);font-weight:600;}
+.opt-block.selected .opt-p{color:var(--green);}
+
+.opt-ttl{font-size:13px;font-weight:700;margin-bottom:6px;}
+.opt-desc{font-size:12px;color:#ccc;line-height:1.55;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.opt-desc strong{color:var(--orange);}
+
+.opt-btm{display:flex;justify-content:space-between;align-items:center;}
+.opt-cue{font-size:11px;color:var(--muted);font-style:italic;}
+.opt-check{font-size:11px;font-weight:700;color:var(--muted);background:var(--drk);padding:4px 10px;border-radius:4px;border:1px solid var(--brd);}
+.opt-block.selected .opt-check{color:#fff;background:var(--green);border-color:var(--green);}
+
+.sticky-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(12,12,12,0.95);backdrop-filter:blur(10px);border-top:1px solid var(--brd);padding:12px 18px;display:flex;justify-content:space-between;align-items:center;z-index:1000;transform:translateY(100%);transition:transform 0.3s ease;max-width:480px;margin:0 auto;box-shadow:0 -5px 25px rgba(0,0,0,0.7);}
+.sticky-bar.visible{transform:translateY(0);}
+.st-info{display:flex;flex-direction:column;}
+.st-ttl{font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:2px;}
+.st-vals{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--green);display:flex;align-items:baseline;gap:8px;line-height:1;}
+.st-btn{background:var(--green);color:#fff;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:10px 16px;border-radius:4px;border:none;cursor:pointer;}
+
+.modal-backdrop{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);backdrop-filter:blur(5px);z-index:1001;display:none;justify-content:center;align-items:flex-end;}
+.modal-backdrop.open{display:flex;}
+.modal-box{background:var(--drk);border:1px solid var(--brd);border-radius:14px 14px 0 0;width:100%;max-width:480px;padding:24px 20px;max-height:85vh;overflow-y:auto;box-shadow:0 -10px 30px rgba(0,0,0,0.7);animation:slideUp 0.3s;}
+@keyframes slideUp{from{transform:translateY(100%);}to{transform:translateY(0);}}
+.modal-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;border-bottom:1px solid var(--brd);padding-bottom:14px;}
+.modal-ttl{font-family:'Bebas Neue',sans-serif;font-size:22px;}
+.modal-close{font-size:20px;color:var(--muted);cursor:pointer;border:none;background:none;padding:4px;}
+.modal-row{display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:12px;}
+.modal-meal-name{color:var(--wht);font-weight:600;flex:1;padding-right:10px;}
+.modal-meal-val{font-family:'DM Mono',monospace;color:var(--green);font-weight:600;}
+.modal-btn-reset{width:100%;background:var(--red-dim);border:1px solid rgba(192,57,43,0.3);color:var(--red);padding:12px;border-radius:6px;font-weight:700;cursor:pointer;margin-top:18px;text-transform:uppercase;font-size:11px;}
+
+@media(max-width:767px){body{max-width:480px;margin:0 auto;}}
+
+/* BUILT app-skin (injectat) */
+:root{ --brd:rgba(255,255,255,.10) !important; }
+.acc-card,.alert-box,.opt-block,.stat-card{ border-radius:14px !important; border-color:rgba(255,255,255,.10) !important; }
+.hdr{ background:#0A0A0A !important; border-bottom:1px solid rgba(255,255,255,.08) !important; }
+</style>
+</head>
+<body>
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="logo">BUILT</div>
+    <div class="hdr-name">Tracker Nutriție · Claudiu Popițanu</div>
+  </div>
+  <div class="budget-bar">
+    <span>Target Zilnic Recompoziție</span>
+    <strong>2.850 KCAL / 185g P</strong>
+  </div>
+</div>
+
+<div class="stat-grid">
+  <div class="stat-card" style="border-bottom:2px solid var(--red);">
+    <div class="stat-val" style="color:var(--red);">185g</div>
+    <div class="stat-unit">Proteină</div>
+    <div class="stat-lbl">Ancora zilnică</div>
+  </div>
+  <div class="stat-card" style="border-bottom:2px solid var(--blue);">
+    <div class="stat-val" style="color:var(--blue);">340g</div>
+    <div class="stat-unit">Carbohidrați</div>
+    <div class="stat-lbl">Energie șantier + sală</div>
+  </div>
+  <div class="stat-card" style="border-bottom:2px solid var(--orange);">
+    <div class="stat-val" style="color:var(--orange);">82g</div>
+    <div class="stat-unit">Grăsimi</div>
+    <div class="stat-lbl">Hormoni &amp; Tendoane</div>
+  </div>
+</div>
+
+<div class="alert-box green">
+  <div class="alert-ttl">DE CE 2.850 KCAL PENTRU TINE?</div>
+  La 187 cm, 105 kg și activitate fizică de <strong>15.000–20.000 de pași pe zi</strong> ca lăcătuș naval, consumul tău total (TDEE) este de peste 3.600 kcal. <strong>2.850 kcal creează un deficit ideal de ~750 kcal</strong>: slăbești constant din grăsime fără să rămâi fără putere la muncă sau să pierzi masă musculară.
+</div>
+
+<div class="alert-box orange">
+  <div class="alert-ttl">REGULA DE FIER: CÂNTĂRIREA (RAW)</div>
+  Dacă adaugi manual alimentele sau gătești în casă, <strong>TOATĂ carnea, orezul, cartofii și pastele se cântăresc CRUD</strong> (înainte de a le pune pe foc/la cuptor). 100g de orez crud devine ~250g fiert, iar carnea își pierde din greutate prin gătire.
+</div>
+
+<!-- ==================== MASA 1: MIC DEJUN ==================== -->
+<div class="acc-card open">
+  <div class="acc-hdr" onclick="toggleAcc(this)">
+    <div class="acc-title-area">
+      <div class="acc-name">MASA 1 — MIC DEJUN RAPID (05:30 – 06:30)</div>
+      <div class="acc-time">Selecție Zilnică · Target: ~40g Proteină / 600 kcal · Acasă sau la muncă</div>
+    </div>
+    <div class="acc-icon">▼</div>
+  </div>
+  <div class="acc-content">
+    <div class="acc-sub">Se trezești la 05:30. Poți mânca direct acasă sau iei la pachet în primele minute la șantier.</div>
+    <div class="acc-body">
+      
+      <div class="opt-block" data-meal="m1" data-prot="42" data-kcal="610" data-name="Sandvișuri Pui & Cremă Brânză" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 1 (Ziua 1)</span><span class="opt-p">42g P | 610 kcal</span></div>
+        <div class="opt-ttl">Sandvișuri Calde cu Șuncă de Pui &amp; Cremă de Brânză</div>
+        <div class="opt-desc"><strong>3 felii</strong> pâine integrală (100g) unse cu <strong>40g</strong> cremă de brânză light + <strong>120g</strong> șuncă de pui/curcan (>85% carne) + <strong>2 ouă</strong> fierte sau ochiuri pe tigaie antiaderentă + roșii cherry.</div>
+        <div class="opt-btm"><span class="opt-cue">Preferatul tău: șuncă + cremă brânză</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m1" data-prot="44" data-kcal="590" data-name="Omletă Țărănească cu Șuncă" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 2 (Ziua 2)</span><span class="opt-p">44g P | 590 kcal</span></div>
+        <div class="opt-ttl">Omletă Țărănească la Tigaie + Toast cu Brânză</div>
+        <div class="opt-desc"><strong>3 ouă</strong> întregi + <strong>2 albușuri</strong> bătute cu <strong>80g</strong> cuburi de piept de pui afumat/șuncă la tigaie + <strong>80g</strong> pâine integrală prăjită unsă cu <strong>30g</strong> cremă de brânză + ardei gras.</div>
+        <div class="opt-btm"><span class="opt-cue">Masiv în proteine &amp; sațietate</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m1" data-prot="40" data-kcal="620" data-name="Bol Ovăz Ciocolată & Unt Arahide" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 3 (Ziua 3)</span><span class="opt-p">40g P | 620 kcal</span></div>
+        <div class="opt-ttl">Bol de Ovăz cu Ciocolată &amp; Unt de Arahide</div>
+        <div class="opt-desc"><strong>80g</strong> fulgi de ovăz fierți în apă sau lapte 1.5% + <strong>1 cupă</strong> (30g) pudră proteică Whey + <strong>1 banană</strong> medie feliată (120g) + <strong>20g</strong> unt de arahide 100%.</div>
+        <div class="opt-btm"><span class="opt-cue">Carbohidrați lenți pentru toată dimineața</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m1" data-prot="38" data-kcal="580" data-name="Wrap Toastat cu Ouă & Șuncă" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 4 (Ziua 4)</span><span class="opt-p">38g P | 580 kcal</span></div>
+        <div class="opt-ttl">Wrap Toastat cu Ouă, Șuncă &amp; Cremă de Brânză</div>
+        <div class="opt-desc"><strong>1 lipie mare</strong> (65g) unsă generos cu <strong>40g</strong> cremă de brânză light + omletă din <strong>3 ouă</strong> + <strong>80g</strong> șuncă de pui feliată + castraveți murați crocanți, rulată și toastată pe tigaie.</div>
+        <div class="opt-btm"><span class="opt-cue">Excelent de ținut în mână pe drum</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m1" data-prot="39" data-kcal="610" data-name="Iaurt Grecesc + Granola & Miere" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 5 (Ziua 5)</span><span class="opt-p">39g P | 610 kcal</span></div>
+        <div class="opt-ttl">Iaurt Grecesc Mare cu Granola &amp; Miere</div>
+        <div class="opt-desc"><strong>300g</strong> iaurt grecesc 2% + <strong>60g</strong> fulgi de ovăz/granola crocantă fără zahăr + <strong>150g</strong> afine sau fructe de pădure + <strong>15g</strong> nuci + <strong>1 linguriță</strong> miere (10g).</div>
+        <div class="opt-btm"><span class="opt-cue">Zero aragaz, gata în 60 de secunde</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m1" data-prot="43" data-kcal="570" data-name="Toast Cottage Cheese & Șuncă" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 6 (Ziua 6)</span><span class="opt-p">43g P | 570 kcal</span></div>
+        <div class="opt-ttl">Toast Masiv cu Cottage Cheese &amp; Șuncă de Pui</div>
+        <div class="opt-desc"><strong>3 felii</strong> pâine integrală (100g) + <strong>180g</strong> brânză cottage 2.2% amestecată cu mărar și ceapă verde + <strong>100g</strong> șuncă de pui/curcan + ardei kapia feliat.</div>
+        <div class="opt-btm"><span class="opt-cue">Răcoritor și foarte dens în proteine</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m1" data-prot="41" data-kcal="630" data-name="Mic Dejun Englezesc BUILT" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 7 (Ziua 7)</span><span class="opt-p">41g P | 630 kcal</span></div>
+        <div class="opt-ttl">Mic Dejun Englezesc BUILT (Ouă, Fasole, Șuncă)</div>
+        <div class="opt-desc"><strong>3 ouă</strong> ochiuri la tigaie antiaderentă + <strong>160g</strong> fasole boabe în sos de roșii (conservă Heinz) + <strong>60g</strong> șuncă slabă rumenită + <strong>2 felii mari</strong> pâine integrală prăjită (75g).</div>
+        <div class="opt-btm"><span class="opt-cue">Micul dejun de weekend cu energie maximă</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MASA 2: PRÂNZ MUNCĂ ==================== -->
+<div class="acc-card">
+  <div class="acc-hdr" onclick="toggleAcc(this)">
+    <div class="acc-title-area">
+      <div class="acc-name">MASA 2 — PRÂNZ LA MUNCĂ (CASEROLĂ) (12:00 – 13:00)</div>
+      <div class="acc-time">Pauza oficială de masă · Target: ~50g Proteină / 750 kcal · Combustibil fizic</div>
+    </div>
+    <div class="acc-icon">▼</div>
+  </div>
+  <div class="acc-content">
+    <div class="acc-sub">Pregătit de cu seară în caserolă la meal prep. Carbohidrați complecși pentru continuarea muncii grele pe șantier.</div>
+    <div class="acc-body">
+      
+      <div class="opt-block" data-meal="m2" data-prot="53" data-kcal="760" data-name="Pui cu Orez Basmati & Legume" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 1 (Ziua 1)</span><span class="opt-p">53g P | 760 kcal</span></div>
+        <div class="opt-ttl">Piept de Pui la Grătar cu Orez Basmati &amp; Legume</div>
+        <div class="opt-desc"><strong>250g</strong> piept pui cântărit <strong>crud</strong> (gătit ajunge ~200g) + <strong>85g</strong> orez basmati <strong>crud</strong> (fiert ajunge ~260g) + <strong>10g</strong> ulei măsline la preparare + salată de varză sau legume la abur.</div>
+        <div class="opt-btm"><span class="opt-cue">Clasicul de forță la caserolă</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m2" data-prot="51" data-kcal="780" data-name="Paste Bolognese Vită Slabă" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 2 (Ziua 2)</span><span class="opt-p">51g P | 780 kcal</span></div>
+        <div class="opt-ttl">Paste cu Carne Tocată de Vită Slabă &amp; Sos Roșii</div>
+        <div class="opt-desc"><strong>100g</strong> paste (cântărite <strong>crude</strong>, fierte devin ~220g) + <strong>180g</strong> carne tocată de vită slabă (&lt;10% grăsime) + sos de roșii pasate cu oregano + <strong>20g</strong> parmezan ras deasupra.</div>
+        <div class="opt-btm"><span class="opt-cue">Se încălzește excelent la microunde</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m2" data-prot="52" data-kcal="740" data-name="Mușchi Porc/Vită + Cartofi Cuptor" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 3 (Ziua 3)</span><span class="opt-p">52g P | 740 kcal</span></div>
+        <div class="opt-ttl">Mușchiuleț de Porc / Vită cu Cartofi la Cuptor</div>
+        <div class="opt-desc"><strong>220g</strong> mușchiuleț slab de porc sau pulpă vită <strong>crudă</strong> rumenită la cuptor/tigaie + <strong>400g</strong> cartofi <strong>cruzi</strong> tăiați wedges cu boia dulce și rozmarin + murături asortate.</div>
+        <div class="opt-btm"><span class="opt-cue">Fier, zinc și aminoacizi esențiali</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m2" data-prot="49" data-kcal="750" data-name="Burrito Bowl Pui & Fasole Roșie" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 4 (Ziua 4)</span><span class="opt-p">49g P | 750 kcal</span></div>
+        <div class="opt-ttl">Burrito Bowl la Caserolă (Pui, Orez, Fasole)</div>
+        <div class="opt-desc"><strong>80g</strong> orez basmati fiert (devine ~240g) + <strong>180g</strong> piept pui fâșii condimentat fajita + <strong>100g</strong> fasole roșie fiartă + <strong>50g</strong> porumb dulce + <strong>30g</strong> cremă de brânză light + salsa.</div>
+        <div class="opt-btm"><span class="opt-cue">Fibre din belșug pentru digestie stabilă</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m2" data-prot="48" data-kcal="760" data-name="Pulpe Dezosate + Piure Cartofi" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 5 (Ziua 5)</span><span class="opt-p">48g P | 760 kcal</span></div>
+        <div class="opt-ttl">Pulpe Dezosate de Pui cu Piure de Cartofi</div>
+        <div class="opt-desc"><strong>200g</strong> pulpe dezosate fără piele la cuptor + <strong>400g</strong> piure de cartofi făcut cu puțin lapte 1.5% și 5g unt + salată verde sau gogoșari murați.</div>
+        <div class="opt-btm"><span class="opt-cue">Confort food sănătos la job</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m2" data-prot="50" data-kcal="730" data-name="Orez Sârbesc cu Cuburi de Pui" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 6 (Ziua 6)</span><span class="opt-p">50g P | 730 kcal</span></div>
+        <div class="opt-ttl">Orez Sârbesc cu Cuburi de Pui &amp; Ciuperci</div>
+        <div class="opt-desc"><strong>85g</strong> orez gătit cu ceapă, morcov, ardei și ciuperci (devine ~260g) + <strong>220g</strong> piept de pui <strong>crud</strong> tăiat cuburi rumenit la tigaie + salată de sfeclă roșie cu hrean.</div>
+        <div class="opt-btm"><span class="opt-cue">Gust tradițional românesc</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m2" data-prot="52" data-kcal="750" data-name="Caserolă Pui & Paste Integrale" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 7 (Ziua 7)</span><span class="opt-p">52g P | 750 kcal</span></div>
+        <div class="opt-ttl">Caserolă Mediteraneană cu Pui &amp; Paste Integrale</div>
+        <div class="opt-desc"><strong>95g</strong> paste integrale <strong>crude</strong> + <strong>200g</strong> piept pui <strong>crud</strong> feliat + sos fin din <strong>40g</strong> cremă de brânză light și <strong>50g</strong> iaurt grecesc + măsline feliate și roșii cherry.</div>
+        <div class="opt-btm"><span class="opt-cue">Gust cremos fără smântână grasă</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MASA 3: GUSTARE MUNCĂ ==================== -->
+<div class="acc-card">
+  <div class="acc-hdr" onclick="toggleAcc(this)">
+    <div class="acc-title-area">
+      <div class="acc-name">MASA 3 — GUSTARE ENERGIZANTĂ LA MUNCĂ (15:00 – 16:30)</div>
+      <div class="acc-time">Cu 1 oră înainte de plecare · Target: ~25g Proteină / 350 kcal · Oprește foamea</div>
+    </div>
+    <div class="acc-icon">▼</div>
+  </div>
+  <div class="acc-content">
+    <div class="acc-sub">Mănânci la șantier înainte să termini tura. Previne hipoglicemia și foamea de lup când treci pe la magazin sau ajungi acasă.</div>
+    <div class="acc-body">
+      
+      <div class="opt-block" data-meal="m3" data-prot="24" data-kcal="360" data-name="Sandviș Pocket Șuncă & Cremă Brânză" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 1 (Ziua 1)</span><span class="opt-p">24g P | 360 kcal</span></div>
+        <div class="opt-ttl">Sandviș „Pocket” cu Șuncă de Pui &amp; Cremă de Brânză</div>
+        <div class="opt-desc"><strong>2 felii</strong> pâine integrală (65g) + <strong>30g</strong> cremă de brânză light + <strong>80g</strong> șuncă de pui/curcan + <strong>1 măr</strong> mare crocant (180g).</div>
+        <div class="opt-btm"><span class="opt-cue">Gata ambalat din rucsac</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m3" data-prot="31" data-kcal="350" data-name="Shake Proteic Portabil + Banană" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 2 (Ziua 2)</span><span class="opt-p">31g P | 350 kcal</span></div>
+        <div class="opt-ttl">Shake Proteic Portabil cu Banană</div>
+        <div class="opt-desc"><strong>1 cupă</strong> (30g) pudră proteică Whey luată în shaker uscat + adaugi <strong>300ml</strong> lapte semidegresat 1.5% + <strong>1 banană</strong> mare (130g). Agiți și bei în 1 minut.</div>
+        <div class="opt-btm"><span class="opt-cue">Cel mai rapid aport de aminoacizi</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m3" data-prot="23" data-kcal="340" data-name="Budincă Proteică + Baton Ovăz" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 3 (Ziua 3)</span><span class="opt-p">23g P | 340 kcal</span></div>
+        <div class="opt-ttl">Budincă Proteică Gata Cumpărată + Baton Ovăz</div>
+        <div class="opt-desc"><strong>1 budincă proteică</strong> mare (200g - gen Ehrmann/Lidl Milbona cu 20g proteină) + <strong>1 baton de cereale/ovăz</strong> (40g) sau 1 banană medie.</div>
+        <div class="opt-btm"><span class="opt-cue">O cumperi din orice supermarket</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m3" data-prot="26" data-kcal="340" data-name="Cottage Cheese + Rondele Orez" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 4 (Ziua 4)</span><span class="opt-p">26g P | 340 kcal</span></div>
+        <div class="opt-ttl">Cottage Cheese cu Rondele de Orez &amp; Măr</div>
+        <div class="opt-desc"><strong>1 cutie</strong> brânză Cottage 2.2% (200g) + <strong>3 rondele</strong> de orez expandat crocante + <strong>1 măr</strong> sau pară feliată.</div>
+        <div class="opt-btm"><span class="opt-cue">Proteină lentă (cazeină)</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m3" data-prot="26" data-kcal="360" data-name="Lipie Rulată Cașcaval Light & Șuncă" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 5 (Ziua 5)</span><span class="opt-p">26g P | 360 kcal</span></div>
+        <div class="opt-ttl">Lipie Rulată cu Cașcaval Light &amp; Șuncă de Pui</div>
+        <div class="opt-desc"><strong>1 lipie mică</strong> (40g) unsă cu <strong>25g</strong> cremă de brânză + <strong>70g</strong> șuncă de pui + <strong>30g</strong> cașcaval light feliat subțire, împachetată strâns în folie.</div>
+        <div class="opt-btm"><span class="opt-cue">Ușor de ținut la rece</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m3" data-prot="19" data-kcal="350" data-name="Iaurt Grecesc + Nuci & Merișoare" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 6 (Ziua 6)</span><span class="opt-p">19g P | 350 kcal</span></div>
+        <div class="opt-ttl">Iaurt Grecesc cu Nuci &amp; Merișoare Uscate</div>
+        <div class="opt-desc"><strong>180g</strong> iaurt grecesc 2% + <strong>20g</strong> miez de nucă sau migdale crude + <strong>25g</strong> merișoare sau stafide uscate.</div>
+        <div class="opt-btm"><span class="opt-cue">Grăsimi bune și glucoză rapidă</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m3" data-prot="18" data-kcal="340" data-name="2 Ouă Fierte + Pâine & Banană" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 7 (Ziua 7)</span><span class="opt-p">18g P | 340 kcal</span></div>
+        <div class="opt-ttl">2 Ouă Fierte Tari, Pâine Toast &amp; Banană</div>
+        <div class="opt-desc"><strong>2 ouă</strong> fierte tari pregătite de acasă + <strong>1 felie</strong> pâine integrală (35g) cu puțină sare + <strong>1 banană</strong> medie (110g).</div>
+        <div class="opt-btm"><span class="opt-cue">Simplitate absolută</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MASA 4: PRE-WORKOUT ACASĂ ==================== -->
+<div class="acc-card">
+  <div class="acc-hdr" onclick="toggleAcc(this)">
+    <div class="acc-title-area">
+      <div class="acc-name">MASA 4 — MASĂ CALDĂ PRE-WORKOUT (17:00 – 18:00)</div>
+      <div class="acc-time">Acasă înainte de sală · Target: ~45g Proteină / 650 kcal · Combustibil de forță</div>
+    </div>
+    <div class="acc-icon">▼</div>
+  </div>
+  <div class="acc-content">
+    <div class="acc-sub">Ajungi acasă la 17:00. Mănânci cald, lași 45-60 min să se așeze digestia și pleci la sală cu forță maximă în mușchi.</div>
+    <div class="acc-body">
+      
+      <div class="opt-block" data-meal="m4" data-prot="47" data-kcal="640" data-name="Pui cu Cartofi la Airfryer" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 1 (Ziua 1)</span><span class="opt-p">47g P | 640 kcal</span></div>
+        <div class="opt-ttl">Piept de Pui cu Cartofi Wedges la Airfryer / Cuptor</div>
+        <div class="opt-desc"><strong>200g</strong> piept pui (<strong>crud</strong>) rumenit pe grătar sau tigaie + <strong>380g</strong> cartofi (<strong>cruzi</strong>) tăiați wedges cu boia dulce și usturoi granulat (1 linguriță ulei măsline) la airfryer + salată de roșii cu castraveți.</div>
+        <div class="opt-btm"><span class="opt-cue">Combustibil pur de glicogen pentru antrenament</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m4" data-prot="46" data-kcal="650" data-name="Orez cu Pui Teriyaki & Legume" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 2 (Ziua 2)</span><span class="opt-p">46g P | 650 kcal</span></div>
+        <div class="opt-ttl">Orez Basmati cu Pui Teriyaki &amp; Legume</div>
+        <div class="opt-desc"><strong>80g</strong> orez basmati fiert (devine ~250g) + <strong>200g</strong> piept pui fâșii tras la tigaie antiaderentă cu <strong>1 lingură</strong> sos soia/teriyaki + mix de legume asiatice crocante.</div>
+        <div class="opt-btm"><span class="opt-cue">Ușor digerabil, zero senzație de greutate</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m4" data-prot="45" data-kcal="660" data-name="Paste Bolognese Vită Slabă" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 3 (Ziua 3)</span><span class="opt-p">45g P | 660 kcal</span></div>
+        <div class="opt-ttl">Paste Bolognese cu Carne Slabă de Vită</div>
+        <div class="opt-desc"><strong>85g</strong> paste <strong>crude</strong> (fierte ~190g) + <strong>160g</strong> carne tocată de vită slabă cu sos clasic de roșii și busuioc + <strong>15g</strong> parmezan ras.</div>
+        <div class="opt-btm"><span class="opt-cue">Îți dă pompă musculară masivă la sală</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m4" data-prot="49" data-kcal="650" data-name="Quesadilla BUILT la Tigaie" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 4 (Ziua 4)</span><span class="opt-p">49g P | 650 kcal</span></div>
+        <div class="opt-ttl">Quesadilla BUILT cu Pui, Mozzarella &amp; Cremă Brânză</div>
+        <div class="opt-desc"><strong>1 lipie mare</strong> (65g) + <strong>160g</strong> piept de pui fâșii gătit + <strong>40g</strong> cremă de brânză light unsă pe foaie + <strong>35g</strong> mozzarella rasă, rumenită crocant pe tigaie uscată.</div>
+        <div class="opt-btm"><span class="opt-cue">Topit, crocant și încărcat cu proteină</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m4" data-prot="46" data-kcal="640" data-name="Risotto Cremos Pui & Ciuperci" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 5 (Ziua 5)</span><span class="opt-p">46g P | 640 kcal</span></div>
+        <div class="opt-ttl">Risotto Cremos cu Pui &amp; Ciuperci</div>
+        <div class="opt-desc"><strong>80g</strong> orez fiert (~240g) + <strong>180g</strong> piept pui cuburi + <strong>100g</strong> ciuperci sotate legate cu <strong>40g</strong> cremă de brânză light pentru sos cremos + pătrunjel verde.</div>
+        <div class="opt-btm"><span class="opt-cue">Sos fin fără smântână grasă</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m4" data-prot="46" data-kcal="650" data-name="Mușchi Porc + Orez & Porumb" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 6 (Ziua 6)</span><span class="opt-p">46g P | 650 kcal</span></div>
+        <div class="opt-ttl">Friptură de Mușchiuleț de Porc cu Orez &amp; Porumb</div>
+        <div class="opt-desc"><strong>180g</strong> mușchiuleț fraged de porc la tigaie/cuptor + <strong>80g</strong> orez fiert (~240g) amestecat cu <strong>50g</strong> porumb dulce și ardei copt.</div>
+        <div class="opt-btm"><span class="opt-cue">Sățios și plin de vitamine B</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m4" data-prot="45" data-kcal="640" data-name="Cartofi Dulci + Pui & Sos Iaurt" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 7 (Ziua 7)</span><span class="opt-p">45g P | 640 kcal</span></div>
+        <div class="opt-ttl">Cartofi Dulci la Cuptor cu Pui &amp; Sos de Iaurt</div>
+        <div class="opt-desc"><strong>360g</strong> cartofi dulci copți rondele + <strong>180g</strong> piept de pui suculent la grătar + sos răcoritor din <strong>100g</strong> iaurt grecesc 2% cu mărar și usturoi.</div>
+        <div class="opt-btm"><span class="opt-cue">Indice glicemic moderat, energie prelungită</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MASA 5: POST-WORKOUT CINĂ ==================== -->
+<div class="acc-card">
+  <div class="acc-hdr" onclick="toggleAcc(this)">
+    <div class="acc-title-area">
+      <div class="acc-name">MASA 5 — POST-WORKOUT / CINĂ REFACERE (20:00 – 21:00)</div>
+      <div class="acc-time">Refacere de noapte · Target: ~35g Proteină / 500 kcal · Somn adânc la 21:30</div>
+    </div>
+    <div class="acc-icon">▼</div>
+  </div>
+  <div class="acc-content">
+    <div class="acc-sub">Te întorci de la sală pe la 20:00. Faci duș, mănânci lejer pentru refacerea țesuturilor musculare fără să-ți îngreunezi stomacul înainte de somn.</div>
+    <div class="acc-body">
+      
+      <div class="opt-block" data-meal="m5" data-prot="44" data-kcal="510" data-name="Iaurt Grecesc Mare + Whey & Afine" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 1 (Ziua 1)</span><span class="opt-p">44g P | 510 kcal</span></div>
+        <div class="opt-ttl">Iaurt Grecesc Mare cu Fructe de Pădure &amp; Pudră Proteică</div>
+        <div class="opt-desc"><strong>350g</strong> iaurt grecesc 2% + <strong>25g</strong> pudră proteică Whey (amestecată direct în iaurt pentru gust intens de cremă) + <strong>150g</strong> afine/fructe de pădure + <strong>15g</strong> migdale mărunțite.</div>
+        <div class="opt-btm"><span class="opt-cue">Desert anabolic, reface mușchii peste noapte</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m5" data-prot="35" data-kcal="480" data-name="Sandvișuri Toast Noapte + Ceai" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 2 (Ziua 2)</span><span class="opt-p">35g P | 480 kcal</span></div>
+        <div class="opt-ttl">Sandvișuri Toastate de Noapte cu Cremă Brânză &amp; Șuncă</div>
+        <div class="opt-desc"><strong>3 felii</strong> pâine toast integrală (90g) unse cu <strong>40g</strong> cremă de brânză light + <strong>100g</strong> șuncă de pui + castraveți proaspeți + <strong>1 cană</strong> ceai de mușețel/mentă călduț fără zahăr.</div>
+        <div class="opt-btm"><span class="opt-cue">Relaxează sistemul nervos înainte de culcare</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m5" data-prot="36" data-kcal="510" data-name="Cottage Cheese Banană & Scorțișoară" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 3 (Ziua 3)</span><span class="opt-p">36g P | 510 kcal</span></div>
+        <div class="opt-ttl">Bol de Brânză Cottage cu Banană &amp; Scorțișoară</div>
+        <div class="opt-desc"><strong>250g</strong> brânză Cottage 2.2% sau brânză proaspătă de vaci slabă + <strong>1 banană</strong> feliată (110g) + <strong>1 linguriță</strong> miere (10g) + scorțișoară din belșug + <strong>15g</strong> miez de nucă.</div>
+        <div class="opt-btm"><span class="opt-cue">Eliberare continuă de aminoacizi pe 7-8 ore de somn</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m5" data-prot="34" data-kcal="490" data-name="Salată Ouă Fierte, Șuncă & Crutoane" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 4 (Ziua 4)</span><span class="opt-p">34g P | 490 kcal</span></div>
+        <div class="opt-ttl">Salată Mare cu Ouă Fierte, Șuncă de Pui &amp; Crutoane</div>
+        <div class="opt-desc">Salată verde mixtă generoasă + <strong>2 ouă</strong> fierte moi + <strong>80g</strong> șuncă de pui rumenită cubulețe + <strong>40g</strong> crutoane din pâine integrală + 1 linguriță ulei măsline și zeamă de lămâie.</div>
+        <div class="opt-btm"><span class="opt-cue">Volum mare, calorii controlate</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m5" data-prot="36" data-kcal="510" data-name="Clătite Proteice Rapide BUILT" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 5 (Ziua 5)</span><span class="opt-p">36g P | 510 kcal</span></div>
+        <div class="opt-ttl">Clătite Proteice Rapide BUILT la Tigaie</div>
+        <div class="opt-desc"><strong>1 banană</strong> pasată (100g) + <strong>2 ouă</strong> întregi + <strong>35g</strong> fulgi fini de ovăz + <strong>20g</strong> pudră proteică, coapte ca pancakes pe tigaie antiaderentă + <strong>50g</strong> fructe de pădure deasupra.</div>
+        <div class="opt-btm"><span class="opt-cue">Se simte ca un răsfăț, e 100% curat</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m5" data-prot="35" data-kcal="480" data-name="Ciorbă de Pui/Vită cu Pâine" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 6 (Ziua 6)</span><span class="opt-p">35g P | 480 kcal</span></div>
+        <div class="opt-ttl">Ciorbă Consistentă de Pui sau Vită cu Pâine</div>
+        <div class="opt-desc"><strong>450ml</strong> ciorbă de pui a la grec sau ciorbă de văcuță cu bucăți generoase de carne (minim <strong>120g</strong> carne fiartă) + <strong>2 felii mari</strong> pâine integrală (75g) + ardei iute.</div>
+        <div class="opt-btm"><span class="opt-cue">Hidratează și încălzește stomacul seara</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+      <div class="opt-block" data-meal="m5" data-prot="33" data-kcal="490" data-name="Budincă Ovăz & Chia cu Iaurt" onclick="selectMeal(this)">
+        <div class="opt-hdr"><span class="opt-num">Opțiunea 7 (Ziua 7)</span><span class="opt-p">33g P | 490 kcal</span></div>
+        <div class="opt-ttl">Budincă de Ovăz &amp; Chia cu Iaurt Grecesc</div>
+        <div class="opt-desc"><strong>35g</strong> fulgi de ovăz + <strong>15g</strong> semințe de chia + <strong>220g</strong> iaurt grecesc 2% + <strong>1 linguriță</strong> miere + <strong>100g</strong> căpșuni sau afine, lăsate 15 minute la hidratat.</div>
+        <div class="opt-btm"><span class="opt-cue">Ușoară ca fulgul, tranzit intestinal optim</span><span class="opt-check">Alege Varianta ○</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==================== STICKY BAR ==================== -->
+<div class="sticky-bar" id="tracker-bar">
+  <div class="st-info">
+    <div class="st-ttl">TOTAL PROTEINĂ SELECTATĂ</div>
+    <div class="st-vals"><span id="trk-prot">0</span>g / 185g</div>
+  </div>
+  <button class="st-btn" onclick="openModal()">VEZI REZUMAT</button>
+</div>
+
+<!-- ==================== MODAL ==================== -->
+<div class="modal-backdrop" id="modal-bg" onclick="if(event.target===this) closeModal()">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <div class="modal-ttl">REZUMAT ZI · 5 MESE</div>
+      <button class="modal-close" onclick="closeModal()">×</button>
+    </div>
+    
+    <div id="modal-content">
+      <div class="modal-row"><span class="modal-meal-name">Masa 1 (Mic Dejun): <span id="m1-n">-</span></span><span class="modal-meal-val" id="m1-p">0g</span></div>
+      <div class="modal-row"><span class="modal-meal-name">Masa 2 (Prânz Muncă): <span id="m2-n">-</span></span><span class="modal-meal-val" id="m2-p">0g</span></div>
+      <div class="modal-row"><span class="modal-meal-name">Masa 3 (Gustare Muncă): <span id="m3-n">-</span></span><span class="modal-meal-val" id="m3-p">0g</span></div>
+      <div class="modal-row"><span class="modal-meal-name">Masa 4 (Pre-Workout): <span id="m4-n">-</span></span><span class="modal-meal-val" id="m4-p">0g</span></div>
+      <div class="modal-row"><span class="modal-meal-name">Masa 5 (Post-Workout): <span id="m5-n">-</span></span><span class="modal-meal-val" id="m5-p">0g</span></div>
+      
+      <div class="modal-row highlight" style="background:rgba(39,174,96,0.15); border:1px solid rgba(39,174,96,0.4); margin-top:20px; padding:12px; border-radius:6px;">
+        <span class="modal-meal-name" style="font-weight:700; color:#fff;">Total Proteină Zi:</span>
+        <span class="modal-meal-val" id="tot-p" style="font-size:18px; font-weight:700;">0g</span>
+      </div>
+      
+      <div style="font-size:11px; color:#aaa; margin-top:10px; line-height:1.5;">
+        * Target zilnic recomandat: <strong>185g Proteină</strong> la <strong>2.850 kcal</strong>. Dacă ai bifat 175-195g ești perfect în parametrii de recompoziție musculară.
+      </div>
+      
+      <button class="modal-btn-reset" onclick="resetSelection()">Resetează Selecția</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let selection = {
+    m1: { prot: 0, name: '-' },
+    m2: { prot: 0, name: '-' },
+    m3: { prot: 0, name: '-' },
+    m4: { prot: 0, name: '-' },
+    m5: { prot: 0, name: '-' }
+  };
+
+  function toggleAcc(hdr) {
+    const card = hdr.parentElement;
+    card.classList.toggle('open');
+  }
+
+  function selectMeal(block) {
+    const meal = block.getAttribute('data-meal');
+    const prot = parseInt(block.getAttribute('data-prot'), 10);
+    const name = block.getAttribute('data-name');
+    
+    // Unselect others in same meal group
+    document.querySelectorAll(`.opt-block[data-meal="${meal}"]`).forEach(b => {
+      b.classList.remove('selected');
+      const chk = b.querySelector('.opt-check');
+      if (chk) chk.innerText = 'Alege Varianta ○';
+    });
+    
+    // Select this one
+    block.classList.add('selected');
+    const chk = block.querySelector('.opt-check');
+    if (chk) chk.innerText = 'Selectat ✓';
+    
+    selection[meal] = { prot: prot, name: name };
+    updateTracker();
+    
+    // collapse current, open next
+    const accCard = block.closest('.acc-card');
+    accCard.classList.remove('open');
+    const nextAcc = accCard.nextElementSibling;
+    if(nextAcc && nextAcc.classList.contains('acc-card')){
+      nextAcc.classList.add('open');
+      const y = nextAcc.getBoundingClientRect().top + window.pageYOffset - 80;
+      window.scrollTo({top: y, behavior: 'smooth'});
+    }
+  }
+
+  function updateTracker() {
+    const totalP = (selection.m1.prot || 0) + (selection.m2.prot || 0) + (selection.m3.prot || 0) + (selection.m4.prot || 0) + (selection.m5.prot || 0);
+    const elTrk = document.getElementById('trk-prot');
+    if(elTrk) elTrk.innerText = totalP;
+    
+    const bar = document.getElementById('tracker-bar');
+    if(bar) {
+      if(totalP > 0) {
+        bar.classList.add('visible');
+      } else {
+        bar.classList.remove('visible');
+      }
+    }
+  }
+
+  function openModal() {
+    document.getElementById('m1-n').innerText = selection.m1.name;
+    document.getElementById('m1-p').innerText = selection.m1.prot ? selection.m1.prot + 'g' : '0g';
+    
+    document.getElementById('m2-n').innerText = selection.m2.name;
+    document.getElementById('m2-p').innerText = selection.m2.prot ? selection.m2.prot + 'g' : '0g';
+    
+    document.getElementById('m3-n').innerText = selection.m3.name;
+    document.getElementById('m3-p').innerText = selection.m3.prot ? selection.m3.prot + 'g' : '0g';
+    
+    document.getElementById('m4-n').innerText = selection.m4.name;
+    document.getElementById('m4-p').innerText = selection.m4.prot ? selection.m4.prot + 'g' : '0g';
+
+    document.getElementById('m5-n').innerText = selection.m5.name;
+    document.getElementById('m5-p').innerText = selection.m5.prot ? selection.m5.prot + 'g' : '0g';
+    
+    const totalP = (selection.m1.prot || 0) + (selection.m2.prot || 0) + (selection.m3.prot || 0) + (selection.m4.prot || 0) + (selection.m5.prot || 0);
+    const elTot = document.getElementById('tot-p');
+    elTot.innerText = totalP + 'g';
+    
+    if(totalP >= 185) {
+      elTot.style.color = 'var(--green)';
+    } else {
+      elTot.style.color = 'var(--orange)';
+    }
+    
+    document.getElementById('modal-bg').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('modal-bg').classList.remove('open');
+  }
+
+  function resetSelection() {
+    selection = {
+      m1: { prot: 0, name: '-' },
+      m2: { prot: 0, name: '-' },
+      m3: { prot: 0, name: '-' },
+      m4: { prot: 0, name: '-' },
+      m5: { prot: 0, name: '-' }
+    };
+    
+    document.querySelectorAll('.opt-block').forEach(b => {
+      b.classList.remove('selected');
+      const chk = b.querySelector('.opt-check');
+      if (chk) chk.innerText = 'Alege Varianta ○';
+    });
+    
+    updateTracker();
+    closeModal();
+    
+    // reset accordions
+    document.querySelectorAll('.acc-card').forEach((acc, i) => {
+      if(i === 0) acc.classList.add('open');
+      else acc.classList.remove('open');
+    });
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
+</script>
+
+</body>
+</html>
